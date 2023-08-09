@@ -5,7 +5,7 @@
 	"scripts": {
 		"prepare": "svelte-kit sync",
 		"dev": "vite dev",
-		"build": "vite build && npm run copy-internal && npm run copy-external",
+		"build": "vite build",
 		"copy-internal": "cpy \"build/**/*\" \"../UNWB.Internal/Scripts/SvelteApp/\"",
 		"copy-external": "cpy \"build/**/*\" \"../UNWB.External/Scripts/SvelteApp/\"",
 		"preview": "vite preview",
