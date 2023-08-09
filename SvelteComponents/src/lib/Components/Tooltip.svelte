@@ -1,0 +1,56 @@
+<script context="module" lang="ts">
+	import tippy from 'sveltejs-tippy';
+
+	let tooltips = new Map();
+
+	function process(node: HTMLElement, documentation: any) {
+		if (documentation != null) {
+			var content = typeof documentation === 'string' ? documentation : documentation.Content;
+
+			if (content == null || content.length === 0) {
+				return;
+			}
+			
+			if (tooltips.get(node) != null) {
+                // Re-use existing instance, but just change the content.
+				tooltips.get(node).setContent(content);
+			} else {
+                node.classList.add('has-documentation');
+                
+				const instance = tippy(node, {
+					content: content,
+					allowHTML: true
+				});
+
+				tooltips.set(node, instance);
+			}
+		} else {
+			node.classList.remove('has-documentation');
+
+			var instance = tooltips.get(node);
+			if (instance != null) {
+				instance.destroy();
+				tooltips.delete(node);
+			}
+		}
+	}
+
+	export function tooltip(node: HTMLElement, documentation: any) {
+		process(node, documentation);
+
+		return {
+			destroy() {},
+			update(newDocumentation: any) {
+				process(node, newDocumentation);
+			}
+		};
+	}
+</script>
+
+<style>
+    :global(.tippy-box) {
+        font-size: 1em !important;
+        line-height: 1.1em !important;
+        border-radius: 1px !important;
+    }
+</style>

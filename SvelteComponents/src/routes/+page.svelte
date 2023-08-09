@@ -1,0 +1,1 @@
+<h1>Welcome to the Uimf component documentation!</h1>
