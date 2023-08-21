@@ -10,6 +10,7 @@
 	import { OutputComponentController } from '../Infrastructure/ComponentController';
 	import { beforeUpdate } from 'svelte';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
+	import type { InputController } from '$lib/Infrastructure/InputController';
 
 	export let controller: OutputController<PaginatedObjectList>;
 
@@ -17,8 +18,7 @@
 	const resultPerPageOpt2 = 12;
 	const resultPerPageOpt3 = 24;
 
-	let currentPaginator =
-		controller.form?.inputs[controller.metadata.CustomProperties.Customizations.Paginator];
+	let currentPaginator = controller.form!.inputs[controller.metadata.CustomProperties.Customizations.Paginator];
 	let currentPage = currentPaginator.value.PageIndex;
 	let resultPerPage = currentPaginator.value.PageSize;
 
@@ -36,7 +36,6 @@
 		async refresh() {
 			await GetInputValues().then((results) => {
 				if (inputValues != undefined && !areEqual(inputValues, results)) {
-					console.log('new search');
 					currentPage = 1;
 				}
 
@@ -84,20 +83,15 @@
 	function createPerPageUrls(inputValues: any) {
 		let urls: any = [];
 
-		resultPerPage = resultPerPageOpt1;
 		urls[resultPerPageOpt1] = createPaginatedUrl(currentPage, inputValues);
-
-		resultPerPage = resultPerPageOpt2;
 		urls[resultPerPageOpt2] = createPaginatedUrl(currentPage, inputValues);
-
-		resultPerPage = resultPerPageOpt3;
 		urls[resultPerPageOpt3] = createPaginatedUrl(currentPage, inputValues);
 
 		return urls;
 	}
 
 	function createPaginatedUrl(pageIndex: number, inputValues: any) {
-		let currentInputValues = inputValues;
+		let currentInputValues = JSON.parse(JSON.stringify(inputValues));
 
 		// add serialized paginator as an input before building the URL
 		currentInputValues['Paginator'] = currentPaginator.serialize({
@@ -167,7 +161,6 @@
 {#if paginatedUrls != null}
 	<nav class="pagination">
 		<div class="per-page-selector">
-			Number of Results Per Page:
 			<a href={perPageUrls[resultPerPageOpt1]}>{resultPerPageOpt1}</a> |
 			<a href={perPageUrls[resultPerPageOpt2]}>{resultPerPageOpt2}</a> |
 			<a href={perPageUrls[resultPerPageOpt3]}>{resultPerPageOpt3}</a>

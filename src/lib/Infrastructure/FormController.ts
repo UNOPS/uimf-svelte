@@ -41,7 +41,7 @@ export class FormController extends EventSource implements FormInstance {
     public hasVisibleInputs: boolean;
     public metadata: FormMetadata;
     public response: Dictionary<any>;
-    public inputs: Dictionary<{ value: any }>;
+    public inputs: Dictionary<{ value: any, serialize: (value: any) => string, getValue: () => Promise<any> }>;
     public originalInputValues: Dictionary<any>;
     public currentUrl: string;
     public breadcrumbs: OutputController<FormLink>[] = [];
