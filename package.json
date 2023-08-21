@@ -6,8 +6,6 @@
 		"prepare": "svelte-kit sync",
 		"dev": "vite dev",
 		"build": "vite build",
-		"copy-internal": "cpy \"build/**/*\" \"../UNWB.Internal/Scripts/SvelteApp/\"",
-		"copy-external": "cpy \"build/**/*\" \"../UNWB.External/Scripts/SvelteApp/\"",
 		"preview": "vite preview",
 		"test": "npm run build && jest",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
