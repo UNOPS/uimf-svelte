@@ -14,7 +14,8 @@
 		"format": "prettier --plugin-search-dir . --write ."
 	},
 	"jest": {
-		"testEnvironment": "jsdom"
+		"testEnvironment": "jsdom",
+		"verbose": true
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.22.5",
