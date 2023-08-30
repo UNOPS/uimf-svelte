@@ -31,16 +31,18 @@
 		let componentControllerArray: ComponentController[] = [];
 
 		properties
-		.sort((a,b) => a.OrderIndex - b.OrderIndex)
-		.forEach((property) => {
-			let componentController = {
-				component: controlRegister.outputs[property.Type].component,
-				controller: new OutputController<any>(property, null, controller.form, controller.app)
-			};
-
-			componentController.controller.setValue(controller.value?.Value[property.Id]);
-			componentControllerArray.push(componentController);
-		});
+			.sort((a, b) => a.OrderIndex - b.OrderIndex)
+			.forEach((property) => {
+				let componentController = {
+					component: controlRegister.outputs[property.Type].component,
+					controller: new OutputController<any>(property, null, controller.form, controller.app)
+				};
+				
+				if (controller.value != null && controller.value.Value != undefined) {
+					componentController.controller.setValue(controller.value?.Value[property.Id]);
+					componentControllerArray.push(componentController);
+				}
+			});
 
 		return componentControllerArray;
 	}
@@ -78,7 +80,7 @@
 		height: 100%;
 	}
 
-	.layout-container.size35-65{
+	.layout-container.size35-65 {
 		grid-template-columns: 35% 65% !important;
 	}
 

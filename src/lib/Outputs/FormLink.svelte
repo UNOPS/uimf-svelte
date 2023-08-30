@@ -43,7 +43,7 @@
 	let confirmationMessageCallback: () => any;
 
 	onMount(() => {
-		if (controller.value == null) {
+		if (controller.value == null || controller.app == null) {
 			return;
 		}
 		allowed = controller.app.hasRole(controller.value.RequiredPermission);

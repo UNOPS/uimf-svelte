@@ -37,11 +37,23 @@
 
 	beforeUpdate(async () => await component.setup(controller));
 
-	const description1Controller = new OutputController<Money>(controller.metadata, null, controller.form, controller.app);
-	const description2Controller = new OutputController<Money>(controller.metadata, null, controller.form, controller.app);
+	const description1Controller = new OutputController<Money>(
+		controller.metadata,
+		null,
+		controller.form,
+		controller.app
+	);
+	const description2Controller = new OutputController<Money>(
+		controller.metadata,
+		null,
+		controller.form,
+		controller.app
+	);
 
-	description1Controller.setValue(controller.value.Description1);
-	description2Controller.setValue(controller.value.Description2);
+	if (controller.value != null) {
+		description1Controller.setValue(controller.value.Description1);
+		description2Controller.setValue(controller.value.Description2);
+	}
 </script>
 
 {#if controller.value != null}
@@ -65,7 +77,7 @@
 				<div class="title">{controller.value.Title}</div>
 			{/if}
 			{#if controller.value.Description1 != null}
-				<div><Money controller ={description1Controller} /></div>
+				<div><Money controller={description1Controller} /></div>
 			{/if}
 			{#if controller.value.Description2 != null}
 				<div><Money controller={description2Controller} /></div>
@@ -145,7 +157,8 @@
 		line-height: 1em;
 	}
 
-	.inner-text ul, li{
+	.inner-text ul,
+	li {
 		line-height: 1em;
 	}
 

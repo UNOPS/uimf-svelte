@@ -11,13 +11,16 @@
 		controller: any;
 	}
 
+	let componentItemControllers: ComponentController[] = [];
+	let componentThumbnailControllers: ComponentController[] = [];
+
 	function loadComponentControllers(items: any[]) {
 		let nestedComponentType = controller.metadata.CustomProperties.ItemTypes.Type;
 		let nestedComponent = controlRegister.outputs[nestedComponentType].component;
 
 		let i = 1;
 		items.forEach((item) => {
-			let ItemController = {
+			let ItemController: ComponentController = {
 				index: i,
 				component: nestedComponent,
 				controller: new OutputController<any>(
@@ -29,10 +32,10 @@
 			};
 
 			ItemController.controller.setValue(item.m_Item1);
-			componentControllers.push(ItemController);
+			componentItemControllers.push(ItemController);
 
 			if (item.m_Item2 != null) {
-				let thumbnailController = {
+				let thumbnailController: ComponentController = {
 					index: i,
 					component: nestedComponent,
 					controller: new OutputController<any>(
@@ -54,6 +57,10 @@
 	let component = new OutputComponentController({
 		refresh() {
 			controller.value = controller.value;
+
+			if (controller.value != null) {
+				loadComponentControllers(controller.value.Items);
+			}
 		}
 	});
 
@@ -62,7 +69,7 @@
 	let currentIndex = 1;
 
 	function nextSlide() {
-		if (currentIndex < componentControllers.length) {
+		if (currentIndex < componentItemControllers.length) {
 			currentIndex += 1;
 		}
 	}
@@ -77,20 +84,19 @@
 		currentIndex = number;
 	}
 
-	let componentControllers: ComponentController[] = [];
-	let componentThumbnailControllers: ComponentController[] = [];
-
-	loadComponentControllers(controller.value.Items);
+	if (controller.value != null) {
+		loadComponentControllers(controller.value.Items);
+	}
 </script>
 
 <div class="slider-container">
-	{#if componentControllers != null && componentControllers.length > 0 }
+	{#if componentItemControllers != null && Array.isArray(componentItemControllers) && componentItemControllers.length > 0}
 		<div class="caption-container">
 			<button class="prev" on:click={prevSlide}>&#10094;</button>
 			<div class="caption">
 				<svelte:component
-					this={componentControllers[currentIndex - 1].component}
-					controller={componentControllers[currentIndex - 1].controller}
+					this={componentItemControllers[currentIndex - 1].component}
+					controller={componentItemControllers[currentIndex - 1].controller}
 				/>
 			</div>
 			<button class="next" on:click={nextSlide}>&#10095;</button>

@@ -26,7 +26,7 @@
 		beforeUpdate(async () => await component.setup(controller));
 	}
 
-	export let tree = { Id: 0, Name: 'Catalogues', Url: '', Children: controller.value.Items };
+	export let tree = { Id: 0, Name: 'Catalogues', Url: '', Children: controller.value?.Items || {} };
 
 	const { Id, Name, Children, Url } = tree;
 
@@ -38,13 +38,13 @@
 </script>
 
 {#if controller?.value}
-	{#if Name == "Catalogues"}
+	{#if Name == 'Catalogues'}
 		<span class="head">{Name}</span>
 	{/if}
 	<ul>
 		<li>
 			{#if Children.length > 0}
-				{#if Name != "Catalogues"}
+				{#if Name != 'Catalogues'}
 					<!-- svelte-ignore a11y-click-events-have-key-events -->
 					<span on:click={toggleExpansion}>
 						<span class="arrow" class:arrowDown>&#x25b6</span>
@@ -96,10 +96,10 @@
 	}
 	.head {
 		font-weight: 700;
-    	background-color: #f2f2f2;
-    	width: 100%;
-    	padding: 10px 65px;
-    	margin-bottom: 10px;
-    	display: block;
+		background-color: #f2f2f2;
+		width: 100%;
+		padding: 10px 65px;
+		margin-bottom: 10px;
+		display: block;
 	}
 </style>

@@ -302,110 +302,117 @@ const testData = [
                 'm_Item2': 12345
             }]
     },
-    // {
-    //     metadata: { Type: "tree-view-selector" },
-    //     value: {
-    //         Items: [
-    //             {
-    //                 Url: "#/form/public-products?Category=catalog-1258",
-    //                 Id: 1258,
-    //                 Name: "Motor Vehicles",
-    //                 Children: [
-    //                     {
-    //                         Url: "#/form/public-products?Category=category-1681",
-    //                         Id: 1681,
-    //                         Name: "Sedans",
-    //                         Children: []
-    //                     },
-    //                     {
-    //                         Url: "#/form/public-products?Category=category-1682",
-    //                         Id: 1682,
-    //                         Name: "Trucks",
-    //                         Children: []
-    //                     }
-    //                 ]
-    //             }
-    //         ]
-    //     }
-    // },
-    // {
-    //     metadata: {
-    //         Type: "slider"
-    //     },
-    //     value: {
-    //         Items: [
-    //             {
-    //                 m_Item1:
-    //                 {
-    //                     Source: "/api/photo/get/ee5d039a-8c01-43dc-a8b2-05e961e99a0b",
-    //                     MaxWidth: "80%"
-    //                 },
-    //                 m_Item2:
-    //                 {
-    //                     Source: "/api/photo/get/ee5d039a-8c01-43dc-a8b2-05e961e99a0b",
-    //                     MaxWidth: "50%"
-    //                 }
-    //             },
-    //             {
-    //                 m_Item1:
-    //                 {
-    //                     Source: "/api/photo/get/ee5d039a-8c01-43dc-a8b2-05e961e99a0b",
-    //                     MaxWidth: "70%"
-    //                 },
-    //                 m_Item2:
-    //                 {
-    //                     Source: "/api/photo/get/ee5d039a-8c01-43dc-a8b2-05e961e99a0b",
-    //                     MaxWidth: "50%"
-    //                 }
-    //             }
-    //         ]
-    //     }
-    // },
-    // {
-    //     metadata: {
-    //         Type: "image-overlay"
-    //     },
-    //     value: [
-    //         {
-    //             Items:
-    //             {
-    //                 Results: [
-    //                     {
-    //                         Description1: null,
-    //                         Description2: null,
-    //                         InnerContent:
-    //                             [
-    //                                 "Supplier: Toyota",
-    //                                 "Brand: qui",
-    //                                 "Moq: 9",
-    //                                 "Delivery terms: CFR Peking CHN",
-    //                                 "Production time: 44 days"],
-    //                         InnerTitle: "Fish",
-    //                         MaxWidth: "100%",
-    //                         Source: "https://testext.unwebbuyplus.org/Images/no-image-thumbnail.jpeg",
-    //                         Title: "Fish",
-    //                         Url: "../#/form/public-product-overview?Id=2567"
-    //                     }, {
-    //                         Description1: null,
-    //                         Description2: null,
-    //                         InnerContent:
-    //                             [
-    //                                 "Supplier: Toyota",
-    //                                 "Brand: qui",
-    //                                 "Moq: 9",
-    //                                 "Delivery terms: CFR Peking CHN",
-    //                                 "Production time: 44 days"],
-    //                         InnerTitle: "Fish",
-    //                         MaxWidth: "100%",
-    //                         Source: "https://testext.unwebbuyplus.org/Images/no-image-thumbnail.jpeg",
-    //                         Title: "Fish",
-    //                         Url: "../#/form/public-product-overview?Id=2567"
-    //                     }],
-    //                 TotalCount: 7
-    //             }
-    //         }
-    //     ],
-    // },
+    {
+        metadata: { Type: "tree-view-selector" },
+        values: 
+             [
+                {
+                    Url: "#/form/public-products?Category=catalog-1258",
+                    Id: 1258,
+                    Name: "Motor Vehicles",
+                    Children: [
+                        {
+                            Url: "#/form/public-products?Category=category-1681",
+                            Id: 1681,
+                            Name: "Sedans",
+                            Children: []
+                        },
+                        {
+                            Url: "#/form/public-products?Category=category-1682",
+                            Id: 1682,
+                            Name: "Trucks",
+                            Children: []
+                        }
+                    ]
+                }
+            ]
+
+    },
+    {
+        metadata: {
+            Type: "slider", CustomProperties: {
+                ItemTypes:
+                {
+                    Type: "image",
+                }
+            }
+        },
+        values: [
+            {
+                Items: [
+                    {
+                        m_Item1:
+                        {
+                            Source: "https://martinfowler.com/articles/bottlenecks-of-scaleups/observability-communication-anti-patterns.png",
+                            MaxWidth: "80%"
+                        },
+                        m_Item2:
+                        {
+                            Source: "https://martinfowler.com/articles/bottlenecks-of-scaleups/observability-communication-anti-patterns.png",
+                            MaxWidth: "50%"
+                        }
+                    },
+                    {
+                        m_Item1:
+                        {
+                            Source: "/api/photo/get/ee5d039a-8c01-43dc-a8b2-05e961e99a0b",
+                            MaxWidth: "70%"
+                        },
+                        m_Item2:
+                        {
+                            Source: "/api/photo/get/ee5d039a-8c01-43dc-a8b2-05e961e99a0b",
+                            MaxWidth: "50%"
+                        }
+                    }]
+            }
+        ]
+
+    },
+    {
+        metadata: {
+            Type: "image-overlay"
+        },
+        values: [
+            {
+                Items:
+                {
+                    Results: [
+                        {
+                            Description1: null,
+                            Description2: null,
+                            InnerContent:
+                                [
+                                    "Supplier: Toyota",
+                                    "Brand: qui",
+                                    "Moq: 9",
+                                    "Delivery terms: CFR Peking CHN",
+                                    "Production time: 44 days"],
+                            InnerTitle: "Fish",
+                            MaxWidth: "100%",
+                            Source: "https://testext.unwebbuyplus.org/Images/no-image-thumbnail.jpeg",
+                            Title: "Fish",
+                            Url: "../#/form/public-product-overview?Id=2567"
+                        }, {
+                            Description1: null,
+                            Description2: null,
+                            InnerContent:
+                                [
+                                    "Supplier: Toyota",
+                                    "Brand: qui",
+                                    "Moq: 9",
+                                    "Delivery terms: CFR Peking CHN",
+                                    "Production time: 44 days"],
+                            InnerTitle: "Fish",
+                            MaxWidth: "100%",
+                            Source: "https://testext.unwebbuyplus.org/Images/no-image-thumbnail.jpeg",
+                            Title: "Fish",
+                            Url: "../#/form/public-product-overview?Id=2567"
+                        }],
+                    TotalCount: 7
+                }
+            }
+        ],
+    },
 ]
 
 module.exports = testData;

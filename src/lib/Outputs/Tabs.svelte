@@ -35,7 +35,7 @@
 				controller: new OutputController<any>(property, null, controller.form, controller.app)
 			};
 
-			componentController.controller.setValue(controller.value.Value[property.Id]);
+			componentController.controller.setValue(controller.value?.Value[property.Id] || {});
 			componentControllerArray.push(componentController);
 		});
 
