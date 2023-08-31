@@ -73,7 +73,7 @@
 		}
 
 		controller.getItems(searchResultsQuery).then((items) => {
-			searchResults = items?.slice(0, 5) as SearchResult[];
+			searchResults = items?.slice(0, 10) as SearchResult[];
 		});
 	};
 
@@ -116,6 +116,22 @@
 				inputInFocus = false;
 			});
 	};
+
+	const formatSuggestion = (suggestion: string, query: string) => {
+    const lowerCaseSuggestion = suggestion.toLowerCase();
+    const lowerCaseQuery = query.toLowerCase();
+    const startIndex = lowerCaseSuggestion.indexOf(lowerCaseQuery);
+    
+    if (startIndex !== -1) {
+      const beforeMatch = suggestion.substring(0, startIndex);
+      const match = suggestion.substring(startIndex, startIndex + query.length);
+      const afterMatch = suggestion.substring(startIndex + query.length);
+
+      return `${beforeMatch}<strong>${match}</strong>${afterMatch}`;
+    }
+
+    return suggestion;
+  };
 </script>
 
 <div
@@ -141,7 +157,9 @@
 					class="list-group-item list-group-item-action"
 					on:click={() => {
 						handleOnClick(item);
-					}}>{item.SearchText}</button
+					}}>
+					<span>{@html formatSuggestion(item.SearchText, userInput)}</span>
+					</button
 				>
 			{/each}
 		</ul>
