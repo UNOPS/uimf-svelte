@@ -45,10 +45,9 @@
 		<li>
 			{#if Children.length > 0}
 				{#if Name != 'Catalogues'}
-					<!-- svelte-ignore a11y-click-events-have-key-events -->
 					<span on:click={toggleExpansion}>
-						<span class="arrow" class:arrowDown>&#x25b6</span>
-						<span class="bold"><a href="javascript:void(0)">{Name} </a></span>
+						<span class="arrow" class:arrowDown>&#x25b6;</span>
+						<span class="bold"><button on:click={toggleExpansion}>{Name}</button></span>
 					</span>
 				{/if}
 				{#if expanded}
@@ -61,7 +60,7 @@
 			{:else}
 				<span>
 					<span class="no-arrow" />
-					<a href={Url}>{Name} #{Id}</a>
+					<button on:click={() => window.location.href = Url}>{Name} #{Id}</button>
 				</span>
 			{/if}
 		</li>
@@ -75,8 +74,13 @@
 		padding-left: 1.2rem;
 		user-select: none;
 	}
-	a {
-		text-decoration: none !important;
+	button {
+		border: none;
+		background: none;
+		cursor: pointer;
+		font: inherit;
+		padding: 0;
+		text-decoration: underline;
 		color: #515151;
 	}
 	.no-arrow {
