@@ -82,24 +82,38 @@
 
 <div class="expandable-visible">
 	{#if visible && mainController != null}
-		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<div
 			on:click={() => {
 				baseToggle(false);
 			}}
+			on:keydown={(event) => {
+				if (event.key === 'Enter' || event.key === ' ') {
+					baseToggle(false);
+				}
+			}}
 			class="pointer"
+			role="button"
+			tabindex="0"
+			aria-label="Expandable Content"
 		>
 			<Output controller={mainController} hideLabel={true} />
 		</div>
 	{/if}
 
 	{#if controller.value?.ShowButton}
-		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<i
 			class={buttonCssClass}
 			on:click={() => {
 				baseToggle(true);
 			}}
+			on:keydown={(event) => {
+				if (event.key === 'Enter' || event.key === ' ') {
+					baseToggle(true);
+				}
+			}}
+			role="button"
+			tabindex="0"
+			aria-label="Toggle Expandable"
 		/>
 	{/if}
 </div>

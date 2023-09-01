@@ -10,7 +10,6 @@
 	import { OutputComponentController } from '../Infrastructure/ComponentController';
 	import { beforeUpdate } from 'svelte';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
-	import type { InputController } from '$lib/Infrastructure/InputController';
 
 	export let controller: OutputController<PaginatedObjectList>;
 

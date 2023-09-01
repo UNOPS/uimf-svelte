@@ -135,10 +135,13 @@
 
 <div bind:this={viewTarget}>
 	{#each views as view}
-		<label class="form-label">{view.options.Label}</label>
-		<svelte:component
-			this={controlRegister.inputs[view.options.Type].component}
-			controller={view.controller}
-		/>
+		<label class="form-label" for={view.options.Id}>
+			<svelte:component
+				this={controlRegister.inputs[view.options.Type].component}
+				controller={view.controller}
+				id={view.options.Id}
+			/>
+			{view.options.Label}
+		</label>
 	{/each}
 </div>

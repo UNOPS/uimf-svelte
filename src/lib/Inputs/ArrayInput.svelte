@@ -203,35 +203,38 @@
 
 <div>
 	{#each views as item, idx}
-		<div>
-			<strong>{item.header}</strong>
-			<span>
-				<i class="fas fa-arrow-alt-circle-right" />{item.comment}
-			</span>
-			{#if controller.metadata.AllowNewItems}
-				<button
-					type="button"
-					class="btn btn-lg btn-danger"
-					on:click={() => {
-						controller.removeView(idx);
-					}}>Remove</button
-				>
-			{/if}
-		</div>
-		<div class="items">
-			{#each componentViews[idx] as componentItem}
-				<div>
-					<!-- svelte-ignore a11y-label-has-associated-control -->
-					<label class="form-label">{componentItem.options.Label}</label>
-					<svelte:component
-						this={controlRegister.inputs[componentItem.options.Type].component}
-						controller={componentItem.controller}
-					/>
-				</div>
-			{/each}
-		</div>
+	  <div>
+		<strong>{item.header}</strong>
+		<span>
+		  <i class="fas fa-arrow-alt-circle-right" />{item.comment}
+		</span>
+		{#if controller.metadata.AllowNewItems}
+		  <button
+			type="button"
+			class="btn btn-lg btn-danger"
+			on:click={() => {
+			  controller.removeView(idx);
+			}}>Remove</button
+		  >
+		{/if}
+	  </div>
+	  <div class="items">
+		{#each componentViews[idx] as componentItem}
+		  <div>
+			<label class="form-label" for={componentItem.options.Id}>
+			  {componentItem.options.Label}
+			</label>
+			<svelte:component
+			  this={controlRegister.inputs[componentItem.options.Type].component}
+			  controller={componentItem.controller}
+			  id={componentItem.options.Id}
+			/>
+		  </div>
+		{/each}
+	  </div>
 	{/each}
-</div>
+  </div>
+  
 
 {#if controller.metadata.AllowNewItems}
 	<button

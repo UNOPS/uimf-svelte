@@ -58,7 +58,7 @@ export class BulkActionsColumnExtension extends TableExtension {
         rowActions = rowActions.filter((t) => t.ItemId != null);
         
         for (let action of rowActions) {
-            let bulkAction = this.actions.find((t) => t.Form === action.Form);
+            let bulkAction = this.actions.find((t: { Form: any; }) => t.Form === action.Form);
 
             if (bulkAction == null) {
                 bulkAction = BulkAction.createFrom(action);

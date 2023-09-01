@@ -57,7 +57,14 @@
 </script>
 
 {#if controller.value != null}
-	<div class="image-container" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
+	<div
+		class="image-container"
+		on:mouseenter={handleMouseEnter}
+		on:mouseleave={handleMouseLeave}
+		role="button"   
+		tabindex="0"    
+		aria-label="Image Overlay"
+	>
 		{#if isHovered}
 			<div class="overlay">
 				<a href={controller.value.Url}>

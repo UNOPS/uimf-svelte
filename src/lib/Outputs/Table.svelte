@@ -22,7 +22,7 @@
 	//let bulkActionExtension: BulkActionsColumnExtension = new BulkActionsColumnExtension();
 	let extraColspan: number = 0;
 
-	export let withLabel = true;
+	//export let withLabel = true;
 
 	let component = new OutputComponentController({
 		refresh() {

@@ -81,6 +81,7 @@
 		padding: 0.6em 0em 0em;
 	}
 
+	/* optional css from CustomProperties.cssClass */
 	.comma-separated-list > div {
 		display: inline;
 	}

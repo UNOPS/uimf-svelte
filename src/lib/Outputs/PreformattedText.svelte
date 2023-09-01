@@ -31,13 +31,19 @@
 		}
 	};
 
+	const handleCopyKeydown = (event: { key: string; }) => {
+		if (event.key === 'Enter') {
+			copy();
+		}
+	};
+
     onMount(() => {
         height = Math.min(textarea.scrollHeight || 100, 500);
     })
 </script>
 
 <div class="div">
-	<i class="fa fa-copy hand-cursor" on:click={copy} />
+	<i class="fa fa-copy hand-cursor" on:click={copy} on:keydown={handleCopyKeydown} tabindex="0" role="button" aria-label="Copy to clipboard" />
 </div>
 <textarea
     class="text-area"

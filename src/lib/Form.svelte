@@ -113,8 +113,8 @@
 								}`}
 							>
 								{#if inputController.metadata.Label.length > 0}
-									<!-- svelte-ignore a11y-label-has-associated-control -->
 									<label
+										for={inputController.metadata.Id}
 										class={`col-xs-4 control-label ${
 											inputController.metadata.CustomProperties?.documentation != null
 												? 'has-documentation'

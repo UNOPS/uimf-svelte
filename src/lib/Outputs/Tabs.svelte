@@ -46,17 +46,28 @@
 <ul>
 	{#each tabs as tab}
 		<li class={activeTabValue === tab.controller.metadata.Id ? 'active' : ''}>
-			<span on:click={handleClick(tab.controller.metadata.Id)}>{tab.controller.metadata.Label}</span>
+			<span
+				on:click={handleClick(tab.controller.metadata.Id)}
+				on:keydown={(event) => {
+					if (event.key === 'Enter' || event.key === ' ') {
+						handleClick(tab.controller.metadata.Id)();
+					}
+				}}
+				tabindex="0"
+				role="button"
+				aria-label={`Switch to ${tab.controller.metadata.Label}`}
+			>{tab.controller.metadata.Label}</span>
 		</li>
 	{/each}
 </ul>
 {#each tabs as tab}
-	 {#if activeTabValue == tab.controller.metadata.Id}
+	{#if activeTabValue == tab.controller.metadata.Id}
 		<div class="box">
 			<svelte:component this={tab.component} controller={tab.controller}/>
 		</div>
 	{/if}
 {/each}
+
 
 <style>
 	.box {

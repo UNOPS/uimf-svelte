@@ -76,13 +76,13 @@
 <span>{@html controller.metadata.Label}</span>
 
 {#if controller.metadata.Explanation}
-	<!-- svelte-ignore a11y-missing-attribute -->
-	<!-- svelte-ignore a11y-click-events-have-key-events -->
-	<a
+	<button
+		type="button"
 		on:click={() => {
 			controller.open();
 		}}
+		aria-label="Open Explanation"
 	>
 		<i class="fa fa-external-link" />
-	</a>
+	</button>
 {/if}

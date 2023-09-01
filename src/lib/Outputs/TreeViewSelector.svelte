@@ -11,7 +11,7 @@
 	}
 
 	interface Items {
-		Items: Item[]
+		Items: Item[];
 	}
 
 	export let controller: OutputController<Items>;
@@ -35,6 +35,25 @@
 		expanded = !expanded;
 	};
 	$: arrowDown = expanded;
+
+	// Function to handle button click and keyboard events
+	const handleButtonClick = () => {
+		toggleExpansion();
+	};
+
+	const handleButtonKeydown = (event: { key: string; preventDefault: () => void; }) => {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			toggleExpansion();
+		}
+	};
+
+	const handleLinkKeydown = (event: { key: string; }) => {
+		if (event.key === 'Enter') {
+			// Allow users to activate the link using Enter key
+			window.location.href = Url;
+		}
+	};
 </script>
 
 {#if controller?.value}
@@ -45,9 +64,28 @@
 		<li>
 			{#if Children.length > 0}
 				{#if Name != 'Catalogues'}
-					<span on:click={toggleExpansion}>
+					<span
+						on:click={toggleExpansion}
+						on:keydown={(event) => {
+							if (event.key === 'Enter' || event.key === ' ') {
+								event.preventDefault();
+								toggleExpansion();
+							}
+						}}
+						tabindex="0"
+						role="button"
+						aria-label={`Toggle ${Name} expansion`}
+					>
 						<span class="arrow" class:arrowDown>&#x25b6;</span>
-						<span class="bold"><button on:click={toggleExpansion}>{Name}</button></span>
+						<span class="bold">
+							<button
+								on:click={handleButtonClick}
+								on:keydown={handleButtonKeydown}
+								aria-label={`Toggle ${Name} expansion`}
+							>
+								{Name}
+							</button>
+						</span>
 					</span>
 				{/if}
 				{#if expanded}
@@ -60,7 +98,14 @@
 			{:else}
 				<span>
 					<span class="no-arrow" />
-					<button on:click={() => window.location.href = Url}>{Name} #{Id}</button>
+					<button
+						on:click={() => (window.location.href = Url)}
+						on:keydown={handleLinkKeydown}
+						aria-label={`Go to ${Name} ${Id}`}
+						tabindex="0"
+					>
+						{Name} #{Id}
+					</button>
 				</span>
 			{/if}
 		</li>
