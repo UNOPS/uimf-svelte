@@ -144,12 +144,11 @@ export class ControlRegister {
     createForm(
         parentForm: FormController | null,
         form: FormInstance,
-        useUrl: boolean,
         onCancel: () => any,
         onFormLoaded: (arg0: any) => any,
         onFormFailed: (arg0: any) => any,
         renderTarget: HTMLElement) {
-        const controller = new FormController(parentForm, form, useUrl);
+        const controller = new FormController(parentForm, form);
 
         return {
             target: renderTarget,
@@ -194,7 +193,8 @@ export class ControlRegister {
         app: IUimfApp,
         renderTarget: HTMLElement) {
         const registration = this.outputs[metadata.Type];
-        const controller = new OutputController<any>(metadata, data, form, app);
+        const formController = new FormController(null, form);
+        const controller = new OutputController<any>(metadata, data, formController, app);
 
         return {
             target: renderTarget,

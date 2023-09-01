@@ -27,6 +27,7 @@ export interface FormInstance {
     app: IUimfApp;
     hasOriginalInputValues: () => boolean;
     currentUrl: string;
+    useUrl: boolean;
 }
 
 type Dictionary<T> = { [key: string]: T; }
@@ -59,10 +60,10 @@ export class FormController extends EventSource implements FormInstance {
     public onFormLoaded: ((arg0: any) => any) | null = null;
     public onFormFailed: ((arg0: any) => any) | null = null;
 
-    constructor(parentForm: FormController | null, form: FormInstance, useUrl: boolean) {
+    constructor(parentForm: FormController | null, form: FormInstance) {
         super();
         this.parentForm = parentForm;
-        this.useUrl = useUrl;
+        this.useUrl = form.useUrl;
         this.metadata = form.metadata;
         this.response = form.response;
         this.inputs = form.inputs;
