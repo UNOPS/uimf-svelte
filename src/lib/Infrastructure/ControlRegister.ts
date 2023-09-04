@@ -100,6 +100,15 @@ export interface ComponentConfigurationOptions {
     hideIfNull?: boolean;
 }
 
+export interface CreateFormOptions {
+    parentForm: FormController | null;
+    form: FormInstance;
+    onCancel: () => any;
+    onFormLoaded: (arg0: any) => any;
+    onFormFailed: (arg0: any) => any;
+    target: HTMLElement;
+}
+
 /**
  * Keeps track of all UIMF svelte components. This class can be considered as
  * a dependency injection container.
@@ -141,25 +150,19 @@ export class ControlRegister {
         return this.outputs[metadataType] != null;
     }
 
-    createForm(
-        parentForm: FormController | null,
-        form: FormInstance,
-        onCancel: () => any,
-        onFormLoaded: (arg0: any) => any,
-        onFormFailed: (arg0: any) => any,
-        renderTarget: HTMLElement) {
-        const controller = new FormController(parentForm, form);
+    createForm(options: CreateFormOptions) {
+        const controller = new FormController(options.parentForm, options.form);
 
         return {
-            target: renderTarget,
+            target: options.target,
             controller: controller,
             component: new UimfForm({
-                target: renderTarget,
+                target: options.target,
                 props: {
                     controller: controller,
-                    onCancel: onCancel,
-                    onFormLoaded: onFormLoaded,
-                    onFormFailed: onFormFailed
+                    onCancel: options.onCancel,
+                    onFormLoaded: options.onFormLoaded,
+                    onFormFailed: options.onFormFailed
                 }
             })
         };

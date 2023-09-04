@@ -3,12 +3,12 @@ import type { TableBodyCell } from "../TableBodyCell";
 import { TableExtension } from "../TableExtension";
 import type { TableHeadCell } from "../TableHeadCell";
 import type { TableRowGroup } from "../TableRowGroup";
-import FormLink from "../../../Outputs/FormLink.svelte";
+import { FormLink as FormLinkMetadata } from "../../../Infrastructure/uimf";
 
-export class BulkAction extends FormLink {
+export class BulkAction extends FormLinkMetadata {
     public refreshLabel() {
         let selectedCount = this.InputFieldValues.ItemIds.Items.length;
-        
+
         if (selectedCount > 0) {
             this.Label = `${this._originalLabel} (${selectedCount})`;
         } else {
@@ -30,15 +30,15 @@ export class BulkAction extends FormLink {
         return bulkAction;
     }
 
-    private _originalLabel: string;
-    public disabled: boolean;
+    private _originalLabel?: string;
+    public disabled: boolean = false;
     public ItemId: any;
 }
 
 export class BulkActionsColumnExtension extends TableExtension {
-    private bulkActionProperty: string;
-    public actions: any = [];
-    private table: Table;
+    private bulkActionProperty!: string;
+    public actions: BulkAction[] = [];
+    private table!: Table;
 
     init(table: Table) {
         this.bulkActionProperty = table.parent.metadata.CustomProperties?.BulkActionsProperty;
@@ -53,12 +53,12 @@ export class BulkActionsColumnExtension extends TableExtension {
         }
 
         let rowActions: BulkAction[] = (row.data[this.bulkActionProperty] || {}).Actions || [];
-        
+
         // Bulk actions will have `ItemId` property.
         rowActions = rowActions.filter((t) => t.ItemId != null);
-        
+
         for (let action of rowActions) {
-            let bulkAction = this.actions.find((t: { Form: any; }) => t.Form === action.Form);
+            let bulkAction = this.actions.find((t) => t.Form === action.Form);
 
             if (bulkAction == null) {
                 bulkAction = BulkAction.createFrom(action);
