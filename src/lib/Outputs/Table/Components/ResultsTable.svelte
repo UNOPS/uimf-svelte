@@ -75,6 +75,23 @@
 			controller.app
 		) as FormLinkController;
 	};
+
+	async function getInputFieldValues() {
+		const inputs = controller.form?.inputs;
+
+		if (!inputs) {
+			return [];
+		}
+		
+		const values = await Promise.all(
+			Object.entries(inputs).map(async ([propertyName, item]) => {
+				let value = await item.getValue();
+				return { [propertyName]: value };
+			})
+		);
+
+		return values;
+	}
 </script>
 
 {#if table?.body == null || table.body.length === 0}
@@ -92,10 +109,10 @@
 						Disabled: false,
 						Label: 'Export to excel',
 						Action: 'excel-export',
-						//InputFieldValues: controller.form?.inputs,
+						InputFieldValues: getInputFieldValues(),
 						Form: controller.form?.id,
 						Field: controller.metadata.Id,
-						Icon: "fas fa-download"
+						Icon: 'fas fa-download'
 					})}
 				/>
 				<!-- <button
