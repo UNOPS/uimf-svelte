@@ -106,7 +106,7 @@
 								type="checkbox"
 								bind:checked={allRowsSelected}
 								on:change={(e) => {
-									//bulkActionExtension.selectAllRows(allRowsSelected);
+									bulkActionExtension.selectAllRows(allRowsSelected);
 									table.body = table.body;
 									bulkActionExtension.actions = bulkActionExtension.actions;
 								}}

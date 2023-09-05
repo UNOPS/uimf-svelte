@@ -41,7 +41,7 @@ export class BulkActionsColumnExtension extends TableExtension {
     private table!: Table;
 
     init(table: Table) {
-        this.bulkActionProperty = table.parent.metadata.CustomProperties?.BulkActionsProperty;
+        this.bulkActionProperty = table.parent.metadata.CustomProperties?.bulkActions;
         this.actions = [];
         this.table = table;
     }
@@ -55,7 +55,7 @@ export class BulkActionsColumnExtension extends TableExtension {
         let rowActions: BulkAction[] = (row.data[this.bulkActionProperty] || {}).Actions || [];
 
         // Bulk actions will have `ItemId` property.
-        rowActions = rowActions.filter((t) => t.ItemId != null);
+        rowActions = rowActions.filter((t) => t.InputFieldValues.ItemIds != null);
 
         for (let action of rowActions) {
             let bulkAction = this.actions.find((t) => t.Form === action.Form);
@@ -66,7 +66,7 @@ export class BulkActionsColumnExtension extends TableExtension {
             }
 
             if (row.selected) {
-                bulkAction.addItem(action.ItemId);
+                bulkAction.addItem(action.InputFieldValues.ItemIds.Items[0]);
             }
         }
     }
