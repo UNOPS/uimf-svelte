@@ -86,25 +86,26 @@
 				<FormLink controller={makeFormController(action)} />
 			{/each}
 
-			{#if controller.metadata.CustomProperties?.ExcelExport}
+			{#if controller.metadata.CustomProperties?.showExportButton}
 				<FormLink
 					controller={makeFormController({
 						Disabled: false,
 						Label: 'Export to excel',
 						Action: 'excel-export',
-						InputFieldValues: controller.form?.inputs,
+						//InputFieldValues: controller.form?.inputs,
 						Form: controller.form?.id,
-						Field: controller.metadata.Id
+						Field: controller.metadata.Id,
+						Icon: "fas fa-download"
 					})}
 				/>
 				<!-- <button
 					class="btn btn-sm btn-default"
 					use:tooltip={'Export to excel'}
 					on:click={async () => {
-						var params = await controller.form.getInputcontrollers();
+						var params = await controller.form?.getInputControllers();
 						var query = encodeURIComponent(JSON.stringify(params));
 						await window.open(
-							`/api/form/excel/${controller.form.metadata.Id}/${controller.metadata.Id}?${query}`
+							`/api/form/excel/${controller.form?.metadata.Id}/${controller.metadata.Id}?${query}`
 						);
 					}}><i class="fas fa-download" /></button
 				> -->
