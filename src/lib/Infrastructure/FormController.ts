@@ -72,6 +72,7 @@ export class FormController extends EventSource implements FormInstance {
         this.originalInputValues = form.originalInputValues;
         this.currentUrl = form.currentUrl;
         this.app = form.app;
+        this.id = form.metadata.Id;
     }
 
     public getTopOutputControllers() {
