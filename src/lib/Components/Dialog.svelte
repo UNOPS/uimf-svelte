@@ -14,6 +14,7 @@
 				controller: formController,
 				onSubmit: async (v: any) => {
 					dialog.$destroy();
+					console.log("submit form: ", formController.parentForm?.title);
 					await formController.parentForm?.submit(true);
 				},
 				onCancel: (v: any) => {

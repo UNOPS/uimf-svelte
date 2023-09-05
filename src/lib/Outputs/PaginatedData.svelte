@@ -11,9 +11,18 @@
 	import ResultsTable from './Table/Components/ResultsTable.svelte';
 
 	export let controller: OutputController<PaginatedData>;
+
+	controller.form?.on('form:change', (e) => {
+		console.log('paginated-datacontroller', controller.value);
+		controller.value = controller.value;
+		key += 1;
+	});
+
+	// update the value of a prop to reload the component after the form has been submitted (not working) 
+	let key = 1;
 </script>
 
-<ResultsTable {controller} type="paginated-data" />
+<ResultsTable {controller} type="paginated-data" {key} />
 
 {#if controller.value?.Results?.length > 0}
 	<div class="wrapper">

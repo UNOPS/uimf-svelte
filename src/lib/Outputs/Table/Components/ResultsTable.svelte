@@ -31,6 +31,8 @@
 	let bulkActionExtension: BulkActionsColumnExtension = new BulkActionsColumnExtension();
 	let extraColspan: number = 0;
 
+	export let key: number = 1;
+
 	const component = new OutputComponentController({
 		refresh() {
 			allRowsSelected = false;
@@ -51,9 +53,14 @@
 			table.on('table:data:updated', (e) => {
 				table = table;
 			});
+
+			controller.form?.on('form:change', (e) => {
+				table = builder.build(controller, rows, controller.metadata.CustomProperties?.Columns);
+				console.log('resulta-table', controller.value);
+				console.log('table', table);
+			});
 		}
 	});
-
 	beforeUpdate(async () => {
 		if (controller?.metadata?.Type == type || type == null) {
 			await component.setup(controller);

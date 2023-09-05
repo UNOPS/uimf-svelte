@@ -75,7 +75,8 @@
 	};
 
 	const openModal = (): Promise<void> => {
-		controller.app.getForm(controller.value.Form).then((form) => {
+		console.log("open modal");
+		controller.app.getForm(controller.value.Form).then(async (form) => {
 			if (controller.value.InputFieldValues != null) {
 				Object.keys(form.inputs).forEach((key) => {
 					form.inputs[key].value = controller.value.InputFieldValues[key];
