@@ -29,17 +29,25 @@
 		let componentControllerArray: ComponentController[] = [];
 
 		let nestedComponentType = controller.metadata.CustomProperties.ItemTypes.Type;
-		let nestedComponent = controlRegister.outputs[nestedComponentType].component;
 
-		items.forEach((item) => {
-			let componentController = {
-				component: nestedComponent,
-				controller: new OutputController<any>(controller.metadata, null, controller.form, controller.app)
-			};
+		if (controlRegister.outputs[nestedComponentType] != undefined) {
+			let nestedComponent = controlRegister.outputs[nestedComponentType].component;
 
-			componentController.controller.setValue(item);
-			componentControllerArray.push(componentController);
-		});
+			items.forEach((item) => {
+				let componentController = {
+					component: nestedComponent,
+					controller: new OutputController<any>(
+						controller.metadata,
+						null,
+						controller.form,
+						controller.app
+					)
+				};
+
+				componentController.controller.setValue(item);
+				componentControllerArray.push(componentController);
+			});
+		}
 
 		return componentControllerArray;
 	}
@@ -62,9 +70,9 @@
 <style>
 	.line-separator {
 		display: list-item;
-    	list-style-type: none;
-    	border-bottom: 0.1rem solid #4cb0e3;
-    	padding: 10px;;
+		list-style-type: none;
+		border-bottom: 0.1rem solid #4cb0e3;
+		padding: 10px;
 	}
 
 	.bullet-list {
@@ -72,7 +80,7 @@
 		list-style-type: circle;
 		margin-left: 1.3em;
 	}
-	
+
 	.label {
 		font-weight: bold;
 		font-size: medium;

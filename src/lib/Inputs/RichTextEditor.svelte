@@ -67,7 +67,7 @@
 
 	beforeUpdate(async () => await component.setup(controller));
 
-	let onChange = (e) => {
+	let onChange = (e: any) => {
 		let safeHtml = editor.getHtml(true);
 
 		html = safeHtml;
