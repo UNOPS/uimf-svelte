@@ -24,8 +24,7 @@
 	let pageSizes = [10, 20, 50];
 	let pageSize = pageSizes[0];
 	let range = pageSize;
-	let pageCount = (controller.metadata.CustomProperties?.Columns.length - 1) / pageSize;
-	pageCount = pageCount < 1 ? 1 : pageCount;
+	let pageCount = (controller.value.TotalCount / pageSize) + 1;
 	let ActivePageIndex = 1;
 
 	const component = new OutputComponentController({
