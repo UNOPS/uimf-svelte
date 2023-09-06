@@ -138,7 +138,7 @@
 
 			const value = await input.getValue();
 
-			// paginator will be determinated when building urls
+			// paginator will be set when building urls
 			if (inputType === 'Paginator') continue;
 
 			serializedValues[inputType] = input.serialize(value);
