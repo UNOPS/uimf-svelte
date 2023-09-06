@@ -73,7 +73,7 @@
 
 		for (let i = 0; i < lastPage; i++) {
 			// Page 1 is at position 0, etc.
-			urls[i] = createPaginatedUrl(i + 1, inputValues);
+			urls[i] = createPaginatedUrl(i + 1, inputValues, resultPerPage);
 		}
 
 		return urls;
@@ -82,20 +82,20 @@
 	function createPerPageUrls(inputValues: any) {
 		let urls: any = [];
 
-		urls[resultPerPageOpt1] = createPaginatedUrl(currentPage, inputValues);
-		urls[resultPerPageOpt2] = createPaginatedUrl(currentPage, inputValues);
-		urls[resultPerPageOpt3] = createPaginatedUrl(currentPage, inputValues);
+		urls[resultPerPageOpt1] = createPaginatedUrl(currentPage, inputValues, resultPerPageOpt1);
+		urls[resultPerPageOpt2] = createPaginatedUrl(currentPage, inputValues, resultPerPageOpt2);
+		urls[resultPerPageOpt3] = createPaginatedUrl(currentPage, inputValues, resultPerPageOpt3);
 
 		return urls;
 	}
 
-	function createPaginatedUrl(pageIndex: number, inputValues: any) {
+	function createPaginatedUrl(pageIndex: number, inputValues: any, perPage: number) {
 		let currentInputValues = JSON.parse(JSON.stringify(inputValues));
 
 		// add serialized paginator as an input before building the URL
 		currentInputValues['Paginator'] = currentPaginator.serialize({
 			PageIndex: pageIndex,
-			PageSize: resultPerPage
+			PageSize: perPage
 		});
 
 		return controller.form?.app.makeUrl({
@@ -160,9 +160,9 @@
 {#if paginatedUrls != null}
 	<nav class="pagination">
 		<div class="per-page-selector">
-			<a href={perPageUrls[resultPerPageOpt1]}>{resultPerPageOpt1}</a> |
-			<a href={perPageUrls[resultPerPageOpt2]}>{resultPerPageOpt2}</a> |
-			<a href={perPageUrls[resultPerPageOpt3]}>{resultPerPageOpt3}</a>
+			<a href={perPageUrls[resultPerPageOpt1]} on:click={() => resultPerPage = resultPerPageOpt1}>{resultPerPageOpt1}</a> |
+			<a href={perPageUrls[resultPerPageOpt2]} on:click={() => resultPerPage = resultPerPageOpt2}>{resultPerPageOpt2}</a> |
+			<a href={perPageUrls[resultPerPageOpt3]} on:click={() => resultPerPage = resultPerPageOpt3}>{resultPerPageOpt3}</a>
 		</div>
 
 		<div class="page-selector">
