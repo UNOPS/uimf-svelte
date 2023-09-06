@@ -174,7 +174,7 @@
 					index + 1 == currentPage - 1 || 
 					index + 1 == currentPage + 1}
 						<li class={currentPage === index + 1 ? 'active' : ''}>
-							<a href={url}>{index + 1}</a>
+							<a href={url} on:click={() => currentPage = index + 1}>{index + 1}</a>
 						</li>
 					{:else if index + 1 == 2 || // second page
 					index + 1 == Math.ceil(controller.value.TotalCount / resultPerPage) - 1}
