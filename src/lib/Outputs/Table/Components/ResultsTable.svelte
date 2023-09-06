@@ -31,7 +31,20 @@
 	let bulkActionExtension: BulkActionsColumnExtension = new BulkActionsColumnExtension();
 	let extraColspan: number = 0;
 
-	export let key: number = 1;
+	allRowsSelected = false;
+
+	const extensions: TableExtension[] = [
+		new ColumnGroupsExtension(),
+		new RowGroupExtension(),
+		new ActionListColumnExtension(),
+		new ExpandableExtension(),
+		bulkActionExtension
+	];
+
+	const builder = new TableBuilder(extensions);
+	const rows = controller.value.length != null ? controller.value : controller.value.Results;
+	table = builder.build(controller, rows, controller.metadata.CustomProperties?.Columns);
+	extraColspan = bulkActionExtension.actions.length > 0 ? 1 : 0;
 
 	const component = new OutputComponentController({
 		refresh() {
@@ -55,9 +68,7 @@
 			});
 
 			controller.form?.on('form:change', (e) => {
-				table = builder.build(controller, rows, controller.metadata.CustomProperties?.Columns);
-				console.log('resulta-table', controller.value);
-				console.log('table', table);
+				table = table;
 			});
 		}
 	});
@@ -68,6 +79,7 @@
 	});
 
 	const makeFormController = (action: any) => {
+		console.log('action', action);
 		return new OutputController<FormLinkData>(
 			{ disabled: action.Disabled } as FormLinkMetadata,
 			action,
@@ -82,15 +94,22 @@
 		if (!inputs) {
 			return [];
 		}
-		
+
+		const keys = Object.keys(inputs);
+
 		const values = await Promise.all(
-			Object.entries(inputs).map(async ([propertyName, item]) => {
-				let value = await item.getValue();
-				return { [propertyName]: value };
+			keys.map(async (key) => {
+				return {
+					[key]: await inputs[key].getValue()
+				};
 			})
 		);
 
-		return values;
+		return values.reduce((obj, item) => {
+			const key = Object.keys(item)[0];
+			obj[key] = item[key];
+			return obj;
+		}, {} as Record<string, any>);
 	}
 </script>
 
@@ -115,17 +134,6 @@
 						Icon: 'fas fa-download'
 					})}
 				/>
-				<!-- <button
-					class="btn btn-sm btn-default"
-					use:tooltip={'Export to excel'}
-					on:click={async () => {
-						var params = await controller.form?.getInputControllers();
-						var query = encodeURIComponent(JSON.stringify(params));
-						await window.open(
-							`/api/form/excel/${controller.form?.metadata.Id}/${controller.metadata.Id}?${query}`
-						);
-					}}><i class="fas fa-download" /></button
-				> -->
 			{/if}
 		</div>
 	{/if}
