@@ -42,7 +42,7 @@
 
 	const addPage = async (i: number, label: string = '') => {
 		let formParams = await getInputFieldValuesForPage(i);
-		let url = controller.app.makeUrl({
+		let url = await controller.app.makeUrl({
 			InputFieldValues: formParams,
 			Form: controller.form?.metadata.Id
 		} as FormLinkData);

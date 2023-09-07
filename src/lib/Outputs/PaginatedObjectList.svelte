@@ -33,14 +33,14 @@
 
 	let component = new OutputComponentController({
 		async refresh() {
-			await GetInputValues().then((results) => {
+			await GetInputValues().then(async (results) => {
 				if (inputValues != undefined && !areEqual(inputValues, results)) {
 					currentPage = 1;
 				}
 
 				inputValues = results;
 				paginatedUrls = createPaginatedUrls(inputValues);
-				perPageUrls = createPerPageUrls(inputValues);
+				perPageUrls = await createPerPageUrls(inputValues);
 				nestedControllers = createNestedControllers(controller.value.Results);
 				controller.value = controller.value;
 			});
@@ -79,17 +79,17 @@
 		return urls;
 	}
 
-	function createPerPageUrls(inputValues: any) {
+	async function createPerPageUrls(inputValues: any) {
 		let urls: any = [];
 
-		urls[resultPerPageOpt1] = createPaginatedUrl(currentPage, inputValues, resultPerPageOpt1);
-		urls[resultPerPageOpt2] = createPaginatedUrl(currentPage, inputValues, resultPerPageOpt2);
-		urls[resultPerPageOpt3] = createPaginatedUrl(currentPage, inputValues, resultPerPageOpt3);
+		urls[resultPerPageOpt1] = await createPaginatedUrl(currentPage, inputValues, resultPerPageOpt1);
+		urls[resultPerPageOpt2] = await createPaginatedUrl(currentPage, inputValues, resultPerPageOpt2);
+		urls[resultPerPageOpt3] = await createPaginatedUrl(currentPage, inputValues, resultPerPageOpt3);
 
 		return urls;
 	}
 
-	function createPaginatedUrl(pageIndex: number, inputValues: any, perPage: number) {
+	async function createPaginatedUrl(pageIndex: number, inputValues: any, perPage: number) {
 		let currentInputValues = JSON.parse(JSON.stringify(inputValues));
 
 		// add serialized paginator as an input before building the URL
@@ -98,10 +98,10 @@
 			PageSize: perPage
 		});
 
-		return controller.form?.app.makeUrl({
+		return await controller.form?.app.makeUrl({
 			Form: controller.form.metadata.Id,
 			InputFieldValues: currentInputValues
-		});
+		}) ?? Promise.resolve(null);
 	}
 
 	function createNestedControllers(results: any[]) {

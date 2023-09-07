@@ -42,12 +42,12 @@
 	let showModal = false;
 	let confirmationMessageCallback: () => any;
 
-	onMount(() => {
+	onMount(async () => {
 		if (controller.value == null || controller.app == null) {
 			return;
 		}
 		allowed = controller.app.hasRole(controller.value.RequiredPermission);
-		url = controller.app.makeUrl(controller.value);
+		url = await controller.app.makeUrl(controller.value);
 	});
 
 	let component = new OutputComponentController({
@@ -83,7 +83,7 @@
 				});
 			}
 
-			let formController = new FormController(controller.form!, form, false);
+			let formController = new FormController(controller.form!, form);
 			openFormModal(document.body, formController);
 		});
 		return Promise.resolve();

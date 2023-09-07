@@ -1,4 +1,5 @@
 import type { FormInstance } from "./FormController";
+import type { FormMetadata } from "./uimf";
 
 interface FormLink {
     Form: string;
@@ -10,7 +11,8 @@ interface FormResponse extends Response {
 }
 
 export default interface IUimfApp {
-    makeUrl(link: FormLink): string;
+    formsById: { [id: string]: FormMetadata };
+    makeUrl(link: FormLink): Promise<string>;
     postForm(form: string, data: any, config: any): Promise<FormResponse>;
     openModal(formData: any): any;
     uibOpenModal(formData: any): any;
