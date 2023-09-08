@@ -42,13 +42,11 @@
 
 	const addPage = async (i: number, label: string = '') => {
 		let formParams = await getInputFieldValuesForPage(i);
+
 		let url = await controller.app.makeUrl({
 			InputFieldValues: formParams,
 			Form: controller.form?.metadata.Id
 		} as FormLinkData);
-
-		url += Object.keys(formParams).length === 0 ? '?' : '&';
-		url += `Paginator=${i}-${pageSize}`;
 
 		pages.push({ label: label.length == 0 ? i : label, index: i } as PageData);
 		pages = pages;
@@ -75,10 +73,7 @@
 	};
 
 	const getInputFieldValuesForPage = async (pageIndex: number) => {
-		let inputValues = await controller.form?.getInputControllers().map(async (item) => {
-			let value = await item.getValue();
-			return { [item.metadata.Id]: value };
-		});
+		const inputValues = await controller.form?.getInputFieldValues();
 
 		return {
 			...inputValues,
@@ -87,7 +82,7 @@
 				PageSize: pageSize
 			}
 		};
-	};
+	}
 
 	const makeFormLinkController = async (pageIndex: number) => {
 		let formLinkData = {
