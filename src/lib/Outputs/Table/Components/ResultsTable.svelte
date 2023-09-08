@@ -88,29 +88,8 @@
 		) as FormLinkController;
 	};
 
-	async function getInputFieldValues() {
-		const inputs = controller.form?.inputs;
+	const inputFieldValues = controller.form?.getInputFieldValues();
 
-		if (!inputs) {
-			return [];
-		}
-
-		const keys = Object.keys(inputs);
-
-		const values = await Promise.all(
-			keys.map(async (key) => {
-				return {
-					[key]: await inputs[key].getValue()
-				};
-			})
-		);
-
-		return values.reduce((obj, item) => {
-			const key = Object.keys(item)[0];
-			obj[key] = item[key];
-			return obj;
-		}, {} as Record<string, any>);
-	}
 </script>
 
 {#if table?.body == null || table.body.length === 0}
@@ -128,7 +107,7 @@
 						Disabled: false,
 						Label: 'Export to excel',
 						Action: 'excel-export',
-						InputFieldValues: getInputFieldValues(),
+						InputFieldValues: inputFieldValues,
 						Form: controller.form?.id,
 						Field: controller.metadata.Id,
 						Icon: 'fas fa-download'
