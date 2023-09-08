@@ -16,6 +16,7 @@ import * as ArrayInput from "../Inputs/ArrayInput.svelte";
 import * as DateRange from "../Inputs/DateRange.svelte";
 import * as RichTextEditor from '../Inputs/RichTextEditor.svelte'
 import * as Consent from '../Inputs/Consent.svelte';
+import * as Paginator from '../Inputs/Paginator.svelte';
 
 
 // Outputs.
@@ -228,6 +229,7 @@ defaultControlRegister.registerInputComponent('rich-text-editor', RichTextEditor
 defaultControlRegister.registerInputComponent('array-input', ArrayInput);
 defaultControlRegister.registerInputComponent('date-range', DateRange);
 defaultControlRegister.registerInputComponent('consent', Consent);
+defaultControlRegister.registerInputComponent('paginator', Paginator);
 defaultControlRegister.registerInputComponent('password', Password);
 
 // Outputs.
