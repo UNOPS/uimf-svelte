@@ -68,11 +68,7 @@
 				return value.Min + ',' + value.Max;
 			}
 
-			return (
-				this.serializeDate(value.Min) +
-				',' +
-				this.serializeDate(value.Max)
-			);
+			return this.serializeDate(value.Min) + ',' + this.serializeDate(value.Max);
 		}
 
 		public combineDates(): void {
@@ -84,7 +80,7 @@
 		 * the UTC timezone.
 		 * @param {Date} date the date to convert.
 		 */
-		convertToUtc(date: Date | null) {
+		convertToUtc(date: Date | null): Date | null {
 			if (date == null) {
 				return null;
 			}
