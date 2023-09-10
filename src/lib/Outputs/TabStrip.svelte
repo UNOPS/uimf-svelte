@@ -1,71 +1,68 @@
 <script lang="ts">
-	import { beforeUpdate, onMount } from 'svelte';
-	import { OutputController } from '../Infrastructure/OutputController';
+	import { beforeUpdate } from 'svelte';
+	import type { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponentController } from '../Infrastructure/ComponentController';
-	import FormLink, { type FormLinkData, type FormLinkMetadata } from './FormLink.svelte';
-	import type { Controller } from '../Outputs/FormLink.svelte';
+	import type { FormLinkData } from './FormLink.svelte';
 
-	interface TabData extends FormLinkData {
-		firstTabInGroup: boolean;
-		groupId: number;
+	interface Tab {
+		Form: string;
+		InputFieldValues: any;
+		Label: string;
+		Style: string;
 	}
 
 	interface TabGroup {
 		OrderIndex: number;
-		Tabs: TabData[];
+		Tabs: Tab[];
 	}
 
-	interface TabStripData {
+	interface Tabstrip {
 		CurrentTab: string;
 		TabGroups: TabGroup[];
-		Tabs: TabData[];
 	}
 
-	export let controller: OutputController<TabStripData>;
+	export let controller: OutputController<Tabstrip>;
 
-	let tabs: TabData[] = [];
+	class TabDisplayData implements Tab {
+		showGroupSeparatorBeforeTab: boolean;
+
+		constructor(tab:Tab) {
+			this.Form = tab.Form;
+			this.Label = tab.Label;
+			this.InputFieldValues = tab.InputFieldValues;
+			this.Style = tab.Style;
+		}
+	}
+
+	let tabs: TabDisplayData[] = [];
 
 	let component = new OutputComponentController({
 		refresh() {
 			controller.value = controller.value;
-		}
-	});
 
-	beforeUpdate(async () => await component.setup(controller));
+			const tabGroups = controller.value?.TabGroups ?? [];
 
-	const makeController = (value: FormLinkData) => {
-		return new OutputController<FormLinkData>(
-			{
-				metadata: { disabled: false } as FormLinkMetadata,
-				data: value,
-				form: controller.form!,
-				app: controller.app
-			}
-		) as Controller;
-	};
-
-	onMount(() => {
-		tabs = [];
-		if (controller.value != null) {
 			let groupId = 0;
-			tabs = controller.value.TabGroups.filter(function (group) {
-				return group.Tabs != null && group.Tabs.length > 0;
-			})
+
+			tabs = tabGroups
+				.filter(function (group) {
+					return group.Tabs != null && group.Tabs.length > 0;
+				})
 				.map(function (group) {
 					groupId += 1;
 
-					if (groupId > 1) {
-						group.Tabs[0].firstTabInGroup = true;
-					}
+					return group.Tabs.map(function (tab, index) {
+						var display = new TabDisplayData(tab);
+						display.showGroupSeparatorBeforeTab = groupId > 1 && index == 0;
 
-					return group.Tabs.map(function (tab) {
-						tab.groupId = groupId;
-						return tab;
+						return display;
 					});
 				})
 				.flat(2);
 		}
 	});
+
+	beforeUpdate(async () => await component.setup(controller));
 </script>
 
 {#if tabs.length > 0}
@@ -73,10 +70,12 @@
 		<ul class="nav nav-tabs">
 			{#each tabs as tab}
 				<li class="nav-item" class:active={tab.Form === controller.value.CurrentTab}>
-					{#if tab.firstTabInGroup}
+					{#if tab.showGroupSeparatorBeforeTab}
 						<span class="separator">~</span>
 					{/if}
-					<FormLink controller={makeController(tab)} />
+					{#await controller.app.makeUrl(tab) then url}
+						<a href={url}>{tab.Label}</a>
+					{/await}
 				</li>
 			{/each}
 		</ul>
@@ -86,42 +85,16 @@
 <style lang="scss">
 	@import '../../scss/styles.scss';
 
-	.nav-item a{
+	.nav-tabs > li > a {
+		color: #555;
+		cursor: pointer;
+		background-color: #fff;
+		border: 1px solid #ddd;
+		border-bottom-color: transparent;
 		text-decoration: none;
 	}
 
-	.nav-item.active a{
+	.nav-tabs > li.active > a {
 		text-decoration: underline;
-	}
-	.tabstrip {
-		background: #ebeef0;
-		display: block;
-		margin: -25px -20px 20px;
-	}
-
-	.nav-item > a {
-		background: white;
-		border: 1px solid #dedede;
-		border-radius: 1px 1px 0 0;
-		border-width: 1px 1px 0 1px;
-		display: block;
-		line-height: 1.42857143;
-		margin-right: 2px;
-		padding: 10px 15px;
-		position: relative;
-		text-decoration: none;
-	}
-
-	.nav-item.active > a {
-		text-decoration: underline;
-	}
-
-	span.separator {
-		padding: 0 10px;
-		font-size: 15px;
-		color: #04284f1c;
-		position: relative;
-		top: 9px;
-		font-weight: bold;
 	}
 </style>
