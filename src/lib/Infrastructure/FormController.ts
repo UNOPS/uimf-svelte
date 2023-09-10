@@ -314,13 +314,24 @@ export class FormController extends EventSource implements FormInstance {
             promise: Promise.resolve()
         } as Deferrer;
 
-        let controllerToReturn = new controllerClass(metadata, this, deferer, this.app);
+        let controllerToReturn = new controllerClass({
+            metadata:metadata,
+            form: this,
+            defer: deferer,
+            app: this.app
+        });
+        
         await controllerToReturn.setValue(value);
         return Promise.resolve(controllerToReturn);
     };
 
     makeOutputController(metadata: ComponentMetadata, value: any): OutputController<any> {
-        let controllerToReturn = new OutputController<any>(metadata, value, this, this.app);
+        let controllerToReturn = new OutputController<any>({
+            metadata: metadata,
+            data: value,
+            form: this,
+            app: this.app
+        });
         return controllerToReturn;
     }
 
