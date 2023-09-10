@@ -77,8 +77,7 @@ export abstract class InputController<T> extends EventSource {
                 promise = this.deserialize(value.toString()).then(t => this.value = t);
             }
             else {
-                this.value = value;
-                promise = Promise.resolve();
+                promise = this.deserialize(this.serialize(value)).then(t => this.value = t);
             }
         }
 
