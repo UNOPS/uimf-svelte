@@ -109,10 +109,12 @@
 
 		results.forEach((result) => {
 			let childController = new OutputController<any>(
-				controller.metadata,
-				null,
-				controller.form,
-				controller.app
+				{
+					metadata: controller.metadata,
+					data: null,
+					form: controller.form!,
+					app: controller.app
+				}
 			);
 
 			childController.setValue(result);

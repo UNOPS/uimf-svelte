@@ -21,10 +21,12 @@
 
 	const makeController = (value: FormLinkData) => {
 		return new OutputController<FormLinkData>(
-			{ disabled: false } as FormLinkMetadata,
-			value,
-			controller.form,
-			controller.app
+			{
+				metadata: { disabled: false } as FormLinkMetadata,
+				data: value,
+				form: controller.form!,
+				app: controller.app
+			}
 		) as Controller;
 	};
 </script>

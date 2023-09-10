@@ -1,6 +1,6 @@
 import type { ComponentMetadata } from "$lib/Infrastructure/uimf";
-import type { Deferrer, InputController } from "$lib/Infrastructure/InputController";
-import { OutputController } from "./OutputController";
+import type { CreateInputOptions, Deferrer, InputController } from "$lib/Infrastructure/InputController";
+import { OutputController, type CreateOutputOptions } from "./OutputController";
 
 // Inputs.
 import * as InputText from '../Inputs/Text.svelte';
@@ -60,7 +60,7 @@ import UimfForm from '../Form.svelte';
 import { FormController, type FormInstance } from "./FormController";
 
 interface InputFieldControllerConstructor {
-    new(metadata: ComponentMetadata, form: FormController | null, defer: Deferrer | null, app: IUimfApp): InputController<any>;
+    new(options: CreateInputOptions): InputController<any>;
 }
 
 interface InputRegistration {
@@ -170,14 +170,9 @@ export class ControlRegister {
         };
     };
 
-    createInput(
-        metadata: ComponentMetadata,
-        defer: Deferrer | null,
-        form: FormController | null,
-        app: IUimfApp,
-        renderTarget: HTMLElement) {
-        const registration = this.inputs[metadata.Type];
-        const controller = new registration.controller(metadata, form, defer, app);
+    createInput(options: CreateInputOptions, renderTarget: HTMLElement) {
+        const registration = this.inputs[options.metadata.Type];
+        const controller = new registration.controller(options);
 
         return {
             target: renderTarget,
@@ -192,14 +187,10 @@ export class ControlRegister {
     };
 
     createOutput(
-        metadata: ComponentMetadata,
-        data: any,
-        form: FormController,
-        app: IUimfApp,
+        options: CreateOutputOptions,
         renderTarget: HTMLElement) {
-        const registration = this.outputs[metadata.Type];
-        const formController = new FormController(null, form);
-        const controller = new OutputController<any>(metadata, data, formController, app);
+        const registration = this.outputs[options.metadata.Type];
+        const controller = new OutputController<any>(options);
 
         return {
             target: renderTarget,

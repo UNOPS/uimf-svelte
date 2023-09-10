@@ -94,10 +94,12 @@
 		} as FormLinkData;
 
 		return new OutputController<FormLinkData>(
-			{ disabled: false } as FormLinkMetadata,
-			formLinkData,
-			controller.form,
-			controller.app
+			{
+				metadata: { disabled: false } as FormLinkMetadata,
+				data: formLinkData,
+				form: controller.form!,
+				app: controller.app
+			}
 		) as FormLinkController;
 	};
 </script>

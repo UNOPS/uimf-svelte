@@ -9,6 +9,13 @@ export interface Deferrer {
     promise: Promise<any>;
 };
 
+export interface CreateInputOptions {
+    metadata: ComponentMetadata;
+    defer: Deferrer | null;
+    form: FormController | null;
+    app: IUimfApp;
+}
+
 export abstract class InputController<T> extends EventSource {
     /**
      * Gets unique identifier for this `InputController` instance.
@@ -44,16 +51,12 @@ export abstract class InputController<T> extends EventSource {
      */
     public readonly ready: Deferrer | null;
 
-    constructor(
-        metadata: ComponentMetadata,
-        form: FormController | null,
-        defer: Deferrer,
-        app: IUimfApp) {
+    constructor(options: CreateInputOptions) {
         super();
-        this.metadata = metadata;
-        this.form = form;
-        this.ready = defer;
-        this.app = app;
+        this.metadata = options.metadata;
+        this.form = options.form;
+        this.ready = options.defer;
+        this.app = options.app;
         this.value = null;
     }
 

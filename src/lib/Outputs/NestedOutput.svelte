@@ -35,7 +35,12 @@
 			.forEach((property) => {
 				let componentController = {
 					component: controlRegister.outputs[property.Type].component,
-					controller: new OutputController<any>(property, null, controller.form, controller.app)
+					controller: new OutputController<any>({
+						metadata: property,
+						data: null,
+						form: controller.form!,
+						app: controller.app
+					})
 				};
 				
 				if (controller.value != null && controller.value.Value != undefined) {

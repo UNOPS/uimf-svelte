@@ -37,10 +37,12 @@
 				let componentController = {
 					component: nestedComponent,
 					controller: new OutputController<any>(
-						controller.metadata,
-						null,
-						controller.form,
-						controller.app
+						{
+							metadata: controller.metadata,
+							data: null,
+							form: controller.form!,
+							app: controller.app
+						}
 					)
 				};
 

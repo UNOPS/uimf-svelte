@@ -35,22 +35,21 @@
 	let component = new OutputComponentController({
 		refresh() {
 			controller.value = controller.value;
-			if(controller.value != null){
-				mainController = new OutputController<any>(
-				controller.metadata.CustomProperties.ItemTypes[0],
-				controller.value.Visible,
-				controller.form,
-				controller.app
-			);
+			if (controller.value != null) {
+				mainController = new OutputController<any>({
+					metadata: controller.metadata.CustomProperties.ItemTypes[0],
+					data: controller.value.Visible,
+					form: controller.form!,
+					app: controller.app
+				});
 
-			expandableController = new OutputController<any>(
-				controller.metadata.CustomProperties.ItemTypes[1],
-				controller.value.Hidden,
-				controller.form,
-				controller.app
-			);
+				expandableController = new OutputController<any>({
+					metadata: controller.metadata.CustomProperties.ItemTypes[1],
+					data: controller.value.Hidden,
+					form: controller.form!,
+					app: controller.app
+				});
 			}
-			
 		}
 	});
 

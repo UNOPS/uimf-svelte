@@ -33,10 +33,12 @@
 	const getController = (item: ComponentMetadata, idx: number) => {
 		let value = controller.value == null ? null : controller.value[`m_Item${idx}`];
 		return new OutputController<any>(
-			item,
-			value,
-			controller.form,
-			controller.app
+			{
+				metadata: item,
+				data: value,
+				form: controller.form!,
+				app: controller.app
+			}
 		);
 	};
 

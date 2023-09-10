@@ -25,23 +25,25 @@
 	beforeUpdate(async () => await component.setup(controller));
 
 	const makeController = (value: FormLinkData) => {
-		return new OutputController<FormLinkData>(
-			{ disabled: false } as FormLinkMetadata,
-			value,
-			controller.form,
-			controller.app
-		) as Controller;
+		return new OutputController<FormLinkData>({
+			metadata: { disabled: false } as FormLinkMetadata,
+			data: value,
+			form: controller.form!,
+			app: controller.app
+		}) as Controller;
 	};
+
+	const createDateTimeController = () => {
+		return new DateTimeController({
+			metadata: { HideTime: controller.value.HideTime },
+			data: controller.value.Date,
+			form: controller.form!,
+			app: controller.app
+		});
+	}
 </script>
 
-<DateTime
-	controller={new DateTimeController(
-		{ HideTime: controller.value.HideTime },
-		controller.value.Date,
-		controller.form,
-		controller.app
-	)}
-/>
+<DateTime controller={createDateTimeController()} />
 
 {#if controller.value.Event != null && controller.value.DisplayFormat === 'DateEventUser'}
 	<span>

@@ -289,30 +289,21 @@ export class FormController extends EventSource implements FormInstance {
 
     }
 
-    // Build an array of inputs key and value needed to make Url
-    async getInputFieldValues(): Promise<{ [key: string]: any; }> {
-        const inputsArray = this.inputs;
+    /**
+	 * Gets input field values.
+	 * @param data 
+	 */
+	public async getInputFieldValues(): Promise<{ [key: string]: any; }> {
+		var data: { [key:string]: any } = {};
 
-        if (!inputsArray) {
-            return [];
-        }
+		var promises = this.metadata.InputFields.map(async inputFieldMetadata => {
+			data[inputFieldMetadata.Id] = await this.inputs[inputFieldMetadata.Id].getValue();
+		});
 
-        const keys = Object.keys(inputsArray);
+		await Promise.all(promises);
 
-        const values = await Promise.all(
-            keys.map(async (key) => {
-                return {
-                    [key]: await inputsArray[key].getValue()
-                };
-            })
-        );
-
-        return values.reduce((obj, item) => {
-            const key = Object.keys(item)[0];
-            obj[key] = item[key];
-            return obj;
-        });
-    }
+		return data;
+	}
 
     async makeInputController(metadata: ComponentMetadata, value: any): Promise<InputController<any>> {
         let controllerClass = defaultControlRegister.inputs[metadata.Type].controller;

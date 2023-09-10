@@ -79,12 +79,13 @@
 	});
 
 	const makeFormController = (action: any) => {
-		console.log('action', action);
 		return new OutputController<FormLinkData>(
-			{ disabled: action.Disabled } as FormLinkMetadata,
-			action,
-			controller.form,
-			controller.app
+			{
+				metadata: { disabled: action.Disabled } as FormLinkMetadata,
+				data: action,
+				form: controller.form!,
+				app: controller.app
+			}
 		) as FormLinkController;
 	};
 

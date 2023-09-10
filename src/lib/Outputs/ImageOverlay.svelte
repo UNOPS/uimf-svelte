@@ -38,16 +38,20 @@
 	beforeUpdate(async () => await component.setup(controller));
 
 	const description1Controller = new OutputController<Money>(
-		controller.metadata,
-		null,
-		controller.form,
-		controller.app
+		{
+			metadata: controller.metadata,
+			data: null,
+			form: controller.form!,
+			app: controller.app
+		}
 	);
 	const description2Controller = new OutputController<Money>(
-		controller.metadata,
-		null,
-		controller.form,
-		controller.app
+		{
+			metadata: controller.metadata,
+			data: null,
+			form: controller.form!,
+			app: controller.app
+		}
 	);
 
 	if (controller.value != null) {

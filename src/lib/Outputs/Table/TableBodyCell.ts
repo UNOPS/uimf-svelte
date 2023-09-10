@@ -8,10 +8,12 @@ export class TableBodyCell {
 
     constructor(parent: OutputController<any>, row: any, metadata: ComponentMetadata) {
         this.controller = new OutputController<any>(
-            metadata,
-            row[metadata.Id],
-            parent.form,
-            parent.app
+            {
+                metadata: metadata,
+                data: row[metadata.Id],
+                form: parent.form!,
+                app: parent.app
+            }
         );
 
         this.cssClass = metadata?.CustomProperties?.ColumnCssClass;

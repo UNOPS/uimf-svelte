@@ -1,8 +1,15 @@
 import EventSource from "./EventSource";
-import type { FormController, FormInstance } from "./FormController";
+import { FormController, type FormInstance } from "./FormController";
 import type IUimfApp from "./UimfApp";
 import type { ComponentMetadata } from "./uimf";
 import uuid from "./uuid";
+
+export interface CreateOutputOptions {
+    metadata: ComponentMetadata;
+    data: any;
+    form: FormController;
+    app: IUimfApp;
+}
 
 /**
  * Controller for an output field. Each output field in a form will have `OutputController assigned to it
@@ -25,16 +32,12 @@ export class OutputController<T> extends EventSource {
      */
     public readonly app: IUimfApp;
 
-    constructor(
-        metadata: ComponentMetadata,
-        data: any,
-        form: FormController | null,
-        app: IUimfApp) {
+    constructor(options: CreateOutputOptions) {
         super();
-        this.metadata = metadata;
-        this.value = data;
-        this.form = form;
-        this.app = app;
+        this.metadata = options.metadata;
+        this.value = options.data;
+        this.form = new FormController(options.form?.parentForm ?? null, options.form);
+        this.app = options.app;
     }
 
     public metadata: ComponentMetadata;
