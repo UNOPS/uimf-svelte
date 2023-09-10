@@ -42,7 +42,7 @@ import * as EventDescription from '../Outputs/EventDescription.svelte';
 // import * as Typeahead from '../Inputs/Typeahead.svelte'
 // import * as Table from '../Outputs/Table.svelte';
 // import * as ObjectList from '../Outputs/ObjectList.svelte';
-// import * as FormLink from '../Outputs/FormLink.svelte';
+import * as FormLink from '../Outputs/FormLink.svelte';
 // import * as ActionList from '../Outputs/ActionList.svelte';
 // import * as MultiSelect from '../Inputs/Multiselect.svelte';
 import * as Alert from '../Outputs/Alert.svelte';
@@ -245,6 +245,7 @@ defaultControlRegister.registerOutputComponent('alert', Alert);
 defaultControlRegister.registerOutputComponent('icon', Icon);
 defaultControlRegister.registerOutputComponent('tag', Tag);
 defaultControlRegister.registerOutputComponent('link', Link);
+//defaultControlRegister.registerOutputComponent('formlink', FormLink, { displayAsBlock: false });
 
 // To be deactivated until complete validation
 // defaultControlRegister.registerOutputComponent('table', Table);
@@ -255,7 +256,6 @@ defaultControlRegister.registerOutputComponent('link', Link);
 //defaultControlRegister.registerOutputComponent('sequence', Sequence);
 
 //These components can only be enabled once we are using the new Form as they depend on each others
-// defaultControlRegister.registerOutputComponent('formlink', FormLink, { displayAsBlock: false });
 // defaultControlRegister.registerOutputComponent('action-list', ActionList);
 // defaultControlRegister.registerOutputComponent('expandable', Expandable);
 // defaultControlRegister.registerOutputComponent('object-list', ObjectList);

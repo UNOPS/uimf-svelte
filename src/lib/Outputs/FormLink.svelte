@@ -18,6 +18,8 @@
 		DocumentType: string;
 		Filename: string;
 		PostWithInputFieldValues: boolean;
+		CssClass: string;
+		Tooltip: string;
 	}
 
 	export interface FormLinkMetadata extends ComponentMetadata {
@@ -30,29 +32,31 @@
 </script>
 
 <script lang="ts">
-	import { beforeUpdate, onMount } from 'svelte';
+	import { beforeUpdate } from 'svelte';
 	import { OutputComponentController } from '../Infrastructure/ComponentController';
 	import Dialog, { openFormModal } from '../Components/Dialog.svelte';
 	import { FormController } from '../Infrastructure/FormController';
+	import { tooltip } from '../Components/Tooltip.svelte';
 
 	export let controller: Controller;
+
 	let allowed: boolean;
 	let url: string;
-
 	let showModal = false;
 	let confirmationMessageCallback: () => any;
-
-	onMount(async () => {
-		if (controller.value == null || controller.app == null) {
-			return;
-		}
-		allowed = controller.app.hasRole(controller.value.RequiredPermission);
-		url = await controller.app.makeUrl(controller.value);
-	});
+	let cssClass: string;
 
 	let component = new OutputComponentController({
-		refresh() {
+		async refresh() {
 			controller.value = controller.value;
+
+			if (controller.value == null) {
+				return;
+			}
+
+			allowed = controller.app.hasRole(controller.value.RequiredPermission);
+			url = await controller.app.makeUrl(controller.value);
+			cssClass = controller.value.CssClass ?? controller.metadata?.CustomProperties?.cssClass;
 		}
 	});
 
@@ -75,7 +79,7 @@
 	};
 
 	const openModal = (): Promise<void> => {
-		console.log("open modal");
+		console.log('open modal');
 		controller.app.getForm(controller.value.Form).then(async (form) => {
 			if (controller.value.InputFieldValues != null) {
 				Object.keys(form.inputs).forEach((key) => {
@@ -202,7 +206,10 @@
 				});
 
 				if (controller.form != null) {
-					controller.form.submit(true, controller.value.PostWithInputFieldValues ? controller.value.InputFieldValues : null);
+					controller.form.submit(
+						true,
+						controller.value.PostWithInputFieldValues ? controller.value.InputFieldValues : null
+					);
 				}
 
 				return Promise.resolve();
@@ -228,81 +235,52 @@
 {#if controller.value != null}
 	{#if controller.value.Action == null || controller.value.Action === 'redirect' || controller.value.Action === 'redirect-to-url'}
 		{#if !allowed}
-			{#if controller.value.Icon}
-				<i class={controller.value.Icon} aria-hidden="true" />
-			{/if}{controller.value.Label}
+			<span class={cssClass} use:tooltip={controller.value.Tooltip}>
+				{#if controller.value.Icon}
+					<i class={controller.value.Icon} aria-hidden="true" />
+				{/if}
+				{controller.value.Label}
+			</span>
 		{:else}
-			<a href={url} target={controller.value.Target}
-				>{#if controller.value.Icon}
+			<a
+				href={url}
+				target={controller.value.Target}
+				class={cssClass}
+				use:tooltip={controller.value.Tooltip}
+			>
+				{#if controller.value.Icon}
 					<i class={controller.value.Icon} aria-hidden="true" />
 				{/if}
 				{controller.value.Label}</a
 			>
 		{/if}
-	{:else if controller.value.Action === 'download-pdf' && allowed}
+	{:else if allowed}
 		<button
 			type="button"
-			class="btn btn-primary btn-lg"
+			class={cssClass ?? 'btn btn-default'}
+			use:tooltip={controller.value.Tooltip}
 			on:click={() => {
-				downloadPdf();
+				switch (controller.value.Action) {
+					case 'download-pdf':
+						downloadPdf();
+						break;
+					case 'excel-export':
+						exportToExcel();
+						break;
+					case 'open-modal':
+						proceed(openModal);
+						break;
+					case 'run':
+						proceed(run);
+						break;
+					case 'open-html-modal':
+						openHtmlModal();
+						break;
+					default:
+						throw `Unsupported action ${controller.value.Action}`;
+				}
 			}}
 			disabled={controller.metadata.disabled}
-		>
-			{#if controller.value.Icon}
-				<i class={controller.value.Icon} aria-hidden="true" />
-			{/if}
-			{controller.value.Label}
-		</button>
-	{:else if controller.value.Action === 'excel-export' && allowed}
-		<button
-			type="button"
-			class="btn btn-primary btn-lg"
-			on:click={() => {
-				exportToExcel();
-			}}
-			disabled={controller.metadata.disabled}
-		>
-			{#if controller.value.Icon}
-				<i class={controller.value.Icon} aria-hidden="true" />
-			{/if}
-			{controller.value.Label}
-		</button>
-	{:else if controller.value.Action === 'open-modal' && allowed}
-		<button
-			type="button"
-			class="btn btn-primary btn-lg"
-			disabled={controller.metadata.disabled}
-			on:click={() => {
-				proceed(openModal);
-			}}
-		>
-			{#if controller.value.Icon}
-				<i class={controller.value.Icon} aria-hidden="true" />
-			{/if}
-			{controller.value.Label}
-		</button>
-	{:else if controller.value.Action === 'run' && allowed}
-		<button
-			type="button"
-			class="btn btn-primary btn-lg"
-			on:click={() => {
-				proceed(run);
-			}}
-			disabled={controller.metadata.disabled}
-		>
-			{#if controller.value.Icon}
-				<i class={controller.value.Icon} aria-hidden="true" />
-			{/if}
-			{controller.value.Label}
-		</button>
-	{:else if controller.value.Action === 'open-html-modal' && allowed}
-		<button
-			type="button"
-			class="btn btn-primary btn-lg"
-			disabled={controller.metadata.disabled}
-			on:click={() => {
-				openHtmlModal();
-			}}
 		>
 			{#if controller.value.Icon}
 				<i class={controller.value.Icon} aria-hidden="true" />
@@ -321,5 +299,11 @@
 
 	.btn-primary:hover {
 		color: white;
+	}
+
+	.btn-link {
+		margin: 0;
+		padding: 0;
+		border: none;
 	}
 </style>
