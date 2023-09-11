@@ -79,7 +79,6 @@
 	};
 
 	const openModal = (): Promise<void> => {
-		console.log('open modal');
 		controller.app.getForm(controller.value.Form).then(async (form) => {
 			if (controller.value.InputFieldValues != null) {
 				Object.keys(form.inputs).forEach((key) => {
@@ -108,68 +107,11 @@
 			.result.then(
 				function () {},
 				function () {
-					if (controller.form != null) {
-						controller.form.submit(true);
-					}
+					controller.form?.submit(true);
 				}
 			);
 
 		return Promise.resolve();
-	};
-
-	const downloadPdf = (): Promise<void> => {
-		controller.app.getApi(controller.value.Form).then(function (result: any) {
-			switch (controller.value.DocumentType) {
-				case 'purchase-order':
-					controller.app.pdfMake
-						.createPdf(controller.app.pdfFactory.purchaseOrder(result))
-						.download(controller.value.Filename);
-					break;
-				case 'proforma-invoice':
-					controller.app.pdfMake
-						.createPdf(controller.app.pdfFactory.pfi(result))
-						.download(controller.value.Filename);
-					break;
-				case 'quotation':
-					controller.app.pdfMake
-						.createPdf(controller.app.pdfFactory.quotation(result))
-						.download(controller.value.Filename);
-					break;
-				case 'final-invoice':
-					var filename =
-						'UN Web Buy Plus FinalInvoice - ' + result.Id + ' - ' + result.CaseNumber + '.pdf';
-					controller.app.pdfMake
-						.createPdf(controller.app.pdfFactory.pfi(result, 'FINAL INVOICE'))
-						.download(filename);
-					break;
-				case 'quotation-final-invoices':
-					result.forEach(function (invoice: { Id: string; CaseNumber: string }) {
-						var filename =
-							'UN Web Buy Plus FinalInvoice - ' + invoice.Id + ' - ' + invoice.CaseNumber + '.pdf';
-						controller.app.pdfMake
-							.createPdf(controller.app.pdfFactory.pfi(invoice, 'FINAL INVOICE'))
-							.download(filename);
-					});
-					break;
-				default:
-					throw 'Unsupported document type: ' + controller.value.DocumentType + '.';
-			}
-		});
-		return Promise.resolve();
-	};
-
-	const exportToExcel = (): Promise<Response> => {
-		let urlQuery = encodeURIComponent(JSON.stringify(controller.value.InputFieldValues || {}));
-
-		let url =
-			'/api/form/' +
-			controller.value.Form +
-			'/' +
-			controller.value.Field +
-			'/exportToExcel?request=' +
-			urlQuery;
-
-		return controller.app.getApiFile(url);
 	};
 
 	const run = (): Promise<void> => {
@@ -182,37 +124,13 @@
 				skipClientFunctions: true
 			})
 			.then(function (response) {
-				if (response.Metadata != null) {
-					let customHandler = controller.app.formTools.responseHandlers[response.Metadata.Handler];
-					if (customHandler != null) {
-						customHandler(response);
-					}
-				}
+				controller.app.runResponseHandler(response);
+				controller.app.runClientFunctions(response);
 
-				let functionsToRun = (response.Metadata || {}).FunctionsToRun || [];
-
-				functionsToRun.forEach(function (f: { Id: string }) {
-					var fn = controller.app.formTools.clientFunctions[f.Id];
-
-					if (fn == null) {
-						throw 'Cannot find client function "' + f.Id + '".';
-					}
-
-					fn({
-						functionToRun: f,
-						response: response,
-						parentForm: controller.form
-					});
-				});
-
-				if (controller.form != null) {
-					controller.form.submit(
-						true,
-						controller.value.PostWithInputFieldValues ? controller.value.InputFieldValues : null
-					);
-				}
-
-				return Promise.resolve();
+				controller.form?.submit(
+					true,
+					controller.value.PostWithInputFieldValues ? controller.value.InputFieldValues : null
+				);
 			});
 	};
 </script>
@@ -261,11 +179,15 @@
 			use:tooltip={controller.value.Tooltip}
 			on:click={() => {
 				switch (controller.value.Action) {
-					case 'download-pdf':
-						downloadPdf();
-						break;
 					case 'excel-export':
-						exportToExcel();
+						{
+							let urlQuery = encodeURIComponent(
+								JSON.stringify(controller.value.InputFieldValues || {})
+							);
+
+							let url = `/api/form/${controller.value.Form}/${controller.value.Field}/exportToExcel?request=${urlQuery}`;
+							controller.app.getApiFile(url);
+						}
 						break;
 					case 'open-modal':
 						proceed(openModal);
@@ -277,7 +199,7 @@
 						openHtmlModal();
 						break;
 					default:
-						throw `Unsupported action ${controller.value.Action}`;
+						controller.app.handleCustomFormLinkAction(controller.value);
 				}
 			}}
 			disabled={controller.metadata.disabled}
