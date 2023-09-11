@@ -41,7 +41,6 @@
 	export let controller: Controller;
 
 	let allowed: boolean;
-	let url: string;
 	let showModal = false;
 	let confirmationMessageCallback: () => any;
 	let cssClass: string;
@@ -55,7 +54,6 @@
 			}
 
 			allowed = controller.app.hasRole(controller.value.RequiredPermission);
-			url = await controller.app.makeUrl(controller.value);
 			cssClass = controller.value.CssClass ?? controller.metadata?.CustomProperties?.cssClass;
 		}
 	});
@@ -160,17 +158,19 @@
 				{controller.value.Label}
 			</span>
 		{:else}
-			<a
-				href={url}
-				target={controller.value.Target}
-				class={cssClass}
-				use:tooltip={controller.value.Tooltip}
-			>
-				{#if controller.value.Icon}
-					<i class={controller.value.Icon} aria-hidden="true" />
-				{/if}
-				{controller.value.Label}</a
-			>
+			{#await controller.app.makeUrl(controller.value) then url}
+				<a
+					href={url}
+					target={controller.value.Target}
+					class={cssClass}
+					use:tooltip={controller.value.Tooltip}
+				>
+					{#if controller.value.Icon}
+						<i class={controller.value.Icon} aria-hidden="true" />
+					{/if}
+					{controller.value.Label}</a
+				>
+			{/await}
 		{/if}
 	{:else if allowed}
 		<button
