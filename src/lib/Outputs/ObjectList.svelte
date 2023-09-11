@@ -13,11 +13,18 @@
 		controller: any;
 	}
 
-	let componentControllers: ComponentController[] = getComponentControllers(controller.value.Items);
+	let componentControllers: ComponentController[];
+
+	if(controller.value?.Items != null){
+				componentControllers = getComponentControllers(controller.value.Items);
+	}
 
 	let component = new OutputComponentController({
+		
 		refresh() {
-			componentControllers = getComponentControllers(controller.value.Items);
+			if(controller.value?.Items != null){
+				componentControllers = getComponentControllers(controller.value.Items);
+			}
 
 			controller.value = controller.value;
 		}
