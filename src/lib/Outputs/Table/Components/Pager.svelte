@@ -6,28 +6,32 @@
 	import type { PaginatedData } from '$lib/Outputs/PaginatedData.svelte';
 	export let controller: OutputController<PaginatedData>;
 
-	let paginator = controller.form!.inputs[controller.metadata.CustomProperties.Customizations.Paginator];
+	let paginator =
+		controller.form!.inputs[controller.metadata.CustomProperties.Customizations.Paginator];
 	let pageSizes = [10, 20, 50];
+
+	console.log('paginator pageSize', paginator.value.PageSize);
+	console.log('paginator', paginator);
 	let pageSize = paginator.value.PageSize ?? pageSizes[0];
 	let pageCount = controller.value.TotalCount / pageSize + 1;
-	let ActivePageIndex =  paginator.value.PageIndex ?? 1;
+	let ActivePageIndex = paginator.value.PageIndex ?? 1;
 	let maxPage: number = Math.floor(controller.value.TotalCount / pageSize + 1);
-	
-	const getInputFieldValuesForPage = async (pageIndex: number) => {
+
+	const getInputFieldValuesForPage = async (index: number, size: number) => {
 		const inputValues = await controller.form?.getInputFieldValues();
 
 		return {
 			...inputValues,
-			["Paginator"]: {
-				PageIndex: pageIndex,
-				PageSize: pageSize
+			['Paginator']: {
+				PageIndex: index,
+				PageSize: size
 			}
 		};
 	};
 
-	const getUrl = async (pageIndex: number) => {
+	const getUrl = async (index: number, size: number) => {
 		let inputFieldValues;
-		await getInputFieldValuesForPage(pageIndex).then((result) => {
+		await getInputFieldValuesForPage(index, size).then((result) => {
 			inputFieldValues = result;
 		});
 
@@ -39,33 +43,28 @@
 </script>
 
 {#if pageCount >= 1}
-	<nav>
-		<select
-			class="form-select page-size"
-			bind:value={pageSize}
-			on:blur={() => {
-				controller.form?.submit(true, {
-					Paginator: {
-						PageIndex: 1,
-						PageSize: pageSize
-					}
-				});
-			}}
-		>
-			{#each pageSizes as pageSize}
-				<option value={pageSize}>{pageSize}</option>
-			{/each}
-		</select>
-		<ul class="pagination">
-			<!-- {#each pages as page} -->
-			{#each Array(maxPage) as _, index (index + 1)}
-				{#await getUrl(index + 1) then url}
-					<li class="page-item" class:active={index + 1 == ActivePageIndex}>
-						<a href={url} on:click={() => (ActivePageIndex = index + 1)}>{index + 1}</a>
-					</li>
+	<nav class="pagination">
+		<div class="per-page-selector">
+			{#each pageSizes as size, index}
+				{#await getUrl(ActivePageIndex, size) then url}
+					<a href={url}> {size} </a>
+					{#if index + 1 != pageSizes.length}
+						<span> - </span>
+					{/if}
 				{/await}
 			{/each}
-		</ul>
+		</div>
+		<div class="page-selector">
+			<ul>
+				{#each Array(maxPage) as _, index (index + 1)}
+					{#await getUrl(index + 1, pageSize) then url}
+						<li class={ActivePageIndex === index + 1 ? 'active' : ''}>
+							<a href={url} on:click={() => (ActivePageIndex = index + 1)}>{index + 1}</a>
+						</li>
+					{/await}
+				{/each}
+			</ul>
+		</div>
 	</nav>
 {/if}
 
