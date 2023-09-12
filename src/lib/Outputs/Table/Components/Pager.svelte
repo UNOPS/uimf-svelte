@@ -1,106 +1,40 @@
 <script context="module" lang="ts">
-	import { OutputController } from '../../../Infrastructure/OutputController';
+	import type { OutputController } from '../../../Infrastructure/OutputController';
 </script>
 
 <script lang="ts">
-	import { OutputComponentController } from '../../../Infrastructure/ComponentController';
 	import type { PaginatedData } from '$lib/Outputs/PaginatedData.svelte';
-	import { beforeUpdate } from 'svelte';
-	import FormLink from '../../../Outputs/FormLink.svelte';
-	import type {
-		Controller as FormLinkController,
-		FormLinkData,
-		FormLinkMetadata
-	} from '../../../Outputs/FormLink.svelte';
 	export let controller: OutputController<PaginatedData>;
 
-	interface PageData {
-		label: string;
-		index: number
-	}
-
-	let pages: PageData[] = [];
-	let paginator = controller.metadata.CustomProperties?.Customizations?.Paginator;
+	let paginator = controller.form!.inputs[controller.metadata.CustomProperties.Customizations.Paginator];
 	let pageSizes = [10, 20, 50];
-	let pageSize = pageSizes[0];
-	let range = pageSize;
-	let pageCount = (controller.value.TotalCount / pageSize) + 1;
-	let ActivePageIndex = 1;
-
-	const component = new OutputComponentController({
-		async init() {
-			await initPages();
-		},
-		refresh() {
-			controller.value = controller.value;
-		}
-	});
-
-	beforeUpdate(async () => {
-		await component.setup(controller);
-	});
-
-	const addPage = async (i: number, label: string = '') => {
-		let formParams = await getInputFieldValuesForPage(i);
-
-		let url = await controller.app.makeUrl({
-			InputFieldValues: formParams,
-			Form: controller.form?.metadata.Id
-		} as FormLinkData);
-
-		pages.push({ label: label.length == 0 ? i : label, index: i } as PageData);
-		pages = pages;
-	};
-
-	const initPages = async () => {
-		let pageIndex = paginator.PageIndex ?? 1;
-		let minPage = Math.max(1, pageIndex ?? 1 - range);
-		let maxPage = Math.min(pageCount, Math.max(pageIndex + range, range + 1));
-
-		console.log(pageIndex, minPage, maxPage);
-
-		if (pageIndex - range > 1) {
-			await addPage(1, '1 <i class="fas fa-step-backward"></i>');
-		}
-
-		for (let i = minPage; i <= maxPage; i++) {
-			await addPage(i);
-		}
-
-		if (pageIndex + range < pageCount) {
-			await addPage(pageCount, `<i class="fas fa-step-forward"></i> ${pageCount}`);
-		}
-	};
-
+	let pageSize = paginator.value.PageSize ?? pageSizes[0];
+	let pageCount = controller.value.TotalCount / pageSize + 1;
+	let ActivePageIndex =  paginator.value.PageIndex ?? 1;
+	let maxPage: number = Math.floor(controller.value.TotalCount / pageSize + 1);
+	
 	const getInputFieldValuesForPage = async (pageIndex: number) => {
 		const inputValues = await controller.form?.getInputFieldValues();
 
 		return {
 			...inputValues,
-			[paginator]: {
+			["Paginator"]: {
 				PageIndex: pageIndex,
 				PageSize: pageSize
 			}
 		};
-	}
+	};
 
-	const makeFormLinkController = async (pageIndex: number) => {
-		let formLinkData = {
+	const getUrl = async (pageIndex: number) => {
+		let inputFieldValues;
+		await getInputFieldValuesForPage(pageIndex).then((result) => {
+			inputFieldValues = result;
+		});
+
+		return controller.app.makeUrl({
 			Form: controller.form!.metadata.Id,
-			InputFieldValues: await getInputFieldValuesForPage(pageIndex),
-			Action: 'run',
-			Label: pageIndex.toString(),
-			PostWithInputFieldValues: true
-		} as FormLinkData;
-
-		return new OutputController<FormLinkData>(
-			{
-				metadata: { disabled: false } as FormLinkMetadata,
-				data: formLinkData,
-				form: controller.form!,
-				app: controller.app
-			}
-		) as FormLinkController;
+			InputFieldValues: inputFieldValues
+		});
 	};
 </script>
 
@@ -115,7 +49,7 @@
 						PageIndex: 1,
 						PageSize: pageSize
 					}
-				})
+				});
 			}}
 		>
 			{#each pageSizes as pageSize}
@@ -123,10 +57,11 @@
 			{/each}
 		</select>
 		<ul class="pagination">
-			{#each pages as page}
-				{#await makeFormLinkController(page.index) then controller}
-					<li class="page-item" class:active={page.index == ActivePageIndex}>
-						<FormLink {controller} />
+			<!-- {#each pages as page} -->
+			{#each Array(maxPage) as _, index (index + 1)}
+				{#await getUrl(index + 1) then url}
+					<li class="page-item" class:active={index + 1 == ActivePageIndex}>
+						<a href={url} on:click={() => (ActivePageIndex = index + 1)}>{index + 1}</a>
 					</li>
 				{/await}
 			{/each}
