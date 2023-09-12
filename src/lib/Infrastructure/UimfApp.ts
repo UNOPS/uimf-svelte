@@ -1,28 +1,59 @@
-	import type { FormLinkData } from "$lib/Outputs/FormLink.svelte";
+import type { FormLinkData } from "$lib/Outputs/FormLink.svelte";
 import type { FormInstance } from "./FormController";
 import type { FormMetadata } from "./uimf";
 
 interface FormLink {
     Form: string;
     InputFieldValues: any;
-};
+    Label?: string;
+}
 
 interface FormResponse extends Response {
     Metadata: any;
 }
 
+interface IConfirmOptions {
+    headerText?: string;
+    bodyText: string;
+    actionButtonText?: string;
+    closeButtonText?: string;
+}
+
+interface IAlertOptions {
+    headerText?: string;
+    bodyText: string;
+    actions?: FormLink[] | null;
+    afterExceptionAction?: () => void;
+    size?: string;
+}
+
+interface IModalOptions {
+    form: string;
+    inputFieldValues?: any;
+    closeOnResponseHandled?: boolean;
+    init?: (form: FormInstance, modal: { $close: () => void }) => void;
+}
+
+interface IHtmlModalOptions {
+    templateUrl: string;
+    controller?: any;
+    data?: any;
+}
+
 export default interface IUimfApp {
-	runResponseHandler(response: FormResponse): Promise<void>;
-	runClientFunctions(response: FormResponse): Promise<void>;
-	handleCustomFormLinkAction(value: FormLinkData): void;
+    runResponseHandler(response: FormResponse): Promise<void>;
+    runClientFunctions(response: FormResponse): Promise<void>;
+    handleCustomFormLinkAction(value: FormLinkData): void;
+    confirm(options: IConfirmOptions): Promise<void>;
+    alert(options: IAlertOptions): Promise<void>;
+    openModal(options: IModalOptions): Promise<void>;
+    openHtmlModal(options: IHtmlModalOptions): Promise<void>;
     formsById: { [id: string]: FormMetadata };
     makeUrl(link: FormLink): Promise<string>;
     postForm(form: string, data: any, config: any): Promise<FormResponse>;
-    openModal(formData: any): any;
-    uibOpenModal(formData: any): any;
     getApiFile(url: string): Promise<Response>;
     getApi(form: string): Promise<Response>;
     hasRole(permission: string): boolean;
     getResponseHandler(handler: string): any;
     getForm(formId: string): Promise<FormInstance>;
-};
+}

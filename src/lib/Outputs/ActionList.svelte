@@ -34,7 +34,7 @@
 {#if controller.value?.Actions.length > 0}
 	<div class="action-list">
 		{#each controller.value.Actions as action}
-			<span style="margin-right: 10px;"><FormLink controller={makeController(action)} /></span>
+			<span><FormLink controller={makeController(action)} /></span>
 		{/each}
 	</div>
 {/if}
@@ -48,10 +48,8 @@
 		text-align: right;
 	}
 
-	.action-list > div {
+	.action-list > span {
 		display: inline-block;
 		margin-right: 5px;
 	}
-
-
 </style>

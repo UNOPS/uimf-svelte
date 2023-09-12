@@ -29,8 +29,7 @@
 		}
 
 		public open(): void {
-			this.app.uibOpenModal({
-				animation: true,
+			this.app.openHtmlModal({
 				templateUrl: this.metadata.Explanation,
 				controller: [
 					'$scope',
@@ -40,8 +39,7 @@
 							$uibModalInstance.dismiss('cancel');
 						};
 					}
-				],
-				size: 'lg'
+				]
 			});
 		}
 	}
