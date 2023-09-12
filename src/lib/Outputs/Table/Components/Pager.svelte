@@ -37,12 +37,15 @@
 					activePageIndex = 1;
 				}
 
+				controller.value = controller.value;
 				inputValues = results;
+
+				pageUrls.splice(0, pageUrls.length);
+				selectorUrls.splice(0, selectorUrls.length);
+
 				setCountPage();
 				LoadSelectorUrls();
 				LoadPageUrls();
-
-				controller.value = controller.value;
 			});
 		}
 	});
@@ -79,8 +82,6 @@
 	}
 
 	const getInputFieldValuesForPage = async (index: number, size: number) => {
-		//const inputValues = await controller.form?.getInputFieldValues();
-
 		return {
 			...inputValues,
 			['Paginator']: {
@@ -100,10 +101,8 @@
 	};
 
 	function setCountPage() {
-
 		maxPage = Math.floor(controller.value.TotalCount / pageSize + 1);
-		console.log("max page", maxPage);
-}
+	}
 </script>
 
 {#if pageCount >= 1}
