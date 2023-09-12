@@ -70,19 +70,66 @@
 {/if}
 
 <style lang="scss">
-	.page-size {
-		float: left;
-		display: block;
-		width: 80px;
-		margin-right: 10px;
+	.pagination {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+		height: 100px;
 	}
 
-	.page-link {
-		min-width: 45px;
+	.per-page-selector {
+		font-size: 16px;
+		margin-bottom: 10px;
+	}
+
+	.per-page-selector a {
+		color: #007bff;
+		margin: 0 5px;
+		text-decoration: none;
+	}
+
+	.per-page-selector a:hover {
+		text-decoration: underline;
+	}
+
+	.list-container {
+		display: flex;
+		flex-wrap: wrap;
+		width: 100%;
+	}
+
+	.page-selector {
+		margin-top: 10px;
 		text-align: center;
 	}
 
-	.page-item.active > .page-link {
-		border-color: var(--app-border-color);
+	.page-selector ul {
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.page-selector li {
+		display: inline-block;
+		margin-right: 5px;
+	}
+
+	.page-selector li a {
+		display: inline-block;
+		padding: 5px 10px;
+		background-color: #dddddd;
+		color: #3d3d3d;
+		text-decoration: none;
+	}
+
+	.page-selector li.active a {
+		background-color: #007bff;
+		color: #ffffff;
+	}
+
+	.page-selector li a:hover {
+		background-color: #007bff;
+		color: #ffffff;
 	}
 </style>
