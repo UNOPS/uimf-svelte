@@ -119,11 +119,26 @@
 		</div>
 		<div class="page-selector">
 			<ul>
+				{#if activePageIndex > 1}
+					{#await getUrl(activePageIndex - 1, pageSize) then url}
+						<li>
+							<a href={url} on:click={() => activePageIndex--}><i class="fas fa-step-backward" /></a
+							>
+						</li>
+					{/await}
+				{/if}
 				{#each pageUrls as url, index (index + 1)}
 					<li class={activePageIndex === index + 1 ? 'active' : ''}>
 						<a href={url} on:click={() => (activePageIndex = index + 1)}>{index + 1}</a>
 					</li>
 				{/each}
+				{#if activePageIndex < maxPage - 2}
+					{#await getUrl(activePageIndex + 1, pageSize) then url}
+						<li>
+							<a href={url} on:click={() => activePageIndex++}><i class="fas fa-step-forward" /></a>
+						</li>
+					{/await}
+				{/if}
 			</ul>
 		</div>
 	</nav>
