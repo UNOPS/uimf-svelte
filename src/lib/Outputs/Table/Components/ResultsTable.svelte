@@ -66,10 +66,6 @@
 			table.on('table:data:updated', (e) => {
 				table = table;
 			});
-
-			controller.form?.on('form:change', (e) => {
-				table = table;
-			});
 		}
 	});
 	beforeUpdate(async () => {
