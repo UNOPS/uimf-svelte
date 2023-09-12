@@ -89,7 +89,12 @@
 
 		createController(metadata: ComponentMetadata): InputController<any> {
 			let controllerClass = controlRegister.inputs[metadata.Type].controller;
-			return new controllerClass(metadata, this.form, null, this.app);
+			return new controllerClass({
+				metadata: metadata,
+				form: this.form,
+				defer: null,
+				app: this.app
+			});
 		}
 
 		createView(): Promise<ViewData> {
@@ -203,38 +208,39 @@
 
 <div>
 	{#each views as item, idx}
-	  <div>
-		<strong>{item.header}</strong>
-		<span>
-		  <i class="fas fa-arrow-alt-circle-right" />{item.comment}
-		</span>
-		{#if controller.metadata.AllowNewItems}
-		  <button
-			type="button"
-			class="btn btn-lg btn-danger"
-			on:click={() => {
-			  controller.removeView(idx);
-			}}>Remove</button
-		  >
-		{/if}
-	  </div>
-	  <div class="items">
-		{#each componentViews[idx] as componentItem}
-		  <div>
-			<label class="form-label" for={componentItem.options.Id}>
-			  {componentItem.options.Label}
-			</label>
-			<svelte:component
-			  this={controlRegister.inputs[componentItem.options.Type].component}
-			  controller={componentItem.controller}
-			  id={componentItem.options.Id}
-			/>
-		  </div>
-		{/each}
-	  </div>
+		<div>
+			<strong>{item.header}</strong>
+			<span>
+				<i class="fas fa-arrow-alt-circle-right" />{item.comment}
+			</span>
+			{#if controller.metadata.AllowNewItems}
+				<button
+					type="button"
+					class="btn btn-lg btn-danger"
+					on:click={() => {
+						controller.removeView(idx);
+					}}>Remove</button
+				>
+			{/if}
+		</div>
+		<div class="items">
+			{#each componentViews[idx] as componentItem}
+				{#if componentItem.controller.metadata.Hidden != true}
+					<div>
+						<label class="form-label" for={componentItem.options.Id}>
+							{componentItem.options.Label}
+						</label>
+						<svelte:component
+							this={controlRegister.inputs[componentItem.options.Type].component}
+							controller={componentItem.controller}
+							id={componentItem.options.Id}
+						/>
+					</div>
+				{/if}
+			{/each}
+		</div>
 	{/each}
-  </div>
-  
+</div>
 
 {#if controller.metadata.AllowNewItems}
 	<button
