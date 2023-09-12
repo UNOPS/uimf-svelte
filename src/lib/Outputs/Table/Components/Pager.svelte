@@ -28,11 +28,8 @@
 	};
 
 	const getUrl = async (index: number, size: number) => {
-		let inputFieldValues;
-		await getInputFieldValuesForPage(index, size).then((result) => {
-			inputFieldValues = result;
-		});
-
+		const inputFieldValues = await getInputFieldValuesForPage(index, size);
+	
 		return controller.app.makeUrl({
 			Form: controller.form!.metadata.Id,
 			InputFieldValues: inputFieldValues
