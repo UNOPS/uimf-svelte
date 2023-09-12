@@ -10,8 +10,6 @@
 		controller.form!.inputs[controller.metadata.CustomProperties.Customizations.Paginator];
 	let pageSizes = [10, 20, 50];
 
-	console.log('paginator pageSize', paginator.value.PageSize);
-	console.log('paginator', paginator);
 	let pageSize = paginator.value.PageSize ?? pageSizes[0];
 	let pageCount = controller.value.TotalCount / pageSize + 1;
 	let ActivePageIndex = paginator.value.PageIndex ?? 1;
