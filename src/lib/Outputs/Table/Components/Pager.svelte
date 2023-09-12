@@ -122,7 +122,7 @@
 				{#if activePageIndex > 1}
 					{#await getUrl(activePageIndex - 1, pageSize) then url}
 						<li>
-							<a href={url} on:click={() => activePageIndex--}><i class="fas fa-step-backward" /></a
+							<a href={url} on:click={() => activePageIndex--} ><i class="fas fa-angle-double-left" /></a
 							>
 						</li>
 					{/await}
@@ -132,10 +132,10 @@
 						<a href={url} on:click={() => (activePageIndex = index + 1)}>{index + 1}</a>
 					</li>
 				{/each}
-				{#if activePageIndex < maxPage - 2}
+				{#if activePageIndex < maxPage}
 					{#await getUrl(activePageIndex + 1, pageSize) then url}
 						<li>
-							<a href={url} on:click={() => activePageIndex++}><i class="fas fa-step-forward" /></a>
+							<a href={url} on:click={() => activePageIndex++}><i class="fas fa-angle-double-right" /></a>
 						</li>
 					{/await}
 				{/if}
