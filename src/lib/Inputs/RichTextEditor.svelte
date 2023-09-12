@@ -7,7 +7,7 @@
 
 	export class Controller extends InputController<RichTextEditor> {
 		public html: string | null = null;
-		protected callback: (html: string | null) => void;
+		protected callback?: (html: string | null) => void;
 
 		public getValue(): Promise<RichTextEditor | null> {
 			return Promise.resolve(this.value);
@@ -15,7 +15,7 @@
 
 		protected setValueInternal(value: RichTextEditor | null): Promise<void> {
 			this.html = this.serialize(value);			
-			this.callback(this.html);
+			this.callback?.(this.html);
 
 			return Promise.resolve();
 		}

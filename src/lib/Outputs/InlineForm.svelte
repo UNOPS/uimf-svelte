@@ -23,7 +23,7 @@
 	let formController: FormController | null = null;
 
 	controller.app.getForm(controller.value.Form).then((form) => {
-		formController = new FormController(controller.form, form, false);
+		formController = new FormController(controller.form, form);
 	});
 </script>
 

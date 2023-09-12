@@ -1,10 +1,9 @@
 <script lang="ts" context="module">
-	import { InputController, type Deferrer } from '../Infrastructure/InputController';
-	import type {
-		ComponentMetadata,
-		FormInstance,
-		NestedComponentMetadata
-	} from '../Infrastructure/uimf';
+	import {
+		InputController,
+		type CreateInputOptions
+	} from '../Infrastructure/InputController';
+	import type { ComponentMetadata, NestedComponentMetadata } from '../Infrastructure/uimf';
 
 	export interface Option {
 		Label: string;
@@ -54,13 +53,8 @@
 			});
 		}
 
-		constructor(
-			metadata: ComponentMetadata,
-			form: FormInstance | null,
-			defer: Deferrer,
-			app: IUimfApp
-		) {
-			super(metadata, form, defer, app);
+		constructor(options: CreateInputOptions) {
+			super(options);
 
 			this.views = [];
 
@@ -69,7 +63,12 @@
 
 				this.views.push({
 					showIf: view.CustomProperties.showIfConditionIs,
-					controller: new controllerClass(view, this.form, null, this.app)
+					controller: new controllerClass({
+						metadata: view,
+						form: this.form,
+						defer: null,
+						app: this.app
+					})
 				});
 			}
 		}

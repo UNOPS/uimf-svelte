@@ -67,7 +67,12 @@
 
 		createController(metadata: ComponentMetadata): InputController<any> {
 			let controllerClass = controlRegister.inputs[metadata.Type].controller;
-			return new controllerClass(metadata, this.form, null, this.app);
+			return new controllerClass({
+				metadata: metadata, 
+				form: this.form, 
+				defer: null,
+				app: this.app
+			});
 		}
 
 		public initializeComponents(): Promise<void> {
