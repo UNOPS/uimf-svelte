@@ -68,8 +68,8 @@
 		createController(metadata: ComponentMetadata): InputController<any> {
 			let controllerClass = controlRegister.inputs[metadata.Type].controller;
 			return new controllerClass({
-				metadata: metadata, 
-				form: this.form, 
+				metadata: metadata,
+				form: this.form,
 				defer: null,
 				app: this.app
 			});
@@ -99,10 +99,10 @@
 
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
 	import { InputComponentController } from '../Infrastructure/ComponentController';
+	import Input from '../Input.svelte';
 
 	export let controller: Controller;
 
-	let viewTarget: HTMLElement;
 	let views: any[] = [];
 
 	const updateViews = () => {
@@ -138,15 +138,14 @@
 	});
 </script>
 
-<div bind:this={viewTarget}>
-	{#each views as view}
-		<label class="form-label" for={view.options.Id}>
-			<svelte:component
-				this={controlRegister.inputs[view.options.Type].component}
-				controller={view.controller}
-				id={view.options.Id}
-			/>
-			{view.options.Label}
-		</label>
-	{/each}
-</div>
+{#each views as view}
+	<div>
+		<Input controller={view.controller} />
+	</div>
+{/each}
+
+<style>
+	div {
+		margin-bottom: 20px;
+	}
+</style>
