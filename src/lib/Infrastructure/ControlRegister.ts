@@ -55,6 +55,7 @@ import * as Tabstrip from '../Outputs/Tabstrip.svelte';
 // import * as Form from '../Outputs/InlineForm.svelte';
 // import * as PaginatedData from '../Outputs/PaginatedData.svelte';
 import * as Sequence from '../Outputs/Sequence.svelte';
+import * as CartItem from '../Outputs/CartItem.svelte';
 
 import UimfForm from '../Form.svelte';
 import { FormController, type FormInstance } from "./FormController";
@@ -254,6 +255,7 @@ defaultControlRegister.registerOutputComponent('link', Link);
 // defaultControlRegister.registerOutputComponent('inline-form', Form);
 // defaultControlRegister.registerOutputComponent('paginated-data', PaginatedData);
 //defaultControlRegister.registerOutputComponent('sequence', Sequence);
+//defaultControlRegister.registerOutputComponent('cart-item', CartItem);
 
 //These components can only be enabled once we are using the new Form as they depend on each others
 // defaultControlRegister.registerOutputComponent('action-list', ActionList);
