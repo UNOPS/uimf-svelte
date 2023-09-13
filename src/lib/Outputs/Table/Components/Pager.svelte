@@ -103,6 +103,23 @@
 	function setCountPage() {
 		maxPage = Math.floor(controller.value.TotalCount / pageSize + 1);
 	}
+
+	function show(index: number) {
+		return (
+			index + 1 == 1 ||
+			index + 1 == maxPage ||
+			index + 1 == activePageIndex ||
+			index + 1 == activePageIndex - 1 ||
+			index + 1 == activePageIndex + 1
+		);
+	}
+
+	function showSeparator(index: number) {
+		return (
+			index + 1 == 2 ||
+			index + 1 == maxPage - 1
+		);
+	}
 </script>
 
 {#if pageCount >= 1}
@@ -122,20 +139,25 @@
 				{#if activePageIndex > 1}
 					{#await getUrl(activePageIndex - 1, pageSize) then url}
 						<li>
-							<a href={url} on:click={() => activePageIndex--} ><i class="fas fa-angle-double-left" /></a
-							>
+							<a href={url} on:click={() => activePageIndex--}
+								><i class="fas fa-angle-double-left" /></a>
 						</li>
 					{/await}
 				{/if}
 				{#each pageUrls as url, index (index + 1)}
-					<li class={activePageIndex === index + 1 ? 'active' : ''}>
-						<a href={url} on:click={() => (activePageIndex = index + 1)}>{index + 1}</a>
-					</li>
+					{#if show(index)}
+						<li class={activePageIndex === index + 1 ? 'active' : ''}>
+							<a href={url} on:click={() => (activePageIndex = index + 1)}>{index + 1}</a>
+						</li>
+					{:else if showSeparator(index)}
+						<span class=""> . . . </span>
+					{/if}
 				{/each}
 				{#if activePageIndex < maxPage}
 					{#await getUrl(activePageIndex + 1, pageSize) then url}
 						<li>
-							<a href={url} on:click={() => activePageIndex++}><i class="fas fa-angle-double-right" /></a>
+							<a href={url} on:click={() => activePageIndex++}
+								><i class="fas fa-angle-double-right" /></a>
 						</li>
 					{/await}
 				{/if}
