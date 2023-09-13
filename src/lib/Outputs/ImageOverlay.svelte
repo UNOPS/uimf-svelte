@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Money from './Money.svelte';
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponentController } from '../Infrastructure/ComponentController';
 	import { beforeUpdate } from 'svelte';
@@ -13,8 +12,6 @@
 		InnerTitle: string;
 		InnerContent: string[];
 		Title: string | null;
-		Description1: Money;
-		Description2: Money;
 	}
 
 	let isHovered: boolean;
@@ -36,28 +33,6 @@
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
-
-	const description1Controller = new OutputController<Money>(
-		{
-			metadata: controller.metadata,
-			data: null,
-			form: controller.form!,
-			app: controller.app
-		}
-	);
-	const description2Controller = new OutputController<Money>(
-		{
-			metadata: controller.metadata,
-			data: null,
-			form: controller.form!,
-			app: controller.app
-		}
-	);
-
-	if (controller.value != null) {
-		description1Controller.setValue(controller.value.Description1);
-		description2Controller.setValue(controller.value.Description2);
-	}
 </script>
 
 {#if controller.value != null}
@@ -86,12 +61,6 @@
 		<div class="title-container">
 			{#if controller.value.Title != null}
 				<div class="title">{controller.value.Title}</div>
-			{/if}
-			{#if controller.value.Description1 != null}
-				<div><Money controller={description1Controller} /></div>
-			{/if}
-			{#if controller.value.Description2 != null}
-				<div><Money controller={description2Controller} /></div>
 			{/if}
 		</div>
 	</div>
