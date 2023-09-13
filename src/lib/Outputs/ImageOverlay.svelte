@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { OutputController } from '../Infrastructure/OutputController';
+	import type { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponentController } from '../Infrastructure/ComponentController';
 	import { beforeUpdate } from 'svelte';
 
