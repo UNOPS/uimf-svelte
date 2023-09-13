@@ -57,6 +57,7 @@ import * as Tabstrip from '../Outputs/Tabstrip.svelte';
 import * as Sequence from '../Outputs/Sequence.svelte';
 import * as CartItem from '../Outputs/CartItem.svelte';
 import * as Output from '../Outputs/Output.svelte';
+//import * as Changeset from '../Outputs/Changeset.svelte';
 
 import UimfForm from '../Form.svelte';
 import { FormController, type FormInstance } from "./FormController";
@@ -258,6 +259,7 @@ defaultControlRegister.registerOutputComponent('link', Link);
 //defaultControlRegister.registerOutputComponent('sequence', Sequence);
 //defaultControlRegister.registerOutputComponent('cart-item', CartItem);
 //defaultControlRegister.registerOutputComponent('output', Output);
+//defaultControlRegister.registerOutputComponent('changeset', Changeset);
 
 //These components can only be enabled once we are using the new Form as they depend on each others
 // defaultControlRegister.registerOutputComponent('action-list', ActionList);
