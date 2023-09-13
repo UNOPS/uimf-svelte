@@ -3,7 +3,7 @@
 	import { OutputComponentController } from '../Infrastructure/ComponentController';
 	import type { OutputController } from '../Infrastructure/OutputController';
 
-	export let controller: OutputController<AlertData>;
+	export let controller: OutputController<any>;
 
 	let component = new OutputComponentController({
 		refresh() {
