@@ -14,7 +14,7 @@
 	let component = new OutputComponentController({
 		refresh() {
 			componentControllers = getComponentControllers(
-				controller.metadata.CustomProperties.Properties
+				controller.metadata.CustomProperties.ItemTypes[0].Type
 			);
 
 			controller.value = controller.value;
