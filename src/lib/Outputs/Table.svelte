@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-	export interface PaginatedData {
+	export interface Data {
 		Results: any[];
 		TotalCount: number;
 	}
@@ -9,13 +9,7 @@
 	import type { OutputController } from '../Infrastructure/OutputController';
 	import ResultsTable from './Table/Components/ResultsTable.svelte';
 
-	export let controller: OutputController<PaginatedData>;
+	export let controller: OutputController<Data>;
 </script>
 
 <ResultsTable {controller} type="paginated-data" />
-
-<style lang="scss">
-	.wrapper {
-		margin-top: 1rem;
-	}
-</style>
