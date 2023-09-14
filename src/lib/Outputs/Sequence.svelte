@@ -30,8 +30,7 @@
 	function getComponentControllers(type: string): any[] {
 		let componentControllerArray: ComponentController[] = [];
 
-		let index = 0;
-		controller.value?.Value.forEach((item:any) => {
+		controller.value?.Value.forEach((item: any) => {
 			let componentController = {
 				component: controlRegister.outputs[type].component,
 				controller: new OutputController<any>({
@@ -46,14 +45,10 @@
 				componentController.controller.setValue(item);
 				componentControllerArray.push(componentController);
 			}
-			index++;
 		});
 
 		return componentControllerArray;
 	}
-
-	let first = true;
-
 </script>
 
 {#if controller.value != null}
