@@ -32,7 +32,7 @@
 
 		public async getItems(query: any): Promise<any[] | null> {
 
-			if(this.items != null){
+			if(Array.isArray(this.items) && this.items?.length > 0){
 				this.items = await this.parseResults(this.items.filter((item: any) => item.Label.contains(query)));
 				return Promise.resolve(this.items);
 			}
