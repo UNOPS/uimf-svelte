@@ -24,13 +24,6 @@
 	let selectorUrls: string[] = new Array(pageSizes.length);
 
 	let component = new OutputComponentController({
-		async init() {
-			inputValues = await controller.form?.getInputFieldValues();
-			setCountPage();
-			LoadPageUrls();
-			LoadSelectorUrls();
-		},
-
 		async refresh() {
 			await controller.form?.getInputFieldValues().then(async (results) => {
 				if (inputValues != undefined && !areEqual(inputValues, results)) {
@@ -44,21 +37,21 @@
 				selectorUrls.splice(0, selectorUrls.length);
 
 				setCountPage();
-				LoadSelectorUrls();
-				LoadPageUrls();
+				loadSelectorUrls();
+				loadPageUrls();
 			});
 		}
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
 
-	let LoadSelectorUrls = async () => {
+	let loadSelectorUrls = async () => {
 		pageSizes.forEach(async (element, i) => {
 			selectorUrls[i] = await getUrl(activePageIndex, element);
 		});
 	};
 
-	let LoadPageUrls = async () => {
+	let loadPageUrls = async () => {
 		for (let i = 0; i < maxPage; i++) {
 			pageUrls[i] = await getUrl(i + 1, pageSize);
 		}
@@ -106,19 +99,16 @@
 
 	function show(index: number) {
 		return (
-			index + 1 == 1 ||
-			index + 1 == maxPage ||
-			index + 1 == activePageIndex ||
-			index + 1 == activePageIndex - 1 ||
-			index + 1 == activePageIndex + 1
+			index == 1 ||
+			index == maxPage ||
+			index == activePageIndex ||
+			index == activePageIndex - 1 ||
+			index == activePageIndex + 1
 		);
 	}
 
 	function showSeparator(index: number) {
-		return (
-			index + 1 == 2 ||
-			index + 1 == maxPage - 1
-		);
+		return index == 2 || index == maxPage - 1;
 	}
 </script>
 
@@ -140,16 +130,17 @@
 					{#await getUrl(activePageIndex - 1, pageSize) then url}
 						<li>
 							<a href={url} on:click={() => activePageIndex--}
-								><i class="fas fa-angle-double-left" /></a>
+								><i class="fas fa-angle-double-left" /></a
+							>
 						</li>
 					{/await}
 				{/if}
 				{#each pageUrls as url, index (index + 1)}
-					{#if show(index)}
+					{#if show(index + 1)}
 						<li class={activePageIndex === index + 1 ? 'active' : ''}>
 							<a href={url} on:click={() => (activePageIndex = index + 1)}>{index + 1}</a>
 						</li>
-					{:else if showSeparator(index)}
+					{:else if showSeparator(index + 1)}
 						<span class=""> . . . </span>
 					{/if}
 				{/each}
@@ -157,7 +148,8 @@
 					{#await getUrl(activePageIndex + 1, pageSize) then url}
 						<li>
 							<a href={url} on:click={() => activePageIndex++}
-								><i class="fas fa-angle-double-right" /></a>
+								><i class="fas fa-angle-double-right" /></a
+							>
 						</li>
 					{/await}
 				{/if}
