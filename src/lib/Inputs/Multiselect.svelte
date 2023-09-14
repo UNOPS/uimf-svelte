@@ -32,8 +32,8 @@
 
 		public async getItems(query: any): Promise<any[] | null> {
 
-			if(this.metadata.CustomProperties.Source.length > 0){
-				this.items = await this.parseResults(this.metadata.CustomProperties.Source.filter((item: any) => item.Label.contains(query)));
+			if(this.items != null){
+				this.items = await this.parseResults(this.items.filter((item: any) => item.Label.contains(query)));
 				return Promise.resolve(this.items);
 			}
 			let postData = {
