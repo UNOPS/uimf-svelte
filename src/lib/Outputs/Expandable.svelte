@@ -2,7 +2,7 @@
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponentController } from '../Infrastructure/ComponentController';
-	import type { ComponentMetadata } from '..//Infrastructure/uimf';
+	import type { ComponentMetadata } from '../Infrastructure/uimf';
 	import Output from '../Output.svelte';
 
 	interface ExpandableData {
@@ -24,9 +24,9 @@
 
 	export let controller: ExpandableController;
 
-	let showHidden = false;
-	let buttonCssClass = 'fa fa-chevron-circle-right';
-	let visible = true;
+	let showHidden: boolean = false;
+	let shown: boolean = false;
+	let handler = defaultHandler;
 
 	let mainController: OutputController<any> | null = null;
 
@@ -34,6 +34,15 @@
 
 	let component = new OutputComponentController({
 		refresh() {
+			if (controller.value == null) {
+				mainController = null;
+				expandableController = null;
+				shown = false;
+				showHidden = false;
+				handler = defaultHandler;
+				return;
+			}
+
 			controller.value = controller.value;
 			if (controller.value != null) {
 				mainController = new OutputController<any>({
@@ -53,70 +62,54 @@
 		}
 	});
 
-	const baseToggle = (isButton: boolean) => {
-		let customToggle = (controller.value || {}).toggle;
+	beforeUpdate(async () => await component.setup(controller));
 
-		if (!isButton && controller.value?.ShowButton) {
+	function defaultHandler(show: boolean) {
+		// Mark as shown.
+		shown = shown || show;
+	}
+
+	function toggle(show: boolean) {
+		if (show == showHidden) {
 			return;
 		}
 
-		showHidden = !showHidden;
+		handler(show);
 
-		if (customToggle != null) {
-			customToggle();
-		} else {
-			showHidden = showHidden;
-		}
-
-		render(showHidden);
-	};
-
-	const render = (show: boolean) => {
 		showHidden = show;
-		buttonCssClass = show ? 'fa fa-chevron-circle-down' : 'fa fa-chevron-circle-right';
-	};
-
-	beforeUpdate(async () => await component.setup(controller));
+	}
 </script>
 
-<div class="expandable-visible">
-	{#if visible && mainController != null}
-		<div
-			on:click={() => {
-				baseToggle(false);
-			}}
-			on:keydown={(event) => {
-				if (event.key === 'Enter' || event.key === ' ') {
-					baseToggle(false);
-				}
-			}}
-			class="pointer"
-			role="button"
-			tabindex="0"
-			aria-label="Expandable Content"
-		>
-			<Output controller={mainController} hideLabel={true} />
-		</div>
-	{/if}
+{#if mainController != null}
+	<Output controller={mainController} hideLabel={true} />
+{/if}
 
-	{#if controller.value?.ShowButton}
+{#if expandableController != null}
+	{#if showHidden || shown}
 		<i
-			class={buttonCssClass}
-			on:click={() => {
-				baseToggle(true);
-			}}
-			on:keydown={(event) => {
-				if (event.key === 'Enter' || event.key === ' ') {
-					baseToggle(true);
-				}
-			}}
-			role="button"
-			tabindex="0"
-			aria-label="Toggle Expandable"
+			class="fa fa-chevron-circle-right"
+			class:fa-chevron-circle-down={!showHidden}
+			class:fa-chevron-circle-up={showHidden}
+			on:click={() => toggle(!showHidden)}
+			on:keypress={() => toggle(!showHidden)}
+		/>
+
+		{#if shown}
+			<div class:hide={!showHidden}>
+				<Output controller={expandableController} hideLabel={true} />
+			</div>
+		{/if}
+	{:else}
+		<i
+			class="fa fa-chevron-circle-down"
+			on:click={() => toggle(true)}
+			on:keypress={() => toggle(true)}
 		/>
 	{/if}
-</div>
-
-{#if visible && showHidden && expandableController != null}
-	<Output controller={expandableController} hideLabel={true} />
 {/if}
+
+<style lang="scss">
+	.hide {
+		display: none;
+	}
+</style>
