@@ -61,7 +61,7 @@
 		<div class={controller.metadata.CustomProperties?.cssClass}>
 			{#each componentControllers as componentController, index}
 					{#if index != 0}
-						<span> - </span> {controller.value.Separator}
+						<span> {@html controller.value.Separator} </span> 
 					{/if}
 					<svelte:component
 						this={componentController.component}
