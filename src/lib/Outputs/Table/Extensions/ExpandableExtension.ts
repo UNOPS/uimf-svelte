@@ -20,7 +20,7 @@ export class ExpandableExtension extends TableExtension {
         this.expandableCells.forEach(cell => {
             var hiddenCell = new TableBodyCell(
                 table.parent,
-                row.data[cell.metadata.Id],
+                row.data,//[cell.metadata.Id],
                 cell.metadata.CustomProperties.ItemTypes[1]);
 
             hiddenCell.colspan = table.head.main.cells.length;
@@ -39,12 +39,14 @@ export class ExpandableExtension extends TableExtension {
             var index = this.cellIndex[cell.metadata.Id];
             var mainCell = row.main.cells[index];
 
-            mainCell.controller.value.handler = function (show: boolean) {
-                hiddenRow.append = true;
-                hiddenRow.visible = show;
-
-                table.fire("table:data:updated", null);
-            };
+            if(mainCell.controller.value != null){
+                mainCell.controller.value.handler = function (show: boolean) {
+                    hiddenRow.append = true;
+                    hiddenRow.visible = show;
+    
+                    table.fire("table:data:updated", null);
+                };
+            }
         });
     }
 }
