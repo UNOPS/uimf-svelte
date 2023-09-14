@@ -36,26 +36,20 @@
 				pageUrls.splice(0, pageUrls.length);
 				selectorUrls.splice(0, selectorUrls.length);
 
-				setCountPage();
-				loadSelectorUrls();
-				loadPageUrls();
+				maxPage = Math.floor(controller.value.TotalCount / pageSize + 1);
+
+				pageSizes.forEach(async (pageSize, i) => {
+					selectorUrls[i] = await getUrl(activePageIndex, pageSize);
+				});
+
+				for (let i = 0; i < maxPage; i++) {
+					pageUrls[i] = await getUrl(i + 1, pageSize);
+				}
 			});
 		}
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
-
-	let loadSelectorUrls = async () => {
-		pageSizes.forEach(async (element, i) => {
-			selectorUrls[i] = await getUrl(activePageIndex, element);
-		});
-	};
-
-	let loadPageUrls = async () => {
-		for (let i = 0; i < maxPage; i++) {
-			pageUrls[i] = await getUrl(i + 1, pageSize);
-		}
-	};
 
 	function areEqual(obj1: any, obj2: any): boolean {
 		for (let key in obj1) {
@@ -92,10 +86,6 @@
 			InputFieldValues: inputFieldValues
 		});
 	};
-
-	function setCountPage() {
-		maxPage = Math.floor(controller.value.TotalCount / pageSize + 1);
-	}
 
 	function show(index: number) {
 		return (
