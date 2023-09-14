@@ -15,7 +15,8 @@
 	let component = new OutputComponentController({
 		refresh() {
 			componentController = getComponentController(
-				controller.metadata.CustomProperties.NestedMetadata
+				controller.metadata.CustomProperties?.NestedMetadata ??
+					controller.metadata.CustomProperties.ItemTypes.CustomProperties.NestedMetadata
 			);
 
 			controller.value = controller.value;
@@ -25,9 +26,7 @@
 	beforeUpdate(async () => await component.setup(controller));
 
 	
-	let componentController: ComponentController = getComponentController(
-		controller.metadata.CustomProperties.NestedMetadata
-	);
+	let componentController: ComponentController;
 
 	function getComponentController(nestedMetadata: ComponentMetadata): any {
 		let componentController: ComponentController = {
