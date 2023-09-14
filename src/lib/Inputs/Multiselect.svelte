@@ -80,10 +80,6 @@
 					return Promise.resolve();
 				});
 			} 
-			else if(value == null){
-				this.selectedValues = [];
-				return Promise.resolve();
-			}
 			else {
 				return Promise.resolve();
 			}
