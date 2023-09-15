@@ -40,8 +40,8 @@
 		class="image-container"
 		on:mouseenter={handleMouseEnter}
 		on:mouseleave={handleMouseLeave}
-		role="button"   
-		tabindex="0"    
+		role="button"
+		tabindex="0"
 		aria-label="Image Overlay"
 	>
 		{#if isHovered}
