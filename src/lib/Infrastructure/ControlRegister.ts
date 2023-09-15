@@ -60,6 +60,7 @@ import * as Output from '../Outputs/Output.svelte';
 //import * as Changeset from '../Outputs/Changeset.svelte';
 import * as SlaTimer from '../Outputs/SlaTimer.svelte';
 import * as ShipmentSize from '../Outputs/ShipmentSize.svelte';
+import * as Boolean from '../Outputs/Boolean.svelte';
 
 import UimfForm from '../Form.svelte';
 import { FormController, type FormInstance } from "./FormController";
@@ -264,6 +265,7 @@ defaultControlRegister.registerOutputComponent('link', Link);
 //defaultControlRegister.registerOutputComponent('changeset', Changeset);
 //defaultControlRegister.registerOutputComponent('sla-timer', SlaTimer);
 //defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize);
+//defaultControlRegister.registerOutputComponent('boolean', Boolean);
 
 //These components can only be enabled once we are using the new Form as they depend on each others
 // defaultControlRegister.registerOutputComponent('action-list', ActionList);
