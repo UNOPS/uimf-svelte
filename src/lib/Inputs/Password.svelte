@@ -1,14 +1,51 @@
 <script lang="ts" context="module">
 	import { InputController } from '../Infrastructure/InputController';
-	export class Controller extends InputController<string> {
-		public getValue(): Promise<string | null> {
-			return Promise.resolve(this.value != null && this.value.length > 0 ? this.value : null);
+
+	interface Password {
+		Value?: string;
+	}
+
+	export class Controller extends InputController<Password> {
+		public valueAsString: string | null = null;
+
+		public getValue(): Promise<Password | null> {
+			const effective = this.value?.Value?.trim() ?? '';
+
+			if (effective?.length > 0) {
+				return Promise.resolve({ Value: effective });
+			}
+
+			return Promise.resolve(null);
 		}
-		public deserialize(value: string | null): Promise<string | null> {
-			return Promise.resolve(value);
+
+		public deserialize(value: string | null): Promise<Password | null> {
+			const effective = value?.trim() ?? '';
+
+			if (effective.length > 0) {
+				return Promise.resolve({ Value: effective });
+			}
+
+			return Promise.resolve(null);
 		}
-		public serialize(value: string | null): string | null {
-			return value;
+
+		public serialize(value: Password | string | null): string | null {
+			if (typeof value === 'string') {
+				return value?.trim() ?? null;
+			}
+
+			return value?.Value?.trim() ?? null;
+		}
+
+		protected override setValueInternal(value: Password | null): Promise<void> {
+			this.valueAsString = value?.Value?.trim() ?? '';
+
+			if (this.valueAsString.length > 0) {
+				this.value = { Value: this.valueAsString };
+			} else {
+				this.value = null;
+			}
+
+			return Promise.resolve();
 		}
 	}
 </script>
@@ -34,7 +71,7 @@
 <input
 	autocomplete="off"
 	class="form-control form-control-lg"
-	bind:value={controller.value}
+	bind:value={controller.valueAsString}
 	required={controller.metadata.Required}
 	type="password"
 />
