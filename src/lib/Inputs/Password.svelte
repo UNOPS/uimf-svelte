@@ -9,7 +9,7 @@
 		public valueAsString: string | null = null;
 
 		public getValue(): Promise<Password | null> {
-			const effective = this.value?.Value?.trim() ?? '';
+			const effective = this.valueAsString ?? '';
 
 			if (effective?.length > 0) {
 				return Promise.resolve({ Value: effective });
@@ -62,6 +62,7 @@
 		},
 		refresh() {
 			controller.value = controller.value;
+			controller.valueAsString = controller.valueAsString;
 		}
 	});
 
