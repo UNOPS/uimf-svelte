@@ -226,7 +226,7 @@ defaultControlRegister.registerInputComponent('dropdown', Dropdown);
 defaultControlRegister.registerInputComponent('rich-text-editor', RichTextEditor);
 defaultControlRegister.registerInputComponent('array-input', ArrayInput);
 defaultControlRegister.registerInputComponent('date-range', DateRange);
-defaultControlRegister.registerInputComponent('consent', Consent);
+defaultControlRegister.registerInputComponent('consent', Consent, { alwaysHideLabel: true });
 defaultControlRegister.registerInputComponent('paginator', Paginator);
 defaultControlRegister.registerInputComponent('password', Password);
 
@@ -239,8 +239,8 @@ defaultControlRegister.registerOutputComponent('paginated-object-list', Paginate
 defaultControlRegister.registerOutputComponent('money', Money, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('tree-view-selector', TreeViewSelector);
 defaultControlRegister.registerOutputComponent('nested-output', NestedOutput);
-defaultControlRegister.registerOutputComponent('tabs', Tabs);
-defaultControlRegister.registerOutputComponent('tabstrip', Tabstrip);
+defaultControlRegister.registerOutputComponent('tabs', Tabs, { alwaysHideLabel: true });
+defaultControlRegister.registerOutputComponent('tabstrip', Tabstrip, { alwaysHideLabel: true });
 defaultControlRegister.registerOutputComponent('slider', Slider);
 defaultControlRegister.registerOutputComponent('number', Number);
 defaultControlRegister.registerOutputComponent('preformatted-text', PreformattedText);
@@ -248,7 +248,7 @@ defaultControlRegister.registerOutputComponent('html', Html);
 defaultControlRegister.registerOutputComponent('datetime', DateTimeOutput);
 defaultControlRegister.registerOutputComponent('event-description', EventDescription);
 defaultControlRegister.registerOutputComponent('alert', Alert);
-defaultControlRegister.registerOutputComponent('icon', Icon);
+defaultControlRegister.registerOutputComponent('icon', Icon, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('tag', Tag);
 defaultControlRegister.registerOutputComponent('link', Link);
 //defaultControlRegister.registerOutputComponent('formlink', FormLink, { displayAsBlock: false });
