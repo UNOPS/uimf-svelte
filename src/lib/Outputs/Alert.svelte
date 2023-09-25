@@ -8,7 +8,8 @@
 			Name: string;
 		} | null;
 		Text: string;
-        CssClass: string;
+		CssClass: string;
+		BackgroundColor: string | null;
 	}
 
 	export let controller: OutputController<AlertData>;
@@ -23,7 +24,7 @@
 </script>
 
 {#if controller.value != null}
-	<div class={`alert-body ${controller.value.CssClass}`}>
+	<div class={`alert-body ${controller.value.CssClass}`} style:background={controller.value.BackgroundColor ?? "none"}>
 		{#if controller.value.Icon}
 			<i class={controller.value.Icon.Name} />
 		{/if}

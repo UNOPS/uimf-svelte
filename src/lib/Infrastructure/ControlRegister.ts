@@ -247,7 +247,7 @@ defaultControlRegister.registerOutputComponent('preformatted-text', Preformatted
 defaultControlRegister.registerOutputComponent('html', Html);
 defaultControlRegister.registerOutputComponent('datetime', DateTimeOutput);
 defaultControlRegister.registerOutputComponent('event-description', EventDescription);
-defaultControlRegister.registerOutputComponent('alert', Alert);
+defaultControlRegister.registerOutputComponent('alert', Alert, { alwaysHideLabel: true });
 defaultControlRegister.registerOutputComponent('icon', Icon, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('tag', Tag);
 defaultControlRegister.registerOutputComponent('link', Link);
