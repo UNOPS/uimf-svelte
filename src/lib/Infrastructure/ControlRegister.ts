@@ -267,8 +267,8 @@ defaultControlRegister.registerOutputComponent('link', Link);
 //defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize);
 //defaultControlRegister.registerOutputComponent('boolean', Boolean);
 
-//These components can only be enabled once we are using the new Form as they depend on each others
-// defaultControlRegister.registerOutputComponent('action-list', ActionList);
+// These components can only be enabled once we are using the new Form as they depend on each others
+// defaultControlRegister.registerOutputComponent('action-list', ActionList, { alwaysHideLabel: true });
 // defaultControlRegister.registerOutputComponent('expandable', Expandable);
 // defaultControlRegister.registerOutputComponent('object-list', ObjectList);
 // defaultControlRegister.registerOutputComponent('tuple', Tuple);
