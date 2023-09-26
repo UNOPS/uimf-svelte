@@ -161,6 +161,8 @@
 
 <style lang="scss">
 	@import '../../scss/styles.scss';
+	
+	$btnBorderColor: #cdd6e1;
 
 	.btn-primary {
 		color: white;
@@ -175,4 +177,19 @@
 		padding: 0;
 		border: none;
 	}
+
+	.btn-default {
+		background-color: #fafafa;
+		border-color: $btnBorderColor;
+		color: #515151;
+	}
+
+	.btn {
+		border-radius: 0;
+		
+		&:hover{
+			border-color: $btnBorderColor;
+		}
+	}
+
 </style>
