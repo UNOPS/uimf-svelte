@@ -4,10 +4,10 @@
 	import { OutputComponentController } from '../Infrastructure/ComponentController';
 	import { tooltip } from '../Components/Tooltip.svelte';
 
-    interface IconData {
-        Name: string;
-        Tooltip: string;
-    }
+	interface IconData {
+		Name: string;
+		Tooltip: string;
+	}
 
 	export let controller: OutputController<IconData>;
 
@@ -21,5 +21,5 @@
 </script>
 
 {#if controller.value != null}
-<i class={controller.value.Name} use:tooltip={controller.value.Tooltip}></i>
+	<i class={controller.value.Name} use:tooltip={controller.value.Tooltip} />
 {/if}
