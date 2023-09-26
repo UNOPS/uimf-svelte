@@ -41,9 +41,8 @@
 
 <style lang="scss">
 	.action-list {
-		background-color: white;
+		background-color: #f9f9f9;
 		border-width: 0;
-		margin: -10px -20px 15px;
 		padding: 5px 15px;
 		text-align: right;
 	}
