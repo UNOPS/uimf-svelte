@@ -33,5 +33,7 @@
 <style lang="scss">
 	i {
 		margin-right: 5px;
+		min-width: 15px;
+		text-align: center;
 	}
 </style>
