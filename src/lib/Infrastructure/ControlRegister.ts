@@ -37,6 +37,7 @@ import * as PreformattedText from '../Outputs/PreformattedText.svelte';
 import * as Html from '../Outputs/Html.svelte';
 import * as DateTimeOutput from '../Outputs/DateTime.svelte';
 import * as EventDescription from '../Outputs/EventDescription.svelte';
+import * as Status from '../Outputs/Status.svelte';
 
 //To be deactivated until complete validation
 // import * as Typeahead from '../Inputs/Typeahead.svelte'
@@ -251,6 +252,7 @@ defaultControlRegister.registerOutputComponent('alert', Alert, { alwaysHideLabel
 defaultControlRegister.registerOutputComponent('icon', Icon, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('tag', Tag);
 defaultControlRegister.registerOutputComponent('link', Link);
+defaultControlRegister.registerOutputComponent('status', Status, { displayAsBlock: false });
 //defaultControlRegister.registerOutputComponent('formlink', FormLink, { displayAsBlock: false });
 
 // To be deactivated until complete validation
