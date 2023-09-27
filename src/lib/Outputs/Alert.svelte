@@ -9,7 +9,6 @@
 		} | null;
 		Text: string;
 		CssClass: string;
-		BackgroundColor: string | null;
 	}
 
 	export let controller: OutputController<AlertData>;
@@ -24,10 +23,21 @@
 </script>
 
 {#if controller.value != null}
-	<div class={`alert-body ${controller.value.CssClass}`} style:background={controller.value.BackgroundColor ?? "none"}>
+	<div class={controller.value.CssClass} role="alert">
 		{#if controller.value.Icon}
 			<i class={controller.value.Icon.Name} />
 		{/if}
 		{@html controller.value.Text}
 	</div>
 {/if}
+
+<style lang="scss">
+	@import '../../scss/styles.scss';
+
+	.alert {
+		& > i:first-child {
+			float: left;
+			margin: 3px 6px 0 1px;
+		}
+	}
+</style>
