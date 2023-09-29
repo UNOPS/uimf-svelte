@@ -46,7 +46,7 @@
 			}
 
 			// Build "SearchText" field which will be used to find relevant matches.
-			items.forEach((c) => (c.SearchText = (c.Value + ' ' + c.Label).toLocaleLowerCase()));
+			items.forEach((c) => (c.SearchText = (c.Label).toLocaleLowerCase()));
 			return Promise.resolve(items);
 		}
 	}
