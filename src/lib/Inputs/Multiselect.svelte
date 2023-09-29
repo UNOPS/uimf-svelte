@@ -167,7 +167,11 @@
 			e.relatedTarget instanceof Element && e.relatedTarget.closest('.typeahead') != null;
 	}}
 >
-	<div class="selected-values">
+	<div
+		class={controller.selectedValues != null && controller.selectedValues.length > 0
+			? 'selected-values'
+			: ''}
+	>
 		{#each controller.selectedValues ?? [] as item}
 			<div class="btn-group" role="group">
 				<button type="button" class="btn btn-primary">{item.SearchText}</button>
@@ -221,7 +225,7 @@
 		display: flex;
 		flex-direction: row;
 		gap: 10px;
-		padding-bottom: 15px;
+		padding-bottom: 5px;
 	}
 
 	.btn-primary {
