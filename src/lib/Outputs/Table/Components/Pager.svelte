@@ -39,7 +39,7 @@
 				maxPage = Math.floor(controller.value.TotalCount / pageSize + 1);
 
 				pageSizes.forEach(async (pageSize, i) => {
-					selectorUrls[i] = await getUrl(activePageIndex, pageSize);
+					selectorUrls[i] = await getUrl(1, pageSize);
 				});
 
 				for (let i = 0; i < maxPage; i++) {
