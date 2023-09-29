@@ -26,7 +26,9 @@
 		{#if controller.value.Icon != null}
 			<i class={controller.value.Icon} />
 		{/if}
-		{controller.value.Label}
+		{#if controller.value.Label != null}
+			{controller.value.Label}
+		{/if}
 	</span>
 {/if}
 
