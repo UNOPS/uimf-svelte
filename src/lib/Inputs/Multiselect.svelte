@@ -32,8 +32,8 @@
 
 		public async getItems(query: any): Promise<any[] | null> {
 
-			if(Array.isArray(this.items) && this.items?.length > 0){
-				this.items = await this.parseResults(this.items.filter((item: any) => item.Label.contains(query)));
+			if(this.metadata.CustomProperties.Source != null && Array.isArray(this.metadata.CustomProperties.Source) && this.metadata.CustomProperties.Source.length > 0){			
+				this.items = await this.parseResults(this.metadata.CustomProperties.Source.filter((item: any) => item.Label.contains(query)));
 				return Promise.resolve(this.items);
 			}
 			let postData = {
@@ -58,6 +58,7 @@
 
 			// Build "SearchText" field which will be used to find relevant matches.
 			items.forEach((c) => (c.SearchText = (c.Value + ' ' + c.Label).toLocaleLowerCase()));
+
 			return Promise.resolve(items);
 		}
 
