@@ -8,6 +8,7 @@
 	export interface SearchResult {
 		SearchText: string;
 		Value: number;
+		Description: string;
 	}
 
 	export class Controller extends InputController<MultiSelectValue> {
@@ -31,9 +32,14 @@
 		}
 
 		public async getItems(query: any): Promise<any[] | null> {
-
-			if(this.metadata.CustomProperties.Source != null && Array.isArray(this.metadata.CustomProperties.Source) && this.metadata.CustomProperties.Source.length > 0){			
-				this.items = await this.parseResults(this.metadata.CustomProperties.Source.filter((item: any) => item.Label.contains(query)));
+			if (
+				this.metadata.CustomProperties.Source != null &&
+				Array.isArray(this.metadata.CustomProperties.Source) &&
+				this.metadata.CustomProperties.Source.length > 0
+			) {
+				this.items = await this.parseResults(
+					this.metadata.CustomProperties.Source.filter((item: any) => item.Label.contains(query))
+				);
 				return Promise.resolve(this.items);
 			}
 			let postData = {
@@ -80,8 +86,7 @@
 							: items.filter((item) => this.value?.Items.some((v) => v === item.Value));
 					return Promise.resolve();
 				});
-			} 
-			else {
+			} else {
 				return Promise.resolve();
 			}
 		}
@@ -189,8 +194,12 @@
 					class="list-group-item list-group-item-action"
 					on:click={() => {
 						handleOnClick(item);
-					}}>{item.SearchText}</button
-				>
+					}}
+					>{item.SearchText}
+					{#if item.Description != null}
+						<div><small>{item.Description}</small></div>
+					{/if}
+				</button>
 			{/each}
 		</ul>
 	{/if}
