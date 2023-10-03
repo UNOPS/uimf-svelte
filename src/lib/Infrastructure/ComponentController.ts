@@ -13,7 +13,7 @@ interface Options {
 
 class FieldComponentController<T extends EventSource & { id: string }> {
     public field!: T;
-    private refreshOn: string;
+    protected refreshOn: string;
 
     /**
      * Function to invoke when the `field` changes.
@@ -59,12 +59,22 @@ class FieldComponentController<T extends EventSource & { id: string }> {
         await this.refresh();
 
         this.field.on(this.refreshOn, async () => await this.refresh());
+        this.customSetup();
     }
+
+    public customSetup: () => void = () => { return };
 }
 
 export class InputComponentController extends FieldComponentController<InputController<any>>{
+
+    public value : any;
+	public clearAction: (value: any) => void = () => { return };
+
     constructor(options: Options) {
         super('input:change', options);
+        this.customSetup = function () {
+            this.field.on(this.refreshOn, async () => this.clearAction(this.value))
+        };
     }
 }
 
