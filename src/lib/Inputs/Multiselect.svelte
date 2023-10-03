@@ -1,238 +1,242 @@
 <script context="module" lang="ts">
 	import { InputController } from '../Infrastructure/InputController';
 
-	export interface MultiSelectValue {
+	//export const config = new OutputControlConfiguration(false, false, false, 'multiselect');
+
+	interface MultiselectValue {
 		Items: any[];
 	}
 
-	export interface SearchResult {
-		SearchText: string;
-		Value: number;
-		Description: string;
-	}
+	export class Controller extends InputController<MultiselectValue> {
+		public static delimitter = '-';
 
-	export class Controller extends InputController<MultiSelectValue> {
-		declare items: any[] | null;
-		public declare selectedValues: SearchResult[] | null;
-
-		public deserialize(value: string): Promise<MultiSelectValue | null> {
-			var result = value == null || value === '' ? null : { Items: JSON.parse(value) };
+		public deserialize(value: string): Promise<MultiselectValue | null> {
+			var result =
+				value == null || value === ''
+					? null
+					: (value.split(Controller.delimitter) as unknown as MultiselectValue);
 
 			return Promise.resolve(result);
 		}
 
-		public serialize(value: MultiSelectValue | null): string {
-			return JSON.stringify(value != null && value.Items != null ? value.Items : null);
+		public serialize(value: MultiselectValue): string | null {
+			const items = value?.Items.filter((t) => t != null) ?? [];
+			return items.length > 0 ? items.join(Controller.delimitter) : null;
 		}
 
-		public getValue(): Promise<MultiSelectValue | null> {
-			var result = this.value != null && this.value.Items != null ? this.value : null;
+		public getValue(): Promise<MultiselectValue | null> {
+			var result = this.value != null && this.value.Items.length > 0 ? this.value : null;
 
 			return Promise.resolve(result);
 		}
 
-		public async getItems(query: any): Promise<any[] | null> {
-			if (
-				this.metadata.CustomProperties.Source != null &&
-				Array.isArray(this.metadata.CustomProperties.Source) &&
-				this.metadata.CustomProperties.Source.length > 0
-			) {
-				this.items = await this.parseResults(
-					this.metadata.CustomProperties.Source.filter((item: any) => item.Label.contains(query))
-				);
-				return Promise.resolve(this.items);
-			}
-			let postData = {
-				Query: query
-			};
-
-			let response = this.app
-				.postForm(this.metadata.CustomProperties.Source, postData, null)
-				.then((t: any) => {
-					return this.parseResults(t.Items);
-				});
-
-			this.items = await response;
-
-			return Promise.resolve(this.items);
-		}
-
-		private parseResults(items: any[]): Promise<SearchResult[] | null> {
-			if (items == null) {
-				return Promise.resolve([]);
+		protected setValueInternal(value: MultiselectValue): Promise<void> {
+			if (value == null || value.Items.length === 0) {
+				this.value = null;
 			}
 
-			// Build "SearchText" field which will be used to find relevant matches.
-			items.forEach((c) => (c.SearchText = c.Label.toLocaleLowerCase()));
-
-			return Promise.resolve(items);
-		}
-
-		public setSelectedValue(items: SearchResult[]): Promise<void> {
-			this.selectedValues = items;
 			return Promise.resolve();
-		}
-
-		protected setValueInternal(value: MultiSelectValue | null): Promise<void> {
-			if (
-				value != null &&
-				value.Items != null &&
-				(this.selectedValues == null || this.selectedValues.length === 0)
-			) {
-				return this.getItems('').then((items) => {
-					this.selectedValues =
-						items == null
-							? []
-							: items.filter((item) => this.value?.Items.some((v) => v === item.Value));
-					return Promise.resolve();
-				});
-			} else {
-				return Promise.resolve();
-			}
 		}
 	}
 </script>
 
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
+	import Select from 'svelte-select';
 	import { InputComponentController } from '../Infrastructure/ComponentController';
 
 	export let controller: Controller;
 
-	const search = () => {
-		if (searchResultsQuery === userInput) {
-			// Don't perform the same search again.
-			return searchResults;
-		}
+	let items: any[];
+	let sourceFormId: string;
+	let cachedOptions: Record<string, Promise<any>> = {};
+	let selected: any[];
+	let isInlineSource: boolean = true;
 
-		searchResultsQuery = userInput;
-
-		if (userInput.length === 0) {
-			searchResults = [];
-			controller.setValue(null);
-			return;
-		}
-
-		controller.getItems(searchResultsQuery).then((items) => {
-			searchResults = items?.slice(0, 5) as SearchResult[];
-		});
-	};
-
-	let inputInFocus: boolean = false;
-
-	let userInput: string = '';
-	let searchResults: SearchResult[] = [];
-	let searchResultsQuery: string | null = null;
-
-	const component = new InputComponentController({
+	let component = new InputComponentController({
 		init() {
-			controller.selectedValues = [];
+			cachedOptions = {};
+			selected = [];
+
+			let source = controller.metadata.CustomProperties.Source;
+			isInlineSource = typeof source !== 'string';
+			items = isInlineSource ? augmentItems(source) : [];
+			sourceFormId = isInlineSource ? null : source;
+
 			controller.ready?.resolve();
 		},
-		refresh() {
-			controller.selectedValues = controller.selectedValues;
-			controller.value = controller.value;
+		async refreshBrowser() {
+			if (controller?.value !== null && controller.serialize(controller.value) != null) {
+				let results = await loadOptions(controller?.value);
+
+				selected =
+					results != null && results.length > 0
+						? controller.value.Items.map((t: any) =>
+								results.find((c: { Value: any }) => c.Value == t)
+						  )
+						: [];
+			} else {
+				selected = [];
+				controller.value = null;
+			}
 		}
 	});
 
-	beforeUpdate(async () => await component.setup(controller));
+	beforeUpdate(async () => {
+		await component.setup(controller);
+	});
 
-	const handleOnClick = (item: SearchResult) => {
-		let selectedValues = controller.selectedValues!;
-		if (selectedValues.find((c) => c.Value === item.Value) == null) {
-			selectedValues = [...selectedValues, item];
-			controller.setSelectedValue(selectedValues);
-			controller.setValue({ Items: selectedValues.map((t) => t.Value) });
+	component.clearAction = function (value: any): void {
+		if (value == null) {
+			selected = [];
 		}
-		userInput = '';
-		inputInFocus = false;
-		searchResults = [];
 	};
 
-	const handleRemove = (item: SearchResult) => {
-		let selectedValues = controller.selectedValues!;
-		selectedValues = selectedValues.filter((c) => c.Value !== item.Value);
-		controller.setSelectedValue(selectedValues);
-		controller.setValue({ Items: selectedValues.map((t) => t.Value) });
-	};
+	function augmentItems(items: any[]): any[] {
+		if (items == null) {
+			return [];
+		}
+
+		if (!Array.isArray(items)) {
+			return [];
+		}
+
+		// Build "SearchText" field which will be used to find relevant matches.
+		items.forEach((c) => (c.SearchText = (c.Value + ' ' + c.Label).toLocaleLowerCase()));
+		return items;
+	}
+
+	async function loadOptionsAndFilter(query: MultiselectValue | string): Promise<any> {
+		const queryById = typeof query !== 'string';
+
+		return loadOptions(query).then((options) => {
+			if (queryById) {
+				return options;
+			}
+
+			const queryInLowercase = query.toLocaleLowerCase();
+
+			return options.filter((t: { SearchText: string | string[] }) =>
+				t.SearchText.includes(queryInLowercase)
+			);
+		});
+	}
+
+	async function loadOptions(query: MultiselectValue | string): Promise<any> {
+		if (isInlineSource) {
+			return Promise.resolve(items);
+		}
+
+		if (typeof query === 'string') {
+			if (cachedOptions[query] != null) {
+				return cachedOptions[query];
+			}
+		}
+
+		var postData =
+			typeof query === 'string'
+				? { Query: query }
+				: { Ids: { Items: query.Items?.length > 0 ? query.Items : [] } };
+
+		const parameters: any[] = controller.metadata.CustomProperties['Parameters'];
+
+		if (parameters !== null) {
+			let promises = parameters.map((p) => {
+				switch (p.SourceType) {
+					case 'response':
+						// Use type assertion here
+						(postData as any)[p.Parameter] = controller?.form?.response[p.Source];
+						return Promise.resolve();
+					case 'request':
+						return controller?.form?.inputs[p.Source]
+							.getValue()
+							.then((value) => ((postData as any)[p.Parameter] = value));
+				}
+			});
+
+			await Promise.all(promises);
+		}
+
+		let response = controller.app
+			.postForm(controller.metadata.CustomProperties.Source, postData, null)
+			.then((t: any) => {
+				return augmentItems(t.Items);
+			});
+
+		if (typeof query === 'string') {
+			cachedOptions[query] = response;
+		}
+
+		return await response;
+	}
+
+	async function handleSelect(event: { detail: string | any[] | null }) {
+		if (event.detail != null && event.detail.length > 0) {
+			selected = selected || [];
+			selected.push(...event.detail);
+
+			if (controller.value == null) {
+				controller.value = { Items: [] };
+			}
+
+			controller.value.Items =
+				selected.length > 0 ? [...new Set(selected.map((t) => t.Value))] : [];
+		}
+	}
 </script>
 
-<div
-	class="typeahead"
-	on:focusin={() => {
-		inputInFocus = true;
-	}}
-	on:focusout={(e) => {
-		inputInFocus =
-			e.relatedTarget instanceof Element && e.relatedTarget.closest('.typeahead') != null;
-	}}
->
-	<div
-		class={controller.selectedValues != null && controller.selectedValues.length > 0
-			? 'selected-values'
-			: ''}
-	>
-		{#each controller.selectedValues ?? [] as item}
-			<div class="btn-group" role="group">
-				<button type="button" class="btn btn-primary">{item.SearchText}</button>
-				<button
-					type="button"
-					class="btn btn-secondary"
-					on:click={() => {
-						handleRemove(item);
-					}}><i class="fa fa-times" /></button
-				>
-			</div>
-		{/each}
-	</div>
-	<input
-		class="form-control form-control-lg"
-		autocomplete="off"
-		bind:value={userInput}
-		on:input={() => search()}
+<div class="input-container">
+	<Select
+		{items}
+		value={selected}
+		label="Label"
+		itemId="Value"
+		on:input={handleSelect}
+		on:clear={() => {
+			if (controller != null) {
+				controller.value = null;
+			}
+			selected = [];
+		}}
+		multiple={true}
+		hideEmptyState={true}
+		placeholder="type to search..."
+		loadOptions={loadOptionsAndFilter}
 	/>
-	{#if inputInFocus && searchResults?.length > 0}
-		<ul class="list-group">
-			{#each searchResults as item}
-				<button
-					class="list-group-item list-group-item-action"
-					on:click={() => {
-						handleOnClick(item);
-					}}
-					>{item.SearchText}
-					{#if item.Description != null}
-						<div><small>{item.Description}</small></div>
-					{/if}
-				</button>
-			{/each}
-		</ul>
-	{/if}
 </div>
 
 <style lang="scss">
-	@import '../../scss/styles.scss';
+	.input-container {
+		width: 100%;
+		--height: 37px;
+		--padding: 0 16px 0 16px;
+		--background: var(--app-body-bg);
+		--input-color: var(--app-body-color);
+		--font-size: 1rem;
+		--item-height: auto;
 
-	.typeahead {
-		& > form {
-			&:focus-within {
-				box-shadow: $input-focus-box-shadow;
-				border-color: $input-focus-border-color;
-			}
+		--item-color: var(--app-body-color);
+		--item-hover-bg: var(--app-tertiary-bg);
+
+		--clear-icon-color: var(--app-body-color);
+		--clear-select-width: 20px;
+		--loading-width: 20px;
+
+		--list-background: var(--app-body-bg);
+		--list-border: 1px solid var(--app-border-color);
+
+		--border: 1px solid var(--app-border-color);
+		--border-hover: 1px solid var(--app-border-color);
+		--border-focused: 1px solid var(--app-input-focus-border-color);
+
+		--multi-item-bg: var(--app-body-bg);
+		--multi-select-padding: 0 16px 0 16px;
+		--multi-item-height: 28px;
+		--multi-item-clear-icon-color: var(--app-body-color);
+		--multi-item-outline: 2px solid var(--app-border-color);
+
+		& > :global(.svelte-select.focused) {
+			box-shadow: 0 0 0 var(--app-focus-ring-width) var(--app-focus-ring-color);
 		}
-	}
-
-	.selected-values {
-		display: flex;
-		flex-direction: row;
-		gap: 10px;
-		padding-bottom: 5px;
-	}
-
-	.btn-primary {
-		color: white;
-	}
-
-	.btn-primary:hover {
-		color: white;
 	}
 </style>
