@@ -1,20 +1,14 @@
 <script context="module" lang="ts">
 	import { InputController } from '../Infrastructure/InputController';
 
-	export interface TypeaheadValue {
-		Value: any;
-	}
-
 	export class Controller extends InputController<TypeaheadValue> {
-		declare items: any[] | null;
-
 		public deserialize(value: string): Promise<TypeaheadValue | null> {
-			var result = value == null || value === '' ? null : { Value: value };
+			var result = value == null || value === '' ? null : new TypeaheadValue(value);
 
 			return Promise.resolve(result);
 		}
 
-		public serialize(value: TypeaheadValue | null): string {
+		public serialize(value: TypeaheadValue): string {
 			return value != null && value.Value != null ? value.Value : null;
 		}
 
@@ -24,162 +18,244 @@
 			return Promise.resolve(result);
 		}
 
-		public async getItems(query: any): Promise<any[] | null> {
-			let postData = {
-				Query: query
-			};
+		protected setValueInternal(value: TypeaheadValue): Promise<void> {
+			return Promise.resolve();
+		}
+	}
 
-			let response = this.app
-				.postForm(this.metadata.CustomProperties.Source, postData, null)
-				.then((t: any) => {
-					return this.parseResults(t.Items);
-				});
-
-			this.items = await response;
-
-			return Promise.resolve(this.items);
+	// tslint:disable-next-line:max-classes-per-file
+	class TypeaheadValue {
+		constructor(value?: any) {
+			this.Value = value;
 		}
 
-		private parseResults(items: any[]): Promise<any[] | null> {
-			if (items == null) {
-				return Promise.resolve([]);
-			}
-
-			// Build "SearchText" field which will be used to find relevant matches.
-			items.forEach((c) => (c.SearchText = (c.Label).toLocaleLowerCase()));
-			return Promise.resolve(items);
-		}
+		public Value: any;
 	}
 </script>
 
 <script lang="ts">
-	import { beforeUpdate } from 'svelte';
+	import Select from 'svelte-select';
 	import { InputComponentController } from '../Infrastructure/ComponentController';
+	import { beforeUpdate } from 'svelte';
 
 	export let controller: Controller;
 
-	const search = () => {
-		if (searchResultsQuery === userInput) {
-			// Don't perform the same search again.
-			return searchResults;
-		}
+	let id: string;
+	let items: any[];
+	let sourceFormId: string;
+	let cachedOptions: Record<string, Promise<any>> = {};
+	let isInlineSource: boolean = true;
 
-		searchResultsQuery = userInput;
+	let selected: any;
 
-		if (userInput.length === 0) {
-			searchResults = [];
-			controller.setValue(null);
-			return;
-		}
-
-		controller.getItems(searchResultsQuery).then((items) => {
-			searchResults = items?.slice(0, 10) as SearchResult[];
-		});
-	};
-
-	let inputInFocus: boolean = false;
-
-	let userInput: string = '';
-	let searchResults: SearchResult[] = [];
-	let searchResultsQuery: string | null = null;
-
-	interface SearchResult {
-		SearchText: string;
-		Value: number;
-	}
-
-	const component = new InputComponentController({
+	let component = new InputComponentController({
 		init() {
-			if (controller.value != null) {
-				controller.getItems('').then((items) => {
-					userInput = items?.filter((item) => item.Value === controller.value?.Value)[0]
-						?.SearchText;
-				});
-			}
+			cachedOptions = {};
+
+			let source = controller.metadata.CustomProperties.Source;
+			isInlineSource = typeof source !== 'string';
+			items = isInlineSource ? augmentItems(source) : [];
+			sourceFormId = isInlineSource ? null : source;
 
 			controller.ready?.resolve();
 		},
-		refresh() {
-			controller.value = controller.value;
+		async refreshBrowser() {
+			if (controller.value != null && controller.serialize(controller.value) != null) {
+				let results = await loadOptions(controller.value);
+				controller.value =
+					results != null && results.length > 0
+						? results.find((t: { Value: any }) => t.Value == controller?.value?.Value)
+						: null;
+
+				if (controller.value == null) {
+					throw `Cannot find option for "${controller.metadata.Id}".`;
+				}
+			} else {
+				controller.value = null;
+			}
+
+			// Firing `changed` from `refreshBrowser` is not possible, because
+			// it would result in an infinite recursion because `refreshBrowser`
+			// is auto-invoked on `changed` event. However, we still need to signal
+			// the fact that typeahead now has a value, so we trigger `refreshed` event.
+			controller.fire('refreshed', controller.value);
 		}
 	});
 
-	beforeUpdate(async () => await component.setup(controller));
+	beforeUpdate(async () => {
+		await component.setup(controller);
+	});
 
-	const handleOnClick = (item: SearchResult) => {
-		controller
-			.setValue({
-				Value: item.Value
-			} as TypeaheadValue)
-			.then(() => {
-				userInput = item.SearchText;
-				inputInFocus = false;
-			});
+	$: {
+		selected = controller.value;
+	}
+
+	component.clearAction = function (value: any): void {
+		if (value == null) {
+			selected = null;
+		}
 	};
 
-	const formatSuggestion = (suggestion: string, query: string) => {
-    const lowerCaseSuggestion = suggestion.toLowerCase();
-    const lowerCaseQuery = query.toLowerCase();
-    const startIndex = lowerCaseSuggestion.indexOf(lowerCaseQuery);
-    
-    if (startIndex !== -1) {
-      const beforeMatch = suggestion.substring(0, startIndex);
-      const match = suggestion.substring(startIndex, startIndex + query.length);
-      const afterMatch = suggestion.substring(startIndex + query.length);
+	function augmentItems(items: any[]): any[] {
+		if (items == null) {
+			return [];
+		}
 
-      return `${beforeMatch}<strong>${match}</strong>${afterMatch}`;
-    }
+		// Build "SearchText" field which will be used to find relevant matches.
+		items.forEach((c) => (c.SearchText = (c.Value + ' ' + c.Label).toLocaleLowerCase()));
+		return items;
+	}
 
-    return suggestion;
-  };
+	async function loadOptionsAndFilter(query: string): Promise<any> {
+		const queryById = typeof query !== 'string';
+
+		return loadOptions(query).then((options) => {
+			if (queryById) {
+				return options;
+			}
+
+			const queryInLowercase = query.toLocaleLowerCase();
+
+			return options.filter((t: { SearchText: string | string[] }) =>
+				t.SearchText.includes(queryInLowercase)
+			);
+		});
+	}
+
+	async function loadOptions(query: string | TypeaheadValue | null): Promise<any> {
+		if (isInlineSource) {
+			return Promise.resolve(items);
+		}
+
+		let cacheKey = typeof query === 'object' && query != null ? query.Value : query;
+
+		if (cachedOptions[cacheKey] != null) {
+			return cachedOptions[cacheKey];
+		}
+
+		type PostData = { Ids: { Items: any[] } } | { Query: string | null };
+
+		let postData: PostData =
+			typeof query === 'object' && query !== null
+				? { Ids: { Items: [query.Value] } }
+				: { Query: query };
+
+		const parameters: any[] = controller.metadata.CustomProperties['Parameters'];
+
+		if (parameters !== null) {
+			let promises = parameters.map((p) => {
+				switch (p.SourceType) {
+					case 'response':
+						// Use type assertion here
+						(postData as any)[p.Parameter] = controller?.form?.response[p.Source];
+						return Promise.resolve();
+					case 'request':
+						return controller?.form?.inputs[p.Source]
+							.getValue()
+							.then((value) => ((postData as any)[p.Parameter] = value));
+				}
+			});
+
+			await Promise.all(promises);
+		}
+
+		let response = controller.app
+			.postForm(controller.metadata.CustomProperties.Source, postData, null)
+			.then((t: any) => {
+				return augmentItems(t.Items);
+			});
+
+		return await response;
+	}
 </script>
 
-<div
-	class="typeahead"
-	on:focusin={() => {
-		inputInFocus = true;
-	}}
-	on:focusout={(e) => {
-		inputInFocus =
-			e.relatedTarget instanceof Element && e.relatedTarget.closest('.typeahead') != null;
-	}}
->
-	<input
-		class="form-control form-control-lg"
-		autocomplete="off"
-		bind:value={userInput}
-		on:input={() => search()}
-	/>
-	{#if inputInFocus && searchResults?.length > 0}
-		<ul class="list-group">
-			{#each searchResults as item}
-				<button
-					class="list-group-item list-group-item-action"
-					on:click={() => {
-						handleOnClick(item);
-					}}>
-					<span>{@html formatSuggestion(item.SearchText, userInput)}</span>
-					</button
-				>
-			{/each}
-		</ul>
-	{/if}
+<div class="input-container">
+	<Select
+		inputAttributes={{ id: id, tabindex: 0 }}
+		value={selected}
+		label="Label"
+		itemId="Value"
+		on:input={(e) => {
+			controller.value = e.detail;
+			controller.fire('changed', e.detail);
+		}}
+		on:clear={() => {
+			if (controller != null) {
+				controller.value = null;
+				controller.fire('changed', null);
+			}
+		}}
+		hideEmptyState={true}
+		placeholder="type to search..."
+		loadOptions={loadOptionsAndFilter}
+	>
+		<div slot="item" let:item class="item">
+			{#if item.Path != null}
+				<small>{item.Path}</small>
+				<span>{@html item.Label}</span>
+			{:else}
+				{@html item.Label}
+			{/if}
+		</div>
+	</Select>
 </div>
 
 <style lang="scss">
-	@import '../../scss/styles.scss';
+	.input-container {
+		width: 100%;
+		--height: 37px;
+		--padding: 0 16px 0 16px;
+		--background: var(--app-body-bg);
+		--input-color: var(--app-body-color);
+		--font-size: 1rem;
+		--item-height: auto;
 
-	.typeahead {
-		& > form {
-			&:focus-within {
-				box-shadow: $input-focus-box-shadow;
-				border-color: $input-focus-border-color;
+		--item-color: var(--app-body-color);
+		--item-hover-bg: var(--app-tertiary-bg);
+
+		--clear-icon-color: var(--app-body-color);
+		--clear-select-width: 20px;
+		--loading-width: 20px;
+
+		--list-background: var(--app-body-bg);
+		--list-border: 1px solid var(--app-border-color);
+
+		--border: 1px solid var(--app-border-color);
+		--border-hover: 1px solid var(--app-border-color);
+		--border-focused: 1px solid var(--app-input-focus-border-color);
+
+		--multi-item-bg: var(--app-body-bg);
+		--multi-select-padding: 0 16px 0 16px;
+		--multi-item-height: 28px;
+		--multi-item-clear-icon-color: var(--app-body-color);
+		--multi-item-outline: 2px solid var(--app-border-color);
+
+		.item {
+			cursor: default;
+			line-height: var(--height, 42px);
+			color: var(--item-color, inherit);
+			text-overflow: ellipsis;
+			overflow: hidden;
+			white-space: nowrap;
+
+			& > small {
+				font-size: 0.8em;
+				display: block;
+				opacity: 0.5;
+				line-height: 1.2em;
+				padding: 8px 0 0 0;
+			}
+
+			& > span {
+				line-height: 1.8em;
+				padding: 0 0 5px 0;
+				margin: 0;
+				display: block;
 			}
 		}
-	}
 
-	.list-group {
-		position: absolute;
-		z-index: 999;
+		& > :global(.svelte-select.focused) {
+			box-shadow: 0 0 0 var(--app-focus-ring-width) var(--app-focus-ring-color);
+		}
 	}
 </style>
