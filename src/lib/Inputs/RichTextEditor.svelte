@@ -49,6 +49,7 @@
 	export const getHtml = () => html;
 
 	let editor: Editor;
+	let isInitiated: boolean;
 
 	let component = new InputComponentController({
 		init() {
@@ -56,7 +57,10 @@
 			controller.setCallback((content: string | null) => {
 				if (content) {
 					html = content;
-					editor.setHtml(html!, true);
+					if (!isInitiated) {
+						editor.setHtml(html!, true);
+						isInitiated = true;
+					}					
 				}
 			});
 		},
