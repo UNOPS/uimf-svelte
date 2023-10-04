@@ -1,5 +1,5 @@
 import EventSource from "./EventSource";
-import { FormController, type FormInstance } from "./FormController";
+import { FormController } from "./FormController";
 import type IUimfApp from "./UimfApp";
 import type { ComponentMetadata } from "./uimf";
 import uuid from "./uuid";
@@ -7,7 +7,7 @@ import uuid from "./uuid";
 export interface CreateOutputOptions {
     metadata: ComponentMetadata;
     data: any;
-    form: FormController;
+    form: FormController | null;
     app: IUimfApp;
 }
 
@@ -36,8 +36,8 @@ export class OutputController<T> extends EventSource {
         super();
         this.metadata = options.metadata;
         this.value = options.data;
-        this.form = new FormController(options.form?.parentForm ?? null, options.form);
         this.app = options.app;
+        this.form = options.form != null ? new FormController(options.form?.parentForm ?? null, options.form) : null;
     }
 
     public metadata: ComponentMetadata;
