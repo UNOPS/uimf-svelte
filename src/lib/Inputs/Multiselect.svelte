@@ -8,25 +8,22 @@
 	}
 
 	export class Controller extends InputController<MultiselectValue> {
-		public static delimitter = '-';
-
 		public deserialize(value: string): Promise<MultiselectValue | null> {
-			var result =
-				value == null || value === ''
-					? null
-					: (value.split(Controller.delimitter) as unknown as MultiselectValue);
-
+			const parsedValue = value ? JSON.parse(value) : null;
+			const result: MultiselectValue | null = parsedValue ? { Items: parsedValue } : null;
 			return Promise.resolve(result);
 		}
 
 		public serialize(value: MultiselectValue): string | null {
-			const items = value?.Items.filter((t) => t != null) ?? [];
-			return items.length > 0 ? items.join(Controller.delimitter) : null;
+			const items = value?.Items?.filter((t) => t !== null && t !== undefined) || [];
+			return JSON.stringify(items.length > 0 ? items : null);
 		}
 
 		public getValue(): Promise<MultiselectValue | null> {
-			var result = this.value != null && this.value.Items.length > 0 ? this.value : null;
-
+			var result =
+				this.value?.Items != null && Array.isArray(this.value?.Items) && this.value.Items.length > 0
+					? this.value
+					: null;
 			return Promise.resolve(result);
 		}
 
@@ -54,7 +51,8 @@
 	let isInlineSource: boolean = true;
 
 	let component = new InputComponentController({
-		init() {
+		async init() {
+			console.log('init multi select');
 			cachedOptions = {};
 			selected = [];
 
@@ -65,22 +63,27 @@
 
 			controller.ready?.resolve();
 		},
+		// component must be refreshed to take url data in account
+		async refresh() {
+			setComponentValue();
+		},
 		async refreshBrowser() {
-			if (controller?.value !== null && controller.serialize(controller.value) != null) {
-				let results = await loadOptions(controller?.value);
-
-				selected =
-					results != null && results.length > 0
-						? controller.value.Items.map((t: any) =>
-								results.find((c: { Value: any }) => c.Value == t)
-						  )
-						: [];
-			} else {
-				selected = [];
-				controller.value = null;
-			}
+			setComponentValue();
 		}
 	});
+
+	async function setComponentValue() {
+		if (controller?.value && controller.serialize(controller.value)) {
+			let results = await loadOptions(controller.value);
+			selected =
+				results?.length > 0
+					? controller.value.Items.map((t) => results.find((c: { Value: any; }) => c.Value == t))
+					: [];
+		} else {
+			selected = [];
+			controller.value = null;
+		}
+	}
 
 	beforeUpdate(async () => {
 		await component.setup(controller);
