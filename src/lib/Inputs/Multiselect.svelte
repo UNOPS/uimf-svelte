@@ -1,8 +1,6 @@
 <script context="module" lang="ts">
 	import { InputController } from '../Infrastructure/InputController';
 
-	//export const config = new OutputControlConfiguration(false, false, false, 'multiselect');
-
 	interface MultiselectValue {
 		Items: any[];
 	}
@@ -52,7 +50,6 @@
 
 	let component = new InputComponentController({
 		async init() {
-			console.log('init multi select');
 			cachedOptions = {};
 			selected = [];
 
@@ -77,7 +74,7 @@
 			let results = await loadOptions(controller.value);
 			selected =
 				results?.length > 0
-					? controller.value.Items.map((t) => results.find((c: { Value: any; }) => c.Value == t))
+					? controller.value.Items.map((t) => results.find((c: { Value: any }) => c.Value == t))
 					: [];
 		} else {
 			selected = [];
