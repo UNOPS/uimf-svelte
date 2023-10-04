@@ -79,6 +79,21 @@
 			// is auto-invoked on `changed` event. However, we still need to signal
 			// the fact that typeahead now has a value, so we trigger `refreshed` event.
 			controller.fire('refreshed', controller.value);
+		},
+		async refresh() {
+			if (controller.value != null && controller.serialize(controller.value) != null) {
+				let results = await loadOptions(controller.value);
+				controller.value =
+					results != null && results.length > 0
+						? results.find((t: { Value: any }) => t.Value == controller?.value?.Value)
+						: null;
+
+				if (controller.value == null) {
+					throw `Cannot find option for "${controller.metadata.Id}".`;
+				}
+			} else {
+				controller.value = null;
+			}
 		}
 	});
 
