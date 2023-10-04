@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
-	import type { OutputController } from '../Infrastructure/OutputController';
+	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponentController } from '../Infrastructure/ComponentController';
 
 	interface Item {
@@ -8,13 +8,11 @@
 		Id: number;
 		Name: string;
 		Children: Item[];
+		CssClass: string;
 	}
 
-	interface Items {
-		Items: Item[];
-	}
-
-	export let controller: OutputController<Items>;
+	export let controller: OutputController<Item>;
+	let expanded = true;
 
 	let component = new OutputComponentController({
 		refresh() {
@@ -22,133 +20,82 @@
 		}
 	});
 
-	if (controller != undefined) {
-		beforeUpdate(async () => await component.setup(controller));
+	beforeUpdate(async () => await component.setup(controller));
+
+	function buildController(value: Item) {
+		return new OutputController<Item>({
+			app: controller.app,
+			data: value,
+			form: controller.form,
+			metadata: controller.metadata
+		});
 	}
-
-	export let tree = { Id: 0, Name: 'Catalogues', Url: '', Children: controller.value?.Items || {} };
-
-	const { Id, Name, Children, Url } = tree;
-
-	let expanded = true;
-	const toggleExpansion = () => {
-		expanded = !expanded;
-	};
-	$: arrowDown = expanded;
-
-	// Function to handle button click and keyboard events
-	const handleButtonClick = () => {
-		toggleExpansion();
-	};
-
-	const handleButtonKeydown = (event: { key: string; preventDefault: () => void; }) => {
-		if (event.key === 'Enter' || event.key === ' ') {
-			event.preventDefault();
-			toggleExpansion();
-		}
-	};
-
-	const handleLinkKeydown = (event: { key: string; }) => {
-		if (event.key === 'Enter') {
-			// Allow users to activate the link using Enter key
-			window.location.href = Url;
-		}
-	};
 </script>
 
-{#if controller?.value}
-	{#if Name == 'Catalogues'}
-		<span class="head">{Name}</span>
-	{/if}
+{#if controller.value != null}
 	<ul>
-		<li>
-			{#if Children.length > 0}
-				{#if Name != 'Catalogues'}
+		<li class={controller.value.CssClass}>
+			{#if controller.value.Name?.length > 0}
+				{#if controller.value.Children.length > 0}
 					<span
-						on:click={toggleExpansion}
+						on:click={() => (expanded = !expanded)}
 						on:keydown={(event) => {
 							if (event.key === 'Enter' || event.key === ' ') {
 								event.preventDefault();
-								toggleExpansion();
+								expanded = !expanded;
 							}
 						}}
 						tabindex="0"
 						role="button"
-						aria-label={`Toggle ${Name} expansion`}
+						aria-label={`Toggle ${controller.value.Name} expansion`}
+						class="arrow"
+						class:down={expanded}>&#x25b6;</span
 					>
-						<span class="arrow" class:arrowDown>&#x25b6;</span>
-						<span class="bold">
-							<button
-								on:click={handleButtonClick}
-								on:keydown={handleButtonKeydown}
-								aria-label={`Toggle ${Name} expansion`}
-							>
-								{Name}
-							</button>
-						</span>
-					</span>
 				{/if}
-				{#if expanded}
-					{#each Children as child}
-						{#if child != null}
-							<svelte:self tree={child} {controller} />
-						{/if}
-					{/each}
-				{/if}
-			{:else}
-				<span>
-					<span class="no-arrow" />
-					<button
-						on:click={() => (window.location.href = Url)}
-						on:keydown={handleLinkKeydown}
-						aria-label={`Go to ${Name} ${Id}`}
-						tabindex="0"
-					>
-						{Name} #{Id}
-					</button>
-				</span>
+				<a href={controller.value.Url}>{controller.value.Name}</a>
+			{/if}
+			{#if expanded && controller.value.Children?.length > 0}
+				{#each controller.value.Children as child}
+					<svelte:self controller={buildController(child)} />
+				{/each}
 			{/if}
 		</li>
 	</ul>
 {/if}
 
-<style>
+<style lang="scss">
+	@import '../../scss/styles.scss';
+
 	ul {
 		margin: 0;
 		list-style: none;
-		padding-left: 1.2rem;
+		padding-left: 14px;
 		user-select: none;
+
+		& > li {
+			margin-bottom: 0;
+
+			& > a {
+				text-decoration: none;
+			}
+
+			&.active > a {
+				font-weight: bold;
+				text-decoration: underline;
+			}
+		}
 	}
-	button {
-		border: none;
-		background: none;
-		cursor: pointer;
-		font: inherit;
-		padding: 0;
-		text-decoration: underline;
-		color: #515151;
-	}
-	.no-arrow {
-		padding-left: 1rem;
-	}
+
 	.arrow {
+		margin-left: -14px;
 		cursor: pointer;
 		display: inline-block;
-		font-weight: bold;
 		transition: transform 200ms;
-	}
-	.arrowDown {
-		transform: rotate(90deg);
-	}
-	.bold {
-		font-weight: bold;
-	}
-	.head {
-		font-weight: 700;
-		background-color: #f2f2f2;
-		width: 100%;
-		padding: 10px 65px;
-		margin-bottom: 10px;
-		display: block;
+		color: $primary;
+		opacity: 0.6;
+		
+		&.down {
+			transform: rotate(90deg);
+		}
 	}
 </style>
