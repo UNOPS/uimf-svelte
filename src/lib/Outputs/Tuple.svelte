@@ -36,7 +36,7 @@
 			{
 				metadata: item,
 				data: value,
-				form: controller.form!,
+				form: controller.form,
 				app: controller.app
 			}
 		);
