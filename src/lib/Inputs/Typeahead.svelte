@@ -162,7 +162,7 @@
 				switch (p.SourceType) {
 					case 'response':
 						// Use type assertion here
-						(postData as any)[p.Parameter] = controller?.form?.response[p.Source];
+						(postData as any)[p.Parameter] = controller?.form?.response[p.Source]?.value;
 						return Promise.resolve();
 					case 'request':
 						return controller?.form?.inputs[p.Source]
