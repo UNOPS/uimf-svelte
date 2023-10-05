@@ -98,10 +98,51 @@
 						}
 						break;
 					case 'open-modal':
-						controller.app.openModal({
-							form: controller.value.Form,
-							inputFieldValues: controller.value.InputFieldValues
-						});
+						const originalUrl = window.location.href;
+
+						controller.app
+							.openModal({
+								form: controller.value.Form,
+								inputFieldValues: controller.value.InputFieldValues,
+								parentForm: controller.form,
+								closeOnResponseHandled: false,
+								init: function (form, modal) {
+									// If the form inside the modal is posted successfully
+									// then close the modal.
+									form.on('form:responseHandled', function (event) {
+										if (form.metadata.CloseOnPostIfModal && !event.postOnLoad) {
+											modal.$close();
+										}
+									});
+
+									// If the form's "exception actions" is posted successfully
+									// then close the modal. We consider "exception actions" to
+									// be an extension of the form, therefore posting an "exception
+									// action", just like posting the form itself should close the modal.
+									form.on('form:exceptionHandled', function () {
+										if (form.metadata.CloseOnPostIfModal) {
+											modal.$close();
+										}
+									});
+								}
+							})
+							.then(function () {
+								if (controller.form != null && location.href === originalUrl) {
+									// If parent form is a "record", meaning that initially it's called with
+									// "operation=get" and the subsequent calls are done with "operation=post".
+									if (
+										controller.form.metadata.PostOnLoadValidation === false &&
+										controller.form.inputs['Operation']
+									) {
+										// Mimic the initial "get" call, so that we reload the parent form.
+										controller.form.inputs['Operation'].value = null;
+										controller.form.submit(true);
+									} else {
+										// For regular "non-record" forms we just re-submit the form normally.
+										controller.form.submit(false);
+									}
+								}
+							});
 						break;
 					case 'run':
 						{
@@ -161,7 +202,7 @@
 
 <style lang="scss">
 	@import '../../scss/styles.scss';
-	
+
 	$btnBorderColor: #cdd6e1;
 
 	.btn-primary {
