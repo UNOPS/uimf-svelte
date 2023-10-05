@@ -62,6 +62,7 @@ import * as Output from '../Outputs/Output.svelte';
 import * as SlaTimer from '../Outputs/SlaTimer.svelte';
 import * as ShipmentSize from '../Outputs/ShipmentSize.svelte';
 import * as Boolean from '../Outputs/Boolean.svelte';
+import * as EditableValue from "../Outputs/EditableValue.svelte";
 
 import UimfForm from '../Form.svelte';
 import { FormController, type FormInstance } from "./FormController";
@@ -268,6 +269,7 @@ defaultControlRegister.registerOutputComponent('status', Status, { displayAsBloc
 //defaultControlRegister.registerOutputComponent('sla-timer', SlaTimer);
 //defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize);
 //defaultControlRegister.registerOutputComponent('boolean', Boolean);
+//defaultControlRegister.registerOutputComponent('editable-value', EditableValue);
 
 // These components can only be enabled once we are using the new Form as they depend on each others
 // defaultControlRegister.registerOutputComponent('action-list', ActionList, { alwaysHideLabel: true });
