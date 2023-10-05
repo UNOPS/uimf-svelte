@@ -80,14 +80,27 @@
 	>
 		{#each fields as field}
 			<div style:grid-area={field.controller.metadata.CustomProperties?.gridArea}>
+				{#if field.controller.metadata.Label != null}
+					<h3>{field.controller.metadata.Label}</h3>
+				{/if}
 				<svelte:component this={field.component} controller={field.controller} />
 			</div>
 		{/each}
 	</div>
 {/if}
 
-<style>
+<style lang="scss">
 	.layout {
 		display: grid;
+		grid-gap: 10px;
+
+		& > div {
+			& > h3 {
+				padding: 5px 10px;
+				border-bottom: 2px solid #cbdce9;
+				font-weight: 400;
+				font-size: 1.1em;
+			}
+		}
 	}
 </style>

@@ -63,7 +63,9 @@
 				{#if controller.value.Icon}
 					<i class={controller.value.Icon} aria-hidden="true" />
 				{/if}
-				{controller.value.Label}
+				{#if controller.value.Label != null}
+					{controller.value.Label}
+				{/if}
 			</span>
 		{:else}
 			{#await controller.app.makeUrl(controller.value) then url}
@@ -227,6 +229,7 @@
 
 	.btn {
 		border-radius: 0;
+		font-size: 1em;
 
 		&:hover {
 			border-color: $btnBorderColor;

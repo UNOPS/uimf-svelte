@@ -245,8 +245,8 @@
 		text-align: right;
 		padding: 5px 2px;
 		border-radius: 5px 5px 0px 0px;
-		border: 1px solid var(--app-border-color);
-		background-color: var(--app-body-bg);
+		border: 1px solid #e5e5e5;
+		background-color: #f9f9f9;
 		border-bottom: 0;
 	}
 
