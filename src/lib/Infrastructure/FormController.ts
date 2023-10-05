@@ -16,10 +16,10 @@ interface FormMetadata extends ComponentMetadata {
 export interface FormInstance {
     hasVisibleOutputs: boolean;
     hasVisibleInputs: boolean;
-    load(arg0: boolean): Promise<any>;
-    on(arg0: string, arg1: () => void): any;
+    load(postOnLoad: boolean): Promise<any>;
+    on(event: string, callback: (args: any) => void): any;
     destroy(): any;
-    fire(arg0: string, arg1: { postOnLoad: any; }): any;
+    fire(event: string, args: { postOnLoad: any; }): any;
     metadata: FormMetadata;
     response: { [key: string]: any };
     inputs: { [key: string]: any };
@@ -291,13 +291,13 @@ export class FormController extends EventSource implements FormInstance {
 
     /**
 	 * Gets input field values.
-	 * @param data 
-	 */
-	public async getInputFieldValues(): Promise<{ [key: string]: any; }> {
-		var data: { [key:string]: any } = {};
+     * @param data 
+     */
+    public async getInputFieldValues(): Promise<{ [key: string]: any; }> {
+        var data: { [key: string]: any } = {};
 
-		var promises = this.metadata.InputFields.map(async inputFieldMetadata => {
-			data[inputFieldMetadata.Id] = await this.inputs[inputFieldMetadata.Id].getValue();
+        var promises = this.metadata.InputFields.map(async inputFieldMetadata => {
+            data[inputFieldMetadata.Id] = await this.inputs[inputFieldMetadata.Id].getValue();
 		});
 
 		await Promise.all(promises);
@@ -315,7 +315,7 @@ export class FormController extends EventSource implements FormInstance {
         } as Deferrer;
 
         let controllerToReturn = new controllerClass({
-            metadata:metadata,
+            metadata: metadata,
             form: this,
             defer: deferer,
             app: this.app

@@ -227,10 +227,9 @@
 
 	.btn {
 		border-radius: 0;
-		
-		&:hover{
+
+		&:hover {
 			border-color: $btnBorderColor;
 		}
 	}
-
 </style>
