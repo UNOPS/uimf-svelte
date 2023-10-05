@@ -38,6 +38,7 @@ import * as Html from '../Outputs/Html.svelte';
 import * as DateTimeOutput from '../Outputs/DateTime.svelte';
 import * as EventDescription from '../Outputs/EventDescription.svelte';
 import * as Status from '../Outputs/Status.svelte';
+import * as NestedObject from "../Outputs/NestedObject.svelte";
 
 //To be deactivated until complete validation
 // import * as Typeahead from '../Inputs/Typeahead.svelte'
@@ -275,4 +276,4 @@ defaultControlRegister.registerOutputComponent('status', Status, { displayAsBloc
 // defaultControlRegister.registerOutputComponent('action-list', ActionList, { alwaysHideLabel: true });
 // defaultControlRegister.registerOutputComponent('expandable', Expandable);
 // defaultControlRegister.registerOutputComponent('object-list', ObjectList);
-// defaultControlRegister.registerOutputComponent('tuple', Tuple);
+defaultControlRegister.registerOutputComponent('nested-object', NestedObject);
