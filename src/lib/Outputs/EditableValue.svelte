@@ -14,7 +14,7 @@
 
 	let component = new OutputComponentController({
 		refresh() {
-			display = buildField(controller.metadata.CustomProperties.ValueType, controller.value?.Value);
+			display = buildField(controller.metadata.CustomProperties.ValueMetadata, controller.value?.Value);
 
 			action = buildField(
 				{
