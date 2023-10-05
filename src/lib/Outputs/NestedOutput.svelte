@@ -4,78 +4,64 @@
 	import { OutputComponentController } from '../Infrastructure/ComponentController';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
 
-	export let controller: OutputController<any>;
-
-	class ComponentController {
+	class OutputField {
 		component: any;
 		controller: any;
 	}
 
+	export let controller: OutputController<any>;
+
+	let fields: OutputField[];
+
 	let component = new OutputComponentController({
 		refresh() {
-			componentControllers = getComponentControllers(
-				controller.metadata.CustomProperties.Properties
-			);
-
+			fields = getComponentControllers();
 			controller.value = controller.value;
 		}
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
 
-	let componentControllers: ComponentController[] = getComponentControllers(
-		controller.metadata.CustomProperties.Properties
-	);
+	function getComponentControllers(): OutputField[] {
+		if (controller.value?.Value == null) {
+			return [];
+		}
 
-	function getComponentControllers(properties: any[]): any[] {
-		let componentControllerArray: ComponentController[] = [];
-
-		properties
+		return (controller.metadata.CustomProperties.Properties as any[])
 			.sort((a, b) => a.OrderIndex - b.OrderIndex)
-			.forEach((property) => {
+			.map((property) => {
 				const entry = controlRegister.outputs[property.Type];
 
 				if (entry == null) {
 					throw `No component available for output of type "${property.Type}".`;
 				}
 
-				let componentController = {
+				let field = {
 					component: entry.component,
 					controller: new OutputController<any>({
 						metadata: property,
 						data: null,
-						form: controller.form!,
+						form: controller.form,
 						app: controller.app
 					})
 				};
-				
-				if (controller.value != null && controller.value.Value != undefined) {
-					componentController.controller.setValue(controller.value?.Value[property.Id]);
-					componentControllerArray.push(componentController);
-				}
-			});
 
-		return componentControllerArray;
+				if (controller.value?.Value != null) {
+					field.controller.setValue(controller.value?.Value[property.Id]);
+				}
+
+				return field;
+			});
 	}
 </script>
 
-{#if componentControllers != null}
+{#if fields?.length > 0}
 	<div class={controller.metadata.CustomProperties?.cssClass}>
-		{#each componentControllers as componentController}
-			<div class={componentController.controller.metadata.CustomProperties?.cssClass}>
-				{#if componentController.controller.metadata.Type == 'text' && componentController.controller.metadata.CustomProperties?.cssClass != null}
-					<svelte:component
-						this={componentController.component}
-						controller={componentController.controller}
-						showLabel={componentController.controller.metadata.CustomProperties?.cssClass.includes(
-							'show-label'
-						)}
-					/>
-				{/if}
-
+		{#each fields as field}
+			<div class={field.controller.metadata.CustomProperties?.cssClass}>
 				<svelte:component
-					this={componentController.component}
-					controller={componentController.controller}
+					this={field.component}
+					controller={field.controller}
 				/>
 			</div>
 		{/each}
