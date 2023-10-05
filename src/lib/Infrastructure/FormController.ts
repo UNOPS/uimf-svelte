@@ -11,9 +11,12 @@ interface FormMetadata extends ComponentMetadata {
     InputFields: ComponentMetadata[];
     PostOnLoad: any;
     OutputFields: ComponentMetadata[];
+    CloseOnPostIfModal: boolean;
+    PostOnLoadValidation: boolean;
 }
 
 export interface FormInstance {
+    submit: (postOnLoad?: boolean) => Promise<any>;
     hasVisibleOutputs: boolean;
     hasVisibleInputs: boolean;
     load(postOnLoad: boolean): Promise<any>;
@@ -59,6 +62,7 @@ export class FormController extends EventSource implements FormInstance {
     public useUrl: boolean;
     public onFormLoaded: ((arg0: any) => any) | null = null;
     public onFormFailed: ((arg0: any) => any) | null = null;
+    submit: (postOnLoad?: boolean | undefined) => Promise<any>;
 
     constructor(parentForm: FormController | null, form: FormInstance) {
         super();
@@ -67,6 +71,11 @@ export class FormController extends EventSource implements FormInstance {
         this.metadata = form.metadata;
         this.response = form.response;
         this.inputs = form.inputs;
+
+        this.submit = function (postOnLoad?: boolean) {
+            return form.submit(postOnLoad);
+        };
+
         this.hasVisibleInputs = form.hasVisibleInputs;
         this.hasVisibleOutputs = form.hasVisibleOutputs;
         this.originalInputValues = form.originalInputValues;
@@ -143,63 +152,6 @@ export class FormController extends EventSource implements FormInstance {
                 return Promise.reject(reason);
             });
     }
-
-    public async submit(asPostOnLoad: boolean, inputFieldValues: any | null = null): Promise<void> {
-        let allRequiredInputsHaveValue = true;
-        let inputData: { [x: string]: any } = {};
-
-        if (inputFieldValues != null) {
-            inputData = inputFieldValues;
-        }
-        else {
-            for (const inputKey of Object.keys(this.inputs)) {
-                if (inputKey == "Operation" && this.response.NextOperation?.Value != null) {
-                    inputData[inputKey] = this.response.NextOperation;
-                }
-                else if (this.inputControllers[inputKey] != null) {
-                    let input = this.inputControllers[inputKey];
-                    inputData[inputKey] = await input.getValue();
-                    if (inputData[inputKey] == null) {
-                        allRequiredInputsHaveValue = allRequiredInputsHaveValue && !input.metadata.Required;
-                    }
-                } else {
-                    inputData[inputKey] = this.inputs[inputKey].value;
-                }
-            }
-
-            if (!allRequiredInputsHaveValue) {
-                return Promise.reject('validation');
-            }
-        }
-
-
-        return this.app
-            .postForm(this.metadata.Id, inputData, {
-                afterExceptionAction: function () {
-                    this.fire('form:exceptionHandled');
-                }
-            })
-            .then((response: { [x: string]: any }) => {
-                this.response = response;
-
-                Object.keys(response).forEach((outputId) => {
-                    if (this.outputControllers[outputId] != null) {
-                        this.outputControllers[outputId].setValue(response[outputId]);
-                    }
-                });
-
-                if (response.Metadata != null) {
-                    let customHandler = this.app.getResponseHandler(response.Metadata.Handler);
-                    if (customHandler != null) {
-                        customHandler(response);
-                    }
-                }
-
-                this.fire('form:responseHandled', { postOnLoad: asPostOnLoad });
-                this.fire('form:change', this);
-                return Promise.resolve();
-            });
-    };
 
     public destroy() {
         this.fire('destroy', this);
@@ -290,7 +242,7 @@ export class FormController extends EventSource implements FormInstance {
     }
 
     /**
-	 * Gets input field values.
+     * Gets input field values.
      * @param data 
      */
     public async getInputFieldValues(): Promise<{ [key: string]: any; }> {
@@ -298,12 +250,12 @@ export class FormController extends EventSource implements FormInstance {
 
         var promises = this.metadata.InputFields.map(async inputFieldMetadata => {
             data[inputFieldMetadata.Id] = await this.inputs[inputFieldMetadata.Id].getValue();
-		});
+        });
 
-		await Promise.all(promises);
+        await Promise.all(promises);
 
-		return data;
-	}
+        return data;
+    }
 
     async makeInputController(metadata: ComponentMetadata, value: any): Promise<InputController<any>> {
         let controllerClass = defaultControlRegister.inputs[metadata.Type].controller;
@@ -320,7 +272,7 @@ export class FormController extends EventSource implements FormInstance {
             defer: deferer,
             app: this.app
         });
-        
+
         await controllerToReturn.setValue(value);
         return Promise.resolve(controllerToReturn);
     };

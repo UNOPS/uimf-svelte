@@ -32,6 +32,7 @@ interface IModalOptions {
     inputFieldValues?: any;
     closeOnResponseHandled?: boolean;
     init?: (form: FormInstance, modal: { $close: () => void }) => void;
+    parentForm?: FormInstance | null;
 }
 
 interface IHtmlModalOptions {
