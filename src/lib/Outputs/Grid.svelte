@@ -73,7 +73,7 @@
 	}
 </script>
 
-{#if fields?.length > 0}
+{#if fields?.length > 0 && controller.metadata.CustomProperties?.Customizations != null}
 	<div
 		class="layout"
 		style:grid-template-areas={controller.metadata.CustomProperties.Customizations.Areas}
@@ -81,7 +81,7 @@
 		style:grid-template-columns={controller.metadata.CustomProperties.Customizations.Columns}
 	>
 		{#each fields as field}
-			<div class={field.controller.metadata.CustomProperties?.Area}>
+			<div style:grid-area={field.controller.metadata.CustomProperties?.Area}>
 				<svelte:component this={field.component} controller={field.controller} />
 			</div>
 		{/each}
