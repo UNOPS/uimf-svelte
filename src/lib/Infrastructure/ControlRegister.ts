@@ -28,7 +28,7 @@ import * as PaginatedObjectList from '../Outputs/PaginatedObjectList.svelte';
 import * as Money from '../Outputs/Money.svelte';
 import type IUimfApp from "./UimfApp";
 import * as TreeViewSelector from '../Outputs/TreeViewSelector.svelte';
-import * as NestedOutput from '../Outputs/NestedOutput.svelte';
+import * as Grid from '../Outputs/Grid.svelte';
 import * as Tabs from '../Outputs/Tabs.svelte';
 import * as Slider from '../Outputs/Slider.svelte';
 import * as Number from '../Outputs/Number.svelte';
@@ -240,7 +240,7 @@ defaultControlRegister.registerOutputComponent('text', OutputText, { displayAsBl
 defaultControlRegister.registerOutputComponent('paginated-object-list', PaginatedObjectList);
 defaultControlRegister.registerOutputComponent('money', Money, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('tree-view-selector', TreeViewSelector);
-defaultControlRegister.registerOutputComponent('nested-output', NestedOutput);
+defaultControlRegister.registerOutputComponent('grid', Grid);
 defaultControlRegister.registerOutputComponent('tabs', Tabs, { alwaysHideLabel: true });
 defaultControlRegister.registerOutputComponent('tabstrip', Tabstrip, { alwaysHideLabel: true });
 defaultControlRegister.registerOutputComponent('slider', Slider);
