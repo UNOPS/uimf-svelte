@@ -3,92 +3,64 @@
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponentController } from '../Infrastructure/ComponentController';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
+	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
 
 	export let controller: OutputController<any>;
 
-	class ComponentController {
+	class Field {
 		component: any;
 		controller: any;
 	}
 
 	let component = new OutputComponentController({
 		refresh() {
-			componentController = BuildComponentController(
-				controller.metadata.CustomProperties.ItemTypes[0].Type
+			display = buildField(controller.metadata.CustomProperties.ValueType, controller.value?.Value);
+
+			action = buildField(
+				{
+					Type: 'formlink',
+					CustomProperties: null,
+					Hidden: false,
+					Id: 'Action',
+					Label: '',
+					OrderIndex: 10,
+					Required: false
+				},
+				controller.value?.Action
 			);
 
-			actionController = BuildActionController(
-				controller.metadata.CustomProperties.ItemTypes[0].Type
-			);
 			controller.value = controller.value;
 		}
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
 
-	let componentController: ComponentController = BuildComponentController(
-		controller.metadata.CustomProperties.ItemTypes[0].Type
-	);
+	let display: Field;
+	let action: Field;
 
-	let actionController: ComponentController = BuildActionController('formlink');
+	function buildField(metadata: ComponentMetadata, value: any): any {
+		const componentRegistration = controlRegister.outputs[metadata.Type];
 
-	function BuildComponentController(type: string): any {
-		let componentController = {
-			component: controlRegister.outputs[type].component,
+		if (componentRegistration == null) {
+			throw `Cannot find output for type '${metadata.Type}'.`;
+		}
+
+		return {
+			component: componentRegistration.component,
 			controller: new OutputController<any>({
-				metadata: controller.value?.Value,
-				data: null,
-				form: controller.form!,
+				metadata: metadata,
+				data: value,
+				form: controller.form,
 				app: controller.app
 			})
 		};
-
-		if (controller.value != null && controller.value.Value != undefined) {
-			componentController.controller.setValue(controller.value?.Value);
-		}
-
-		return componentController;
-	}
-
-	function BuildActionController(type: string): any {
-		let componentController = {
-			component: controlRegister.outputs[type].component,
-			controller: new OutputController<any>({
-				metadata: controller.value?.Action,
-				data: null,
-				form: controller.form!,
-				app: controller.app
-			})
-		};
-
-		if (controller.value != null && controller.value.Action != undefined) {
-			componentController.controller.setValue(controller.value?.Action);
-		}
-
-		return componentController;
 	}
 </script>
 
-{#if controller.value != null}
-	{#if componentController != null}
-		<svelte:component
-			this={componentController.component}
-			controller={componentController.controller}
-		/>
-		<span class="position {controller.value.CssClass}">
-			<svelte:component
-				this={actionController.component}
-				controller={actionController.controller}
-			/>
-		</span>
-	{/if}
+{#if display != null}
+	<svelte:component this={display.component} controller={display.controller} />
 {/if}
 
-<style lang="scss">
-	.position {
-		margin-left: 2px;
-	}
-	.edit {
-		color: darkorange;
-	}
-</style>
+{#if action != null}
+	<svelte:component this={action.component} controller={action.controller} />
+{/if}
