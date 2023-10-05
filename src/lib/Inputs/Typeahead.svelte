@@ -9,17 +9,13 @@
 		}
 
 		public serialize(value: TypeaheadValue): string {
-			return value != null && value.Value != null ? value.Value : null;
+			return value?.Value != null ? value.Value : null;
 		}
 
 		public getValue(): Promise<TypeaheadValue | null> {
-			var result = this.value != null && this.value.Value != null ? this.value : null;
+			var result = this.value?.Value != null ? this.value : null;
 
 			return Promise.resolve(result);
-		}
-
-		protected setValueInternal(value: TypeaheadValue): Promise<void> {
-			return Promise.resolve();
 		}
 	}
 
@@ -42,7 +38,6 @@
 
 	let id: string;
 	let items: any[];
-	let sourceFormId: string;
 	let cachedOptions: Record<string, Promise<any>> = {};
 	let isInlineSource: boolean = true;
 
@@ -55,34 +50,22 @@
 			let source = controller.metadata.CustomProperties.Source;
 			isInlineSource = typeof source !== 'string';
 			items = isInlineSource ? augmentItems(source) : [];
-			sourceFormId = isInlineSource ? null : source;
 
 			controller.ready?.resolve();
 		},
-		async refreshBrowser() {
-			if (controller.value != null && controller.serialize(controller.value) != null) {
-				let results = await loadOptions(controller.value);
-				controller.value =
-					results != null && results.length > 0
-						? results.find((t: { Value: any }) => t.Value == controller?.value?.Value)
-						: null;
-
-				if (controller.value == null) {
-					throw `Cannot find option for "${controller.metadata.Id}".`;
-				}
-			} else {
-				controller.value = null;
-			}
-
-			// Firing `changed` from `refreshBrowser` is not possible, because
-			// it would result in an infinite recursion because `refreshBrowser`
-			// is auto-invoked on `changed` event. However, we still need to signal
-			// the fact that typeahead now has a value, so we trigger `refreshed` event.
-			controller.fire('refreshed', controller.value);
-		},
 		async refresh() {
-			if (controller.value != null && controller.serialize(controller.value) != null) {
-				let results = await loadOptions(controller.value);
+			const capturedValue = controller.value;
+
+			if (capturedValue != null && controller.serialize(capturedValue) != null) {
+				let results = await loadOptions(capturedValue);
+
+				if (controller.value != capturedValue) {
+					// The value might have changed once the promise
+					// has been resolved. In this case we do nothing, because
+					// it would have been taken care of by another invocation.
+					return;
+				}
+
 				controller.value =
 					results != null && results.length > 0
 						? results.find((t: { Value: any }) => t.Value == controller?.value?.Value)

@@ -43,7 +43,6 @@
 	export let controller: Controller;
 
 	let items: any[];
-	let sourceFormId: string;
 	let cachedOptions: Record<string, Promise<any>> = {};
 	let selected: any[];
 	let isInlineSource: boolean = true;
@@ -56,31 +55,31 @@
 			let source = controller.metadata.CustomProperties.Source;
 			isInlineSource = typeof source !== 'string';
 			items = isInlineSource ? augmentItems(source) : [];
-			sourceFormId = isInlineSource ? null : source;
 
 			controller.ready?.resolve();
 		},
-		// component must be refreshed to take url data in account
 		async refresh() {
-			setComponentValue();
-		},
-		async refreshBrowser() {
-			setComponentValue();
+			var capturedValue = controller?.value;
+			if (capturedValue != null && controller.serialize(capturedValue)) {
+				let results = await loadOptions(capturedValue);
+
+				if (controller.value != capturedValue) {
+					// The value might have changed once the promise
+					// has been resolved. In this case we do nothing, because
+					// it would have been taken care of by another invocation.
+					return;
+				}
+
+				selected =
+					results?.length > 0
+						? controller.value.Items.map((t) => results.find((c: { Value: any }) => c.Value == t))
+						: [];
+			} else {
+				selected = [];
+				controller.value = null;
+			}
 		}
 	});
-
-	async function setComponentValue() {
-		if (controller?.value && controller.serialize(controller.value)) {
-			let results = await loadOptions(controller.value);
-			selected =
-				results?.length > 0
-					? controller.value.Items.map((t) => results.find((c: { Value: any }) => c.Value == t))
-					: [];
-		} else {
-			selected = [];
-			controller.value = null;
-		}
-	}
 
 	beforeUpdate(async () => {
 		await component.setup(controller);
