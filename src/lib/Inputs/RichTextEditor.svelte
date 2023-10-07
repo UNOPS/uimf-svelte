@@ -75,6 +75,7 @@
 		let safeHtml = editor.getHtml(true);
 
 		html = safeHtml;
+		isInitiated = true;
 		controller.setValue({ Value: safeHtml });
 	}
 </script>
