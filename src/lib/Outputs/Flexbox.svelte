@@ -85,11 +85,15 @@
 	}
 
 	.flex-item {
-		margin: 2px;
-		padding: 2px;
+		margin: 5px;
+		padding-top: 10px;
+		padding-bottom: 15px;
 		display: flex;
 		justify-content: left;
-		align-items: center;
+		flex-direction: column;
+		flex-basis: 580px;
+		border: 1px solid #b1b1b1;
+    	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 	}
 
 	.horizontal {
