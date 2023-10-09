@@ -269,7 +269,7 @@ defaultControlRegister.registerOutputComponent('status', Status, { displayAsBloc
 //defaultControlRegister.registerOutputComponent('changeset', Changeset);
 //defaultControlRegister.registerOutputComponent('sla-timer', SlaTimer);
 //defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize);
-//defaultControlRegister.registerOutputComponent('boolean', Boolean);
+defaultControlRegister.registerOutputComponent('boolean', Boolean);
 defaultControlRegister.registerOutputComponent('editable-value', EditableValue);
 
 // These components can only be enabled once we are using the new Form as they depend on each others
