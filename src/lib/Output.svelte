@@ -51,25 +51,27 @@
 {#if controller.value != null || !hideIfNull}
 	{#if thisHideLabel}
 		<div class={contentCssClass || defaultCssClass} use:tooltip={contentTooltip}>
-			<svelte:component this={component} controller={controller} />
+			<svelte:component this={component} {controller} />
 		</div>
 	{:else if controller.metadata == null}
 		<strong>null metadata</strong>
 	{:else}
-	<div class="row mb-3">
-		<label class="col-sm-2 col-form-label" use:tooltip={documentation}>{controller.metadata.Label}:</label>
-		<div class={`${contentCssClass || defaultCssClass} col-sm-10`} use:tooltip={contentTooltip}>
-			<svelte:component this={component} controller={controller} />
+		<div class="row mb-3">
+			<label class="col-sm-2 col-form-label" use:tooltip={documentation}
+				>{controller.metadata.Label}:</label
+			>
+			<div class={`${contentCssClass || defaultCssClass} col-sm-10`} use:tooltip={contentTooltip}>
+				<svelte:component this={component} {controller} />
+			</div>
 		</div>
-	</div>
 	{/if}
 {/if}
 
 <style lang="scss">
-	 @import '../scss/styles.scss';
+	@import '../scss/styles.scss';
 
-	.col-sm-10{
-		padding-top: calc(.375rem + 1px);
+	.col-sm-10 {
+		padding-top: calc(0.375rem + 1px);
 	}
 
 	.block {
