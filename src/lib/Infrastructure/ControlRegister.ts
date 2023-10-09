@@ -64,6 +64,7 @@ import * as SlaTimer from '../Outputs/SlaTimer.svelte';
 import * as ShipmentSize from '../Outputs/ShipmentSize.svelte';
 import * as Boolean from '../Outputs/Boolean.svelte';
 import * as EditableValue from "../Outputs/EditableValue.svelte";
+import * as Flexbox from "../Outputs/Flexbox.svelte";
 
 import UimfForm from '../Form.svelte';
 import { FormController, type FormInstance } from "./FormController";
@@ -269,6 +270,7 @@ defaultControlRegister.registerOutputComponent('status', Status, { displayAsBloc
 //defaultControlRegister.registerOutputComponent('changeset', Changeset);
 //defaultControlRegister.registerOutputComponent('sla-timer', SlaTimer);
 //defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize);
+//defaultControlRegister.registerOutputComponent('flexbox', Flexbox, { alwaysHideLabel: true });
 defaultControlRegister.registerOutputComponent('boolean', Boolean);
 defaultControlRegister.registerOutputComponent('editable-value', EditableValue);
 
