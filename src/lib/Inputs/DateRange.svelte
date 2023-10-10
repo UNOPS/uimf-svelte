@@ -38,7 +38,6 @@
 			if (value == null || value.trim().length == 0) {
 				return Promise.resolve(null);
 			}
-
 			let parts = value.split(',');
 
 			var result = {
@@ -120,23 +119,37 @@
 	<input
 		class="form-control"
 		bind:value={controller.minValueAsString}
-		on:change={() => {
+		on:blur={() => {
 			controller.combineDates();
 			controller.setValue(controller.valuesAsString);
 		}}
 		required={controller.metadata.Required}
 		type="date"
 	/>
+	<span
+		class="validity"
+		style="display: {controller.minValueAsString == null ||
+		isNaN(new Date(controller.minValueAsString).getTime())
+			? 'none'
+			: 'inline-block'};"
+	/>
 
 	<input
 		class="form-control"
 		bind:value={controller.maxValueAsString}
-		on:change={() => {
+		on:blur={() => {
 			controller.combineDates();
 			controller.setValue(controller.valuesAsString);
 		}}
 		required={controller.metadata.Required}
 		type="date"
+	/>
+	<span
+		class="validity"
+		style="display: {controller.maxValueAsString == null ||
+		isNaN(new Date(controller.maxValueAsString).getTime())
+			? 'none'
+			: 'inline-block'};"
 	/>
 </div>
 
@@ -146,5 +159,12 @@
 	.date-range {
 		display: flex;
 		gap: 10px;
+		align-items: center;
+	}
+
+	input:valid + span::after {
+		content: '✓';
+		margin-top: 3px;
+		color: green;
 	}
 </style>
