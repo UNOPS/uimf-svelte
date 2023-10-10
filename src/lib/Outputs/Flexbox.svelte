@@ -13,7 +13,11 @@
 	interface FlexboxMetadata extends ComponentMetadata {
 		CustomProperties: {
 			Fields: ComponentMetadata[];
-			cssClass: string;
+			Customizations: {
+				FlexBasis: string;
+				Margin: string;
+				Style: string;
+			};
 		};
 	}
 
@@ -65,12 +69,34 @@
 			return field;
 		});
 	}
+
+	function AsEffectiveValue(rawFlexBasis: string, margin: string): string {
+		//Check that flex-basis value is a %
+		if (rawFlexBasis.includes('px')) {
+			return rawFlexBasis;
+		}
+
+		let marginValue = parseInt(margin.replace('px', ''));
+		let flexBasisValue = parseInt(rawFlexBasis.replace('%', ''));
+
+		// default screen resolution is 1080p (1920 x 1080 pixels)
+		// 50px for the left menu
+		let width = (1920 * flexBasisValue) / 100 - marginValue * 2 - 50;
+		return width + 'px';
+	}
 </script>
 
 {#if fields?.length > 0}
-	<div class="flex-container {controller.metadata.CustomProperties.cssClass}">
+	<div class="flex-container">
 		{#each fields as field}
-			<div class="flex-item">
+			<div
+				class="flex-item {controller.metadata.CustomProperties.Customizations.Style}"
+				style:flex-basis={AsEffectiveValue(
+					controller.metadata.CustomProperties.Customizations.FlexBasis,
+					controller.metadata.CustomProperties.Customizations.Margin
+				)}
+				style:margin={controller.metadata.CustomProperties.Customizations.Margin}
+			>
 				<svelte:component this={field.component} controller={field.controller} />
 			</div>
 		{/each}
@@ -82,25 +108,19 @@
 		display: flex;
 		flex-wrap: wrap;
 		width: 100%;
+		flex-direction: row;
 	}
 
 	.flex-item {
-		margin: 5px;
 		padding-top: 10px;
 		padding-bottom: 15px;
 		display: flex;
 		justify-content: left;
 		flex-direction: column;
-		flex-basis: 580px;
+	}
+
+	.boxed {
 		border: 1px solid #b1b1b1;
-    	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-	}
-
-	.horizontal {
-		flex-direction: row;
-	}
-
-	.vertical {
-		flex-direction: column;
+		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 	}
 </style>
