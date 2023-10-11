@@ -278,4 +278,4 @@ defaultControlRegister.registerOutputComponent('editable-value', EditableValue);
 // defaultControlRegister.registerOutputComponent('action-list', ActionList, { alwaysHideLabel: true });
 // defaultControlRegister.registerOutputComponent('expandable', Expandable);
 // defaultControlRegister.registerOutputComponent('object-list', ObjectList);
-defaultControlRegister.registerOutputComponent('nested-object', NestedObject);
+// defaultControlRegister.registerOutputComponent('nested-object', NestedObject);
