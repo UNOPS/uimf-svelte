@@ -68,7 +68,7 @@
 
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
-	import { InputComponentController } from '../Infrastructure/ComponentController';
+	import { InputComponent } from '../Infrastructure/Component';
 	import type { ComponentMetadata } from '../Infrastructure/uimf';
 	import uuid from '../Infrastructure/uuid';
 
@@ -78,7 +78,7 @@
 	let name: string = uuid();
 	let withIcons: boolean;
 
-	let component = new InputComponentController({
+	let component = new InputComponent({
 		init() {
 			controller.onChange = onChange;
 			controller.ready?.resolve();

@@ -3,7 +3,7 @@
 
 <script lang="ts">
 	import { OutputController } from '../../../Infrastructure/OutputController';
-	import { OutputComponentController } from '../../../Infrastructure/ComponentController';
+	import { OutputComponent } from '../../../Infrastructure/Component';
 	import { beforeUpdate } from 'svelte';
 	import { ActionListColumnExtension } from '../Extensions/ActionListColumnExtension';
 	import { BulkActionsColumnExtension } from '../Extensions/BulkActionsColumnExtension';
@@ -46,7 +46,7 @@
 	table = builder.build(controller, rows, controller.metadata.CustomProperties?.Columns);
 	extraColspan = bulkActionExtension.actions.length > 0 ? 1 : 0;
 
-	const component = new OutputComponentController({
+	const component = new OutputComponent({
 		refresh() {
 			allRowsSelected = false;
 

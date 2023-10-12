@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import type { OutputController } from '../Infrastructure/OutputController';
-	import { OutputComponentController } from '../Infrastructure/ComponentController';
+	import { OutputComponent } from '../Infrastructure/Component';
 
 	interface Tab {
 		Form: string;
@@ -24,7 +24,7 @@
 
 	let tabGroups: TabGroup[] = [];
 
-	let component = new OutputComponentController({
+	let component = new OutputComponent({
 		refresh() {
 			controller.value = controller.value;
 

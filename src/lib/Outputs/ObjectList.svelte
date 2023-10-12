@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../Infrastructure/OutputController';
-	import { OutputComponentController } from '../Infrastructure/ComponentController';
+	import { OutputComponent } from '../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
 
 	export let controller: OutputController<any>;
@@ -19,7 +19,7 @@
 				componentControllers = getComponentControllers(controller.value.Items);
 	}
 
-	let component = new OutputComponentController({
+	let component = new OutputComponent({
 		
 		refresh() {
 			if(controller.value?.Items != null){

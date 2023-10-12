@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
-	import { OutputComponentController } from '../Infrastructure/ComponentController';
+	import { OutputComponent } from '../Infrastructure/Component';
 	import type { OutputController } from '../Infrastructure/OutputController';
 
 	export let controller: OutputController<any>;
 
-	let component = new OutputComponentController({
+	let component = new OutputComponent({
 		refresh() {
 			controller.value = controller.value;
 		}
@@ -34,7 +34,7 @@
 		position: relative;
 		top: -1px;
 	}
-	
+
 	small {
 		opacity: 0.6;
 	}

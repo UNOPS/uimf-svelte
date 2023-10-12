@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import type { OutputController } from '../Infrastructure/OutputController';
-	import { OutputComponentController } from '../Infrastructure/ComponentController';
+	import { OutputComponent } from '../Infrastructure/Component';
 	import { tooltip } from '../Components/Tooltip.svelte';
 
 	interface IconData {
@@ -11,7 +11,7 @@
 
 	export let controller: OutputController<IconData>;
 
-	let component = new OutputComponentController({
+	let component = new OutputComponent({
 		refresh() {
 			controller.value = controller.value;
 		}

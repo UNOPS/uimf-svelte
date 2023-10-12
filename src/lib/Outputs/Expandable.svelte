@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../Infrastructure/OutputController';
-	import { OutputComponentController } from '../Infrastructure/ComponentController';
+	import { OutputComponent } from '../Infrastructure/Component';
 	import type { ComponentMetadata } from '../Infrastructure/uimf';
 	import Output from '../Output.svelte';
 
@@ -32,7 +32,7 @@
 
 	let expandableController: OutputController<any> | null = null;
 
-	let component = new OutputComponentController({
+	let component = new OutputComponent({
 		refresh() {
 			if (controller.value == null) {
 				mainController = null;

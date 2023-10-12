@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../Infrastructure/OutputController';
-	import { OutputComponentController } from '../Infrastructure/ComponentController';
+	import { OutputComponent } from '../Infrastructure/Component';
 
 	interface Item {
 		Url: string;
@@ -14,7 +14,7 @@
 	export let controller: OutputController<Item>;
 	let expanded = true;
 
-	let component = new OutputComponentController({
+	let component = new OutputComponent({
 		refresh() {
 			controller.value = controller.value;
 		}

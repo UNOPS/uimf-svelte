@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../Infrastructure/OutputController';
-	import { OutputComponentController } from '../Infrastructure/ComponentController';
+	import { OutputComponent } from '../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
 	import type { ComponentMetadata } from '../Infrastructure/uimf';
 
@@ -12,7 +12,7 @@
 		controller: any;
 	}
 
-	let component = new OutputComponentController({
+	let component = new OutputComponent({
 		refresh() {
 			componentController = getComponentController(
 				controller.metadata.CustomProperties?.NestedMetadata ??

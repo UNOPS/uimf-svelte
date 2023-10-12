@@ -38,7 +38,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import Select from 'svelte-select';
-	import { InputComponentController } from '../Infrastructure/ComponentController';
+	import { InputComponent } from '../Infrastructure/Component';
 
 	export let controller: Controller;
 
@@ -47,7 +47,7 @@
 	let selected: any[];
 	let isInlineSource: boolean = true;
 
-	let component = new InputComponentController({
+	let component = new InputComponent({
 		async init() {
 			cachedOptions = {};
 			selected = [];

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../Infrastructure/OutputController';
-	import { OutputComponentController } from '../Infrastructure/ComponentController';
+	import { OutputComponent } from '../Infrastructure/Component';
 	import DateTime, { DateTimeController } from './DateTime.svelte';
 	import type { Controller, FormLinkData, FormLinkMetadata } from './FormLink.svelte';
 	import FormLink from './FormLink.svelte';
@@ -16,7 +16,7 @@
 
 	export let controller: OutputController<EventDescriptionData>;
 
-	let component = new OutputComponentController({
+	let component = new OutputComponent({
 		refresh() {
 			controller.value = controller.value;
 		}

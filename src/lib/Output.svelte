@@ -2,7 +2,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import type { OutputController } from './Infrastructure/OutputController';
-	import { OutputComponentController } from './Infrastructure/ComponentController';
+	import { OutputComponent } from './Infrastructure/Component';
 	import { tooltip } from './Components/Tooltip.svelte';
 	import { defaultControlRegister as controlRegister } from './Infrastructure/ControlRegister';
 
@@ -18,7 +18,7 @@
 	let hideIfNull: boolean;
 	let thisHideLabel: boolean;
 
-	const componentController = new OutputComponentController({
+	const componentController = new OutputComponent({
 		refresh() {
 			const componentRegistration = controlRegister.outputs[controller.metadata.Type];
 

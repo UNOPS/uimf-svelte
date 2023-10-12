@@ -40,7 +40,7 @@
 
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
-	import { InputComponentController } from '../Infrastructure/ComponentController';
+	import { InputComponent } from '../Infrastructure/Component';
 	import Editor from "cl-editor/src/Editor.svelte"
 
 	export let controller: Controller;
@@ -51,7 +51,7 @@
 	let editor: Editor;
 	let isInitiated: boolean;
 
-	let component = new InputComponentController({
+	let component = new InputComponent({
 		init() {
 			controller.ready?.resolve();
 			controller.setCallback((content: string | null) => {

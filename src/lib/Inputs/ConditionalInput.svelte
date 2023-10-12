@@ -120,12 +120,12 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
-	import { InputComponentController } from '../Infrastructure/ComponentController';
+	import { InputComponent } from '../Infrastructure/Component';
 	import type IUimfApp from '$lib/Infrastructure/UimfApp';
 
 	export let controller: Controller;
 
-	let component = new InputComponentController({
+	let component = new InputComponent({
 		init() {
 			controller.ready?.resolve();
 		},

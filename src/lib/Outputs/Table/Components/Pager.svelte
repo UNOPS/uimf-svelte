@@ -3,7 +3,7 @@
 </script>
 
 <script lang="ts">
-	import { OutputComponentController } from '../../../Infrastructure/ComponentController';
+	import { OutputComponent } from '../../../Infrastructure/Component';
 	import type { PaginatedData } from '$lib/Outputs/PaginatedData.svelte';
 	import { beforeUpdate } from 'svelte';
 	export let controller: OutputController<PaginatedData>;
@@ -23,7 +23,7 @@
 	let pageUrls: string[] = new Array(maxPage);
 	let selectorUrls: string[] = new Array(pageSizes.length);
 
-	let component = new OutputComponentController({
+	let component = new OutputComponent({
 		async refresh() {
 			await controller.form?.getInputFieldValues().then(async (results) => {
 				if (inputValues != undefined && !areEqual(inputValues, results)) {

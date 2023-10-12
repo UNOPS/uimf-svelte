@@ -80,11 +80,11 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
-	import { InputComponentController } from '../Infrastructure/ComponentController';
+	import { InputComponent } from '../Infrastructure/Component';
 
 	export let controller: Controller;
 
-	let component = new InputComponentController({
+	let component = new InputComponent({
 		init() {
 			controller.ready?.resolve();
 		},

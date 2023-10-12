@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
-	import { OutputComponentController } from '../Infrastructure/ComponentController';
+	import { OutputComponent } from '../Infrastructure/Component';
 	import type { OutputController } from '../Infrastructure/OutputController';
 	import { tooltip } from '../Components/Tooltip.svelte';
 
@@ -10,7 +10,7 @@
 	let cssClass: string = '';
 	const currentYear = new Date().getFullYear();
 
-	let component = new OutputComponentController({
+	let component = new OutputComponent({
 		async refresh() {
 			controller.value = controller.value;
 		}

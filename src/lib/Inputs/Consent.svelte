@@ -47,12 +47,12 @@
 
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
-	import { InputComponentController } from '../Infrastructure/ComponentController';
+	import { InputComponent } from '../Infrastructure/Component';
 	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
 
 	export let controller: Controller;
 
-	let component = new InputComponentController({
+	let component = new InputComponent({
 		init() {
 			controller.ready?.resolve();
 		},

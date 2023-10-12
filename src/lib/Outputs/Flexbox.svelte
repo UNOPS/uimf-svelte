@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../Infrastructure/OutputController';
-	import { OutputComponentController } from '../Infrastructure/ComponentController';
+	import { OutputComponent } from '../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
 	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
 
@@ -29,7 +29,7 @@
 
 	let fields: OutputField[];
 
-	let component = new OutputComponentController({
+	let component = new OutputComponent({
 		refresh() {
 			fields = getComponentControllers();
 			controller.value = controller.value;

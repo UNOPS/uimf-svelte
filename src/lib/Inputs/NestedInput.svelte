@@ -98,7 +98,7 @@
 	import { beforeUpdate } from 'svelte';
 
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
-	import { InputComponentController } from '../Infrastructure/ComponentController';
+	import { InputComponent } from '../Infrastructure/Component';
 	import Input from '../Input.svelte';
 
 	export let controller: Controller;
@@ -109,7 +109,7 @@
 		views = views;
 	};
 
-	let component = new InputComponentController({
+	let component = new InputComponent({
 		init() {
 			component?.setup(controller).then(() => {
 				//This "weird" condition is needed because

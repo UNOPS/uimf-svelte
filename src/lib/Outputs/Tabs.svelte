@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { OutputController } from '../Infrastructure/OutputController';
-	import { OutputComponentController } from '../Infrastructure/ComponentController';
+	import { OutputComponent } from '../Infrastructure/Component';
 	import { beforeUpdate } from 'svelte';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
 
@@ -13,7 +13,7 @@
 
 	export let controller: OutputController<any>;
 
-	let component = new OutputComponentController({
+	let component = new OutputComponent({
 		refresh() {
 			tabs = getComponentControllers(controller.metadata.CustomProperties.Properties);
 

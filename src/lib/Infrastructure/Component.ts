@@ -11,7 +11,7 @@ interface Options {
     destroy?: any;
 };
 
-class FieldComponentController<T extends EventSource & { id: string }> {
+class Component<T extends EventSource & { id: string }> {
     public field!: T;
     protected refreshOn: string;
 
@@ -65,7 +65,7 @@ class FieldComponentController<T extends EventSource & { id: string }> {
     public customSetup: () => void = () => { return };
 }
 
-export class InputComponentController extends FieldComponentController<InputController<any>>{
+export class InputComponent extends Component<InputController<any>>{
 
     public value : any;
 	public clearAction: (value: any) => void = () => { return };
@@ -78,13 +78,13 @@ export class InputComponentController extends FieldComponentController<InputCont
     }
 }
 
-export class OutputComponentController extends FieldComponentController<OutputController<any>>{
+export class OutputComponent extends Component<OutputController<any>>{
     constructor(options: Options) {
         super('output:change', options);
     }
 }
 
-export class FormComponentController extends FieldComponentController<FormController>{
+export class FormComponent extends Component<FormController>{
     constructor(options: Options) {
         super('form:change', options);
     }

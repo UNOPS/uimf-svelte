@@ -160,7 +160,7 @@
 	import { beforeUpdate } from 'svelte';
 
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
-	import { InputComponentController } from '../Infrastructure/ComponentController';
+	import { InputComponent } from '../Infrastructure/Component';
 
 	export let controller: Controller;
 	let views: ViewData[] = [];
@@ -184,7 +184,7 @@
 		componentViews = getComponentViews();
 	};
 
-	let component = new InputComponentController({
+	let component = new InputComponent({
 		init() {
 			component?.setup(controller).then(() => {
 				if (controller.views != null) {

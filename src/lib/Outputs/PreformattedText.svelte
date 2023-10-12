@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { beforeUpdate, onMount } from 'svelte';
 	import type { OutputController } from '../Infrastructure/OutputController';
-	import { OutputComponentController } from '../Infrastructure/ComponentController';
+	import { OutputComponent } from '../Infrastructure/Component';
 
 	interface TextAreaData {
 		Text: string;
@@ -12,7 +12,7 @@
 	let textarea: HTMLTextAreaElement;
     let height = 100;
 
-	let component = new OutputComponentController({
+	let component = new OutputComponent({
 		refresh() {
 			controller.value = controller.value;
 		}

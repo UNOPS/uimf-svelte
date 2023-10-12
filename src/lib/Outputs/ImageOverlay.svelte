@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { OutputController } from '../Infrastructure/OutputController';
-	import { OutputComponentController } from '../Infrastructure/ComponentController';
+	import { OutputComponent } from '../Infrastructure/Component';
 	import { beforeUpdate } from 'svelte';
 
 	export let controller: OutputController<ImageOverlay>;
@@ -18,7 +18,7 @@
 	let handleMouseEnter: () => void;
 	let handleMouseLeave: () => void;
 
-	let component = new OutputComponentController({
+	let component = new OutputComponent({
 		refresh() {
 			controller.value = controller.value;
 

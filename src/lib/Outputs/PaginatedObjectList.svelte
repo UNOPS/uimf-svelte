@@ -7,7 +7,7 @@
 
 <script lang="ts">
 	import { OutputController } from '../Infrastructure/OutputController';
-	import { OutputComponentController } from '../Infrastructure/ComponentController';
+	import { OutputComponent } from '../Infrastructure/Component';
 	import { beforeUpdate } from 'svelte';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
 	import Pager from './Table/Components/Pager.svelte';
@@ -19,7 +19,7 @@
 
 	let nestedControllers: OutputController<any>[];
 
-	let component = new OutputComponentController({
+	let component = new OutputComponent({
 		async refresh() {
 			nestedControllers = createNestedControllers(controller.value.Results);
 			controller.value = controller.value;

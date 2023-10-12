@@ -32,7 +32,7 @@
 
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
-	import { OutputComponentController } from '../Infrastructure/ComponentController';
+	import { OutputComponent } from '../Infrastructure/Component';
 	import { tooltip } from '../Components/Tooltip.svelte';
 
 	export let controller: Controller;
@@ -40,7 +40,7 @@
 	let allowed: boolean;
 	let cssClass: string;
 
-	let component = new OutputComponentController({
+	let component = new OutputComponent({
 		async refresh() {
 			controller.value = controller.value;
 

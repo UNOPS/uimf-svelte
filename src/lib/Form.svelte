@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { tooltip } from './Components/Tooltip.svelte';
 	import { beforeUpdate, onDestroy } from 'svelte';
-	import { FormComponentController } from './Infrastructure/ComponentController';
+	import { FormComponent } from './Infrastructure/Component';
 	import Output from './Output.svelte';
 	import Input from './Input.svelte';
 	import type { FormController } from './Infrastructure/FormController';
@@ -12,7 +12,7 @@
 	export let onFormLoaded: ((arg0: any) => any) | null = null;
 	export let onFormFailed: ((arg0: any) => any) | null = null;
 
-	let component = new FormComponentController({
+	let component = new FormComponent({
 		async init() {
 			controller.onFormLoaded = onFormLoaded;
 			controller.onFormFailed = onFormFailed;

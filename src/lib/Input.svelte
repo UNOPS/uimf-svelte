@@ -4,7 +4,7 @@
 	import type { InputController } from './Infrastructure/InputController';
 	import { tooltip } from './Components/Tooltip.svelte';
 	import { defaultControlRegister as controlRegister } from './Infrastructure/ControlRegister';
-	import { InputComponentController } from './Infrastructure/ComponentController';
+	import { InputComponent } from './Infrastructure/Component';
 
 	export let controller: InputController<any>;
 	export let hideLabel: boolean = false;
@@ -18,7 +18,7 @@
 	let hideIfNull: boolean;
 	let thisHideLabel: boolean;
 
-	const componentController = new InputComponentController({
+	const componentController = new InputComponent({
 		init() {
 			const componentRegistration = controlRegister.inputs[controller.metadata.Type];
 
