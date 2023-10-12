@@ -180,37 +180,37 @@ export class ControlRegister {
         };
     };
 
-    createInput(options: CreateInputOptions, renderTarget: HTMLElement) {
+    createInput(options: CreateInputOptions, renderTarget?: HTMLElement) {
         const registration = this.inputs[options.metadata.Type];
         const controller = new registration.controller(options);
 
         return {
             target: renderTarget,
             controller: controller,
-            component: new registration.component({
+            component: renderTarget != null ? new registration.component({
                 target: renderTarget,
                 props: {
                     controller: controller
                 }
-            })
+            }) : null
         };
     };
 
     createOutput(
         options: CreateOutputOptions,
-        renderTarget: HTMLElement) {
+        renderTarget?: HTMLElement) {
         const registration = this.outputs[options.metadata.Type];
         const controller = new OutputController<any>(options);
 
         return {
             target: renderTarget,
             controller: controller,
-            component: new registration.component({
+            component: renderTarget != null ? new registration.component({
                 target: renderTarget,
                 props: {
                     controller: controller
                 }
-            })
+            }) : null
         };
     };
 }
