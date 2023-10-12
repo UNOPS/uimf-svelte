@@ -16,7 +16,7 @@ class FieldComponentController<T extends EventSource & { id: string }> {
     protected refreshOn: string;
 
     /**
-     * Function to invoke when the `field` changes.
+     * Function to invoke when the `field` changes (i.e. - another field is assigned).
      * @returns promise that's resolved once the initialization has completed.
      */
     public init: () => Promise<void> = () => Promise.resolve();
