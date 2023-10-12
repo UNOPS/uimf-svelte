@@ -269,7 +269,7 @@ defaultControlRegister.registerOutputComponent('cart-item', CartItem);
 //defaultControlRegister.registerOutputComponent('output', Output);
 //defaultControlRegister.registerOutputComponent('changeset', Changeset);
 //defaultControlRegister.registerOutputComponent('sla-timer', SlaTimer);
-//defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize);
+defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize);
 //defaultControlRegister.registerOutputComponent('flexbox', Flexbox, { alwaysHideLabel: true });
 defaultControlRegister.registerOutputComponent('boolean', Boolean);
 defaultControlRegister.registerOutputComponent('editable-value', EditableValue);

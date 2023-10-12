@@ -6,35 +6,36 @@
 
 	export let controller: OutputController<any>;
 
+	let empty: boolean = true;
+	let formatter = new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 });
+
 	let component = new OutputComponentController({
 		refresh() {
 			controller.value = controller.value;
+
+			if (controller.value != null) {
+				empty = controller.value.IsContainerized
+					? controller.value.TwentyFootContainers === 0 &&
+					  controller.value.FortyFootContainers === 0 &&
+					  controller.value.FortyFootHcContainers === 0 &&
+					  controller.value.OtherContainers === 0
+					: controller.value.Volume === 0 &&
+					  controller.value.Weight === 0 &&
+					  controller.value.Cars === 0;
+			} else {
+				empty = true;
+			}
 		}
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
-
-	let empty: boolean = false;
-
-	let formatter = new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 });
-
-	if (controller.value == null) {
-		empty = true;
-	} else {
-		empty = controller.value.IsContainerized
-			? controller.value.TwentyFootContainers === 0 &&
-			  controller.value.FortyFootContainers === 0 &&
-			  controller.value.FortyFootHcContainers === 0 &&
-			  controller.value.OtherContainers === 0
-			: controller.value.Volume === 0 &&
-			  controller.value.Weight === 0 &&
-			  controller.value.Cars === 0;
-	}
 </script>
 
 {#if controller.value != null}
-	<div class="containerized">
-		{#if !empty && controller.value.IsContainerized}
+	{#if empty}
+		<span>N/A</span>
+	{:else if controller.value.IsContainerized}
+		<div class="containerized">
 			{#if controller.value.TwentyFootContainers > 0}
 				<span>
 					{controller.value.TwentyFootContainers}<span class="unit">x20&quot;</span>
@@ -61,15 +62,9 @@
 					>
 				</span>
 			{/if}
-
-			{#if controller.value.TwentyFootContainers === 0 && controller.value.FortyFootContainers === 0 && controller.value.FortyFootHcContainers === 0 && controller.value.OtherContainers === 0}
-				<span>n/a</span>
-			{/if}
-		{/if}
-	</div>
-
-	<div class="non-containerized">
-		{#if !empty && !controller.value.IsContainerized}
+		</div>
+	{:else}
+		<div class="non-containerized">
 			{#if controller.value.Weight > 0}
 				<span>
 					{formatter.format(controller.value.Weight)}<span class="unit">kg</span>
@@ -87,12 +82,8 @@
 					{formatter.format(controller.value.Cars)}<span class="unit">cars</span>
 				</span>
 			{/if}
-
-			{#if controller.value.Volume === 0 && controller.value.Weight === 0 && controller.value.Cars === 0}
-				<span> n/a </span>
-			{/if}
-		{/if}
-	</div>
+		</div>
+	{/if}
 {/if}
 
 <style>
