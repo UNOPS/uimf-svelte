@@ -6,8 +6,6 @@ import type { OutputController } from "./OutputController";
 interface Options {
     init?: any;
     refresh?: any;
-    initBrowser?: any;
-    refreshBrowser?: any;
     destroy?: any;
 };
 
