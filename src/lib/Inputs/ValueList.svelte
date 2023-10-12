@@ -74,7 +74,6 @@
 	let rows: IValueItem[] = [];
 	let columns: ComponentMetadata[] = [];
 	let metadata: Metadata | null = null;
-	let newRow: IValueItem | null = null;
 	let hasDropdowns: boolean = false;
 
 	const component = new InputComponent({
@@ -89,9 +88,7 @@
 				})
 				.sort((a, b) => a.OrderIndex - b.OrderIndex);
 
-			newRow = metadata.CanAdd ? await createNewRow(columns) : null;
-
-            controller.ready?.resolve();
+			controller.ready?.resolve();
 		},
 		async refresh() {
 			// Make sure that `field.value.Items` has a non-null value.
@@ -122,12 +119,7 @@
 		};
 
 		for (let column of columns) {
-            // Create a copy of the column, because we will want to change it
-            // for this particular row, without affecting other rows.
-            let columnCopy = JSON.parse(JSON.stringify(column));
-
-			row._controllers[column.Id] = await getInputController(columnCopy, row);
-            row._controllers[column.Id].metadata.Required = false;
+			row._controllers[column.Id] = await getInputController(column, row);
 		}
 
 		return row;
@@ -183,46 +175,36 @@
 							<td class="col-action">
 								<button
 									class="btn btn-outline-light"
+                                    use:tooltip={"Remove row"}
 									on:click={(e) => {
 										row._deleted = true;
 										e.preventDefault();
 									}}
 								>
-									<i class="fa fa fa-times" />
+									<i class="fa fa-times" />
 								</button>
 							</td>
 						{/if}
 					</tr>
 				{/each}
 			</tbody>
-			{#if metadata?.CanAdd && newRow != null}
+			{#if metadata?.CanAdd}
 				<tfoot>
 					<tr>
-						{#each columns as column}
-							<td class={column.CustomProperties?.ColumnCssClass}>
-								<Input controller={newRow._controllers[column.Id]} hideLabel={true} />
-							</td>
-						{/each}
+						<td colspan={columns.length} />
 						<td class="col-action">
 							<button
 								class="btn btn-outline-primary"
+                                use:tooltip={"Add row"}
 								on:click={async (e) => {
-									if (newRow == null) {
-										throw 'New row not initialized.';
-									}
-
-                                    for (let column of columns) {
-                                        // Reset the "required" property to its original value.
-                                        newRow._controllers[column.Id].metadata.Required = column.Required;
-                                    }
-
+									var newRow = await createNewRow(columns);
 									rows.push(newRow);
 									rows = rows;
-									newRow = await createNewRow(columns);
+
 									e.preventDefault();
 								}}
 							>
-								<i class="fa fa fa-plus" />
+                            <i class="fa fa-plus" />
 							</button>
 						</td>
 					</tr>
