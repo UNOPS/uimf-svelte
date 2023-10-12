@@ -265,7 +265,7 @@ defaultControlRegister.registerOutputComponent('formlink', FormLink, { displayAs
 // defaultControlRegister.registerOutputComponent('inline-form', Form);
 // defaultControlRegister.registerOutputComponent('paginated-data', PaginatedData);
 //defaultControlRegister.registerOutputComponent('sequence', Sequence);
-//defaultControlRegister.registerOutputComponent('cart-item', CartItem);
+defaultControlRegister.registerOutputComponent('cart-item', CartItem);
 //defaultControlRegister.registerOutputComponent('output', Output);
 //defaultControlRegister.registerOutputComponent('changeset', Changeset);
 //defaultControlRegister.registerOutputComponent('sla-timer', SlaTimer);
