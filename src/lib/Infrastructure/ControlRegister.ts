@@ -256,7 +256,7 @@ defaultControlRegister.registerOutputComponent('icon', Icon, { displayAsBlock: f
 defaultControlRegister.registerOutputComponent('tag', Tag);
 defaultControlRegister.registerOutputComponent('link', Link);
 defaultControlRegister.registerOutputComponent('status', Status, { displayAsBlock: false });
-//defaultControlRegister.registerOutputComponent('formlink', FormLink, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('formlink', FormLink, { displayAsBlock: false });
 
 // To be deactivated until complete validation
 // defaultControlRegister.registerOutputComponent('table', Table);
