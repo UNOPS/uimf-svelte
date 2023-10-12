@@ -1,4 +1,3 @@
-import type { ComponentMetadata } from "$lib/Infrastructure/uimf";
 import type { CreateInputOptions, Deferrer, InputController } from "$lib/Infrastructure/InputController";
 import { OutputController, type CreateOutputOptions } from "./OutputController";
 
@@ -17,7 +16,7 @@ import * as DateRange from "../Inputs/DateRange.svelte";
 import * as RichTextEditor from '../Inputs/RichTextEditor.svelte'
 import * as Consent from '../Inputs/Consent.svelte';
 import * as Paginator from '../Inputs/Paginator.svelte';
-
+import * as ValueList from '../Inputs/ValueList.svelte';
 
 // Outputs.
 import * as StateDiagram from "../Outputs/StateDiagram.svelte";
@@ -233,6 +232,7 @@ defaultControlRegister.registerInputComponent('date-range', DateRange);
 defaultControlRegister.registerInputComponent('consent', Consent, { alwaysHideLabel: true });
 defaultControlRegister.registerInputComponent('paginator', Paginator);
 defaultControlRegister.registerInputComponent('password', Password);
+defaultControlRegister.registerInputComponent('value-list', ValueList, { displayAsBlock: true });
 
 // Outputs.
 defaultControlRegister.registerOutputComponent('image-overlay', ImageOverlay);
