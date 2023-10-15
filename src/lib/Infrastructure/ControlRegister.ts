@@ -120,6 +120,18 @@ export interface CreateFormOptions {
     target: HTMLElement;
 }
 
+export interface CreateInputResult {
+    target?: HTMLElement;
+    controller: InputController<any>;
+    component: any;
+}
+
+export interface CreateOutputResult {
+    target?: HTMLElement;
+    controller: OutputController<any>;
+    component: any;
+}
+
 /**
  * Keeps track of all UIMF svelte components. This class can be considered as
  * a dependency injection container.
@@ -179,8 +191,13 @@ export class ControlRegister {
         };
     };
 
-    createInput(options: CreateInputOptions, renderTarget?: HTMLElement) {
+    createInput(options: CreateInputOptions, renderTarget?: HTMLElement): CreateInputResult {
         const registration = this.inputs[options.metadata.Type];
+
+        if (registration == null) {
+            throw `Cannot find input component '${options.metadata.Type}'.`;
+        }
+
         const controller = new registration.controller(options);
 
         return {
@@ -191,14 +208,17 @@ export class ControlRegister {
                 props: {
                     controller: controller
                 }
-            }) : null
+            }) : registration.component
         };
     };
 
-    createOutput(
-        options: CreateOutputOptions,
-        renderTarget?: HTMLElement) {
+    createOutput(options: CreateOutputOptions, renderTarget?: HTMLElement): CreateOutputResult {
         const registration = this.outputs[options.metadata.Type];
+
+        if (registration == null) {
+            throw `Cannot find output component '${options.metadata.Type}'.`;
+        }
+
         const controller = new OutputController<any>(options);
 
         return {
@@ -209,7 +229,7 @@ export class ControlRegister {
                 props: {
                     controller: controller
                 }
-            }) : null
+            }) : registration.component
         };
     };
 }

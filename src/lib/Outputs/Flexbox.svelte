@@ -46,21 +46,12 @@
 		return controller.metadata.CustomProperties.Fields.sort(
 			(a, b) => a.OrderIndex - b.OrderIndex
 		).map((item) => {
-			const entry = controlRegister.outputs[item.Type];
-
-			if (entry == null) {
-				throw `No component available for output of type "${item.Type}".`;
-			}
-
-			let field = {
-				component: entry.component,
-				controller: new OutputController<any>({
-					metadata: item,
-					data: null,
-					form: controller.form,
-					app: controller.app
-				})
-			};
+			const field = controlRegister.createOutput({
+				metadata: item,
+				app: controller.app,
+				form: controller.form,
+				data: null
+			});
 
 			if (controller.value?.Value != null) {
 				field.controller.setValue(controller.value?.Value[item.Id]);
