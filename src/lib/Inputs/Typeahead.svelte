@@ -174,14 +174,10 @@
 		label="Label"
 		itemId="Value"
 		on:input={(e) => {
-			controller.value = e.detail;
-			controller.fire('changed', e.detail);
+			controller.setValue(e.detail);
 		}}
 		on:clear={() => {
-			if (controller != null) {
-				controller.value = null;
-				controller.fire('changed', null);
-			}
+			controller?.setValue(null);
 		}}
 		hideEmptyState={true}
 		placeholder="type to search..."

@@ -49,9 +49,18 @@
 </script>
 
 {#if controller.metadata.Required}
-	<input class="form-check-input" type="checkbox" bind:checked={controller.value} />
+	<input
+		class="form-check-input"
+		type="checkbox"
+		bind:checked={controller.value}
+		on:change={() => controller.setValue(controller.value)}
+	/>
 {:else}
-	<select class="form-control form-control-lg" bind:value={controller.value}>
+	<select
+		class="form-control form-control-lg"
+		bind:value={controller.value}
+		on:change={() => controller.setValue(controller.value)}
+	>
 		<option />
 		<option value={true}>Yes</option>
 		<option value={false}>No</option>

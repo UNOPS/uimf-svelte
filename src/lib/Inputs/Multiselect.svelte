@@ -180,6 +180,8 @@
 
 			controller.value.Items =
 				selected.length > 0 ? [...new Set(selected.map((t) => t.Value))] : [];
+
+			controller.setValue(controller.value);
 		}
 	}
 </script>
@@ -192,9 +194,7 @@
 		itemId="Value"
 		on:input={handleSelect}
 		on:clear={() => {
-			if (controller != null) {
-				controller.value = null;
-			}
+			controller?.setValue(null);
 			selected = [];
 		}}
 		multiple={true}

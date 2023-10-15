@@ -52,7 +52,7 @@
 <input
 	autocomplete="off"
 	class="form-control form-control-lg"
-	on:change={() => (controller.value = limitPrecision(controller.value))}
+	on:change={() => controller.setValue(limitPrecision(controller.value))}
 	bind:value={controller.value}
 	required={controller.metadata.Required}
 	step={1 / multiplier}

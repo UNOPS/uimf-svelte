@@ -41,6 +41,7 @@
 	<input
 		autocomplete="off"
 		class="form-control form-control-lg"
+		on:change={() => controller.setValue(controller.value)}
 		bind:value={controller.value}
 		required={controller.metadata.Required}
 		type="text"
