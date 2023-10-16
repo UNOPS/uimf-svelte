@@ -41,6 +41,10 @@
 
 			return Promise.resolve({ Items: resultItems });
 		}
+
+		protected setValueInternal(value: IValueList | null): Promise<void> {
+			return Promise.resolve();
+		}
 	}
 
 	interface IValueList {
@@ -65,7 +69,7 @@
 <script lang="ts">
 	import { InputComponent } from '../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
-	import { beforeUpdate } from 'svelte';
+	import { beforeUpdate, tick } from 'svelte';
 	import Input from '../Input.svelte';
 	import { tooltip } from '../Components/Tooltip.svelte';
 
@@ -81,6 +85,7 @@
 			metadata = controller.metadata;
 
 			hasDropdowns = false;
+
 			columns = (controller.metadata.CustomProperties?.Metadata || [])
 				.map((t) => {
 					hasDropdowns = hasDropdowns || ['typeahead', 'multiselect', 'dropdown'].includes(t.Type);
@@ -88,9 +93,6 @@
 				})
 				.sort((a, b) => a.OrderIndex - b.OrderIndex);
 
-			controller.ready?.resolve();
-		},
-		async refresh() {
 			// Make sure that `field.value.Items` has a non-null value.
 			// This is important to ensure that the newly-added items
 			// can be retrieved (and POSTed).
@@ -102,41 +104,64 @@
 				row._controllers = row._controllers || {};
 
 				for (let column of columns) {
-					row._controllers[column.Id] = await getInputController(column, row);
+					if (row._controllers[column.Id] == null) {
+						row._controllers[column.Id] = await getInputController(column, row);
+					}
 				}
 			}
 
-			rows = controller.value.Items;
+			controller.ready?.resolve();
+		},
+		async refresh() {
+			rows = controller.value?.Items || [];
 		}
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
 
-	async function createNewRow(columns: ComponentMetadata[]): Promise<IValueItem> {
-		var row: IValueItem = {
+	async function addNewRow(e: Event): Promise<void> {
+		var newRow: IValueItem = {
 			_controllers: {},
 			_deleted: false
 		};
 
 		for (let column of columns) {
-			row._controllers[column.Id] = await getInputController(column, row);
+			newRow._controllers[column.Id] = await getInputController(column, newRow);
 		}
 
-		return row;
+		rows.push(newRow);
+		rows = rows;
+
+		// Let's wait for the DOM to update.
+		await tick();
+
+		// Then focus on the first input in the new row.
+		const input: HTMLInputElement | null | undefined = (e.target as HTMLButtonElement)
+			.closest('table')
+			?.querySelector('tbody > tr:last-child > td:first-child input');
+
+		input?.focus();
 	}
 
 	async function getInputController(
-		item: ComponentMetadata,
-		data: any
+		column: ComponentMetadata,
+		row: IValueItem
 	): Promise<InputController<any>> {
 		var inputController = controlRegister.createInput({
 			app: controller.app,
 			form: controller.form,
-			metadata: item,
+			metadata: column,
 			defer: null
 		}).controller;
 
-		await inputController.setValue(data[item.Id]);
+		await inputController.setValue(row[column.Id]);
+
+		// When the cell value changes, the overall `value-list` should
+		// also trigger the `input:change` event.
+		inputController.on('input:change', async () => {
+			row[column.Id] = inputController.getValue();
+		});
+
 		return inputController;
 	}
 
@@ -175,11 +200,9 @@
 							<td class="col-action">
 								<button
 									class="btn btn-outline-light"
-                                    use:tooltip={"Remove row"}
-									on:click={(e) => {
-										row._deleted = true;
-										e.preventDefault();
-									}}
+									type="button"
+									use:tooltip={'Remove row'}
+									on:click|preventDefault={() => (row._deleted = true)}
 								>
 									<i class="fa fa-times" />
 								</button>
@@ -195,16 +218,11 @@
 						<td class="col-action">
 							<button
 								class="btn btn-outline-primary"
-                                use:tooltip={"Add row"}
-								on:click={async (e) => {
-									var newRow = await createNewRow(columns);
-									rows.push(newRow);
-									rows = rows;
-
-									e.preventDefault();
-								}}
+								type="button"
+								use:tooltip={'Add row'}
+								on:click|preventDefault={addNewRow}
 							>
-                            <i class="fa fa-plus" />
+								<i class="fa fa-plus" />
 							</button>
 						</td>
 					</tr>
