@@ -85,12 +85,6 @@
 		await component.setup(controller);
 	});
 
-	component.clearAction = function (value: any): void {
-		if (value == null) {
-			selected = [];
-		}
-	};
-
 	function augmentItems(items: any[]): any[] {
 		if (items == null) {
 			return [];
