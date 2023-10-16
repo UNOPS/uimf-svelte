@@ -88,4 +88,8 @@
 
 <style lang="scss">
 	@import '../../scss/styles.scss';
+
+	input.form-control {
+		min-height: $app-input-min-height;
+	}
 </style>

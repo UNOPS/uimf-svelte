@@ -158,4 +158,8 @@
 
 <style lang="scss">
 	@import '../../scss/styles.scss';
+
+	select.form-select {
+		min-height: $app-input-min-height;
+	}
 </style>

@@ -156,6 +156,10 @@
 <style lang="scss">
 	@import '../../scss/styles.scss';
 
+	input.form-control {
+		min-height: $app-input-min-height;
+	}
+
 	.date-range {
 		display: flex;
 		gap: 10px;

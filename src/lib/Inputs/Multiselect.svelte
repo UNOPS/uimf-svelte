@@ -194,37 +194,40 @@
 </div>
 
 <style lang="scss">
+	@import '../../scss/styles.scss';
+	
 	.input-container {
 		width: 100%;
-		--height: 37px;
-		--padding: 0 16px 0 16px;
-		--background: var(--app-body-bg);
-		--input-color: var(--app-body-color);
-		--font-size: 1rem;
+		--height: #{$app-input-min-height};
+		--padding: 0 10px 0 10px;
+		--background: var(--bs-body-bg);
+		--input-color: var(--bs-body-color);
+		--font-size: var(--bs-body-font-size);
 		--item-height: auto;
 
-		--item-color: var(--app-body-color);
-		--item-hover-bg: var(--app-tertiary-bg);
+		--item-color: var(--bs-body-color);
+		--item-hover-bg: var(--bs-tertiary-bg);
 
-		--clear-icon-color: var(--app-body-color);
+		--clear-icon-color: var(--bs-body-color);
 		--clear-select-width: 20px;
 		--loading-width: 20px;
 
-		--list-background: var(--app-body-bg);
-		--list-border: 1px solid var(--app-border-color);
+		--list-background: var(--bs-body-bg);
+		--list-border: 1px solid var(--bs-border-color);
 
-		--border: 1px solid var(--app-border-color);
-		--border-hover: 1px solid var(--app-border-color);
-		--border-focused: 1px solid var(--app-input-focus-border-color);
+		--border: 1px solid var(--bs-border-color);
+		--border-hover: 1px solid var(--bs-border-color);
+		--border-focused: 1px solid var(--bs-input-focus-border-color);
+		--border-radius: 0;
 
-		--multi-item-bg: var(--app-body-bg);
-		--multi-select-padding: 0 16px 0 16px;
-		--multi-item-height: 28px;
-		--multi-item-clear-icon-color: var(--app-body-color);
-		--multi-item-outline: 2px solid var(--app-border-color);
+		--multi-item-bg: var(--bs-body-bg);
+		--multi-select-padding: 0 10px 0 10px;
+		--multi-item-height: 25px;
+		--multi-item-clear-icon-color: var(--bs-body-color);
+		--multi-item-outline: 2px solid var(--bs-border-color);
 
 		& > :global(.svelte-select.focused) {
-			box-shadow: 0 0 0 var(--app-focus-ring-width) var(--app-focus-ring-color);
+			box-shadow: 0 0 0 var(--bs-focus-ring-width) var(--bs-focus-ring-color);
 		}
 	}
 </style>
