@@ -93,6 +93,9 @@
 				})
 				.sort((a, b) => a.OrderIndex - b.OrderIndex);
 
+			controller.ready?.resolve();
+		},
+		async refresh() {
 			// Make sure that `field.value.Items` has a non-null value.
 			// This is important to ensure that the newly-added items
 			// can be retrieved (and POSTed).
@@ -107,12 +110,17 @@
 					if (row._controllers[column.Id] == null) {
 						row._controllers[column.Id] = await getInputController(column, row);
 					}
+
+					const currentValue = row._controllers[column.Id].getValue();
+					
+					// To avoid unnecessary re-rendering and DOM events, we only update
+					// the value if it has actually changed.
+					if (row[column.Id] != currentValue) {
+						await row._controllers[column.Id].setValue(row[column.Id]);
+					}
 				}
 			}
 
-			controller.ready?.resolve();
-		},
-		async refresh() {
 			rows = controller.value?.Items || [];
 		}
 	});
@@ -153,8 +161,6 @@
 			metadata: column,
 			defer: null
 		}).controller;
-
-		await inputController.setValue(row[column.Id]);
 
 		// When the cell value changes, the overall `value-list` should
 		// also trigger the `input:change` event.
