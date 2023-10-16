@@ -163,19 +163,14 @@
 		return await response;
 	}
 
-	async function handleSelect(event: { detail: string | any[] | null }) {
+	async function handleSelect(event: Event & { detail: any[] }) {
 		if (event.detail != null && event.detail.length > 0) {
 			selected = selected || [];
 			selected.push(...event.detail);
 
-			if (controller.value == null) {
-				controller.value = { Items: [] };
-			}
+			const items = selected.length > 0 ? [...new Set(selected.map((t) => t.Value))] : [];
 
-			controller.value.Items =
-				selected.length > 0 ? [...new Set(selected.map((t) => t.Value))] : [];
-
-			controller.setValue(controller.value);
+			controller.setValue({ Items: items });
 		}
 	}
 </script>
