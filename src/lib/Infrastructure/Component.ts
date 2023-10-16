@@ -66,13 +66,9 @@ class Component<T extends EventSource & { id: string }> {
 export class InputComponent extends Component<InputController<any>>{
 
     public value : any;
-	public clearAction: (value: any) => void = () => { return };
 
     constructor(options: Options) {
         super('input:change', options);
-        this.customSetup = function () {
-            this.field.on(this.refreshOn, async () => this.clearAction(this.value))
-        };
     }
 }
 
