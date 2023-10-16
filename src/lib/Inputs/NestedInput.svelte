@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-	import { InputController } from '../Infrastructure/InputController';
+	import { InputController, type CreateInputOptions } from '../Infrastructure/InputController';
 	import type { ComponentMetadata, NestedComponentMetadata } from '$lib/Infrastructure/uimf';
 
 	export interface ViewData {
@@ -9,30 +9,43 @@
 		declare metadata: NestedComponentMetadata;
 
 		declare views: Array<{
-			options: ComponentMetadata;
-			controller: any;
+			metadata: ComponentMetadata;
+			controller: InputController<any>;
 		}>;
 
-		declare updateViewsFunction: () => void;
+		constructor(options: CreateInputOptions) {
+			super(options);
+
+			this.views = [];
+
+			this.metadata.Properties.sort((x, y) => x.OrderIndex - y.OrderIndex);
+
+			for (const view of this.metadata.Properties) {
+				let controllerClass = controlRegister.inputs[view.Type].controller;
+
+				this.views.push({
+					metadata: view,
+					controller: new controllerClass({
+						metadata: view,
+						form: this.form,
+						defer: null,
+						app: this.app
+					})
+				});
+			}
+		}
 
 		public getValue(): Promise<ViewData | null> {
 			let effectiveValue: { [x: string]: any } = {};
+
 			let promises = this.views.map(function (view) {
 				return view.controller.getValue().then(function (value: any) {
-					effectiveValue[view.options.Id] = value;
+					effectiveValue[view.metadata.Id] = value;
 				});
 			});
 
-			if (this.ready === null) {
-				return Promise.resolve({
-					Value: effectiveValue
-				});
-			}
-
 			return Promise.all(promises).then(function () {
-				return Promise.resolve({
-					Value: effectiveValue
-				});
+				return { Value: effectiveValue };
 			});
 		}
 
@@ -45,49 +58,15 @@
 		}
 
 		protected setValueInternal(value: ViewData | null): Promise<void> {
-			if (value == null) {
-				return Promise.resolve();
-			}
+			let promises = [];
+			
+			this.value = value ?? { Value: {} };
 
-			if (this.views == null) {
-				this.views = [];
-				return this.initializeComponents();
-			}
-
-			let promiseArray = [];
 			for (const view of this.views) {
-				let v = value?.Value[view.options.Id];
-				promiseArray.push(view.controller.setValue(v));
+				promises.push(view.controller.setValue(this.value.Value[view.metadata.Id]));
 			}
 
-			return Promise.all(promiseArray).then(() => {
-				return Promise.resolve();
-			});
-		}
-
-		createController(metadata: ComponentMetadata): InputController<any> {
-			let controllerClass = controlRegister.inputs[metadata.Type].controller;
-			return new controllerClass({
-				metadata: metadata,
-				form: this.form,
-				defer: null,
-				app: this.app
-			});
-		}
-
-		public initializeComponents(): Promise<void> {
-			this.views.splice(0, this.views.length);
-
-			for (const view of this.metadata.Properties) {
-				let controller = this.createController(view);
-				this.views.push({
-					options: view,
-					controller: controller
-				});
-			}
-			return this.setValueInternal(this.value).then(() => {
-				this.views.sort((x, y) => x.options.OrderIndex - y.options.OrderIndex);
-				this.updateViewsFunction?.();
+			return Promise.all(promises).then(() => {
 				return Promise.resolve();
 			});
 		}
@@ -103,33 +82,12 @@
 
 	export let controller: Controller;
 
-	let views: any[] = [];
-
-	const updateViews = () => {
-		views = views;
-	};
-
 	let component = new InputComponent({
 		init() {
-			component?.setup(controller).then(() => {
-				//This "weird" condition is needed because
-				//when nested input is summoned from a conditional input
-				//aka the controller is created before the component,
-				//setValueInternal will be called and initialize this.view
-				//so we want to make sure the reference works for both sides
-				if (controller.views != null) {
-					views = controller.views;
-				} else {
-					controller.views = views;
-				}
-				controller.updateViewsFunction = updateViews;
-				controller.initializeComponents().then(() => {
-					controller.ready?.resolve();
-				});
-			});
+			controller.ready?.resolve();
 		},
 		refresh() {
-			controller.value = controller.value;
+			controller.views = controller.views;
 		}
 	});
 
@@ -138,7 +96,7 @@
 	});
 </script>
 
-{#each views as view}
+{#each controller.views as view}
 	<div>
 		<Input controller={view.controller} />
 	</div>
