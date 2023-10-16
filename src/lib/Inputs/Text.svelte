@@ -33,14 +33,14 @@
 
 {#if controller.metadata.CustomProperties?.multiline}
 	<textarea
-		class="form-control form-control-lg"
+		class="form-control"
 		bind:value={controller.value}
 		required={controller.metadata.Required}
 	/>
 {:else}
 	<input
 		autocomplete="off"
-		class="form-control form-control-lg"
+		class="form-control"
 		on:change={() => controller.setValue(controller.value)}
 		bind:value={controller.value}
 		required={controller.metadata.Required}

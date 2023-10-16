@@ -79,7 +79,7 @@
 </script>
 
 <input
-	class="form-control form-control-lg"
+	class="form-control"
 	bind:value={controller.valueAsString}
 	on:change={() => controller.setValue(controller.valueAsString)}
 	required={controller.metadata.Required}

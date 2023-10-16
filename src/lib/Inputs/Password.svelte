@@ -71,7 +71,7 @@
 
 <input
 	autocomplete="off"
-	class="form-control form-control-lg"
+	class="form-control"
 	on:change={() => controller.setValue(controller.valueAsString)}
 	bind:value={controller.valueAsString}
 	required={controller.metadata.Required}

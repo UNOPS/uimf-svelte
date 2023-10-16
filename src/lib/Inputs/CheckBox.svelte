@@ -57,7 +57,7 @@
 	/>
 {:else}
 	<select
-		class="form-control form-control-lg"
+		class="form-control"
 		bind:value={controller.value}
 		on:change={() => controller.setValue(controller.value)}
 	>
