@@ -41,8 +41,6 @@
 	let cachedOptions: Record<string, Promise<any>> = {};
 	let isInlineSource: boolean = true;
 
-	let selected: any;
-
 	let component = new InputComponent({
 		init() {
 			cachedOptions = {};
@@ -83,16 +81,6 @@
 	beforeUpdate(async () => {
 		await component.setup(controller);
 	});
-
-	$: {
-		selected = controller.value;
-	}
-
-	component.clearAction = function (value: any): void {
-		if (value == null) {
-			selected = null;
-		}
-	};
 
 	function augmentItems(items: any[]): any[] {
 		if (items == null) {
@@ -170,7 +158,7 @@
 <div class="input-container">
 	<Select
 		inputAttributes={{ id: id, tabindex: 0 }}
-		value={selected}
+		value={controller.value}
 		label="Label"
 		itemId="Value"
 		on:input={(e) => {
