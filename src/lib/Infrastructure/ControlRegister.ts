@@ -40,12 +40,12 @@ import * as Status from '../Outputs/Status.svelte';
 import * as NestedObject from "../Outputs/NestedObject.svelte";
 
 //To be deactivated until complete validation
-// import * as Typeahead from '../Inputs/Typeahead.svelte'
+import * as Typeahead from '../Inputs/Typeahead.svelte'
 // import * as Table from '../Outputs/Table.svelte';
 // import * as ObjectList from '../Outputs/ObjectList.svelte';
 import * as FormLink from '../Outputs/FormLink.svelte';
 // import * as ActionList from '../Outputs/ActionList.svelte';
-// import * as MultiSelect from '../Inputs/Multiselect.svelte';
+import * as MultiSelect from '../Inputs/Multiselect.svelte';
 import * as Alert from '../Outputs/Alert.svelte';
 // import * as Expandable from '../Outputs/Expandable.svelte';
 import * as Icon from '../Outputs/Icon.svelte';
@@ -253,6 +253,7 @@ defaultControlRegister.registerInputComponent('consent', Consent, { alwaysHideLa
 defaultControlRegister.registerInputComponent('paginator', Paginator);
 defaultControlRegister.registerInputComponent('password', Password);
 defaultControlRegister.registerInputComponent('value-list', ValueList, { displayAsBlock: true });
+defaultControlRegister.registerInputComponent('toggled-input', ToggledInput, { displayAsBlock: true });
 
 // Outputs.
 defaultControlRegister.registerOutputComponent('image-overlay', ImageOverlay);
@@ -280,8 +281,8 @@ defaultControlRegister.registerOutputComponent('formlink', FormLink, { displayAs
 
 // To be deactivated until complete validation
 // defaultControlRegister.registerOutputComponent('table', Table);
-// defaultControlRegister.registerInputComponent('typeahead', Typeahead);
-// defaultControlRegister.registerInputComponent('multiselect', MultiSelect);
+defaultControlRegister.registerInputComponent('typeahead', Typeahead);
+defaultControlRegister.registerInputComponent('multiselect', MultiSelect);
 // defaultControlRegister.registerOutputComponent('inline-form', Form);
 // defaultControlRegister.registerOutputComponent('paginated-data', PaginatedData);
 //defaultControlRegister.registerOutputComponent('sequence', Sequence);
