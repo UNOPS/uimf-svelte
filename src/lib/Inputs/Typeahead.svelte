@@ -2,20 +2,20 @@
 	import { InputController } from '../Infrastructure/InputController';
 
 	export class Controller extends InputController<TypeaheadValue> {
-		public deserialize(value: string): Promise<TypeaheadValue | null> {
+		public getValue(): Promise<TypeaheadValue | null> {
+			var result = this.value?.Value != null ? this.value : null;
+
+			return Promise.resolve(result);
+		}
+
+		public deserialize(value: string | null): Promise<TypeaheadValue | null> {
 			var result = value == null || value === '' ? null : new TypeaheadValue(value);
 
 			return Promise.resolve(result);
 		}
 
-		public serialize(value: TypeaheadValue): string {
+		public serialize(value: TypeaheadValue | null): string | null {
 			return value?.Value != null ? value.Value : null;
-		}
-
-		public getValue(): Promise<TypeaheadValue | null> {
-			var result = this.value?.Value != null ? this.value : null;
-
-			return Promise.resolve(result);
 		}
 	}
 
@@ -161,11 +161,11 @@
 		value={controller.value}
 		label="Label"
 		itemId="Value"
-		on:input={(e) => {
-			controller.setValue(e.detail);
+		on:input={async (e) => {
+			await controller.setValue(e.detail);
 		}}
-		on:clear={() => {
-			controller?.setValue(null);
+		on:clear={async () => {
+			await controller?.setValue(null);
 		}}
 		hideEmptyState={true}
 		placeholder="type to search..."
