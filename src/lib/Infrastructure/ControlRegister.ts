@@ -17,6 +17,7 @@ import * as RichTextEditor from '../Inputs/RichTextEditor.svelte'
 import * as Consent from '../Inputs/Consent.svelte';
 import * as Paginator from '../Inputs/Paginator.svelte';
 import * as ValueList from '../Inputs/ValueList.svelte';
+import * as ToggledInput from '../Inputs/ToggledInput.svelte';
 
 // Outputs.
 import * as StateDiagram from "../Outputs/StateDiagram.svelte";
