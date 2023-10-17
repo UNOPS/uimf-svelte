@@ -226,6 +226,7 @@
 		--multi-item-height: 25px;
 		--multi-item-clear-icon-color: var(--bs-body-color);
 		--multi-item-outline: 1px solid var(--bs-border-color);
+		--multi-select-input-margin: 0 0;
 
 		.item {
 			& > small {
