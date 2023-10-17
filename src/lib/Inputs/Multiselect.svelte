@@ -203,10 +203,14 @@
 		--background: var(--bs-body-bg);
 		--input-color: var(--bs-body-color);
 		--font-size: var(--bs-body-font-size);
-		--item-height: auto;
 
+		--item-height: auto;
 		--item-color: var(--bs-body-color);
+		--item-hover-color: var(--bs-body-color);
 		--item-hover-bg: var(--bs-tertiary-bg);
+		--item-is-active-bg: var(--bs-primary-bg-subtle);
+		--item-is-active-color: var(--bs-body-color);
+		--item-line-height: #{$app-input-min-height};
 
 		--clear-icon-color: var(--bs-body-color);
 		--clear-select-width: 20px;
@@ -214,17 +218,36 @@
 
 		--list-background: var(--bs-body-bg);
 		--list-border: 1px solid var(--bs-border-color);
+		--list-border-radius: 0;
+		--list-shadow: none;
 
 		--border: 1px solid var(--bs-border-color);
 		--border-hover: 1px solid var(--bs-border-color);
-		--border-focused: 1px solid var(--bs-input-focus-border-color);
+		--border-focused: 1px solid #{$input-focus-border-color};
 		--border-radius: 0;
-
+		
 		--multi-item-bg: var(--bs-body-bg);
 		--multi-select-padding: 0 10px 0 10px;
 		--multi-item-height: 25px;
 		--multi-item-clear-icon-color: var(--bs-body-color);
 		--multi-item-outline: 2px solid var(--bs-border-color);
+
+		.item {
+			& > small {
+				font-size: 0.8em;
+				display: block;
+				opacity: 0.5;
+				line-height: 1.2em;
+				padding: 8px 0 0 0;
+			}
+
+			& > span {
+				line-height: 1.8em;
+				padding: 0 0 5px 0;
+				margin: 0;
+				display: block;
+			}
+		}
 
 		& > :global(.svelte-select.focused) {
 			box-shadow: 0 0 0 var(--bs-focus-ring-width) var(--bs-focus-ring-color);
