@@ -59,7 +59,7 @@
 	"dependencies": {
 		"@crinkles/digl": "^2.0.3",
 		"@panzoom/panzoom": "^4.5.1",
-		"bootstrap": "^5.2.3",
+		"bootstrap": "^5.3.2",
 		"jest-environment-jsdom": "^29.5.0",
 		"monaco-editor": "^0.40.0",
 		"svelte-select": "^5.7.0"
