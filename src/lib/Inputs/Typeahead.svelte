@@ -190,7 +190,7 @@
 	.input-container {
 		width: 100%;
 		--height: #{$app-input-min-height};
-		--padding: 0 10px 0 10px;
+		--padding: 0 6px 0 10px;
 		--background: var(--bs-body-bg);
 		--input-color: var(--bs-body-color);
 		--font-size: var(--bs-body-font-size);
@@ -202,8 +202,12 @@
 		--item-is-active-bg: var(--bs-primary-bg-subtle);
 		--item-is-active-color: var(--bs-body-color);
 		--item-line-height: #{$app-input-min-height};
+		--selected-item-color: var(--bs-body-color);
 
 		--clear-icon-color: var(--bs-body-color);
+		--clear-icon-width: 12px;
+		--clear-icon-height: 12px;
+
 		--clear-select-width: 20px;
 		--loading-width: 20px;
 
@@ -218,10 +222,10 @@
 		--border-radius: 0;
 		
 		--multi-item-bg: var(--bs-body-bg);
-		--multi-select-padding: 0 10px 0 10px;
+		--multi-select-padding: var(--padding);
 		--multi-item-height: 25px;
 		--multi-item-clear-icon-color: var(--bs-body-color);
-		--multi-item-outline: 2px solid var(--bs-border-color);
+		--multi-item-outline: 1px solid var(--bs-border-color);
 
 		.item {
 			& > small {
