@@ -177,10 +177,10 @@
 
 <div class="input-container">
 	<Select
-		{items}
 		value={selected}
 		label="Label"
 		itemId="Value"
+		required={controller.metadata.Required}
 		on:input={handleSelect}
 		on:clear={() => {
 			controller?.setValue(null);

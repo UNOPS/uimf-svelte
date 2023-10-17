@@ -157,10 +157,10 @@
 
 <div class="input-container">
 	<Select
-		inputAttributes={{ id: id, tabindex: 0 }}
 		value={controller.value}
 		label="Label"
 		itemId="Value"
+		required={controller.metadata.Required}
 		on:input={async (e) => {
 			await controller.setValue(e.detail);
 		}}
