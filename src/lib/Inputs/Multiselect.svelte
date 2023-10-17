@@ -190,12 +190,19 @@
 		hideEmptyState={true}
 		placeholder="type to search..."
 		loadOptions={loadOptionsAndFilter}
-	/>
+	>
+		<div slot="item" let:item class={item.CssClass} class:item-slot={true}>
+			<span>{item.Label}</span>
+			{#if item.Description?.length > 0}
+				<small>{item.Description}</small>
+			{/if}
+		</div>
+	</Select>
 </div>
 
 <style lang="scss">
 	@import '../../scss/styles.scss';
-	
+
 	.input-container {
 		width: 100%;
 		--height: #{$app-input-min-height};
@@ -229,7 +236,7 @@
 		--border-hover: 1px solid var(--bs-border-color);
 		--border-focused: 1px solid #{$input-focus-border-color};
 		--border-radius: 0;
-		
+
 		--multi-item-bg: var(--bs-body-bg);
 		--multi-select-padding: var(--padding);
 		--multi-item-height: 25px;
@@ -237,20 +244,23 @@
 		--multi-item-outline: 1px solid var(--bs-border-color);
 		--multi-select-input-margin: 0 0;
 
-		.item {
+		.item-slot {
+			padding: 6px 0;
+
+			& > span {
+				line-height: 1.8em;
+				padding: 0;
+				margin: 0;
+				display: block;
+			}
+
 			& > small {
 				font-size: 0.8em;
 				display: block;
 				opacity: 0.5;
 				line-height: 1.2em;
-				padding: 8px 0 0 0;
-			}
-
-			& > span {
-				line-height: 1.8em;
-				padding: 0 0 5px 0;
-				margin: 0;
-				display: block;
+				padding: 4px 0 6px;
+				white-space: normal;
 			}
 		}
 
