@@ -173,6 +173,8 @@
 			controller.setValue({ Items: items });
 		}
 	}
+
+	const groupBy = (item: any) => item.Group;
 </script>
 
 <div class="input-container">
@@ -181,6 +183,7 @@
 		label="Label"
 		itemId="Value"
 		required={controller.metadata.Required}
+		{groupBy}
 		on:input={handleSelect}
 		on:clear={() => {
 			controller?.setValue(null);
@@ -219,6 +222,8 @@
 		--item-is-active-color: var(--bs-body-color);
 		--item-line-height: #{$app-input-min-height};
 		--selected-item-color: var(--bs-body-color);
+
+		--group-title-font-size: 1rem;
 
 		--clear-icon-color: var(--bs-body-color);
 		--clear-icon-width: 12px;

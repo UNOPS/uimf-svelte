@@ -153,6 +153,8 @@
 
 		return await response;
 	}
+
+	const groupBy = (item: any) => item.Group;
 </script>
 
 <div class="input-container">
@@ -161,6 +163,7 @@
 		label="Label"
 		itemId="Value"
 		required={controller.metadata.Required}
+		{groupBy}
 		on:input={async (e) => {
 			await controller.setValue(e.detail);
 		}}
@@ -204,6 +207,8 @@
 		--item-line-height: #{$app-input-min-height};
 		--selected-item-color: var(--bs-body-color);
 
+		--group-title-font-size: 1rem;
+
 		--clear-icon-color: var(--bs-body-color);
 		--clear-icon-width: 12px;
 		--clear-icon-height: 12px;
@@ -228,7 +233,7 @@
 		--multi-item-outline: 1px solid var(--bs-border-color);
 		--multi-select-input-margin: 0 0;
 
-		.item {
+		.item-slot {
 			& > small {
 				font-size: 0.8em;
 				display: block;
