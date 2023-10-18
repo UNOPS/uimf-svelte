@@ -174,22 +174,15 @@
 		placeholder="type to search..."
 		loadOptions={loadOptionsAndFilter}
 	>
-		<div slot="item" let:item class="item">
-			{#if item.Path != null}
-				<small>{item.Path}</small>
-				<span>{@html item.Label}</span>
-			{:else}
-				{@html item.Label}
-			{/if}
+		<div slot="item" let:item class={item.CssClass} class:item-slot={true}>
+			{@html item.Label}
 		</div>
 	</Select>
 </div>
 
-
-
 <style lang="scss">
 	@import '../../scss/styles.scss';
-	
+
 	.input-container {
 		width: 100%;
 		--height: #{$app-input-min-height};

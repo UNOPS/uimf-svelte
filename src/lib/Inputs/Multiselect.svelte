@@ -195,9 +195,9 @@
 		loadOptions={loadOptionsAndFilter}
 	>
 		<div slot="item" let:item class={item.CssClass} class:item-slot={true}>
-			<span>{item.Label}</span>
+			<span>{@html item.Label}</span>
 			{#if item.Description?.length > 0}
-				<small>{item.Description}</small>
+				<small>{@html item.Description}</small>
 			{/if}
 		</div>
 	</Select>
