@@ -41,6 +41,13 @@ interface IHtmlModalOptions {
     data?: any;
 }
 
+interface ColorOptions {
+    format: string;
+    hue?: string;
+    alpha: number;
+    luminosity: string;
+}
+
 export default interface IUimfApp {
     runResponseHandler(response: FormResponse): Promise<void>;
     runClientFunctions(response: FormResponse): Promise<void>;
@@ -58,4 +65,5 @@ export default interface IUimfApp {
     getResponseHandler(handler: string): any;
     getForm(formId: string): Promise<FormInstance>;
     hasPermission(permission: string): boolean;
+    colorFromString(str: string, options: ColorOptions): string;
 }

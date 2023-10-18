@@ -75,18 +75,15 @@
 	});
 
 	const makeFormController = (action: any) => {
-		return new OutputController<FormLinkData>(
-			{
-				metadata: { disabled: action.Disabled } as FormLinkMetadata,
-				data: action,
-				form: controller.form!,
-				app: controller.app
-			}
-		) as FormLinkController;
+		return new OutputController<FormLinkData>({
+			metadata: { disabled: action.Disabled } as FormLinkMetadata,
+			data: action,
+			form: controller.form!,
+			app: controller.app
+		}) as FormLinkController;
 	};
 
 	const inputFieldValues = controller.form?.getInputFieldValues();
-
 </script>
 
 {#if table?.body == null || table.body.length === 0}
@@ -115,7 +112,7 @@
 	{/if}
 
 	<div class={(controller?.metadata?.CustomProperties?.CssClass ?? '') + ' table-responsive'}>
-		<table class="table table-striped table-bordered">
+		<table class="table table-bordered">
 			{#if table.colgroups?.length > 0}
 				{#if bulkActionExtension.actions.length > 0}
 					<colgroup />
@@ -237,6 +234,8 @@
 {/if}
 
 <style lang="scss">
+	@import '../../../../scss/styles.scss';
+
 	.min-width {
 		width: 1px;
 	}
@@ -254,96 +253,65 @@
 		margin-right: 5px;
 	}
 
-	.group-header {
-		background: var(--app-secondary-bg);
+	div.table-responsive {
+		--inner-border-color: rgba(0, 0, 0, 0.03);
+		--outer-border-color: #ddd;
+		--group-border-color: #d6d6d645;
 
-		& > td {
-			padding: 10px 20px;
+		border: 1px solid var(--outer-border-color);
+		border-radius: 4px;
+
+		.group-header {
+			background: var(--bs-secondary-bg);
+
+			& > td {
+				padding: 10px 20px;
+			}
 		}
-	}
 
-	thead > tr:last-child {
-		border-bottom-width: 3px;
-	}
+		thead > tr:last-child {
+			border-bottom-width: 3px;
+		}
 
-	.column-group {
-		text-align: center;
-		border-bottom: 0px !important;
-		border-left: 3px solid var(--app-border-color);
-		border-right: 3px solid var(--app-border-color);
-	}
+		.column-group {
+			text-align: center;
+			border-bottom: 0px !important;
+			border-left: 3px solid var(--group-border-color);
+			border-right: 3px solid var(--group-border-color);
+		}
 
-	.table {
-		margin-bottom: 0;
-	}
+		.table {
+			margin-bottom: 0;
+			border: none;
+		}
 
-	.table > thead > tr:first-child > th {
-		background-color: var(--app-primary-bg-subtle);
-		color: var(--app-primary-text-emphasis);
-	}
+		.table > tbody > tr > td,
+		.table > thead > tr > th {
+			border-color: var(--inner-border-color);
+		}
 
-	.table > thead > tr:nth-child(2) > th {
-		background-color: var(--app-info-bg-subtle);
-		color: var(--app-info-text-emphasis);
-	}
+		.table > :not(:first-child) {
+			/* Override Bootstrap weirdness, which renders thick border for a colgroup. */
+			border-top: inherit;
+		}
 
-	.table > :not(:first-child) {
-		/* Override Bootstrap weirdness, which renders thick border for a colgroup. */
-		border-top: inherit;
-	}
+		.table > tbody > tr:hover {
+			background-color: var(--bs-tertiary-bg);
+		}
 
-	.table > tbody > tr:hover {
-		background-color: var(--app-tertiary-bg);
-	}
+		.table > tbody > tr.footer:hover,
+		.table > tbody > tr.footer {
+			background: var(--bs-tertiary-bg);
 
-	.table > tbody > tr.footer:hover,
-	.table > tbody > tr.footer {
-		background: var(--app-tertiary-bg);
-
-		& > td {
-			--border: 5px solid var(--app-primary-bg-subtle);
-			border-top: var(--border);
-			border-bottom: var(--border);
+			& > td {
+				--border: 5px solid var(--bs-primary-bg-subtle);
+				border-top: var(--border);
+				border-bottom: var(--border);
+			}
 		}
 	}
 
 	:global(.table > tbody > tr.footer > td .outputs) {
 		margin: 0;
-	}
-
-	div:global(.boxed) {
-		--border-color: var(--app-border-color);
-
-		height: 400px;
-		overflow: auto;
-		border: 1px solid var(--border-color);
-		border-width: 1px 3px 1px 1px;
-
-		table {
-			overflow: auto;
-			height: 100px;
-		}
-
-		table thead th {
-			position: sticky;
-			top: 0;
-			z-index: 1;
-			background: var(--app-dark);
-		}
-
-		table,
-		table td {
-			box-shadow: inset 1px -1px var(--border-color);
-			border: none !important;
-		}
-
-		table th {
-			box-shadow: inset 1px 1px var(--border-color), 1px 2px var(--border-color);
-			border: none !important;
-		}
-
-		.table-bordered > :not(caption) > * {
-			border-width: 0;
-		}
 	}
 </style>
