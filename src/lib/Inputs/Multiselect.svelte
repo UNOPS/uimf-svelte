@@ -40,11 +40,19 @@
 	import Select from 'svelte-select';
 	import { InputComponent } from '../Infrastructure/Component';
 
+	interface Option {
+		Label: string;
+		Value: any;
+		RequiredPermission: string;
+		Group: string;
+		SearchText: string;
+	}
+
 	export let controller: Controller;
 
-	let items: any[];
-	let cachedOptions: Record<string, Promise<any>> = {};
-	let selected: any[];
+	let items: Option[];
+	let cachedOptions: Record<string, Promise<Option[]>> = {};
+	let selected: Option[] = [];
 	let isInlineSource: boolean = true;
 
 	let component = new InputComponent({
@@ -72,7 +80,7 @@
 
 				selected =
 					results?.length > 0
-						? controller.value.Items.map((t) => results.find((c: { Value: any }) => c.Value == t))
+						? controller.value.Items.map((t) => results.find((c) => c.Value == t)!)
 						: [];
 			} else {
 				selected = [];
@@ -85,7 +93,7 @@
 		await component.setup(controller);
 	});
 
-	function augmentItems(items: any[]): any[] {
+	function augmentItems(items: Option[]): Option[] {
 		if (items == null) {
 			return [];
 		}
@@ -103,19 +111,21 @@
 		const queryById = typeof query !== 'string';
 
 		return loadOptions(query).then((options) => {
+			const visibleOptions = options.filter((t) =>
+				controller.app.hasPermission(t.RequiredPermission)
+			);
+
 			if (queryById) {
-				return options;
+				return visibleOptions;
 			}
 
 			const queryInLowercase = query.toLocaleLowerCase();
 
-			return options.filter((t: { SearchText: string | string[] }) =>
-				t.SearchText.includes(queryInLowercase)
-			);
+			return visibleOptions.filter((t) => t.SearchText.includes(queryInLowercase));
 		});
 	}
 
-	async function loadOptions(query: MultiselectValue | string): Promise<any> {
+	async function loadOptions(query: MultiselectValue | string): Promise<Option[]> {
 		if (isInlineSource) {
 			return Promise.resolve(items);
 		}

@@ -57,4 +57,5 @@ export default interface IUimfApp {
     hasRole(permission: string): boolean;
     getResponseHandler(handler: string): any;
     getForm(formId: string): Promise<FormInstance>;
+    hasPermission(permission: string): boolean;
 }

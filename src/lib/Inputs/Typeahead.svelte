@@ -34,11 +34,18 @@
 	import { InputComponent } from '../Infrastructure/Component';
 	import { beforeUpdate } from 'svelte';
 
+	interface Option extends TypeaheadValue {
+		Label: string;
+		Value: any;
+		RequiredPermission: string;
+		Group: string;
+		SearchText: string;
+	}
+
 	export let controller: Controller;
 
-	let id: string;
-	let items: any[];
-	let cachedOptions: Record<string, Promise<any>> = {};
+	let items: Option[];
+	let cachedOptions: Record<string, Promise<Option[]>> = {};
 	let isInlineSource: boolean = true;
 
 	let component = new InputComponent({
@@ -66,7 +73,7 @@
 
 				controller.value =
 					results != null && results.length > 0
-						? results.find((t: { Value: any }) => t.Value == controller?.value?.Value)
+						? results.find((t) => t.Value == controller?.value?.Value) ?? null
 						: null;
 
 				if (controller.value == null) {
@@ -82,7 +89,7 @@
 		await component.setup(controller);
 	});
 
-	function augmentItems(items: any[]): any[] {
+	function augmentItems(items: Option[]): Option[] {
 		if (items == null) {
 			return [];
 		}
@@ -92,23 +99,27 @@
 		return items;
 	}
 
-	async function loadOptionsAndFilter(query: string): Promise<any> {
+	async function loadOptionsAndFilter(query: string): Promise<Option[]> {
 		const queryById = typeof query !== 'string';
 
 		return loadOptions(query).then((options) => {
+			const visibleOptions = options.filter((t) =>
+				controller.app.hasPermission(t.RequiredPermission)
+			);
+
 			if (queryById) {
-				return options;
+				return visibleOptions;
 			}
 
 			const queryInLowercase = query.toLocaleLowerCase();
 
-			return options.filter((t: { SearchText: string | string[] }) =>
+			return visibleOptions.filter((t: { SearchText: string | string[] }) =>
 				t.SearchText.includes(queryInLowercase)
 			);
 		});
 	}
 
-	async function loadOptions(query: string | TypeaheadValue | null): Promise<any> {
+	async function loadOptions(query: string | TypeaheadValue | null): Promise<Option[]> {
 		if (isInlineSource) {
 			return Promise.resolve(items);
 		}
@@ -218,7 +229,7 @@
 		--border-hover: 1px solid var(--bs-border-color);
 		--border-focused: 1px solid #{$input-focus-border-color};
 		--border-radius: 0;
-		
+
 		--multi-item-bg: var(--bs-body-bg);
 		--multi-select-padding: var(--padding);
 		--multi-item-height: 25px;
