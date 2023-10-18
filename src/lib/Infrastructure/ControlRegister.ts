@@ -42,24 +42,24 @@ import * as NestedObject from "../Outputs/NestedObject.svelte";
 
 //To be deactivated until complete validation
 import * as Typeahead from '../Inputs/Typeahead.svelte'
-// import * as Table from '../Outputs/Table.svelte';
-// import * as ObjectList from '../Outputs/ObjectList.svelte';
+import * as Table from '../Outputs/Table.svelte';
+import * as ObjectList from '../Outputs/ObjectList.svelte';
 import * as FormLink from '../Outputs/FormLink.svelte';
-// import * as ActionList from '../Outputs/ActionList.svelte';
+import * as ActionList from '../Outputs/ActionList.svelte';
 import * as MultiSelect from '../Inputs/Multiselect.svelte';
 import * as Alert from '../Outputs/Alert.svelte';
-// import * as Expandable from '../Outputs/Expandable.svelte';
+import * as Expandable from '../Outputs/Expandable.svelte';
 import * as Icon from '../Outputs/Icon.svelte';
 import * as Tag from '../Outputs/Tag.svelte';
-// import * as Tuple from '../Outputs/Tuple.svelte';
+import * as Tuple from '../Outputs/Tuple.svelte';
 import * as Link from '../Outputs/Link.svelte';
 import * as Tabstrip from '../Outputs/Tabstrip.svelte';
-// import * as Form from '../Outputs/InlineForm.svelte';
-// import * as PaginatedData from '../Outputs/PaginatedData.svelte';
+import * as InlineForm from '../Outputs/InlineForm.svelte';
+import * as PaginatedData from '../Outputs/PaginatedData.svelte';
 import * as Sequence from '../Outputs/Sequence.svelte';
 import * as CartItem from '../Outputs/CartItem.svelte';
 import * as Output from '../Outputs/Output.svelte';
-//import * as Changeset from '../Outputs/Changeset.svelte';
+import * as Changeset from '../Outputs/Changeset.svelte';
 import * as SlaTimer from '../Outputs/SlaTimer.svelte';
 import * as ShipmentSize from '../Outputs/ShipmentSize.svelte';
 import * as Boolean from '../Outputs/Boolean.svelte';
@@ -253,8 +253,10 @@ defaultControlRegister.registerInputComponent('date-range', DateRange);
 defaultControlRegister.registerInputComponent('consent', Consent, { alwaysHideLabel: true });
 defaultControlRegister.registerInputComponent('paginator', Paginator);
 defaultControlRegister.registerInputComponent('password', Password);
-defaultControlRegister.registerInputComponent('value-list', ValueList, { displayAsBlock: true });
-defaultControlRegister.registerInputComponent('toggled-input', ToggledInput, { displayAsBlock: true });
+//defaultControlRegister.registerInputComponent('value-list', ValueList);
+//defaultControlRegister.registerInputComponent('toggled-input', ToggledInput);
+defaultControlRegister.registerInputComponent('typeahead', Typeahead);
+defaultControlRegister.registerInputComponent('multiselect', MultiSelect);
 
 // Outputs.
 defaultControlRegister.registerOutputComponent('image-overlay', ImageOverlay);
@@ -268,36 +270,35 @@ defaultControlRegister.registerOutputComponent('grid', Grid);
 defaultControlRegister.registerOutputComponent('tabs', Tabs, { alwaysHideLabel: true });
 defaultControlRegister.registerOutputComponent('tabstrip', Tabstrip, { alwaysHideLabel: true });
 defaultControlRegister.registerOutputComponent('slider', Slider);
-defaultControlRegister.registerOutputComponent('number', Number);
+defaultControlRegister.registerOutputComponent('number', Number, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('preformatted-text', PreformattedText);
-defaultControlRegister.registerOutputComponent('html', Html);
-defaultControlRegister.registerOutputComponent('datetime', DateTimeOutput);
+defaultControlRegister.registerOutputComponent('html', Html, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('datetime', DateTimeOutput, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('event-description', EventDescription);
 defaultControlRegister.registerOutputComponent('alert', Alert, { alwaysHideLabel: true });
 defaultControlRegister.registerOutputComponent('icon', Icon, { displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('tag', Tag);
-defaultControlRegister.registerOutputComponent('link', Link);
+defaultControlRegister.registerOutputComponent('tag', Tag, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('link', Link, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('status', Status, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('formlink', FormLink, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('boolean', Boolean);
 
 // To be deactivated until complete validation
-// defaultControlRegister.registerOutputComponent('table', Table);
-defaultControlRegister.registerInputComponent('typeahead', Typeahead);
-defaultControlRegister.registerInputComponent('multiselect', MultiSelect);
-// defaultControlRegister.registerOutputComponent('inline-form', Form);
-// defaultControlRegister.registerOutputComponent('paginated-data', PaginatedData);
+//defaultControlRegister.registerOutputComponent('table', Table);
+//defaultControlRegister.registerOutputComponent('inline-form', InlineForm);
+//defaultControlRegister.registerOutputComponent('paginated-data', PaginatedData);
 //defaultControlRegister.registerOutputComponent('sequence', Sequence);
-defaultControlRegister.registerOutputComponent('cart-item', CartItem);
+//defaultControlRegister.registerOutputComponent('cart-item', CartItem);
 //defaultControlRegister.registerOutputComponent('output', Output);
 //defaultControlRegister.registerOutputComponent('changeset', Changeset);
 //defaultControlRegister.registerOutputComponent('sla-timer', SlaTimer);
-defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize);
+//defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize);
 //defaultControlRegister.registerOutputComponent('flexbox', Flexbox, { alwaysHideLabel: true });
-defaultControlRegister.registerOutputComponent('boolean', Boolean);
 defaultControlRegister.registerOutputComponent('editable-value', EditableValue);
 
 // These components can only be enabled once we are using the new Form as they depend on each others
-// defaultControlRegister.registerOutputComponent('action-list', ActionList, { alwaysHideLabel: true });
-// defaultControlRegister.registerOutputComponent('expandable', Expandable);
-// defaultControlRegister.registerOutputComponent('object-list', ObjectList);
-// defaultControlRegister.registerOutputComponent('nested-object', NestedObject);
+//defaultControlRegister.registerOutputComponent('action-list', ActionList, { alwaysHideLabel: true });
+//defaultControlRegister.registerOutputComponent('expandable', Expandable);
+//defaultControlRegister.registerOutputComponent('object-list', ObjectList);
+//defaultControlRegister.registerOutputComponent('nested-object', NestedObject);
+//defaultControlRegister.registerOutputComponent('tuple', Tuple);
