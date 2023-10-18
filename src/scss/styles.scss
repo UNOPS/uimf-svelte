@@ -1,29 +1,47 @@
 // 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
 @import "bootstrap/scss/functions";
 
-html, body {
+html,
+body {
   font-size: 12px;
 }
 
+// ---------------------------------------------------------- //
 // 2. Include any default variable overrides here
-$primary: #579DDB;
+// ---------------------------------------------------------- //
+// Options.
 $enable-rounded: false;
 $enable-grid-classes: false;
-$font-size-base: 1.2rem;
-$app-input-min-height: 37px;
 
+// Adjust BS vars.
+$primary: #579DDB;
+$font-size-base: 1.2rem;
+$link-color: #555;
+
+// Custom variables.
+$app-input-min-height: 37px;
+$app-btn-border-color: #dbdbdb;
+
+// ---------------------------------------------------------- //
 // 3. Include remainder of required Bootstrap stylesheets
+// ---------------------------------------------------------- //
 @import "bootstrap/scss/variables";
 @import "bootstrap/scss/variables-dark";
 
+// ---------------------------------------------------------- //
 // 4. Include any default map overrides here
+// ---------------------------------------------------------- //
 
+// ---------------------------------------------------------- //
 // 5. Include remainder of required parts
+// ---------------------------------------------------------- //
 @import "bootstrap/scss/maps";
 @import "bootstrap/scss/mixins";
 @import "bootstrap/scss/root";
 
+// ---------------------------------------------------------- //
 // 6. Include any needed components here
+// ---------------------------------------------------------- //
 @import "bootstrap/scss/_buttons";
 @import "bootstrap/scss/_forms";
 @import "bootstrap/scss/_list-group";

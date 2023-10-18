@@ -205,8 +205,6 @@
 <style lang="scss">
 	@import '../../scss/styles.scss';
 
-	$btnBorderColor: #cdd6e1;
-
 	.btn-primary {
 		color: white;
 	}
@@ -219,12 +217,13 @@
 		margin: 0;
 		padding: 0;
 		border: none;
+		color: $link-color;
 	}
 
 	.btn-default {
 		background-color: #fafafa;
-		border-color: $btnBorderColor;
-		color: #515151;
+		border-color: $app-btn-border-color;
+		color: $link-color;
 	}
 
 	.btn {
@@ -232,7 +231,7 @@
 		font-size: 1em;
 
 		&:hover {
-			border-color: $btnBorderColor;
+			border-color: $app-btn-border-color;
 		}
 	}
 </style>

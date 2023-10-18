@@ -32,20 +32,27 @@
 
 	const getController = (item: ComponentMetadata, idx: number) => {
 		let value = controller.value == null ? null : controller.value[`m_Item${idx}`];
-		return new OutputController<any>(
-			{
-				metadata: item,
-				data: value,
-				form: controller.form,
-				app: controller.app
-			}
-		);
+		return new OutputController<any>({
+			metadata: item,
+			data: value,
+			form: controller.form,
+			app: controller.app
+		});
 	};
-
 </script>
 
-<div class={controller.metadata.CustomProperties.CssClass ?? ''}>
+<div class={controller.metadata.CustomProperties.CssClass} class:tuple={true}>
 	{#each controller.metadata.CustomProperties.ItemTypes as item, idx}
 		<Output controller={getController(item, idx + 1)} hideLabel={true} />
 	{/each}
 </div>
+
+<style lang="scss">
+	:global(div.tuple > *) {
+		margin-right: 8px;
+	}
+
+	:global(div.tuple > *:last-child) {
+		margin-right: 0;
+	}
+</style>
