@@ -254,7 +254,7 @@ defaultControlRegister.registerInputComponent('consent', Consent, { alwaysHideLa
 defaultControlRegister.registerInputComponent('paginator', Paginator);
 defaultControlRegister.registerInputComponent('password', Password);
 defaultControlRegister.registerInputComponent('value-list', ValueList);
-//defaultControlRegister.registerInputComponent('toggled-input', ToggledInput);
+defaultControlRegister.registerInputComponent('toggled-input', ToggledInput);
 defaultControlRegister.registerInputComponent('typeahead', Typeahead);
 defaultControlRegister.registerInputComponent('multiselect', MultiSelect);
 
@@ -288,7 +288,7 @@ defaultControlRegister.registerOutputComponent('boolean', Boolean);
 //defaultControlRegister.registerOutputComponent('inline-form', InlineForm);
 //defaultControlRegister.registerOutputComponent('paginated-data', PaginatedData);
 defaultControlRegister.registerOutputComponent('sequence', Sequence);
-//defaultControlRegister.registerOutputComponent('cart-item', CartItem);
+defaultControlRegister.registerOutputComponent('cart-item', CartItem);
 //defaultControlRegister.registerOutputComponent('output', Output);
 //defaultControlRegister.registerOutputComponent('changeset', Changeset);
 defaultControlRegister.registerOutputComponent('sla-timer', SlaTimer);
