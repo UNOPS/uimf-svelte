@@ -47,10 +47,13 @@
 	}
 </script>
 
-<style>
+<style lang="scss">
+	@import "../../scss/styles.scss";
+
     :global(.tippy-box) {
-        font-size: 1em !important;
-        line-height: 1.1em !important;
-        border-radius: 1px !important;
+        font-size: $font-size-base !important;
+        line-height: 1.4em !important;
+        border-radius: 2px !important;
+		text-align: center;
     }
 </style>
