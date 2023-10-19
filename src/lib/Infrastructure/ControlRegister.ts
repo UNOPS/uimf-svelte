@@ -258,44 +258,47 @@ defaultControlRegister.registerInputComponent('typeahead', Typeahead);
 defaultControlRegister.registerInputComponent('multiselect', MultiSelect);
 
 // Outputs.
-defaultControlRegister.registerOutputComponent('image-overlay', ImageOverlay);
-defaultControlRegister.registerOutputComponent('state-diagram', StateDiagram);
-defaultControlRegister.registerOutputComponent('image', OutputImage);
-defaultControlRegister.registerOutputComponent('text', OutputText, { displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('paginated-object-list', PaginatedObjectList);
-defaultControlRegister.registerOutputComponent('money', Money, { displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('tree-view-selector', TreeViewSelector);
+
+defaultControlRegister.registerOutputComponent('action-list', ActionList, { alwaysHideLabel: true });
+defaultControlRegister.registerOutputComponent('alert', Alert, { alwaysHideLabel: true });
+defaultControlRegister.registerOutputComponent('boolean', Boolean);
+defaultControlRegister.registerOutputComponent('datetime', DateTimeOutput, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('editable-value', EditableValue);
+defaultControlRegister.registerOutputComponent('formlink', FormLink, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('grid', Grid);
+defaultControlRegister.registerOutputComponent('icon', Icon, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('image', OutputImage);
+defaultControlRegister.registerOutputComponent('image-overlay', ImageOverlay);
+defaultControlRegister.registerOutputComponent('money', Money, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('number', Number, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('paginated-object-list', PaginatedObjectList);
+defaultControlRegister.registerOutputComponent('sequence', Sequence);
+defaultControlRegister.registerOutputComponent('sla-timer', SlaTimer);
+defaultControlRegister.registerOutputComponent('slider', Slider);
+defaultControlRegister.registerOutputComponent('state-diagram', StateDiagram);
+defaultControlRegister.registerOutputComponent('status', Status, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('tabs', Tabs, { alwaysHideLabel: true });
 defaultControlRegister.registerOutputComponent('tabstrip', Tabstrip, { alwaysHideLabel: true });
-defaultControlRegister.registerOutputComponent('slider', Slider);
-defaultControlRegister.registerOutputComponent('number', Number, { displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('preformatted-text', PreformattedText);
-defaultControlRegister.registerOutputComponent('html', Html, { displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('datetime', DateTimeOutput, { displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('event-description', EventDescription);
-defaultControlRegister.registerOutputComponent('alert', Alert, { alwaysHideLabel: true });
-defaultControlRegister.registerOutputComponent('icon', Icon, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('tag', Tag, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('text', OutputText, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('tree-view-selector', TreeViewSelector);
+defaultControlRegister.registerOutputComponent('html', Html, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('preformatted-text', PreformattedText);
 defaultControlRegister.registerOutputComponent('link', Link, { displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('status', Status, { displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('formlink', FormLink, { displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('boolean', Boolean);
+
+// App-specific components.
+defaultControlRegister.registerOutputComponent('event-description', EventDescription);
+defaultControlRegister.registerOutputComponent('cart-item', CartItem);
+defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize);
 
 // To be deactivated until complete validation
 //defaultControlRegister.registerOutputComponent('table', Table);
 //defaultControlRegister.registerOutputComponent('inline-form', InlineForm);
 //defaultControlRegister.registerOutputComponent('paginated-data', PaginatedData);
-defaultControlRegister.registerOutputComponent('sequence', Sequence);
-defaultControlRegister.registerOutputComponent('cart-item', CartItem);
 //defaultControlRegister.registerOutputComponent('output', Output);
-defaultControlRegister.registerOutputComponent('sla-timer', SlaTimer);
-defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize);
 //defaultControlRegister.registerOutputComponent('flexbox', Flexbox, { alwaysHideLabel: true });
-defaultControlRegister.registerOutputComponent('editable-value', EditableValue);
 
 // These components can only be enabled once we are using the new Form as they depend on each others
-defaultControlRegister.registerOutputComponent('action-list', ActionList, { alwaysHideLabel: true });
 //defaultControlRegister.registerOutputComponent('expandable', Expandable);
 //defaultControlRegister.registerOutputComponent('object-list', ObjectList);
 //defaultControlRegister.registerOutputComponent('nested-object', NestedObject);
