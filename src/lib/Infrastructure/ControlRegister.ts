@@ -295,7 +295,7 @@ defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize);
 defaultControlRegister.registerOutputComponent('editable-value', EditableValue);
 
 // These components can only be enabled once we are using the new Form as they depend on each others
-//defaultControlRegister.registerOutputComponent('action-list', ActionList, { alwaysHideLabel: true });
+defaultControlRegister.registerOutputComponent('action-list', ActionList, { alwaysHideLabel: true });
 //defaultControlRegister.registerOutputComponent('expandable', Expandable);
 //defaultControlRegister.registerOutputComponent('object-list', ObjectList);
 //defaultControlRegister.registerOutputComponent('nested-object', NestedObject);
