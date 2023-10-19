@@ -1,68 +1,62 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
-	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
-	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
+	import type { OutputController } from '../Infrastructure/OutputController';
+	import { tooltip } from '../Components/Tooltip.svelte';
 
-	export let controller: OutputController<any>;
-
-	class ComponentController {
-		component: any;
-		controller: any;
+	interface Sequence {
+		CssClass: string;
+		Separator: string;
+		Items: SequenceItem[];
 	}
+
+	interface SequenceItem {
+		Label: string;
+		Tooltip: string;
+	}
+
+	export let controller: OutputController<Sequence>;
 
 	let component = new OutputComponent({
 		refresh() {
-			componentControllers = getComponentControllers(
-				controller.metadata.CustomProperties.ItemTypes[0].Type
-			);
-
 			controller.value = controller.value;
 		}
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
-
-	let componentControllers: ComponentController[] = getComponentControllers(
-		controller.metadata.CustomProperties.ItemTypes[0].Type
-	);
-
-	function getComponentControllers(type: string): any[] {
-		let componentControllerArray: ComponentController[] = [];
-
-		controller.value?.Value.forEach((item: any) => {
-			let componentController = {
-				component: controlRegister.outputs[type].component,
-				controller: new OutputController<any>({
-					metadata: item,
-					data: null,
-					form: controller.form!,
-					app: controller.app
-				})
-			};
-
-			if (controller.value != null && controller.value.Value != undefined) {
-				componentController.controller.setValue(item);
-				componentControllerArray.push(componentController);
-			}
-		});
-
-		return componentControllerArray;
-	}
 </script>
 
 {#if controller.value != null}
-	{#if componentControllers != null}
-		<div class={controller.metadata.CustomProperties?.cssClass}>
-			{#each componentControllers as componentController, index}
-					{#if index != 0}
-						<span> {@html controller.value.Separator} </span> 
-					{/if}
-					<svelte:component
-						this={componentController.component}
-						controller={componentController.controller}
-					/>
-			{/each}
-		</div>
-	{/if}
+	<div class={controller.value.CssClass}>
+		{#each controller.value.Items as item, index}
+			{#if index != 0}
+				<span class="sq-separator">{@html controller.value.Separator}</span>
+			{/if}
+			<span class="sq-term" use:tooltip={item.Tooltip}>{@html item.Label}</span>
+		{/each}
+	</div>
 {/if}
+
+<style lang="scss">
+	@import '../../scss/styles.scss';
+
+	div {
+		white-space: nowrap;
+
+		& > .sq-term {
+			padding: 0px 3px;
+			display: inline-block;
+			margin: 0;
+		}
+
+		& > .sq-separator {
+			padding: 0px 3px;
+			display: inline-block;
+			margin: 0;
+			color: $body-color;
+			opacity: 0.4;
+			position: relative;
+			top: -1px;
+		}
+	}
+</style>

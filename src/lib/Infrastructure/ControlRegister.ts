@@ -287,7 +287,7 @@ defaultControlRegister.registerOutputComponent('boolean', Boolean);
 //defaultControlRegister.registerOutputComponent('table', Table);
 //defaultControlRegister.registerOutputComponent('inline-form', InlineForm);
 //defaultControlRegister.registerOutputComponent('paginated-data', PaginatedData);
-//defaultControlRegister.registerOutputComponent('sequence', Sequence);
+defaultControlRegister.registerOutputComponent('sequence', Sequence);
 //defaultControlRegister.registerOutputComponent('cart-item', CartItem);
 //defaultControlRegister.registerOutputComponent('output', Output);
 //defaultControlRegister.registerOutputComponent('changeset', Changeset);
