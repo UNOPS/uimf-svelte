@@ -238,6 +238,10 @@
 		--multi-select-input-margin: 0 0;
 
 		.item-slot {
+			&.inactive {
+				opacity: 0.5;
+			}
+
 			& > small {
 				font-size: 0.8em;
 				display: block;
