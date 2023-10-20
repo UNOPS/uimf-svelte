@@ -258,7 +258,6 @@ defaultControlRegister.registerInputComponent('typeahead', Typeahead);
 defaultControlRegister.registerInputComponent('multiselect', MultiSelect);
 
 // Outputs.
-
 defaultControlRegister.registerOutputComponent('action-list', ActionList, { alwaysHideLabel: true });
 defaultControlRegister.registerOutputComponent('alert', Alert, { alwaysHideLabel: true });
 defaultControlRegister.registerOutputComponent('boolean', Boolean);

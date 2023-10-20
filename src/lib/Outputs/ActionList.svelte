@@ -38,13 +38,13 @@
 {/if}
 
 <style lang="scss">
-	:global(td > div) > .action-list {
+	:global(td > *) > .action-list {
 		padding: 3px 0px 3px 5px;
 		margin: 0;
 		background-color: transparent;
 	}
 
-	:global(.table > tbody > tr > td:has(> div > .action-list)) {
+	:global(.table > tbody > tr > td:has(> * > .action-list)) {
 		padding: 0px;
 		width: 1px;
 	}
