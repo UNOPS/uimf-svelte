@@ -14,5 +14,6 @@ export class TableHeadCell {
         this.documentation = metadata.CustomProperties?.Documentation;
         this.label = metadata.Label;
         this.cssClass = "";
+        this.hidden = metadata.Hidden;
     }
 }

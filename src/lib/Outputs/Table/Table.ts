@@ -21,9 +21,7 @@ export class Table extends EventSource {
         // Ensure `rows` is not null.
         rows = rows ?? [];
 
-        let sortedColumns = columns
-            .filter((t) => !t.Hidden)
-            .sort((a, b) => a.OrderIndex - b.OrderIndex);
+        let sortedColumns = columns.sort((a, b) => a.OrderIndex - b.OrderIndex);
 
         extensions.forEach(c => {
             c.init(this);
