@@ -101,7 +101,10 @@ export class ColumnExtension extends TableExtension {
                 headCell.style = thAboveCell!.style;
             });
 
-            table.head.above.push(new TableRow(thAboveCells));
+            // If there any column groups, then add the "column group" row.
+            if (thAboveCells.length != table.head.main.cells.length) {
+                table.head.above.push(new TableRow(thAboveCells));
+            }
         }
     }
 }
