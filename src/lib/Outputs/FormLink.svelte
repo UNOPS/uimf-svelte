@@ -68,11 +68,10 @@
 					target={controller.value.Target}
 					class={cssClass}
 					use:tooltip={controller.value.Tooltip}
-				>
-					{#if controller.value.Icon}
-						<i class={controller.value.Icon} aria-hidden="true" />
-					{/if}
-					{controller.value.Label}</a
+					>{#if controller.value.Icon}<i
+							class={controller.value.Icon}
+							aria-hidden="true"
+						/>{/if}{controller.value.Label}</a
 				>
 			{/await}
 		{/if}
