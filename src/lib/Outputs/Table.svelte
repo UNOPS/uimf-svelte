@@ -12,4 +12,4 @@
 	export let controller: OutputController<Data>;
 </script>
 
-<ResultsTable {controller} type="paginated-data" />
+<ResultsTable {controller} type="table" />
