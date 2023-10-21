@@ -38,6 +38,8 @@
 {/if}
 
 <style lang="scss">
+	@import '../../scss/styles.scss';
+
 	:global(td > *) > .action-list {
 		padding: 3px 0px 3px 5px;
 		margin: 0;
@@ -50,7 +52,7 @@
 	}
 
 	.action-list {
-		background-color: #f9f9f9;
+		background-color: $app-soft-bg;
 		border-width: 0;
 		padding: 5px 15px;
 		text-align: right;

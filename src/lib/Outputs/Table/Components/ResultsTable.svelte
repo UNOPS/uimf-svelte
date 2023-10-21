@@ -245,7 +245,7 @@
 		padding: 5px 2px;
 		border-radius: 5px 5px 0px 0px;
 		border: 1px solid #e5e5e5;
-		background-color: #f9f9f9;
+		background-color: $app-soft-bg;
 		border-bottom: 0;
 	}
 
@@ -262,7 +262,7 @@
 		border-radius: 4px;
 
 		.group-header {
-			background: var(--bs-secondary-bg);
+			background: $app-soft-bg;
 
 			& > td {
 				padding: 10px 20px;
