@@ -21,13 +21,7 @@
 		Tooltip: string;
 	}
 
-	export interface FormLinkMetadata extends ComponentMetadata {
-		disabled: boolean;
-	}
-
-	export class Controller extends OutputController<FormLinkData> {
-		public declare metadata: FormLinkMetadata;
-	}
+	export class Controller extends OutputController<FormLinkData> {}
 </script>
 
 <script lang="ts">
@@ -192,7 +186,6 @@
 						break;
 				}
 			}}
-			disabled={controller.metadata.disabled}
 		>
 			{#if controller.value.Icon}
 				<i class={controller.value.Icon} aria-hidden="true" />
