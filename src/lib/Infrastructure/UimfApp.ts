@@ -4,7 +4,7 @@ import type { FormMetadata } from "./uimf";
 
 interface FormLink {
     Form: string;
-    InputFieldValues: any;
+    InputFieldValues?: any;
     Label?: string;
 }
 
@@ -61,7 +61,7 @@ export default interface IUimfApp {
     postForm(form: string, data: any, config: any): Promise<FormResponse>;
     getApiFile(url: string): Promise<Response>;
     getApi(form: string): Promise<Response>;
-    hasRole(permission: string): boolean;
+    hasRole(permission?: string): boolean;
     getResponseHandler(handler: string): any;
     getForm(formId: string): Promise<FormInstance>;
     hasPermission(permission: string): boolean;
