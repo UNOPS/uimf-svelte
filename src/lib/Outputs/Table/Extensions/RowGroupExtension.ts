@@ -1,12 +1,20 @@
-import type { OutputFieldMetadata } from "$lib/uimf/ts/server";
+
+import type { ComponentMetadata } from "../../../Infrastructure/uimf";
 import { Table, TableBodyCell, TableHeadCell, TableRowGroup } from "..";
 import { TableExtension } from "../TableExtension";
 import TableRow from "../TableRow";
 
+interface RowCustomProperty {
+    Color: string;
+    GroupBy: string;
+    GroupByHeader: string;
+    SplitBy: string;
+}
+
 export class RowGroupExtension extends TableExtension {
-    private previousGroup: string;
-    private groupByColumn: OutputFieldMetadata;
-    private firstRow: TableRowGroup<TableBodyCell>;
+    private previousGroup: string | null = null;
+    private groupByColumn: ComponentMetadata | null = null;
+    private firstRow: TableRowGroup<TableBodyCell> | null = null;
     private firstRowProcessed: boolean = false;
     private groupCount: number = 0;
 
@@ -18,7 +26,7 @@ export class RowGroupExtension extends TableExtension {
     }
 
     processTable(table: Table): void {
-        if (!this.firstRowProcessed && this.groupCount > 1) {
+        if (!this.firstRowProcessed && this.groupCount > 1 && this.firstRow != null && this.groupByColumn != null) {
             var groupCell = new TableBodyCell(table.parent, this.firstRow.data, this.groupByColumn);
 
             groupCell.colspan = table.head.main.cells.length;
@@ -60,13 +68,13 @@ export class RowGroupExtension extends TableExtension {
             return;
         }
 
-        let groupBy = table.parent.metadata.CustomProperties.tableConfig?.GroupBy;
+        const rowMetadata: RowCustomProperty = table.parent.metadata.CustomProperties?.row || {};
 
-        if (groupBy == null) {
+        if (rowMetadata.GroupBy == null) {
             return;
         }
 
-        if (cell.metadata.Id === groupBy) {
+        if (cell.metadata.Id === rowMetadata.GroupBy) {
             cell.hidden = true;
             this.groupByColumn = cell.metadata;
         }
