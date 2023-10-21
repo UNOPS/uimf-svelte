@@ -7,10 +7,10 @@
 	import { beforeUpdate } from 'svelte';
 	import { ActionListColumnExtension } from '../Extensions/ActionListColumnExtension';
 	import { BulkAction, BulkActionsColumnExtension } from '../Extensions/BulkActionsColumnExtension';
-	import { RowGroupExtension } from '../Extensions/RowGroupExtension';
+	import { RowExtension } from '../Extensions/RowExtension';
 	import type { Table } from '../Table';
 	import { TableBuilder } from '../TableBuilder';
-	import { ColumnGroupsExtension } from '../Extensions/ColumnGroupsExtension';
+	import { ColumnExtension } from '../Extensions/ColumnExtension';
 	import { ExpandableExtension } from '../Extensions/ExpandableExtension';
 	import FormLink from '../../../Outputs/FormLink.svelte';
 	import type {
@@ -36,8 +36,8 @@
 			allRowsSelected = false;
 
 			const extensions: TableExtension[] = [
-				new ColumnGroupsExtension(),
-				new RowGroupExtension(),
+				new ColumnExtension(),
+				new RowExtension(),
 				new ActionListColumnExtension(),
 				new ExpandableExtension(),
 				bulkActionExtension

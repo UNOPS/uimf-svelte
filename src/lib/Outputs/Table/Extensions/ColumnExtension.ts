@@ -13,12 +13,14 @@ interface ColumnCustomProperty {
     Group: string;
 }
 
-export class ColumnGroupsExtension extends TableExtension {
+export class ColumnExtension extends TableExtension {
     private columns: TableHeadCell[] = [];
+    private columnsWithCssClass: { id: string, cssClass: string }[] = [];
 
     init(table: Table) {
         this.columns = [];
         table.colgroups = [];
+        this.columnsWithCssClass = [];
     }
 
     processHeadCell(table: Table, cell: TableHeadCell, rows: any[]) {
@@ -26,10 +28,22 @@ export class ColumnGroupsExtension extends TableExtension {
 
         if (config != null) {
             this.columns.push(cell);
+
+            if (config.CssClass != null) {
+                this.columnsWithCssClass.push({
+                    id: cell.metadata.Id,
+                    cssClass: config.CssClass
+                });
+            }
         }
     }
 
-    processBodyRow(table: Table, row: TableRowGroup<TableBodyCell>) { }
+    processBodyRow(table: Table, row: TableRowGroup<TableBodyCell>) {
+        for (const column of this.columnsWithCssClass) {
+            const index = table.cellIndex[column.id];
+            row.main.cells[index].cssClass = column.cssClass;
+        }
+    }
 
     processTable(table: Table) {
         if (this.columns.length > 0) {

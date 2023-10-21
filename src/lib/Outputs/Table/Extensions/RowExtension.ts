@@ -11,7 +11,7 @@ interface RowCustomProperty {
     SplitBy: string;
 }
 
-export class RowGroupExtension extends TableExtension {
+export class RowExtension extends TableExtension {
     private previousGroup: string | null = null;
     private groupByColumn: ComponentMetadata | null = null;
     private firstRow: TableRowGroup<TableBodyCell> | null = null;

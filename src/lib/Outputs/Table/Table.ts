@@ -11,6 +11,7 @@ export class Table extends EventSource {
     public body: TableRowGroup<TableBodyCell>[] = [];
     public parent: OutputController<any>;
     public colgroups: Colgroup[] = [];
+    public cellIndex: Record<string, number>;
 
     constructor(parent: OutputController<any>, rows: any[], columns: any[], extensions: TableExtension[]) {
         super();
@@ -38,6 +39,11 @@ export class Table extends EventSource {
         }).filter(t => !t.hidden);
 
         this.head = new TableRowGroup<TableHeadCell>(headCells);
+
+        this.cellIndex = this.head.main.cells.reduce((map: Record<string, number>, cell, cellIndex) => {
+            map[cell.metadata.Id] = cellIndex;
+            return map;
+        }, {});
 
         this.body = rows.map((t) => {
             var cells = this.head.main.cells.map((c) => new TableBodyCell(parent, t, c.metadata));
