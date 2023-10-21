@@ -21,6 +21,7 @@
 	import Output from '../../../Output.svelte';
 	import type { TableExtension } from '../TableExtension';
 	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
+	import { DocumentationExtension } from '../Extensions/DocumentationExtension';
 
 	export let controller: OutputController<any>;
 	export let type: string;
@@ -36,6 +37,7 @@
 			allRowsSelected = false;
 
 			const extensions: TableExtension[] = [
+				new DocumentationExtension(),
 				new ColumnExtension(),
 				new RowExtension(),
 				new ActionListColumnExtension(),
