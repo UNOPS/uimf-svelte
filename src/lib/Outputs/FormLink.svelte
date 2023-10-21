@@ -2,23 +2,23 @@
 	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
 	import { OutputController } from '../Infrastructure/OutputController';
 	export interface FormLinkData {
-		Icon: string;
-		Label: string;
-		Target: string | null;
-		ConfirmationMessage: string;
-		InputFieldValues: any;
-		Action: any;
-		RequiredPermission: string;
+		Icon?: string;
+		Label?: string;
+		Target?: string | null;
+		ConfirmationMessage?: string;
+		InputFieldValues?: any;
+		Action?: any;
+		RequiredPermission?: string;
 		Form: string;
-		Field: string;
-		Resolve: any;
-		StateParams: any;
-		TemplateUrl: string;
-		Controller: any;
-		DocumentType: string;
-		Filename: string;
-		CssClass: string;
-		Tooltip: string;
+		Field?: string;
+		Resolve?: any;
+		StateParams?: any;
+		TemplateUrl?: string;
+		Controller?: any;
+		DocumentType?: string;
+		Filename?: string;
+		CssClass?: string;
+		Tooltip?: string;
 	}
 
 	export class Controller extends OutputController<FormLinkData> {}
@@ -168,6 +168,10 @@
 						{
 							let resolve = JSON.parse(controller.value.Resolve) || {};
 							resolve.$stateParams = JSON.parse(controller.value.StateParams) || {};
+
+							if (controller.value.TemplateUrl == null) {
+								throw new Error('TemplateUrl is not defined.');
+							}
 
 							controller.app
 								.openHtmlModal({
