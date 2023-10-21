@@ -1,5 +1,4 @@
 <script lang="ts" context="module">
-	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
 	import { OutputController } from '../Infrastructure/OutputController';
 	export interface FormLinkData {
 		Icon?: string;
