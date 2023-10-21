@@ -6,7 +6,7 @@
 	import { OutputComponent } from '../../../Infrastructure/Component';
 	import { beforeUpdate } from 'svelte';
 	import { ActionListColumnExtension } from '../Extensions/ActionListColumnExtension';
-	import { BulkActionsColumnExtension } from '../Extensions/BulkActionsColumnExtension';
+	import { BulkAction, BulkActionsColumnExtension } from '../Extensions/BulkActionsColumnExtension';
 	import { RowGroupExtension } from '../Extensions/RowGroupExtension';
 	import type { Table } from '../Table';
 	import { TableBuilder } from '../TableBuilder';
@@ -15,39 +15,24 @@
 	import FormLink from '../../../Outputs/FormLink.svelte';
 	import type {
 		Controller as FormLinkController,
-		FormLinkData,
-		FormLinkMetadata
+		FormLinkData
 	} from '../../../Outputs/FormLink.svelte';
 	import { tooltip } from '../../../Components/Tooltip.svelte';
 	import Output from '../../../Output.svelte';
 	import type { TableExtension } from '../TableExtension';
+	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
 
 	export let controller: OutputController<any>;
 	export let type: string;
 
-	// controller variables.
 	let allRowsSelected: boolean = false;
 	let table: Table | null = null;
 	let bulkActionExtension: BulkActionsColumnExtension = new BulkActionsColumnExtension();
 	let extraColspan: number = 0;
-
-	allRowsSelected = false;
-
-	const extensions: TableExtension[] = [
-		new ColumnGroupsExtension(),
-		new RowGroupExtension(),
-		new ActionListColumnExtension(),
-		new ExpandableExtension(),
-		bulkActionExtension
-	];
-
-	const builder = new TableBuilder(extensions);
-	const rows = controller.value.length != null ? controller.value : controller.value.Results;
-	table = builder.build(controller, rows, controller.metadata.CustomProperties?.Columns);
-	extraColspan = bulkActionExtension.actions.length > 0 ? 1 : 0;
+	let inputFieldValues: { [key: string]: any } | undefined;
 
 	const component = new OutputComponent({
-		refresh() {
+		async refresh() {
 			allRowsSelected = false;
 
 			const extensions: TableExtension[] = [
@@ -62,6 +47,9 @@
 			const rows = controller.value.length != null ? controller.value : controller.value.Results;
 			table = builder.build(controller, rows, controller.metadata.CustomProperties?.Columns);
 			extraColspan = bulkActionExtension.actions.length > 0 ? 1 : 0;
+			type = controller.metadata.Type;
+
+			inputFieldValues = await controller.form?.getInputFieldValues();
 
 			table.on('table:data:updated', (e) => {
 				table = table;
@@ -74,35 +62,32 @@
 		}
 	});
 
-	const makeFormController = (action: any) => {
+	const makeFormLinkController = (formlink: FormLinkData | BulkAction) => {
 		return new OutputController<FormLinkData>({
-			metadata: { disabled: action.Disabled } as FormLinkMetadata,
-			data: action,
-			form: controller.form!,
+			metadata: {} as ComponentMetadata,
+			data: formlink,
+			form: controller.form,
 			app: controller.app
 		}) as FormLinkController;
 	};
-
-	const inputFieldValues = controller.form?.getInputFieldValues();
 </script>
 
 {#if table?.body == null || table.body.length === 0}
 	<em>{controller?.metadata?.CustomProperties?.tableConfig?.NoDataLabel ?? 'No data found.'}</em>
 {:else}
-	{#if bulkActionExtension.actions.length > 0 || controller.metadata.CustomProperties?.ExcelExport}
+	{#if bulkActionExtension.actions.length > 0 || controller.metadata.CustomProperties?.showExportButton}
 		<div class="btn-bar">
 			{#each bulkActionExtension.actions as action}
-				<FormLink controller={makeFormController(action)} />
+				<FormLink controller={makeFormLinkController(action)} />
 			{/each}
 
-			{#if controller.metadata.CustomProperties?.showExportButton}
+			{#if controller.metadata.CustomProperties?.showExportButton && controller.form != null}
 				<FormLink
-					controller={makeFormController({
-						Disabled: false,
+					controller={makeFormLinkController({
 						Label: 'Export to excel',
 						Action: 'excel-export',
 						InputFieldValues: inputFieldValues,
-						Form: controller.form?.id,
+						Form: controller.form.metadata.Id,
 						Field: controller.metadata.Id,
 						Icon: 'fas fa-download'
 					})}
