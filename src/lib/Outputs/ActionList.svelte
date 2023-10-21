@@ -49,6 +49,7 @@
 	:global(.table > tbody > tr > td:has(> * > .action-list)) {
 		padding: 0px;
 		width: 1px;
+		white-space: nowrap;
 	}
 
 	.action-list {
