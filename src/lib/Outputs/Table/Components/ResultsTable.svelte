@@ -86,7 +86,7 @@
 			{#if controller.metadata.CustomProperties?.showExportButton && controller.form != null}
 				<FormLink
 					controller={makeFormLinkController({
-						Label: 'Export to excel',
+						Label: '',
 						Action: 'excel-export',
 						InputFieldValues: inputFieldValues,
 						Form: controller.form.metadata.Id,
@@ -242,7 +242,7 @@
 
 	div.table-responsive {
 		--inner-border-color: rgba(0, 0, 0, 0.03);
-		--outer-border-color: #ddd;
+		--outer-border-color: #ebebeb;
 		--group-border-color: #d6d6d645;
 
 		border: 1px solid var(--outer-border-color);
@@ -256,8 +256,15 @@
 			}
 		}
 
-		thead > tr:last-child {
-			border-bottom-width: 3px;
+		thead {
+			& > tr:last-child {
+				border-bottom-width: 3px;
+			}
+
+			& > tr > .has-documentation {
+				text-decoration: underline;
+				text-decoration-style: dashed;
+			}
 		}
 
 		.column-group {
@@ -270,24 +277,24 @@
 		.table {
 			margin-bottom: 0;
 			border: none;
+
+			& > :not(:first-child) {
+				/* Override Bootstrap weirdness, which renders thick border for a colgroup. */
+				border-top: inherit;
+			}
 		}
 
-		.table > tbody > tr > td,
-		.table > thead > tr > th {
+		tbody > tr > td,
+		thead > tr > th {
 			border-color: var(--inner-border-color);
 		}
 
-		.table > :not(:first-child) {
-			/* Override Bootstrap weirdness, which renders thick border for a colgroup. */
-			border-top: inherit;
-		}
-
-		.table > tbody > tr:hover {
+		tbody > tr:hover {
 			background-color: var(--bs-tertiary-bg);
 		}
 
-		.table > tbody > tr.footer:hover,
-		.table > tbody > tr.footer {
+		tbody > tr.footer:hover,
+		tbody > tr.footer {
 			background: var(--bs-tertiary-bg);
 
 			& > td {
