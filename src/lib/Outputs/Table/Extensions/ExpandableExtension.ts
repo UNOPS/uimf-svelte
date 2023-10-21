@@ -4,15 +4,31 @@ import TableRow from "../TableRow";
 
 export class ExpandableExtension extends TableExtension {
     private expandableCells: TableHeadCell[] = [];
-    private cellIndex: Record<string, number> = {};
+    private expanded: Record<string, boolean> = {};
 
     init(table: Table) {
         this.expandableCells = [];
+        this.expanded = {};
     }
 
     processHeadCell(table: Table, cell: TableHeadCell, rows: any[]) {
         if (cell.metadata.Type === 'expandable') {
             this.expandableCells.push(cell);
+
+            cell.style = cell.style ?? "";
+            cell.style += "; cursor: pointer;";
+
+            cell.onClick['expand'] = () => {
+                const index = table.cellIndex[cell.metadata.Id];
+
+                // Toggle the value.
+                let show = !this.expanded[cell.metadata.Id];
+                this.expanded[cell.metadata.Id] = show;
+
+                rows.forEach(row => {
+                    row[cell.metadata.Id]?.show?.(show);
+                });
+            };
         }
     }
 
@@ -20,7 +36,7 @@ export class ExpandableExtension extends TableExtension {
         this.expandableCells.forEach(cell => {
             var hiddenCell = new TableBodyCell(
                 table.parent,
-                row.data,//[cell.metadata.Id],
+                { Value: row.data[cell.metadata.Id].Hidden },
                 cell.metadata.CustomProperties.ItemTypes[1]);
 
             hiddenCell.colspan = table.head.main.cells.length;
@@ -32,18 +48,14 @@ export class ExpandableExtension extends TableExtension {
 
             row.below.push(hiddenRow);
 
-            if (this.cellIndex[cell.metadata.Id] == null) {
-                this.cellIndex[cell.metadata.Id] = row.main.cells.findIndex(t => t.controller.metadata.Id === cell.metadata.Id);
-            }
-
-            var index = this.cellIndex[cell.metadata.Id];
+            var index = table.cellIndex[cell.metadata.Id];
             var mainCell = row.main.cells[index];
 
-            if(mainCell.controller.value != null){
+            if (mainCell.controller.value != null) {
                 mainCell.controller.value.handler = function (show: boolean) {
                     hiddenRow.append = true;
                     hiddenRow.visible = show;
-    
+
                     table.fire("table:data:updated", null);
                 };
             }

@@ -98,7 +98,7 @@ export class ColumnExtension extends TableExtension {
                     previousColgroup.span += 1;
                 }
 
-                headCell.style = thAboveCell!.style;
+                headCell.style = (headCell.style ?? "") + ";" + thAboveCell!.style;
             });
 
             // If there any column groups, then add the "column group" row.

@@ -143,9 +143,12 @@
 							colspan={cell.colspan}
 							class={cell.cssClass}
 							style={cell.style}
+							on:click={() => cell.click()}
 						>
-							{#if cell.label?.length > 0}{cell.label}
-							{:else if cell.documentation != null}<div class="text-center">
+							{#if cell.label?.length > 0}
+								{cell.label}
+							{:else if cell.documentation != null}
+								<div class="text-center">
 									<i class="fas fa-question-circle" />
 								</div>
 							{/if}</th
@@ -225,6 +228,10 @@
 
 	.min-width {
 		width: 1px;
+	}
+
+	.d-none {
+		display: none;
 	}
 
 	.btn-bar {

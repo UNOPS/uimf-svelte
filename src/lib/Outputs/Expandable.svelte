@@ -7,9 +7,10 @@
 
 	interface ExpandableData {
 		ShowButton: boolean;
-		toggle: () => any;
 		Visible: any;
 		Hidden: any;
+		handler: (show: boolean) => void | null;
+		show: (show: boolean) => void;
 	}
 
 	interface ExpandableMetadata extends ComponentMetadata {
@@ -26,90 +27,105 @@
 
 	let showHidden: boolean = false;
 	let shown: boolean = false;
-	let handler = defaultHandler;
-
-	let mainController: OutputController<any> | null = null;
-
-	let expandableController: OutputController<any> | null = null;
+	let visible: OutputController<any> | null = null;
+	let hidden: OutputController<any> | null = null;
 
 	let component = new OutputComponent({
 		refresh() {
 			if (controller.value == null) {
-				mainController = null;
-				expandableController = null;
+				visible = null;
+				hidden = null;
 				shown = false;
 				showHidden = false;
-				handler = defaultHandler;
 				return;
 			}
 
 			controller.value = controller.value;
-			if (controller.value != null) {
-				mainController = new OutputController<any>({
-					metadata: controller.metadata.CustomProperties.ItemTypes[0],
-					data: controller.value.Visible,
-					form: controller.form!,
-					app: controller.app
-				});
+			controller.value.show = toggle;
 
-				expandableController = new OutputController<any>({
-					metadata: controller.metadata.CustomProperties.ItemTypes[1],
-					data: controller.value.Hidden,
-					form: controller.form!,
-					app: controller.app
-				});
-			}
+			visible = new OutputController<any>({
+				metadata: controller.metadata.CustomProperties.ItemTypes[0],
+				data: controller.value.Visible,
+				form: controller.form!,
+				app: controller.app
+			});
+
+			hidden = new OutputController<any>({
+				metadata: controller.metadata.CustomProperties.ItemTypes[1],
+				data: controller.value.Hidden,
+				form: controller.form!,
+				app: controller.app
+			});
 		}
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
-
-	function defaultHandler(show: boolean) {
-		// Mark as shown.
-		shown = shown || show;
-	}
 
 	function toggle(show: boolean) {
 		if (show == showHidden) {
 			return;
 		}
 
-		handler(show);
+		if (controller.value?.handler != null) {
+			controller.value.handler(show);
+		} else {
+			shown = shown || show;
+		}
 
 		showHidden = show;
 	}
 </script>
 
-{#if mainController != null}
-	<Output controller={mainController} hideLabel={true} />
+{#if visible != null}
+	<div class="expandable-visible">
+		<Output controller={visible} hideLabel={true} />
+
+		{#if hidden != null}
+			<button
+				on:click={() => toggle(!showHidden)}
+				on:keypress={() => toggle(!showHidden)}
+				type="button"
+			>
+				<i
+					class="fa"
+					class:fa-chevron-circle-right={!showHidden}
+					class:fa-chevron-circle-down={showHidden}
+				/>
+			</button>
+		{/if}
+	</div>
 {/if}
 
-{#if expandableController != null}
+{#if hidden != null}
 	{#if showHidden || shown}
-		<i
-			class="fa fa-chevron-circle-right"
-			class:fa-chevron-circle-down={!showHidden}
-			class:fa-chevron-circle-up={showHidden}
-			on:click={() => toggle(!showHidden)}
-			on:keypress={() => toggle(!showHidden)}
-		/>
-
 		{#if shown}
-			<div class:hide={!showHidden}>
-				<Output controller={expandableController} hideLabel={true} />
+			<div class:hide={!showHidden} class="expandable-hidden">
+				<Output controller={hidden} hideLabel={true} />
 			</div>
 		{/if}
-	{:else}
-		<i
-			class="fa fa-chevron-circle-down"
-			on:click={() => toggle(true)}
-			on:keypress={() => toggle(true)}
-		/>
 	{/if}
 {/if}
 
 <style lang="scss">
+	.expandable-visible {
+		display: flex;
+		align-items: center;
+	}
+
 	.hide {
 		display: none;
+	}
+
+	.expandable-hidden {
+		margin: 10px 0 0 0;
+	}
+
+	button {
+		border: none;
+		outline: none;
+		background: transparent;
+		margin: 0 0 0 8px;
+		padding: 0;
+		opacity: 0.8;
 	}
 </style>
