@@ -10,13 +10,13 @@
 			if (content == null || content.length === 0) {
 				return;
 			}
-			
+
 			if (tooltips.get(node) != null) {
-                // Re-use existing instance, but just change the content.
+				// Re-use existing instance, but just change the content.
 				tooltips.get(node).setContent(content);
 			} else {
-                node.classList.add('has-documentation');
-                
+				node.classList.add('has-documentation');
+
 				const instance = tippy(node, {
 					content: content,
 					allowHTML: true
@@ -48,12 +48,19 @@
 </script>
 
 <style lang="scss">
-	@import "../../scss/styles.scss";
+	@import '../../scss/styles.scss';
 
-    :global(.tippy-box) {
-        font-size: $font-size-base !important;
-        line-height: 1.4em !important;
-        border-radius: 2px !important;
+	:global(.tippy-box) {
+		font-size: $font-size-base !important;
+		line-height: 1.4em !important;
+		border-radius: 2px !important;
 		text-align: center;
-    }
+
+		ul {
+			text-align: left;
+			padding: 0 0 0 20px;
+			margin: 8px 0;
+			list-style-position: outside;
+		}
+	}
 </style>
