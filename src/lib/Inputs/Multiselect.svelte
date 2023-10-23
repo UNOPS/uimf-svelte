@@ -55,10 +55,9 @@
 
 	export let controller: Controller;
 
-	let items: Option[];
+	let inlineItems: Option[] | null = null;
 	let cachedOptions: Record<string, Promise<Option[]>> = {};
 	let selected: Option[] = [];
-	let isInlineSource: boolean = true;
 
 	let component = new InputComponent({
 		async init() {
@@ -66,13 +65,13 @@
 			selected = [];
 
 			let source = controller.metadata.CustomProperties.Source;
-			isInlineSource = typeof source !== 'string';
-			items = isInlineSource ? augmentItems(source) : [];
+			inlineItems = Array.isArray(source) ? augmentItems(source) : [];
 
 			controller.ready?.resolve();
 		},
 		async refresh() {
 			var capturedValue = controller?.value;
+
 			if (capturedValue != null && controller.serialize(capturedValue)) {
 				let results = await loadOptions(capturedValue);
 
@@ -131,8 +130,8 @@
 	}
 
 	async function loadOptions(query: MultiselectValue | string): Promise<Option[]> {
-		if (isInlineSource) {
-			return Promise.resolve(items);
+		if (inlineItems != null) {
+			return Promise.resolve(inlineItems);
 		}
 
 		if (typeof query === 'string') {
@@ -141,7 +140,11 @@
 			}
 		}
 
-		var postData =
+		type PostData =
+			| { Ids: { Items: any[] }; [unknown: string]: any }
+			| { Query: string | null; [unknown: string]: any };
+
+		var postData: PostData =
 			typeof query === 'string'
 				? { Query: query }
 				: { Ids: { Items: query.Items?.length > 0 ? query.Items : [] } };
@@ -152,13 +155,12 @@
 			let promises = parameters.map((p) => {
 				switch (p.SourceType) {
 					case 'response':
-						// Use type assertion here
-						(postData as any)[p.Parameter] = controller?.form?.response[p.Source]?.value;
+						postData[p.Parameter] = controller?.form?.response[p.Source]?.value;
 						return Promise.resolve();
 					case 'request':
 						return controller?.form?.inputs[p.Source]
 							.getValue()
-							.then((value) => ((postData as any)[p.Parameter] = value));
+							.then((value) => (postData[p.Parameter] = value));
 				}
 			});
 
