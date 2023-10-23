@@ -234,6 +234,10 @@
 		display: none;
 	}
 
+	input[type='checkbox'] {
+		margin: 0;
+	}
+
 	div.table-responsive {
 		--inner-border-color: rgba(0, 0, 0, 0.03);
 		--outer-border-color: #ebebeb;
@@ -246,7 +250,7 @@
 			text-align: right;
 			padding: 5px 2px;
 			border-bottom: 1px solid var(--inner-border-color);
-    		background-color: shade-color($app-soft-bg, 1%);
+			background-color: shade-color($app-soft-bg, 1%);
 
 			& > :global(button) {
 				margin-right: 5px;
