@@ -229,4 +229,8 @@
 			border-color: $app-btn-border-color;
 		}
 	}
+
+	i {
+		margin: 0 5px 0 0;
+	}
 </style>
