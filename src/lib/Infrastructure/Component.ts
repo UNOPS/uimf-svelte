@@ -53,10 +53,13 @@ class Component<T extends EventSource & { id: string }> {
 
         this.field = field;
 
+        // It's important to subscribe to the refresh event before calling the init,
+        // because the init might trigger a refresh which we want to handle.
+        this.field.on(this.refreshOn, async () => await this.refresh());
+
         await this.init();
         await this.refresh();
 
-        this.field.on(this.refreshOn, async () => await this.refresh());
         this.customSetup();
     }
 
