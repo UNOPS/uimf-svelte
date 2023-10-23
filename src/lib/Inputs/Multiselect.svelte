@@ -6,15 +6,20 @@
 	}
 
 	export class Controller extends InputController<MultiselectValue> {
-		public deserialize(value: string): Promise<MultiselectValue | null> {
-			const parsedValue = value ? JSON.parse(value) : null;
-			const result: MultiselectValue | null = parsedValue ? { Items: parsedValue } : null;
+		public deserialize(value: string | null): Promise<MultiselectValue | null> {
+			const parsedValue = value != null ? value.split(',') : null;
+			const result: MultiselectValue | null = parsedValue != null ? { Items: parsedValue } : null;
 			return Promise.resolve(result);
 		}
 
 		public serialize(value: MultiselectValue): string | null {
 			const items = value?.Items?.filter((t) => t !== null && t !== undefined) || [];
-			return JSON.stringify(items.length > 0 ? items : null);
+
+			if (items.length === 0) {
+				return null;
+			}
+
+			return items.join(',');
 		}
 
 		public getValue(): Promise<MultiselectValue | null> {
