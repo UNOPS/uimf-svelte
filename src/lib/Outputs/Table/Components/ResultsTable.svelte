@@ -77,28 +77,28 @@
 {#if table?.body == null || table.body.length === 0}
 	<em>{controller?.metadata?.CustomProperties?.tableConfig?.NoDataLabel ?? 'No data found.'}</em>
 {:else}
-	{#if bulkActionExtension.actions.length > 0 || controller.metadata.CustomProperties?.showExportButton}
-		<div class="btn-bar">
-			{#each bulkActionExtension.actions as action}
-				<FormLink controller={makeFormLinkController(action)} />
-			{/each}
-
-			{#if controller.metadata.CustomProperties?.showExportButton && controller.form != null}
-				<FormLink
-					controller={makeFormLinkController({
-						Label: '',
-						Action: 'excel-export',
-						InputFieldValues: inputFieldValues,
-						Form: controller.form.metadata.Id,
-						Field: controller.metadata.Id,
-						Icon: 'fas fa-download'
-					})}
-				/>
-			{/if}
-		</div>
-	{/if}
-
 	<div class={(controller?.metadata?.CustomProperties?.CssClass ?? '') + ' table-responsive'}>
+		{#if bulkActionExtension.actions.length > 0 || controller.metadata.CustomProperties?.showExportButton}
+			<div class="btn-bar">
+				{#each bulkActionExtension.actions as action}
+					<FormLink controller={makeFormLinkController(action)} />
+				{/each}
+
+				{#if controller.metadata.CustomProperties?.showExportButton && controller.form != null}
+					<FormLink
+						controller={makeFormLinkController({
+							Label: '',
+							Action: 'excel-export',
+							InputFieldValues: inputFieldValues,
+							Form: controller.form.metadata.Id,
+							Field: controller.metadata.Id,
+							Icon: 'fas fa-download'
+						})}
+					/>
+				{/if}
+			</div>
+		{/if}
+
 		<table class="table table-bordered">
 			{#if table.colgroups?.length > 0}
 				{#if bulkActionExtension.actions.length > 0}
@@ -234,19 +234,6 @@
 		display: none;
 	}
 
-	.btn-bar {
-		text-align: right;
-		padding: 5px 2px;
-		border-radius: 5px 5px 0px 0px;
-		border: 1px solid #e5e5e5;
-		background-color: $app-soft-bg;
-		border-bottom: 0;
-	}
-
-	.btn-bar > :global(button) {
-		margin-right: 5px;
-	}
-
 	div.table-responsive {
 		--inner-border-color: rgba(0, 0, 0, 0.03);
 		--outer-border-color: #ebebeb;
@@ -254,6 +241,17 @@
 
 		border: 1px solid var(--outer-border-color);
 		border-radius: 4px;
+
+		& > .btn-bar {
+			text-align: right;
+			padding: 5px 2px;
+			border-bottom: 1px solid var(--inner-border-color);
+    		background-color: shade-color($app-soft-bg, 1%);
+
+			& > :global(button) {
+				margin-right: 5px;
+			}
+		}
 
 		.group-header {
 			background: $app-soft-bg;
@@ -302,12 +300,11 @@
 
 		tbody > tr.footer:hover,
 		tbody > tr.footer {
-			background: var(--bs-tertiary-bg);
-
 			& > td {
-				--border: 5px solid var(--bs-primary-bg-subtle);
+				--border: 1px solid var(--inner-border-color);
 				border-top: var(--border);
 				border-bottom: var(--border);
+				padding: 10px 15px;
 			}
 		}
 	}
