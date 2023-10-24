@@ -53,6 +53,8 @@
 			});
 
 			amountFormatted = formatter.format(controller.value.Amount);
+
+			controller.value = controller.value;
 		}
 	});
 
