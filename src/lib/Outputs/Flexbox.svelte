@@ -61,6 +61,10 @@
 		});
 	}
 
+	let flexBasisArray: string[] =
+		controller.metadata.CustomProperties.Customizations.FlexBasis.split(' ');
+	let flexBasisCount: number = flexBasisArray.length;
+
 	function AsEffectiveValue(rawFlexBasis: string, margin: string): string {
 		//Check that flex-basis value is a %
 		if (rawFlexBasis.includes('px')) {
@@ -70,20 +74,20 @@
 		let marginValue = parseInt(margin.replace('px', ''));
 		let flexBasisValue = parseInt(rawFlexBasis.replace('%', ''));
 
-		// default screen resolution is 1080p (1920 x 1080 pixels)
-		// 50px for the left menu
-		let width = (1920 * flexBasisValue) / 100 - marginValue * 2 - 50;
+		// Default screen resolution is 1080p (1920 x 1080 pixels)
+		let width = (1920 * flexBasisValue) / 100 - marginValue * 2;
+
 		return width + 'px';
 	}
 </script>
 
 {#if fields?.length > 0}
 	<div class="flex-container">
-		{#each fields as field}
+		{#each fields as field, index}
 			<div
 				class="flex-item {controller.metadata.CustomProperties.Customizations.Style}"
 				style:flex-basis={AsEffectiveValue(
-					controller.metadata.CustomProperties.Customizations.FlexBasis,
+					flexBasisArray[index % flexBasisCount],
 					controller.metadata.CustomProperties.Customizations.Margin
 				)}
 				style:margin={controller.metadata.CustomProperties.Customizations.Margin}
