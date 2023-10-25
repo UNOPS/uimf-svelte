@@ -95,6 +95,9 @@
 				)}
 				style:margin={field.controller.metadata.CustomProperties.Customizations.Margin}
 			>
+				<div class="title">
+					{field.controller.metadata.Label}
+				</div>
 				<svelte:component this={field.component} controller={field.controller} />
 			</div>
 		{/each}
@@ -102,6 +105,19 @@
 {/if}
 
 <style lang="scss">
+	.title {
+		background-color: #218FCF;
+		color: #fff;
+		font-size: 1.2em;
+		text-align: center;
+		margin-top: -10px;
+		height: 40px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding-bottom: 5px;
+	}
+
 	.flex-container {
 		display: flex;
 		flex-wrap: wrap;
