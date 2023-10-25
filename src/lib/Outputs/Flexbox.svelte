@@ -7,7 +7,7 @@
 
 	interface OutputField {
 		component: any;
-		controller: any;
+		controller: FlexboxController;
 	}
 
 	interface FlexboxMetadata extends ComponentMetadata {
@@ -16,7 +16,7 @@
 			Customizations: {
 				FlexBasis: string;
 				Margin: string;
-				Style: string;
+				CssClass: string;
 			};
 		};
 	}
@@ -34,11 +34,11 @@
 	let component = new OutputComponent({
 		refresh() {
 			fields = getComponentControllers();
-			
+
 			if (parentElement) {
 				parentWidth = parentElement.getBoundingClientRect().width;
 			}
-			
+
 			controller.value = controller.value;
 		}
 	});
@@ -68,10 +68,6 @@
 		});
 	}
 
-	let flexBasisArray: string[] =
-		controller.metadata.CustomProperties.Customizations.FlexBasis.split(' ');
-	let flexBasisCount: number = flexBasisArray.length;
-
 	function asEffectiveValue(rawFlexBasis: string, margin: string): string {
 		//Check that flex-basis value is a %
 		if (rawFlexBasis.includes('px')) {
@@ -90,14 +86,14 @@
 
 {#if fields?.length > 0}
 	<div bind:this={parentElement} class="flex-container">
-		{#each fields as field, index}
+		{#each fields as field}
 			<div
-				class="flex-item {controller.metadata.CustomProperties.Customizations.Style}"
+				class="flex-item {field.controller.metadata.CustomProperties.Customizations.CssClass}"
 				style:flex-basis={asEffectiveValue(
-					flexBasisArray[index % flexBasisCount],
-					controller.metadata.CustomProperties.Customizations.Margin
+					field.controller.metadata.CustomProperties.Customizations.FlexBasis,
+					field.controller.metadata.CustomProperties.Customizations.Margin
 				)}
-				style:margin={controller.metadata.CustomProperties.Customizations.Margin}
+				style:margin={field.controller.metadata.CustomProperties.Customizations.Margin}
 			>
 				<svelte:component this={field.component} controller={field.controller} />
 			</div>
