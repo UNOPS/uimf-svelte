@@ -28,10 +28,17 @@
 	export let controller: FlexboxController;
 
 	let fields: OutputField[];
+	let parentWidth = 0;
+	let parentElement: HTMLDivElement;
 
 	let component = new OutputComponent({
 		refresh() {
 			fields = getComponentControllers();
+			
+			if (parentElement) {
+				parentWidth = parentElement.getBoundingClientRect().width;
+			}
+			
 			controller.value = controller.value;
 		}
 	});
@@ -74,15 +81,15 @@
 		let marginValue = parseInt(margin.replace('px', ''));
 		let flexBasisValue = parseInt(rawFlexBasis.replace('%', ''));
 
-		// Default screen resolution is 1080p (1920 x 1080 pixels)
-		let width = (1920 * flexBasisValue) / 100 - marginValue * 2;
+		// Calculate width based on the parent element's width
+		let width = (parentWidth * flexBasisValue) / 100 - marginValue * 2;
 
 		return width + 'px';
 	}
 </script>
 
 {#if fields?.length > 0}
-	<div class="flex-container">
+	<div bind:this={parentElement} class="flex-container">
 		{#each fields as field, index}
 			<div
 				class="flex-item {controller.metadata.CustomProperties.Customizations.Style}"
