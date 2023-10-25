@@ -60,12 +60,12 @@
 	let selected: Option[] = [];
 
 	let component = new InputComponent({
-		async init() {
+		async init() { 
 			cachedOptions = {};
 			selected = [];
 
 			let source = controller.metadata.CustomProperties.Source;
-			inlineItems = Array.isArray(source) ? augmentItems(source) : [];
+			inlineItems = Array.isArray(source) ? augmentItems(source) : null;
 
 			controller.ready?.resolve();
 		},
