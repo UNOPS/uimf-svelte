@@ -65,7 +65,7 @@
 		controller.metadata.CustomProperties.Customizations.FlexBasis.split(' ');
 	let flexBasisCount: number = flexBasisArray.length;
 
-	function AsEffectiveValue(rawFlexBasis: string, margin: string): string {
+	function asEffectiveValue(rawFlexBasis: string, margin: string): string {
 		//Check that flex-basis value is a %
 		if (rawFlexBasis.includes('px')) {
 			return rawFlexBasis;
@@ -86,7 +86,7 @@
 		{#each fields as field, index}
 			<div
 				class="flex-item {controller.metadata.CustomProperties.Customizations.Style}"
-				style:flex-basis={AsEffectiveValue(
+				style:flex-basis={asEffectiveValue(
 					flexBasisArray[index % flexBasisCount],
 					controller.metadata.CustomProperties.Customizations.Margin
 				)}
