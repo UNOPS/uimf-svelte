@@ -13,7 +13,7 @@ export interface ComponentMetadata {
     Id: string;
     Required: boolean;
     Hidden: boolean;
-    CustomProperties: any | null;
+    CustomProperties?: any | null;
     Label: string;
     Type: string;
     OrderIndex: number;
