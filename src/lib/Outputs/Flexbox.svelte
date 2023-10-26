@@ -9,6 +9,7 @@
 		CustomProperties: {
 			Fields: FlexboxItemMetadata[];
 			Gap?: string;
+			CssClass?: string;
 		};
 	}
 
@@ -20,8 +21,8 @@
 	interface FlexboxItemMetadata extends ComponentMetadata {
 		CustomProperties?: {
 			Flexbox?: {
-				FlexBasis: string;
-				CssClass: string;
+				FlexBasis?: string;
+				CssClass?: string;
 			};
 		};
 	}
@@ -75,7 +76,11 @@
 </script>
 
 {#if fields?.length > 0}
-	<div class="flex-container" style:gap={controller.metadata.CustomProperties.Gap ?? '5px'}>
+	<div
+		class:flex-container={true}
+		class={controller.metadata.CustomProperties.CssClass ?? ''}
+		style:gap={controller.metadata.CustomProperties.Gap ?? '5px'}
+	>
 		{#each fields as field}
 			<div
 				class={field.controller.metadata.CustomProperties?.Flexbox?.CssClass ?? ''}
