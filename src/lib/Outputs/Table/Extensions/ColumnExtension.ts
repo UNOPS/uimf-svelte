@@ -14,11 +14,11 @@ interface ColumnCustomProperty {
 }
 
 export class ColumnExtension extends TableExtension {
-    private columns: TableHeadCell[] = [];
+    private columnWithConfig: TableHeadCell[] = [];
     private columnsWithCssClass: { id: string, cssClass: string }[] = [];
 
     init(table: Table) {
-        this.columns = [];
+        this.columnWithConfig = [];
         table.colgroups = [];
         this.columnsWithCssClass = [];
     }
@@ -27,7 +27,7 @@ export class ColumnExtension extends TableExtension {
         var config: ColumnCustomProperty = cell.metadata.CustomProperties?.column;
 
         if (config != null) {
-            this.columns.push(cell);
+            this.columnWithConfig.push(cell);
 
             if (config.CssClass != null) {
                 this.columnsWithCssClass.push({
@@ -41,12 +41,16 @@ export class ColumnExtension extends TableExtension {
     processBodyRow(table: Table, row: TableRowGroup<TableBodyCell>) {
         for (const column of this.columnsWithCssClass) {
             const index = table.cellIndex[column.id];
-            row.main.cells[index].cssClass = column.cssClass;
+
+            // Index can be null if the column is hidden.
+            if (index != null) {
+                row.main.cells[index].cssClass = column.cssClass;
+            }
         }
     }
 
     processTable(table: Table) {
-        if (this.columns.length > 0) {
+        if (this.columnWithConfig.length > 0) {
             let thAboveCells: TableHeadCell[] = [];
             let previousThCell: TableHeadCell | null = null;
             let previousColgroup: Colgroup | null = null;
