@@ -5,17 +5,22 @@
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
 	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
 
-	interface OutputField {
-		component: any;
-		controller: FlexboxController;
-	}
-
 	interface FlexboxMetadata extends ComponentMetadata {
 		CustomProperties: {
-			Fields: ComponentMetadata[];
-			Customizations: {
+			Fields: FlexboxItemMetadata[];
+			Gap?: string;
+		};
+	}
+
+	interface FlexboxItem {
+		component: any;
+		controller: FlexboxItemController;
+	}
+
+	interface FlexboxItemMetadata extends ComponentMetadata {
+		CustomProperties?: {
+			Flexbox?: {
 				FlexBasis: string;
-				Margin: string;
 				CssClass: string;
 			};
 		};
@@ -25,19 +30,17 @@
 		declare metadata: FlexboxMetadata;
 	}
 
+	class FlexboxItemController extends OutputController<any> {
+		declare metadata: FlexboxItemMetadata;
+	}
+
 	export let controller: FlexboxController;
 
-	let fields: OutputField[];
-	let parentWidth = 0;
-	let parentElement: HTMLDivElement;
+	let fields: FlexboxItem[];
 
 	let component = new OutputComponent({
 		refresh() {
 			fields = getComponentControllers();
-
-			if (parentElement) {
-				parentWidth = parentElement.getBoundingClientRect().width;
-			}
 
 			controller.value = controller.value;
 		}
@@ -45,7 +48,7 @@
 
 	beforeUpdate(async () => await component.setup(controller));
 
-	function getComponentControllers(): OutputField[] {
+	function getComponentControllers(): FlexboxItem[] {
 		if (controller.value?.Value == null) {
 			return [];
 		}
@@ -53,6 +56,8 @@
 		return controller.metadata.CustomProperties.Fields.sort(
 			(a, b) => a.OrderIndex - b.OrderIndex
 		).map((item) => {
+			console.log(item);
+
 			const field = controlRegister.createOutput({
 				metadata: item,
 				app: controller.app,
@@ -67,37 +72,20 @@
 			return field;
 		});
 	}
-
-	function asEffectiveValue(rawFlexBasis: string, margin: string): string {
-		//Check that flex-basis value is a %
-		if (rawFlexBasis.includes('px')) {
-			return rawFlexBasis;
-		}
-
-		let marginValue = parseInt(margin.replace('px', ''));
-		let flexBasisValue = parseInt(rawFlexBasis.replace('%', ''));
-
-		// Calculate width based on the parent element's width
-		let width = (parentWidth * flexBasisValue) / 100 - marginValue * 2;
-
-		return width + 'px';
-	}
 </script>
 
 {#if fields?.length > 0}
-	<div bind:this={parentElement} class="flex-container">
+	<div class="flex-container" style:gap={controller.metadata.CustomProperties.Gap ?? '5px'}>
 		{#each fields as field}
 			<div
-				class="flex-item {field.controller.metadata.CustomProperties.Customizations.CssClass}"
-				style:flex-basis={asEffectiveValue(
-					field.controller.metadata.CustomProperties.Customizations.FlexBasis,
-					field.controller.metadata.CustomProperties.Customizations.Margin
-				)}
-				style:margin={field.controller.metadata.CustomProperties.Customizations.Margin}
+				class={field.controller.metadata.CustomProperties?.Flexbox?.CssClass ?? ''}
+				style:flex-basis={field.controller.metadata.CustomProperties?.Flexbox?.FlexBasis ?? 'auto'}
 			>
-				<div class="title">
-					{field.controller.metadata.Label}
-				</div>
+				{#if field.controller.metadata.Label?.length > 0}
+					<div class="title">
+						{field.controller.metadata.Label}
+					</div>
+				{/if}
 				<svelte:component this={field.component} controller={field.controller} />
 			</div>
 		{/each}
@@ -106,15 +94,12 @@
 
 <style lang="scss">
 	.title {
-		background-color: #218FCF;
+		background-color: #218fcf;
 		color: #fff;
 		font-size: 1.2em;
 		text-align: center;
 		margin-top: -10px;
 		height: 40px;
-		display: flex;
-		justify-content: center;
-		align-items: center;
 		padding-bottom: 5px;
 	}
 
@@ -123,14 +108,7 @@
 		flex-wrap: wrap;
 		width: 100%;
 		flex-direction: row;
-	}
-
-	.flex-item {
-		padding-top: 10px;
-		padding-bottom: 15px;
-		display: flex;
-		justify-content: left;
-		flex-direction: column;
+		justify-content: flex-start;
 	}
 
 	.boxed {
