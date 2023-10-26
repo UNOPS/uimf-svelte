@@ -57,8 +57,6 @@
 		return controller.metadata.CustomProperties.Fields.sort(
 			(a, b) => a.OrderIndex - b.OrderIndex
 		).map((item) => {
-			console.log(item);
-
 			const field = controlRegister.createOutput({
 				metadata: item,
 				app: controller.app,
