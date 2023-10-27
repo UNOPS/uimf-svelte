@@ -1,4 +1,4 @@
-import type { CreateInputOptions, Deferrer, InputController } from "$lib/Infrastructure/InputController";
+import type { CreateInputOptions, InputController } from "$lib/Infrastructure/InputController";
 import { OutputController, type CreateOutputOptions } from "./OutputController";
 
 // Inputs.
@@ -27,7 +27,6 @@ import * as OutputImage from '../Outputs/Image.svelte';
 import * as ImageOverlay from '../Outputs/ImageOverlay.svelte';
 import * as PaginatedObjectList from '../Outputs/PaginatedObjectList.svelte';
 import * as Money from '../Outputs/Money.svelte';
-import type IUimfApp from "./UimfApp";
 import * as TreeViewSelector from '../Outputs/TreeViewSelector.svelte';
 import * as Grid from '../Outputs/Grid.svelte';
 import * as Tabs from '../Outputs/Tabs.svelte';
