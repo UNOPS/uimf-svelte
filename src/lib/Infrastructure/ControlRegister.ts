@@ -265,6 +265,7 @@ defaultControlRegister.registerOutputComponent('boolean', Boolean);
 defaultControlRegister.registerOutputComponent('datetime', DateTimeOutput, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('editable-value', EditableValue);
 defaultControlRegister.registerOutputComponent('formlink', FormLink, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('flexbox', Flexbox, { alwaysHideLabel: true });
 defaultControlRegister.registerOutputComponent('grid', Grid);
 defaultControlRegister.registerOutputComponent('icon', Icon, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('image', OutputImage);
@@ -296,7 +297,6 @@ defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize);
 //defaultControlRegister.registerOutputComponent('inline-form', InlineForm);
 //defaultControlRegister.registerOutputComponent('paginated-data', PaginatedData);
 //defaultControlRegister.registerOutputComponent('output', Output);
-//defaultControlRegister.registerOutputComponent('flexbox', Flexbox, { alwaysHideLabel: true });
 
 // These components can only be enabled once we are using the new Form as they depend on each others
 //defaultControlRegister.registerOutputComponent('expandable', Expandable);
