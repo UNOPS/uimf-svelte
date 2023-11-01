@@ -54,7 +54,11 @@
 		{#if !allowed}
 			<span class={cssClass} use:tooltip={controller.value.Tooltip}>
 				{#if controller.value.Icon}
-					<i class={controller.value.Icon} aria-hidden="true" />
+					<i
+						class={controller.value.Icon}
+						aria-hidden="true"
+						class:icon-right-margin={(controller.value.Label?.length ?? 0) > 0}
+					/>
 				{/if}
 				{#if controller.value.Label != null}
 					{controller.value.Label}
@@ -190,7 +194,11 @@
 			}}
 		>
 			{#if controller.value.Icon}
-				<i class={controller.value.Icon} aria-hidden="true" />
+				<i
+					class={controller.value.Icon}
+					aria-hidden="true"
+					class:icon-right-margin={(controller.value.Label?.length ?? 0) > 0}
+				/>
 			{/if}
 			{controller.value.Label}
 		</button>
@@ -219,6 +227,10 @@
 		background-color: #fafafa;
 		border-color: $app-btn-border-color;
 		color: $link-color;
+
+		&:focus-visible {
+			border-color: $app-btn-border-color;
+		}
 	}
 
 	.btn {
@@ -230,7 +242,7 @@
 		}
 	}
 
-	i {
+	i.icon-right-margin {
 		margin: 0 5px 0 0;
 	}
 </style>
