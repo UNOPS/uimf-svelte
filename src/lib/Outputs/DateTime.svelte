@@ -15,32 +15,34 @@
 	import type { ComponentMetadata } from '../Infrastructure/uimf';
 
 	export let controller: DateTimeController;
+	let options: Intl.DateTimeFormatOptions | null = null;
+
+	let valueAsString: string | null = null;
 
 	let component = new OutputComponent({
-		refresh() {
-			controller.value = controller.value;
+		init() {
+			options = controller.metadata.HideTime
+				? {
+						day: '2-digit',
+						month: '2-digit',
+						year: 'numeric'
+				  }
+				: {
+						day: '2-digit',
+						month: '2-digit',
+						year: 'numeric',
+						hour: '2-digit',
+						minute: '2-digit',
+						second: '2-digit'
+				  };
+		},
+		refresh() {			
+			valueAsString =
+				controller.value != null
+					? new Date(controller.value).toLocaleDateString('en-GB', options!)
+					: null;
 		}
 	});
-
-	let options = controller.metadata.HideTime
-		? {
-				day: '2-digit',
-				month: '2-digit',
-				year: 'numeric'
-		  }
-		: {
-				day: '2-digit',
-				month: '2-digit',
-				year: 'numeric',
-				hour: '2-digit',
-				minute: '2-digit',
-				second: '2-digit'
-		  };
-
-	let valueAsString =
-		controller.value != null
-			? new Date(controller.value).toLocaleDateString('en-GB', options)
-			: null;
 
 	beforeUpdate(async () => await component.setup(controller));
 </script>
