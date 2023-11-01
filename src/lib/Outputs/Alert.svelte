@@ -40,4 +40,14 @@
 			margin: 3px 6px 0 1px;
 		}
 	}
+
+	div.documentation {
+		background: #e2f6ff;
+		border: 1px solid #cbe1e8;
+		box-shadow: none;
+		border-radius: 2px;
+		border-width: 1px 0 2px 0;
+		color: #1b4350;
+		padding: 15px;
+	}
 </style>
