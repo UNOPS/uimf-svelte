@@ -4,29 +4,26 @@
 	import type { OutputController } from '../Infrastructure/OutputController';
 	import { tooltip } from '../Components/Tooltip.svelte';
 
-	export let controller: OutputController<any>;
+	interface Value {
+		AllocatedWorkingDays: number;
+		Expired: boolean;
+		ExpiresOn: Date;
+		StartedOn: Date;
+	}
+
+	export let controller: OutputController<Value>;
 
 	let tooltipContent: string;
-	let cssClass: string = '';
-	const currentYear = new Date().getFullYear();
+	let expiresOnAsString: string | null;
 
-	let component = new OutputComponent({
-		async refresh() {
-			controller.value = controller.value;
-		}
-	});
-
-	beforeUpdate(async () => await component.setup(controller));
-
-	var slaTimer = controller.value;
-	var datetimeFormat: Intl.DateTimeFormatOptions = {
+	const datetimeFormat: Intl.DateTimeFormatOptions = {
 		day: 'numeric',
 		month: 'short',
 		hour: '2-digit',
 		minute: '2-digit'
 	};
 
-	var datetimeAndTimezoneFormat: Intl.DateTimeFormatOptions = {
+	const datetimeAndTimezoneFormat: Intl.DateTimeFormatOptions = {
 		day: 'numeric',
 		month: 'short',
 		hour: '2-digit',
@@ -34,7 +31,7 @@
 		timeZoneName: 'shortOffset'
 	};
 
-	var dateFormat: Intl.DateTimeFormatOptions = {
+	const dateFormat: Intl.DateTimeFormatOptions = {
 		day: '2-digit',
 		month: '2-digit',
 		year: 'numeric'
@@ -45,32 +42,32 @@
 		return new Date(new Date(date).toLocaleString('en-US', { timeZone: localTz }));
 	}
 
-	let expiresOn: Date = toLocalTimezone(new Date(slaTimer.ExpiresOn));
-	let startedOn: Date = toLocalTimezone(new Date(slaTimer.StartedOn));
+	let component = new OutputComponent({
+		async refresh() {
+			controller.value = controller.value;
 
-	tooltipContent =
-		'Duration: ' +
-		slaTimer.AllocatedWorkingDays +
-		' working days' +
-		'<br>Started on: ' +
-		startedOn.toLocaleDateString('en-GB', datetimeAndTimezoneFormat) +
-		'<br>Expires on: ' +
-		expiresOn.toLocaleDateString('en-GB', datetimeAndTimezoneFormat);
+			const expiresOn = toLocalTimezone(new Date(controller.value.ExpiresOn));
+			const startedOn = toLocalTimezone(new Date(controller.value.StartedOn));
 
-	controller.value.expiresOn = toLocalTimezone(expiresOn).toLocaleDateString(
-		'en-GB',
-		// Use different format for recent vs "long-time-ago" dates.
-		slaTimer.Expired && expiresOn.getFullYear() < currentYear ? dateFormat : datetimeFormat
-	);
+			tooltipContent =
+				`Duration: ${controller.value.AllocatedWorkingDays} working days` +
+				`<br>Started on: ${startedOn.toLocaleDateString('en-GB', datetimeAndTimezoneFormat)}` +
+				`<br>Expires on: ${expiresOn.toLocaleDateString('en-GB', datetimeAndTimezoneFormat)}`;
 
-	if (controller.value.Expired) {
-		cssClass = 'expired';
-	}
+			expiresOnAsString = toLocalTimezone(expiresOn).toLocaleDateString(
+				'en-GB',
+				// Use different format for recent vs "long-time-ago" dates.
+				expiresOn.getFullYear() != new Date().getFullYear() ? dateFormat : datetimeFormat
+			);
+		}
+	});
+
+	beforeUpdate(async () => await component.setup(controller));
 </script>
 
 {#if controller.value != null}
-	<span class="nowrap {cssClass}" use:tooltip={tooltipContent}>
-		{controller.value.expiresOn}
+	<span class="nowrap" class:expired={controller.value.Expired} use:tooltip={tooltipContent}>
+		{expiresOnAsString}
 	</span>
 {/if}
 
