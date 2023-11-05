@@ -1,39 +1,41 @@
 <script context="module" lang="ts">
-	export class Controller extends InputController<MultilevelPickerValue> {
-		public deserialize(value: string): Promise<MultilevelPickerValue | null> {
-			var result = value == null || value === '' ? null : new MultilevelPickerValue(value);
+	export class Controller extends InputController<Value> {
+		public deserialize(value: string): Promise<Value | null> {
+			var result = value == null || value === '' ? null : { Value: value };
 			return Promise.resolve(result);
 		}
 
-		public serialize(value: MultilevelPickerValue | null): string | null {
+		public serialize(value: Value | null): string | null {
 			return value != null && value.Value != null ? value.Value : null;
 		}
 
-		public getValue(): Promise<MultilevelPickerValue | null> {
+		public getValue(): Promise<Value | null> {
 			var result = this.value != null && this.value.Value != null ? this.value : null;
 
 			return Promise.resolve(result);
 		}
 
-		protected setValueInternal(value: MultilevelPickerValue | null): Promise<void> {
+		protected setValueInternal(value: Value | null): Promise<void> {
 			return Promise.resolve();
 		}
 	}
 
-	// tslint:disable-next-line:max-classes-per-file
-	class MultilevelPickerValue {
-		constructor(value?: any) {
-			this.Value = value;
-		}
-
-		public Value: any;
+	interface Value {
+		Value: any | null;
 	}
 
 	interface Option {
 		Value: any;
 		Label: string;
-		HasChildren?: boolean;
-		SearchText: string;
+		HasChildren: boolean;
+		Selectable: boolean;
+	}
+
+	interface Response {
+		Items: Option[];
+		Path: Option[];
+		IsFullSet: boolean;
+		ParentId: any | null;
 	}
 </script>
 
@@ -52,13 +54,25 @@
 	let loading = true;
 
 	const component = new InputComponent({
-		init() {
-			controller.ready?.resolve();
-		},
+		init() {},
 		async refresh() {
 			const capturedValue = controller.value;
 
-			const results = await fetchItems(capturedValue);
+			// Always create a copy of the original array.
+			path = Array.from(await fetchPath(capturedValue));
+
+			if (controller.value != capturedValue) {
+				// The value might have changed once the promise
+				// has been resolved. In this case we do nothing, because
+				// it would have been taken care of by another invocation.
+				return;
+			}
+
+			// Only select the item if it has no children.
+			selected =
+				path.length > 0 && path[path.length - 1].HasChildren ? null : path[path.length - 1];
+
+			let results = await fetchPathItems();
 
 			if (controller.value != capturedValue) {
 				// The value might have changed once the promise
@@ -69,46 +83,81 @@
 
 			options = results;
 
-			selected =
-				controller.value != null && options?.length > 0
-					? options.find((t) => t.Value == controller.value?.Value) ?? null
-					: null;
-
 			if (controller.value != null && selected == null) {
 				throw `Cannot find option for "${controller.metadata.Id}".`;
 			}
+
+			controller.ready?.resolve();
 		}
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
 
-	async function fetchItems(query?: MultilevelPickerValue | string | null): Promise<Option[]> {
-		const normalizedQuery = typeof query === 'string' ? query?.trim() : query;
+	async function fetchPath(node: Value | null): Promise<Option[]> {
+		if (node?.Value == null) {
+			return Promise.resolve([]);
+		}
 
-		let cacheKey =
-			typeof normalizedQuery === 'object' && normalizedQuery != null
-				? normalizedQuery.Value
-				: normalizedQuery;
-
-		cacheKey =
-			[controller?.value?.Value, cacheKey].filter((t) => t?.toString().length > 0).join('/') ??
-			null;
-
-		console.log('fetchItems', cacheKey, cachedOptions[cacheKey]);
+		let cacheKey = '#' + node.Value.toString();
 
 		if (cachedOptions[cacheKey] != null) {
 			return cachedOptions[cacheKey];
 		}
 
-		type PostData =
-			| { Id: any; [unknown: string]: any }
-			| { Query?: string | null; ParentId: any; [unknown: string]: any };
+		var postData = { Id: node.Value };
 
-		var postData: PostData =
-			typeof normalizedQuery === 'object' && normalizedQuery != null
-				? { Id: normalizedQuery.Value }
-				: { Query: normalizedQuery, ParentId: controller?.value?.Value };
+		await setRequestParameters(postData);
 
+		cachedOptions[cacheKey] = controller.app
+			.postForm(controller.metadata.CustomProperties.Form, postData, null)
+			.then((t: any) => {
+				loading = false;
+				return t.Path ?? [];
+			})
+			.catch(() => {
+				loading = false;
+				return [];
+			});
+
+		return await cachedOptions[cacheKey];
+	}
+
+	async function fetchPathItems(query?: string | null): Promise<Option[]> {
+		let parentId = path?.length > 0 ? path[path.length - 1].Value : null;
+		let cacheKey = `${parentId ?? ''}/${query?.trim() ?? ''}`;
+
+		console.log('fetchItems', cacheKey);
+
+		if (cachedOptions[cacheKey] != null) {
+			return cachedOptions[cacheKey];
+		}
+
+		var postData = { Query: query, ParentId: parentId };
+
+		await setRequestParameters(postData);
+
+		loading = true;
+
+		cachedOptions[cacheKey] = controller.app
+			.postForm(controller.metadata.CustomProperties.Form, postData, null)
+			.then((t: any) => {
+				if (t.Path != null) {
+					// TODO: place this elsewhere.
+					path = t.Path;
+				}
+
+				loading = false;
+				return t.Items ?? [];
+			})
+			.catch(() => {
+				loading = false;
+				return [];
+			});
+
+		return await cachedOptions[cacheKey];
+	}
+
+	function setRequestParameters(postData: any): Promise<any> {
 		const parameters: any[] = controller.metadata.CustomProperties?.Parameters;
 
 		if (parameters != null) {
@@ -124,49 +173,17 @@
 				}
 			});
 
-			await Promise.all(promises);
+			return Promise.all(promises);
 		}
 
-		loading = true;
-
-		cachedOptions[cacheKey] = controller.app
-			.postForm(controller.metadata.CustomProperties.Form, postData, null)
-			.then((t: any) => {
-				if (t.Path != null) {
-					// TODO: place this elsewhere.
-					path = t.Path;
-				}
-
-				loading = false;
-				return augmentItems(t.Items);
-			})
-			.catch(() => {
-				loading = false;
-				return [];
-			});
-
-		return await cachedOptions[cacheKey];
-	}
-
-	function augmentItems(items: Option[]): Option[] {
-		if (items == null) {
-			return [];
-		}
-
-		// Build "SearchText" field which will be used to find relevant matches.
-		items.forEach((c) => (c.SearchText = (c.Value + ' ' + c.Label).toLocaleLowerCase()));
-		return items;
-	}
-
-	async function reloadItems() {
-		selected = null;
-		options = await fetchItems();
+		return Promise.resolve();
 	}
 
 	async function selectItem(index: number) {
 		path = path.slice(0, index);
 		controller.value = path.length > 0 ? path[path.length - 1] : null;
-		await reloadItems();
+		selected = null;
+		options = await fetchPathItems();
 	}
 </script>
 
@@ -204,56 +221,77 @@
 			path = path;
 
 			if (e.detail.HasChildren) {
-				await reloadItems();
+				selected = null;
+				options = await fetchPathItems();
 			}
 		}}
 		on:clear={async (e) => {
 			controller.value = null;
 			path = [];
-			await reloadItems();
+			selected = null;
+			options = await fetchPathItems();
 		}}
 		hideEmptyState={false}
 		placeholder="type to search..."
 		items={options}
 	/>
+</div>
 
-	{JSON.stringify(controller.value)}
+<div>
+	value: {JSON.stringify(controller.value)}<br />
+	path: {JSON.stringify(path)}<br />
 </div>
 
 <style lang="scss">
+	@import '../../scss/styles.scss';
+
 	.input-container {
 		display: flex;
 		align-items: center;
 		width: 100%;
-		--height: 37px;
-		--padding: 0 16px 0 16px;
-		--background: var(--app-body-bg);
-		--input-color: var(--app-body-color);
-		--font-size: 1rem;
+		--height: #{$app-input-min-height};
+		--padding: 0 6px 0 10px;
+		--background: var(--bs-body-bg);
+		--input-color: var(--bs-body-color);
+		--font-size: var(--bs-body-font-size);
+
 		--item-height: auto;
+		--item-color: var(--bs-body-color);
+		--item-hover-color: var(--bs-body-color);
+		--item-hover-bg: var(--bs-tertiary-bg);
+		--item-is-active-bg: var(--bs-primary-bg-subtle);
+		--item-is-active-color: var(--bs-body-color);
+		--item-line-height: #{$app-input-min-height};
+		--selected-item-color: var(--bs-body-color);
 
-		--item-color: var(--app-body-color);
-		--item-hover-bg: var(--app-tertiary-bg);
+		--group-title-font-size: 1rem;
 
-		--clear-icon-color: var(--app-body-color);
+		--clear-icon-color: var(--bs-body-color);
+		--clear-icon-width: 12px;
+		--clear-icon-height: 12px;
+
 		--clear-select-width: 20px;
 		--loading-width: 20px;
 
-		--list-background: var(--app-body-bg);
-		--list-border: 1px solid var(--app-border-color);
+		--list-background: var(--bs-body-bg);
+		--list-border: 1px solid var(--bs-border-color);
+		--list-border-radius: 0;
+		--list-shadow: none;
 
-		--border: 1px solid var(--app-border-color);
-		--border-hover: 1px solid var(--app-border-color);
-		--border-focused: 1px solid var(--app-input-focus-border-color);
+		--border: 1px solid var(--bs-border-color);
+		--border-hover: 1px solid var(--bs-border-color);
+		--border-focused: 1px solid #{$input-focus-border-color};
+		--border-radius: 0;
 
-		--multi-item-bg: var(--app-body-bg);
-		--multi-select-padding: 0 16px 0 16px;
-		--multi-item-height: 28px;
-		--multi-item-clear-icon-color: var(--app-body-color);
-		--multi-item-outline: 2px solid var(--app-border-color);
+		--multi-item-bg: var(--bs-body-bg);
+		--multi-select-padding: var(--padding);
+		--multi-item-height: 25px;
+		--multi-item-clear-icon-color: var(--bs-body-color);
+		--multi-item-outline: 1px solid var(--bs-border-color);
+		--multi-select-input-margin: 0 0;
 
 		& > :global(.svelte-select.focused) {
-			box-shadow: 0 0 0 var(--app-focus-ring-width) var(--app-focus-ring-color);
+			box-shadow: 0 0 0 var(--bs-focus-ring-width) var(--bs-focus-ring-color);
 		}
 	}
 
@@ -267,8 +305,9 @@
 			cursor: pointer;
 		}
 
-		& > span:last-child {
+		& > span:last-child::after {
 			padding-right: 0px;
+			content: none;
 		}
 
 		& > span::after {
