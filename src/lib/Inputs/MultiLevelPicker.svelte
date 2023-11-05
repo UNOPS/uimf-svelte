@@ -47,10 +47,17 @@
 
 	export let controller: Controller;
 
+	const emptyOption: Option = {
+		Label: '',
+		Value: null,
+		HasChildren: false,
+		Selectable: false
+	};
+
 	let options: Option[] = [];
 	let cachedOptions: Record<string, Promise<any>> = {};
 	let path: Option[] = [];
-	let selected: Option | null = null;
+	let selected: Option = emptyOption;
 	let loading = true;
 
 	const component = new InputComponent({
@@ -70,7 +77,7 @@
 
 			// Only select the item if it has no children.
 			selected =
-				path.length > 0 && path[path.length - 1].HasChildren ? null : path[path.length - 1];
+				path.length > 0 && path[path.length - 1].HasChildren ? emptyOption : path[path.length - 1];
 
 			let results = await fetchPathItems();
 
@@ -82,6 +89,7 @@
 			}
 
 			options = results;
+			controller.value = controller.value;
 
 			if (controller.value != null && selected == null) {
 				throw `Cannot find option for "${controller.metadata.Id}".`;
@@ -123,10 +131,18 @@
 	}
 
 	async function fetchPathItems(query?: string | null): Promise<Option[]> {
-		let parentId = path?.length > 0 ? path[path.length - 1].Value : null;
-		let cacheKey = `${parentId ?? ''}/${query?.trim() ?? ''}`;
+		let lastItemInPath = path?.length > 0 ? path[path.length - 1] : null;
+		let parentId = null;
 
-		console.log('fetchItems', cacheKey);
+		if (lastItemInPath != null) {
+			if (lastItemInPath.HasChildren) {
+				parentId = lastItemInPath.Value;
+			} else {
+				parentId = path.length > 1 ? path[path.length - 2].Value : null;
+			}
+		}
+
+		let cacheKey = `${parentId ?? ''}/${query?.trim() ?? ''}`;
 
 		if (cachedOptions[cacheKey] != null) {
 			return cachedOptions[cacheKey];
@@ -180,27 +196,27 @@
 	}
 
 	async function selectItem(index: number) {
-		path = path.slice(0, index);
-		controller.value = path.length > 0 ? path[path.length - 1] : null;
-		selected = null;
-		options = await fetchPathItems();
+		// Select the item before the one that was clicked. We do this
+		// because by clicking a particular item user indicates that they
+		// want to replace it with a new one. So the actual value we should
+		// set to is the item before the one that was clicked.
+		let value = index > 0 ? path[index - 1].Value : null;
+		controller.setValue(value);
 	}
 </script>
 
 <div class="input-container">
 	{#if path?.length > 0}
-		<div class="path">
-			{#each path as node, index}
-				{#if node.HasChildren}
-					<span>
-						<button
-							on:click={async () => selectItem(index)}
-							on:keypress={async () => selectItem(index)}>{node.Label}</button
-						>
-					</span>
-				{/if}
-			{/each}
-		</div>
+		{#each path as node, index}
+			{#if node.HasChildren}
+				<button
+					type="button"
+					on:click={async () => selectItem(index)}
+					on:keypress={async () => selectItem(index)}>{node.Label}</button
+				>
+				<i>&raquo;</i>
+			{/if}
+		{/each}
 	{/if}
 
 	<Select
@@ -209,37 +225,12 @@
 		itemId="Value"
 		{loading}
 		required={controller.metadata.Required}
-		on:select={async (e) => {
-			if (controller.value?.Value == e.detail.Value) {
-				// The value is already selected. Do nothing.
-				return;
-			}
-
-			controller.value = e.detail;
-
-			path.push(e.detail);
-			path = path;
-
-			if (e.detail.HasChildren) {
-				selected = null;
-				options = await fetchPathItems();
-			}
-		}}
-		on:clear={async (e) => {
-			controller.value = null;
-			path = [];
-			selected = null;
-			options = await fetchPathItems();
-		}}
+		on:select={(e) => controller.setValue(e.detail)}
+		on:clear={(e) => controller.setValue(null)}
 		hideEmptyState={false}
 		placeholder="type to search..."
 		items={options}
 	/>
-</div>
-
-<div>
-	value: {JSON.stringify(controller.value)}<br />
-	path: {JSON.stringify(path)}<br />
 </div>
 
 <style lang="scss">
@@ -247,8 +238,17 @@
 
 	.input-container {
 		display: flex;
-		align-items: center;
+		flex-wrap: wrap;
+		gap: 5px;
+		align-items: stretch;
 		width: 100%;
+		border: 1px solid var(--bs-border-color);
+
+		& > :global(.svelte-select) {
+			flex-grow: 2;
+		}
+
+		--width: auto;
 		--height: #{$app-input-min-height};
 		--padding: 0 6px 0 10px;
 		--background: var(--bs-body-bg);
@@ -278,9 +278,9 @@
 		--list-border-radius: 0;
 		--list-shadow: none;
 
-		--border: 1px solid var(--bs-border-color);
-		--border-hover: 1px solid var(--bs-border-color);
-		--border-focused: 1px solid #{$input-focus-border-color};
+		--border: 0px solid var(--bs-border-color);
+		--border-hover: 0px solid var(--bs-border-color);
+		--border-focused: 0px solid #{$input-focus-border-color};
 		--border-radius: 0;
 
 		--multi-item-bg: var(--bs-body-bg);
@@ -293,25 +293,21 @@
 		& > :global(.svelte-select.focused) {
 			box-shadow: 0 0 0 var(--bs-focus-ring-width) var(--bs-focus-ring-color);
 		}
-	}
 
-	.path {
-		white-space: nowrap;
-		flex-grow: 1;
-		margin-right: 10px;
-
-		& > span > span {
-			text-decoration: underline;
+		& > button {
 			cursor: pointer;
+			border: none;
+			background: transparent;
+			font-size: var(--bs-body-font-size);
 		}
 
-		& > span:last-child::after {
-			padding-right: 0px;
-			content: none;
+		& > i {
+			line-height: 1.9em;
+			font-size: 1.5em;
 		}
 
-		& > span::after {
-			content: ' / ';
+		& > * {
+			height: #{$app-input-min-height};
 		}
 	}
 </style>

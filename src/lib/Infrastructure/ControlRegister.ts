@@ -9,6 +9,7 @@ import * as DateTime from '../Inputs/DateTime.svelte';
 import * as Radio from "../Inputs/Radio.svelte";
 import * as NestedInput from "../Inputs/NestedInput.svelte";
 import * as ConditionalInput from "../Inputs/ConditionalInput.svelte";
+import * as MultiLevelPicker from "../Inputs/MultiLevelPicker.svelte";
 import * as InputNumber from "../Inputs/Number.svelte";
 import * as NumberRange from "../Inputs/NumberRange.svelte";
 import * as Dropdown from "../Inputs/Dropdown.svelte";
@@ -257,6 +258,7 @@ defaultControlRegister.registerInputComponent('value-list', ValueList);
 defaultControlRegister.registerInputComponent('toggled-input', ToggledInput);
 defaultControlRegister.registerInputComponent('typeahead', Typeahead);
 defaultControlRegister.registerInputComponent('multiselect', MultiSelect);
+defaultControlRegister.registerInputComponent('multilevel-picker', MultiLevelPicker);
 
 // Outputs.
 defaultControlRegister.registerOutputComponent('action-list', ActionList, { alwaysHideLabel: true });
