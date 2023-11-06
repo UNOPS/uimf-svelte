@@ -8,7 +8,7 @@ interface FormLink {
     Label?: string;
 }
 
-interface FormResponse extends Response {
+export interface FormResponse extends Response {
     Metadata: any;
 }
 
@@ -58,7 +58,7 @@ export default interface IUimfApp {
     openHtmlModal(options: IHtmlModalOptions): Promise<void>;
     formsById: { [id: string]: FormMetadata };
     makeUrl(link: FormLink): Promise<string>;
-    postForm(form: string, data: any, config: any): Promise<FormResponse>;
+    postForm<T extends FormResponse>(form: string, data: any, config: any): Promise<T>;
     getApiFile(url: string): Promise<Response>;
     getApi(form: string): Promise<Response>;
     hasRole(permission?: string): boolean;
