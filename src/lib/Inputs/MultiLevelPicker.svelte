@@ -14,10 +14,6 @@
 
 			return Promise.resolve(result);
 		}
-
-		protected setValueInternal(value: Value | null): Promise<void> {
-			return Promise.resolve();
-		}
 	}
 
 	interface Value {
@@ -31,9 +27,9 @@
 		Selectable: boolean;
 	}
 
-	interface Response {
+	interface Response extends FormResponse {
 		Items: Option[];
-		Path: Option[];
+		Path: Option[] | null;
 		IsFullSet: boolean;
 		ParentId: any | null;
 	}
@@ -44,6 +40,7 @@
 	import { beforeUpdate } from 'svelte';
 	import { InputController } from '../Infrastructure/InputController';
 	import { InputComponent } from '../Infrastructure/Component';
+	import type { FormResponse } from '../Infrastructure/UimfApp';
 
 	export let controller: Controller;
 
@@ -117,8 +114,8 @@
 		await setRequestParameters(postData);
 
 		cachedOptions[cacheKey] = controller.app
-			.postForm(controller.metadata.CustomProperties.Form, postData, null)
-			.then((t: any) => {
+			.postForm<Response>(controller.metadata.CustomProperties.Form, postData, null)
+			.then((t) => {
 				loading = false;
 				return t.Path ?? [];
 			})
@@ -155,13 +152,8 @@
 		loading = true;
 
 		cachedOptions[cacheKey] = controller.app
-			.postForm(controller.metadata.CustomProperties.Form, postData, null)
-			.then((t: any) => {
-				if (t.Path != null) {
-					// TODO: place this elsewhere.
-					path = t.Path;
-				}
-
+			.postForm<Response>(controller.metadata.CustomProperties.Form, postData, null)
+			.then((t) => {
 				loading = false;
 				return t.Items ?? [];
 			})
