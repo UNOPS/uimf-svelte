@@ -208,6 +208,7 @@
 		--item-is-active-bg: var(--bs-primary-bg-subtle);
 		--item-is-active-color: var(--bs-body-color);
 		--item-line-height: #{$app-input-min-height};
+		--item-first-border-radius: 0;
 		--selected-item-color: var(--bs-body-color);
 
 		--group-title-font-size: 1rem;
