@@ -56,10 +56,16 @@
 	let path: Option[] = [];
 	let selected: Option = emptyOption;
 	let loading = true;
+	let listOpen: boolean = false;
 
 	const component = new InputComponent({
 		init() {},
 		async refresh() {
+			// We need to set this to false, because otherwise this
+			// variable will stay true forever and won't be taken
+			// into account by `svelte-select` component.
+			listOpen = false;
+
 			const capturedValue = controller.value;
 
 			// Always create a copy of the original array.
@@ -193,7 +199,11 @@
 		// want to replace it with a new one. So the actual value we should
 		// set to is the item before the one that was clicked.
 		let value = index > 0 ? path[index - 1].Value : null;
-		controller.setValue(value);
+		await controller.setValue(value);
+
+		// Open the list of options so that user does not need to click
+		// again to open it.
+		listOpen = true;
 	}
 </script>
 
@@ -217,8 +227,15 @@
 		itemId="Value"
 		{loading}
 		required={controller.metadata.Required}
+		{listOpen}
 		on:select={(e) => controller.setValue(e.detail)}
-		on:clear={(e) => controller.setValue(null)}
+		on:clear={(e) => {
+			if (selected?.Value != null) {
+				controller.setValue(path.length > 1 ? path[path.length - 2].Value : null);
+			} else {
+				controller.setValue(null);
+			}
+		}}
 		hideEmptyState={false}
 		placeholder="type to search..."
 		items={options}
@@ -231,7 +248,7 @@
 	.input-container {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 5px;
+		gap: 5px 0;
 		align-items: stretch;
 		width: 100%;
 		border: 1px solid var(--bs-border-color);
@@ -254,6 +271,7 @@
 		--item-is-active-bg: var(--bs-primary-bg-subtle);
 		--item-is-active-color: var(--bs-body-color);
 		--item-line-height: #{$app-input-min-height};
+		--item-first-border-radius: 0;
 		--selected-item-color: var(--bs-body-color);
 
 		--group-title-font-size: 1rem;
@@ -290,12 +308,14 @@
 			cursor: pointer;
 			border: none;
 			background: transparent;
+			padding: 0px 10px;
 			font-size: var(--bs-body-font-size);
 		}
 
 		& > i {
 			line-height: 1.9em;
 			font-size: 1.5em;
+			padding: 0 4px 0 4px;
 		}
 
 		& > * {
