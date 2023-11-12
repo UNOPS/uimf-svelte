@@ -1,214 +1,264 @@
 <script context="module" lang="ts">
+	import type { FormInstance } from '../../../Infrastructure/FormController';
+	import { OutputComponent } from '../../../Infrastructure/Component';
 	import type { OutputController } from '../../../Infrastructure/OutputController';
+	import type UimfApp from '../../../Infrastructure/UimfApp';
+	import { PaginationParameters } from '../../../Inputs/Paginator.svelte';
+	import { beforeUpdate } from 'svelte';
+
+	export class Page {
+		constructor(
+			form: FormInstance,
+			component: OutputComponent,
+			inputFieldValues: any,
+			index: number,
+			label: string | null = null
+		) {
+			this.form = form;
+			this.index = index;
+			this.inputFieldValues = inputFieldValues;
+			this.component = component;
+			this.label = label ?? index.toString();
+		}
+
+		public index: number;
+		public inputFieldValues: any;
+		public label: string;
+		private form: FormInstance;
+		private component: OutputComponent;
+
+		url(app: UimfApp): Promise<string> {
+			return app.makeUrl({
+				Form: this.form.metadata.Id,
+				InputFieldValues: this.inputFieldValues
+			});
+		}
+
+		async go() {
+			await this.form.setInputFieldValues(this.inputFieldValues);
+			await this.form.submit(true);
+			await this.component.refresh();
+		}
+	}
+
+	export class Pager {
+		private range: number = 5;
+		private paginatorId: string;
+		private inputFieldValues: any = {};
+		public pages: Page[] = [];
+		public paginatorValue: PaginationParameters;
+		public pageCount: number;
+		public form: FormInstance;
+		private component: OutputComponent;
+		public fromRow: number;
+		public toRow: number;
+
+		constructor(
+			controller: OutputController<any>,
+			inputFieldValues: any,
+			component: OutputComponent
+		) {
+			this.form = controller.form!;
+			this.inputFieldValues = inputFieldValues;
+			this.component = component;
+
+			// The basics.
+			this.paginatorId = controller.metadata.CustomProperties.Customizations.Paginator;
+			this.paginatorValue = this.form.inputs[this.paginatorId].value || new PaginationParameters();
+			this.pageCount = Math.ceil(controller.value.TotalCount / this.paginatorValue.PageSize);
+
+			this.fromRow = this.paginatorValue.PageSize * (this.paginatorValue.PageIndex - 1) + 1;
+			this.toRow = Math.min(
+				this.paginatorValue.PageSize * this.paginatorValue.PageIndex,
+				controller.value.TotalCount
+			);
+
+			this.initPages();
+		}
+
+		private addPage(i: number, label: string | null = null) {
+			var formParams = this.getInputFieldValuesForPage(i);
+			this.pages.push(new Page(this.form, this.component, formParams, i, label));
+		}
+
+		private initPages() {
+			var minPage = Math.max(1, this.paginatorValue.PageIndex - this.range);
+			var maxPage = Math.min(
+				this.pageCount,
+				Math.max(this.paginatorValue.PageIndex + this.range, this.range + 1)
+			);
+
+			if (this.paginatorValue.PageIndex - this.range > 1) {
+				this.addPage(1, '1 ...');
+			}
+
+			for (let i = minPage; i <= maxPage; i++) {
+				this.addPage(i);
+			}
+
+			if (this.paginatorValue.PageIndex + this.range < this.pageCount) {
+				this.addPage(this.pageCount, `... ${this.pageCount}`);
+			}
+		}
+
+		public getInputFieldValuesForPage(pageIndex: number, pageSize?: number) {
+			var paginationParams = {
+				...this.paginatorValue,
+				PageIndex: pageIndex,
+				PageSize: pageSize || this.paginatorValue.PageSize
+			};
+
+			return {
+				...this.inputFieldValues,
+				[this.paginatorId]: paginationParams
+			};
+		}
+	}
 </script>
 
 <script lang="ts">
-	import { OutputComponent } from '../../../Infrastructure/Component';
-	import type { PaginatedData } from '$lib/Outputs/PaginatedData.svelte';
-	import { beforeUpdate } from 'svelte';
-	export let controller: OutputController<PaginatedData>;
+	export let controller: OutputController<any>;
 
-	let paginator =
-		controller.form!.inputs[controller.metadata.CustomProperties.Customizations.Paginator];
-	let pageSizes = [10, 20, 50];
+	let inputFieldValues: any = {};
+	let pageSizes = [10, 20, 50, 100];
+	let pager: Pager;
 
-	let pageSize = paginator.value.PageSize ?? pageSizes[0];
-	let pageCount = controller.value.TotalCount / pageSize + 1;
-	let activePageIndex = paginator.value.PageIndex ?? 1;
-	let maxPage: number = Math.floor(controller.value.TotalCount / pageSize + 1);
-
-	let inputValues: any;
-
-	// array of urls
-	let pageUrls: string[] = new Array(maxPage);
-	let selectorUrls: string[] = new Array(pageSizes.length);
-
-	let component = new OutputComponent({
+	const component = new OutputComponent({
 		async refresh() {
-			await controller.form?.getInputFieldValues().then(async (results) => {
-				if (inputValues != undefined && !areEqual(inputValues, results)) {
-					activePageIndex = 1;
-				}
+			const me: OutputComponent = this as OutputComponent;
 
-				controller.value = controller.value;
-				inputValues = results;
+			pager = new Pager(controller, inputFieldValues, me);
+			inputFieldValues = await controller.form!.getInputFieldValues();
 
-				pageUrls.splice(0, pageUrls.length);
-				selectorUrls.splice(0, selectorUrls.length);
-
-				maxPage = Math.floor(controller.value.TotalCount / pageSize + 1);
-
-				pageSizes.forEach(async (pageSize, i) => {
-					selectorUrls[i] = await getUrl(1, pageSize);
-				});
-
-				for (let i = 0; i < maxPage; i++) {
-					pageUrls[i] = await getUrl(i + 1, pageSize);
-				}
-			});
+			// Make sure that the current page size is in the list of available page sizes.
+			pageSizes = [...new Set([10, 20, 50, 100, pager.paginatorValue.PageSize])].sort(
+				(a, b) => a - b
+			);
 		}
 	});
 
-	beforeUpdate(async () => await component.setup(controller));
-
-	function areEqual(obj1: any, obj2: any): boolean {
-		for (let key in obj1) {
-			if (obj1.hasOwnProperty(key) && obj2.hasOwnProperty(key)) {
-				if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
-					if (!areEqual(obj1[key], obj2[key])) {
-						return false;
-					}
-				} else if (obj1[key] !== obj2[key]) {
-					return false;
-				}
-			} else {
-				return false;
-			}
+	beforeUpdate(async () => {
+		if (controller?.metadata?.Type == 'paginated-data') {
+			await component.setup(controller);
 		}
-		return true;
-	}
-
-	const getInputFieldValuesForPage = async (index: number, size: number) => {
-		return {
-			...inputValues,
-			['Paginator']: {
-				PageIndex: index,
-				PageSize: size
-			}
-		};
-	};
-
-	const getUrl = async (index: number, size: number) => {
-		const inputFieldValues = await getInputFieldValuesForPage(index, size);
-
-		return controller.app.makeUrl({
-			Form: controller.form!.metadata.Id,
-			InputFieldValues: inputFieldValues
-		});
-	};
-
-	function show(index: number) {
-		return (
-			index == 1 ||
-			index == maxPage ||
-			index == activePageIndex ||
-			index == activePageIndex - 1 ||
-			index == activePageIndex + 1
-		);
-	}
-
-	function showSeparator(index: number) {
-		return index == 2 || index == maxPage - 1;
-	}
+	});
 </script>
 
-{#if pageCount >= 1}
-	<nav class="pagination">
-		<div class="per-page-selector">
-			{#each selectorUrls as url, index}
-				<a href={url}>{pageSizes[index]}</a>
+{#if pager?.pageCount > 1 || pager?.paginatorValue?.PageSize > 10}
+	<nav>
+		<div>
+			<span>
+				Showing rows {pager.fromRow}-{pager.toRow} of {controller.value.TotalCount}, with
+			</span>
+			<select
+				class="form-select page-size"
+				bind:value={pager.paginatorValue.PageSize}
+				on:blur={async () => {
+					var values = pager.getInputFieldValuesForPage(1);
 
-				<!-- no space after last page -->
-				{#if index != pageSizes.length - 1}
-					<span> - </span>
-				{/if}
-			{/each}
-		</div>
-		<div class="page-selector">
-			<ul>
-				{#if activePageIndex > 1}
-					{#await getUrl(activePageIndex - 1, pageSize) then url}
-						<li>
-							<a href={url} on:click={() => activePageIndex--}
-								><i class="fas fa-angle-double-left" /></a
-							>
-						</li>
-					{/await}
-				{/if}
-				{#each pageUrls as url, index (index + 1)}
-					{#if show(index + 1)}
-						<li class={activePageIndex === index + 1 ? 'active' : ''}>
-							<a href={url} on:click={() => (activePageIndex = index + 1)}>{index + 1}</a>
-						</li>
-					{:else if showSeparator(index + 1)}
-						<span class=""> . . . </span>
-					{/if}
+					if (controller.form == null) {
+						throw new Error('Form is not set.');
+					}
+
+					if (controller.form.parentForm != null) {
+						new Page(controller.form, component, values, 1).go();
+					} else {
+						await controller.app.goto({
+							Form: controller.form.metadata.Id,
+							InputFieldValues: values
+						});
+					}
+				}}
+			>
+				{#each pageSizes as pageSize}
+					<option value={pageSize}>{pageSize}</option>
 				{/each}
-				{#if activePageIndex < maxPage}
-					{#await getUrl(activePageIndex + 1, pageSize) then url}
-						<li>
-							<a href={url} on:click={() => activePageIndex++}
-								><i class="fas fa-angle-double-right" /></a
-							>
-						</li>
-					{/await}
-				{/if}
-			</ul>
+			</select>
+			<span>per page</span>
 		</div>
+		<ul class="pagination">
+			{#each pager.pages as page}
+				<li class="page-item" class:active={page.index == pager.paginatorValue.PageIndex}>
+					{#if controller.form?.parentForm != null}
+						<button class="page-link" on:click={() => page.go()}>{@html page.label}</button>
+					{:else}
+						{#await page.url(controller.app) then url}
+							<a class="page-link" href={url} data-sveltekit-noscroll>{@html page.label}</a>
+						{/await}
+					{/if}
+				</li>
+			{/each}
+		</ul>
 	</nav>
 {/if}
 
 <style lang="scss">
-	.pagination {
+	@import '../../../../scss/styles.scss';
+
+	nav {
+		--height: 32px;
+		--outer-border-color: #ebebeb;
+
 		display: flex;
-		justify-content: center;
+		gap: 10px;
+		margin: 1px 0 0;
+		justify-content: space-between;
 		align-items: center;
-		flex-direction: column;
-		height: 100px;
-	}
 
-	.per-page-selector {
-		font-size: 16px;
-		margin-bottom: 10px;
-	}
+		& > div {
+			display: flex;
+			align-items: center;
+			opacity: 0.6;
 
-	.per-page-selector a {
-		color: #007bff;
-		margin: 0 5px;
-		text-decoration: none;
-	}
+			& > .page-size {
+				width: auto;
+				min-width: 38px;
+				height: 18px;
+				border: none;
+				outline: none;
+				font-size: 1.2rem;
+				margin: 0 5px;
+				padding: 0;
+				border-bottom: 1px solid var(--bs-body-color);
+				position: relative;
+				top: 1px;
+				background-position: right 0px center;
 
-	.per-page-selector a:hover {
-		text-decoration: underline;
-	}
+				& > option {
+					padding: 3px 5px;
+				}
+			}
+		}
 
-	.list-container {
-		display: flex;
-		flex-wrap: wrap;
-		width: 100%;
-	}
+		& > ul.pagination {
+			margin: 0;
+			background: $gray-100;
+			border-radius: 0 0px 4px 4px;
+			border: 1px solid var(--outer-border-color);
+			border-top: none;
 
-	.page-selector {
-		margin-top: 10px;
-		text-align: center;
-	}
+			& > li > .page-link {
+				min-width: 35px;
+				text-align: center;
+				line-height: calc(var(--height) - 2px);
+				padding: 0 5px;
+				margin: 0;
+				border: none;
+				text-decoration: underline;
 
-	.page-selector ul {
-		list-style-type: none;
-		padding: 0;
-		margin: 0;
-	}
+				&:hover {
+					box-shadow: none;
+				}
 
-	.page-selector li {
-		display: inline-block;
-		margin-right: 5px;
-	}
+				:global(& > i) {
+					opacity: 0.5;
+					padding: 0 8px 0 10px;
+				}
+			}
 
-	.page-selector li a {
-		display: inline-block;
-		padding: 5px 10px;
-		background-color: #dddddd;
-		color: #3d3d3d;
-		text-decoration: none;
-	}
-
-	.page-selector li.active a {
-		background-color: #007bff;
-		color: #ffffff;
-	}
-
-	.page-selector li a:hover {
-		background-color: #007bff;
-		color: #ffffff;
+			& > li.active > .page-link {
+				border-color: var(--app-border-color);
+			}
+		}
 	}
 </style>

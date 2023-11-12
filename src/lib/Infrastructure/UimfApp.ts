@@ -58,6 +58,7 @@ export default interface IUimfApp {
     openHtmlModal(options: IHtmlModalOptions): Promise<void>;
     formsById: { [id: string]: FormMetadata };
     makeUrl(link: FormLink): Promise<string>;
+    goto(link: FormLink): Promise<void>;
     postForm<T extends FormResponse>(form: string, data: any, config: any): Promise<T>;
     getApiFile(url: string): Promise<Response>;
     getApi(form: string): Promise<Response>;

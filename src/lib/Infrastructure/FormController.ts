@@ -1,10 +1,9 @@
-import type FormLink from "$lib/Outputs/FormLink.svelte";
 import { defaultControlRegister } from "./ControlRegister";
 import EventSource from "./EventSource";
 import type { Deferrer, InputController } from "./InputController";
 import { OutputController } from "./OutputController";
 import type IUimfApp from "./UimfApp";
-import type { ComponentMetadata } from "./uimf";
+import type { ComponentMetadata, FormLink } from "./uimf";
 import uuid from "./uuid";
 
 interface FormMetadata extends ComponentMetadata {
@@ -31,6 +30,7 @@ export interface FormInstance {
     hasOriginalInputValues: () => boolean;
     currentUrl: string;
     useUrl: boolean;
+    setInputFieldValues(formlink: FormLink): Promise<any>;
 }
 
 type Dictionary<T> = { [key: string]: T; }
@@ -63,6 +63,11 @@ export class FormController extends EventSource implements FormInstance {
     public onFormLoaded: ((arg0: any) => any) | null = null;
     public onFormFailed: ((arg0: any) => any) | null = null;
     submit: (postOnLoad?: boolean | undefined) => Promise<any>;
+
+    setInputFieldValues(formlink: FormLink) {
+        throw new Error("Method not implemented.");
+        return Promise.reject();
+    }
 
     constructor(parentForm: FormController | null, form: FormInstance) {
         super();

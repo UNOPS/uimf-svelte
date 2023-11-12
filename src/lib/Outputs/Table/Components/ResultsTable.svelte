@@ -58,6 +58,7 @@
 			});
 		}
 	});
+
 	beforeUpdate(async () => {
 		if (controller?.metadata?.Type == type || type == null) {
 			await component.setup(controller);
@@ -244,7 +245,7 @@
 		--group-border-color: #d6d6d645;
 
 		border: 1px solid var(--outer-border-color);
-		border-radius: 4px;
+		border-radius: 4px 4px 0px 4px;
 
 		& > .btn-bar {
 			text-align: right;

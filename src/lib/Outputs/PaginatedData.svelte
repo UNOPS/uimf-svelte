@@ -13,16 +13,11 @@
 	export let controller: OutputController<PaginatedData>;
 </script>
 
-<ResultsTable {controller} type="paginated-data"/>
+<ResultsTable {controller} type="paginated-data" />
 
 {#if controller.value?.Results?.length > 0}
-	<div class="wrapper">
-		<Pager {controller} />
-	</div>
+	<Pager {controller} />
 {/if}
 
 <style lang="scss">
-	.wrapper {
-		margin-top: 1rem;
-	}
 </style>
