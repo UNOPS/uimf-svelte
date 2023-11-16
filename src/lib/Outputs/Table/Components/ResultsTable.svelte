@@ -46,7 +46,7 @@
 			];
 
 			const builder = new TableBuilder(extensions);
-			const rows = controller.value.length != null ? controller.value : controller.value.Results;
+			const rows = controller.value?.length != null ? controller.value : controller.value.Results;
 			table = builder.build(controller, rows, controller.metadata.CustomProperties?.Columns);
 			extraColspan = bulkActionExtension.actions.length > 0 ? 1 : 0;
 			type = controller.metadata.Type;
