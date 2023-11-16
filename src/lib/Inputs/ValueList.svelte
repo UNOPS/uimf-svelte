@@ -1,5 +1,6 @@
 <script context="module" lang="ts">
 	import { InputController } from '../Infrastructure/InputController';
+	import type { OutputController } from '../Infrastructure/OutputController';
 	import type { ComponentMetadata } from '../Infrastructure/uimf';
 
 	export class Controller extends InputController<IValueList> {
@@ -29,11 +30,13 @@
 				resultItems.push(dto);
 
 				for (let [key, controller] of Object.entries(item._controllers)) {
-					promises.push(
-						controller.getValue().then(function (value) {
-							dto[key] = value;
-						})
-					);
+					if (controller instanceof InputController) {
+						promises.push(
+							controller.getValue().then(function (value) {
+								dto[key] = value;
+							})
+						);
+					}
 				}
 			}
 
@@ -53,16 +56,21 @@
 
 	interface IValueItem {
 		[other: string]: unknown;
-		_controllers: Record<string, InputController<any>>;
+		_controllers: Record<string, InputController<any> | OutputController<any>>;
 		_deleted: boolean | null;
 	}
 
 	interface Metadata extends ComponentMetadata {
-		CanRemove?: boolean;
-		CanAdd?: boolean;
 		CustomProperties: {
-			Metadata: ComponentMetadata[];
+			Fields: IField[];
+			CanRemove?: boolean;
+			CanAdd?: boolean;
 		};
+	}
+
+	interface IField {
+		IsInput: boolean;
+		Metadata: ComponentMetadata;
 	}
 </script>
 
@@ -72,26 +80,26 @@
 	import { beforeUpdate, tick } from 'svelte';
 	import Input from '../Input.svelte';
 	import { tooltip } from '../Components/Tooltip.svelte';
+	import Output from '../Output.svelte';
 
 	export let controller: Controller;
 
 	let rows: IValueItem[] = [];
-	let columns: ComponentMetadata[] = [];
+	let columns: IField[] = [];
 	let metadata: Metadata | null = null;
 	let hasDropdowns: boolean = false;
 
 	const component = new InputComponent({
-		async init() {
+		init() {
 			metadata = controller.metadata;
 
 			hasDropdowns = false;
 
-			columns = (controller.metadata.CustomProperties?.Metadata || [])
-				.map((t) => {
-					hasDropdowns = hasDropdowns || ['typeahead', 'multiselect', 'dropdown'].includes(t.Type);
-					return t;
-				})
-				.sort((a, b) => a.OrderIndex - b.OrderIndex);
+			columns = controller.metadata.CustomProperties.Fields.map((t) => {
+				hasDropdowns ||= ['typeahead', 'multiselect', 'dropdown'].includes(t.Metadata.Type);
+
+				return t;
+			}).sort((a, b) => a.Metadata.OrderIndex - b.Metadata.OrderIndex);
 
 			controller.ready?.resolve();
 		},
@@ -107,16 +115,19 @@
 				row._controllers = row._controllers || {};
 
 				for (let column of columns) {
-					if (row._controllers[column.Id] == null) {
-						row._controllers[column.Id] = await getInputController(column, row);
+					if (row._controllers[column.Metadata.Id] == null) {
+						row._controllers[column.Metadata.Id] = await getController(column, row);
 					}
 
-					const currentValue = row._controllers[column.Id].getValue();
-					
-					// To avoid unnecessary re-rendering and DOM events, we only update
-					// the value if it has actually changed.
-					if (row[column.Id] != currentValue) {
-						await row._controllers[column.Id].setValue(row[column.Id]);
+					if (column.IsInput) {
+						const inputController = row._controllers[column.Metadata.Id] as InputController<any>;
+						const currentValue = inputController.getValue();
+
+						// To avoid unnecessary re-rendering and DOM events, we only update
+						// the value if it has actually changed.
+						if (row[column.Metadata.Id] != currentValue) {
+							await inputController.setValue(row[column.Metadata.Id]);
+						}
 					}
 				}
 			}
@@ -134,7 +145,7 @@
 		};
 
 		for (let column of columns) {
-			newRow._controllers[column.Id] = await getInputController(column, newRow);
+			newRow._controllers[column.Metadata.Id] = await getController(column, newRow);
 		}
 
 		rows.push(newRow);
@@ -151,24 +162,33 @@
 		input?.focus();
 	}
 
-	async function getInputController(
-		column: ComponentMetadata,
+	async function getController(
+		column: IField,
 		row: IValueItem
-	): Promise<InputController<any>> {
-		var inputController = controlRegister.createInput({
-			app: controller.app,
-			form: controller.form,
-			metadata: column,
-			defer: null
-		}).controller;
+	): Promise<InputController<any> | OutputController<any>> {
+		if (column.IsInput) {
+			var inputController = controlRegister.createInput({
+				app: controller.app,
+				form: controller.form,
+				metadata: column.Metadata,
+				defer: null
+			}).controller;
 
-		// When the cell value changes, the overall `value-list` should
-		// also trigger the `input:change` event.
-		inputController.on('input:change', async () => {
-			row[column.Id] = inputController.getValue();
-		});
+			// When the cell value changes, the overall `value-list` should
+			// also trigger the `input:change` event.
+			inputController.on('input:change', async () => {
+				row[column.Metadata.Id] = inputController.getValue();
+			});
 
-		return inputController;
+			return inputController;
+		} else {
+			return controlRegister.createOutput({
+				app: controller.app,
+				form: controller.form,
+				metadata: column.Metadata,
+				data: row[column.Metadata.Id]
+			}).controller;
+		}
 	}
 
 	function getColumnWidth(item: ComponentMetadata) {
@@ -179,17 +199,19 @@
 	}
 </script>
 
-{#if rows != null}
+{#if rows != null && metadata != null}
 	<div class="table-responsive" class:has-dropdowns={hasDropdowns}>
 		<table class="table table-borderless table-sm">
 			<thead>
 				<tr>
 					{#each columns as column}
-						<th style={getColumnWidth(column)} use:tooltip={column.CustomProperties?.Documentation}
-							>{column.Label}</th
+						<th
+							style={getColumnWidth(column.Metadata)}
+							use:tooltip={column.Metadata.CustomProperties?.Documentation}
+							>{column.Metadata.Label}</th
 						>
 					{/each}
-					{#if metadata?.CanRemove || metadata?.CanAdd}
+					{#if metadata.CustomProperties.CanRemove || metadata.CustomProperties.CanAdd}
 						<th />
 					{/if}
 				</tr>
@@ -198,11 +220,15 @@
 				{#each rows.filter((t) => !t._deleted) as row}
 					<tr>
 						{#each columns as column}
-							<td class={column.CustomProperties?.ColumnCssClass}>
-								<Input controller={row._controllers[column.Id]} hideLabel={true} />
+							<td class={column.Metadata.CustomProperties?.ColumnCssClass}>
+								{#if column.IsInput}
+									<Input controller={row._controllers[column.Metadata.Id]} hideLabel={true} />
+								{:else}
+									<Output controller={row._controllers[column.Metadata.Id]} hideLabel={true} />
+								{/if}
 							</td>
 						{/each}
-						{#if metadata?.CanRemove == true}
+						{#if metadata.CustomProperties.CanRemove == true}
 							<td class="col-action">
 								<button
 									class="btn btn-outline-light"
@@ -217,7 +243,7 @@
 					</tr>
 				{/each}
 			</tbody>
-			{#if metadata?.CanAdd}
+			{#if metadata.CustomProperties.CanAdd}
 				<tfoot>
 					<tr>
 						<td colspan={columns.length} />
