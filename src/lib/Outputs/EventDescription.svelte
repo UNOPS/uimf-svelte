@@ -3,8 +3,9 @@
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
 	import DateTime, { DateTimeController } from './DateTime.svelte';
-	import type { Controller, FormLinkData, FormLinkMetadata } from './FormLink.svelte';
+	import type { FormLinkData } from './FormLink.svelte';
 	import FormLink from './FormLink.svelte';
+	import type { ComponentMetadata } from '../Infrastructure/uimf';
 
 	interface EventDescriptionData {
 		Event: string | null;
@@ -24,52 +25,60 @@
 
 	beforeUpdate(async () => await component.setup(controller));
 
-	const makeController = (value: FormLinkData) => {
+	const makeFormLinkController = (value: FormLinkData) => {
 		return new OutputController<FormLinkData>({
-			metadata: { disabled: false } as FormLinkMetadata,
+			metadata: {} as ComponentMetadata,
 			data: value,
 			form: controller.form!,
 			app: controller.app
-		}) as Controller;
+		});
 	};
 
-	const createDateTimeController = () => {
+	const makeDateTimeController = () => {
 		return new DateTimeController({
-			metadata: { HideTime: controller.value.HideTime },
+			metadata: {
+				Id: '',
+				Required: false,
+				HideTime: controller.value?.HideTime ?? false,
+				Hidden: false,
+				Label: '',
+				Type: 'datetime',
+				OrderIndex: 0
+			},
 			data: controller.value.Date,
 			form: controller.form!,
 			app: controller.app
 		});
-	}
+	};
 </script>
 
-<DateTime controller={createDateTimeController()} />
+{#if controller.value != null}
+	<DateTime controller={makeDateTimeController()} />
 
-{#if controller.value.Event != null && controller.value.DisplayFormat === 'DateEventUser'}
-	<span>
-		{controller.value.Event}
-	</span>
-{/if}
+	{#if controller.value.Event != null && controller.value.DisplayFormat === 'DateEventUser'}
+		<span>
+			{controller.value.Event}
+		</span>
+	{/if}
 
-{#if controller.value.TriggeredBy != null}
-	<span>
-		{#if controller.value.DisplayFormat === 'DateEventUser'}
-			<span>by</span>
-		{/if}
-		{#if controller.value.TriggeredBy.Form !== null}
-			<FormLink
-				controller={makeController(controller.value.TriggeredBy)}
-			/>
-		{:else}
-			<span>
-				{controller.value.TriggeredBy.Label}
-			</span>
-		{/if}
-	</span>
-{/if}
+	{#if controller.value.TriggeredBy != null}
+		<span>
+			{#if controller.value.DisplayFormat === 'DateEventUser'}
+				<span>by</span>
+			{/if}
+			{#if controller.value.TriggeredBy.Form !== null}
+				<FormLink controller={makeFormLinkController(controller.value.TriggeredBy)} />
+			{:else}
+				<span>
+					{controller.value.TriggeredBy.Label}
+				</span>
+			{/if}
+		</span>
+	{/if}
 
-{#if controller.value.Event != null && controller.value.DisplayFormat === 'DateUserEvent'}
-	<span>
-		{controller.value.Event}
-	</span>
+	{#if controller.value.Event != null && controller.value.DisplayFormat === 'DateUserEvent'}
+		<span>
+			{controller.value.Event}
+		</span>
+	{/if}
 {/if}
