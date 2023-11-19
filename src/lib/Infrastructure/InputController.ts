@@ -9,14 +9,14 @@ export interface Deferrer {
     promise: Promise<any>;
 };
 
-export interface CreateInputOptions {
-    metadata: ComponentMetadata;
+export interface CreateInputOptions<TMetadata extends ComponentMetadata = ComponentMetadata> {
+    metadata: TMetadata;
     defer: Deferrer | null;
     form: FormController | null;
     app: IUimfApp;
 }
 
-export abstract class InputController<T> extends EventSource {
+export abstract class InputController<T, TMetadata extends ComponentMetadata = ComponentMetadata> extends EventSource {
     /**
      * Gets unique identifier for this `InputController` instance.
      */
@@ -32,7 +32,7 @@ export abstract class InputController<T> extends EventSource {
     /**
      * Gets input field's metadata.
      */
-    public readonly metadata: ComponentMetadata;
+    public readonly metadata: TMetadata;
 
     /**
      * Gets form to which the field belongs. If the field is not rendered in a form
@@ -51,7 +51,7 @@ export abstract class InputController<T> extends EventSource {
      */
     public readonly ready: Deferrer | null;
 
-    constructor(options: CreateInputOptions) {
+    constructor(options: CreateInputOptions<TMetadata>) {
         super();
         this.metadata = options.metadata;
         this.form = options.form;
