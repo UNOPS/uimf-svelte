@@ -27,11 +27,9 @@
 		};
 	}
 
-	class FlexboxController extends OutputController<any, FlexboxMetadata> {
-	}
+	class FlexboxController extends OutputController<any, FlexboxMetadata> {}
 
-	class FlexboxItemController extends OutputController<any, FlexboxItemMetadata> {
-	}
+	class FlexboxItemController extends OutputController<any, FlexboxItemMetadata> {}
 
 	export let controller: FlexboxController;
 
@@ -74,18 +72,16 @@
 {#if fields?.length > 0}
 	<div
 		class:flex-container={true}
-		class={controller.metadata.CustomProperties.CssClass ?? ''}
-		style:gap={controller.metadata.CustomProperties.Gap ?? '5px'}
+		class={controller.metadata.CustomProperties.CssClass}
+		style:gap={controller.metadata.CustomProperties.Gap}
 	>
 		{#each fields as field}
 			<div
-				class={field.controller.metadata.CustomProperties?.Flexbox?.CssClass ?? ''}
-				style:flex-basis={field.controller.metadata.CustomProperties?.Flexbox?.FlexBasis ?? 'auto'}
+				class={field.controller.metadata.CustomProperties?.Flexbox?.CssClass}
+				style:flex-basis={field.controller.metadata.CustomProperties?.Flexbox?.FlexBasis}
 			>
 				{#if field.controller.metadata.Label?.length > 0}
-					<div class="title">
-						{field.controller.metadata.Label}
-					</div>
+					<h3>{field.controller.metadata.Label}</h3>
 				{/if}
 				<svelte:component this={field.component} controller={field.controller} />
 			</div>
@@ -94,26 +90,15 @@
 {/if}
 
 <style lang="scss">
-	.title {
-		background-color: #218fcf;
-		color: #fff;
-		font-size: 1.2em;
-		text-align: center;
-		margin-top: -10px;
-		height: 40px;
-		padding-bottom: 5px;
+	h3 {
+		padding: 5px 10px;
+		border-bottom: 2px solid #cbdce9;
+		font-weight: 400;
+		font-size: 1.1em;
 	}
 
 	.flex-container {
 		display: flex;
-		flex-wrap: wrap;
 		width: 100%;
-		flex-direction: row;
-		justify-content: flex-start;
-	}
-
-	.boxed {
-		border: 1px solid #b1b1b1;
-		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 	}
 </style>
