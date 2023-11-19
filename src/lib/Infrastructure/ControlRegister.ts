@@ -295,13 +295,13 @@ defaultControlRegister.registerOutputComponent('cart-item', CartItem);
 defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize);
 
 // To be deactivated until complete validation
-//defaultControlRegister.registerOutputComponent('table', Table);
-//defaultControlRegister.registerOutputComponent('inline-form', InlineForm);
-//defaultControlRegister.registerOutputComponent('paginated-data', PaginatedData);
-//defaultControlRegister.registerOutputComponent('output', Output);
+defaultControlRegister.registerOutputComponent('table', Table);
+defaultControlRegister.registerOutputComponent('inline-form', InlineForm);
+defaultControlRegister.registerOutputComponent('paginated-data', PaginatedData);
+defaultControlRegister.registerOutputComponent('output', Output);
 
 // These components can only be enabled once we are using the new Form as they depend on each others
-//defaultControlRegister.registerOutputComponent('expandable', Expandable);
-//defaultControlRegister.registerOutputComponent('object-list', ObjectList);
-//defaultControlRegister.registerOutputComponent('nested-object', NestedObject);
-//defaultControlRegister.registerOutputComponent('tuple', Tuple);
+defaultControlRegister.registerOutputComponent('expandable', Expandable);
+defaultControlRegister.registerOutputComponent('object-list', ObjectList);
+defaultControlRegister.registerOutputComponent('nested-object', NestedObject);
+defaultControlRegister.registerOutputComponent('tuple', Tuple);
