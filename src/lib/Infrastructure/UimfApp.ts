@@ -1,6 +1,6 @@
 import type { FormLinkData } from "$lib/Outputs/FormLink.svelte";
 import type { FormInstance } from "./FormController";
-import type { FormMetadata } from "./uimf";
+import type { ComponentMetadata, FormMetadata } from "./uimf";
 
 interface FormLink {
     Form: string;
@@ -49,6 +49,7 @@ interface ColorOptions {
 }
 
 export default interface IUimfApp {
+    renderForm(options: { data: any, metadata: ComponentMetadata }): Element;
     runResponseHandler(response: FormResponse): Promise<void>;
     runClientFunctions(response: FormResponse): Promise<void>;
     handleCustomFormLinkAction(value: FormLinkData): void;
