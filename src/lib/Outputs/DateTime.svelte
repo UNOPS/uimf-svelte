@@ -3,8 +3,7 @@
 		HideTime: boolean;
 	}
 
-	export class DateTimeController extends OutputController<string> {
-		declare metadata: DateTimeMetadata;
+	export class DateTimeController extends OutputController<string, DateTimeMetadata> {
 	}
 </script>
 

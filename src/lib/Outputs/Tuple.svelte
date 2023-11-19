@@ -16,8 +16,7 @@
 		};
 	}
 
-	class TupleController extends OutputController<TupleData> {
-		declare metadata: TupleMetadata;
+	class TupleController extends OutputController<TupleData, TupleMetadata> {
 	}
 
 	export let controller: TupleController;

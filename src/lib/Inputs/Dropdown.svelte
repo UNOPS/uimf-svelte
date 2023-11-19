@@ -22,9 +22,8 @@
 		};
 	}
 
-	export class Controller extends InputController<DropdownValue> {
+	export class Controller extends InputController<DropdownValue, DropdownMetadata> {
 		public valueAsString: string | null = null;
-		declare metadata: DropdownMetadata;
 		public items: Array<DropdownItem> = [];
 
 		public getValue(): Promise<DropdownValue | null> {

@@ -15,9 +15,7 @@
 		};
 	}
 
-	export class Controller extends InputController<FileData> {
-		declare metadata: FileUploadMetadata;
-
+	export class Controller extends InputController<FileData, FileUploadMetadata> {
 		public getValue(): Promise<FileData | null> {
 			if (this.value?.dataUrl == null || this.value.dataUrl.length === 0) {
 				return Promise.resolve(null);

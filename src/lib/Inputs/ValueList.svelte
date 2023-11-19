@@ -3,9 +3,7 @@
 	import type { OutputController } from '../Infrastructure/OutputController';
 	import type { ComponentMetadata } from '../Infrastructure/uimf';
 
-	export class Controller extends InputController<IValueList> {
-		declare metadata: Metadata;
-
+	export class Controller extends InputController<IValueList, Metadata> {
 		public deserialize(value: string): Promise<IValueList> {
 			var result = JSON.parse(value);
 			return Promise.resolve(result);

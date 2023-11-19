@@ -5,15 +5,13 @@
 	export interface ViewData {
 		Value: { [key: string]: any };
 	}
-	export class Controller extends InputController<ViewData> {
-		declare metadata: NestedComponentMetadata;
-
+	export class Controller extends InputController<ViewData, NestedComponentMetadata> {
 		declare views: Array<{
 			metadata: ComponentMetadata;
 			controller: InputController<any>;
 		}>;
 
-		constructor(options: CreateInputOptions) {
+		constructor(options: CreateInputOptions<NestedComponentMetadata>) {
 			super(options);
 
 			this.views = [];
@@ -59,7 +57,7 @@
 
 		protected setValueInternal(value: ViewData | null): Promise<void> {
 			let promises = [];
-			
+
 			this.value = value ?? { Value: {} };
 
 			for (const view of this.views) {

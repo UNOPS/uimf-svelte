@@ -25,9 +25,7 @@
 		};
 	};
 
-	export class Controller extends InputController<ArrayInputData> {
-		declare metadata: ArrayInputMetadata;
-
+	export class Controller extends InputController<ArrayInputData, ArrayInputMetadata> {
 		declare views: Array<ViewData>;
 
 		declare updateViewsFunction: () => void;

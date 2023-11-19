@@ -12,8 +12,7 @@
 		};
 	}
 
-	class Controller extends OutputController<any> {
-		declare metadata: NestedObjectMetadata;
+	class Controller extends OutputController<any, NestedObjectMetadata> {
 	}
 
 	export let controller: Controller;

@@ -9,9 +9,7 @@
 		Explanation: string;
 	}
 
-	export class Controller extends InputController<ConsentData> {
-		declare metadata: ConsentMetadata;
-
+	export class Controller extends InputController<ConsentData, ConsentMetadata> {
 		public getValue(): Promise<ConsentData | null> {
 			return Promise.resolve(this.value);
 		}

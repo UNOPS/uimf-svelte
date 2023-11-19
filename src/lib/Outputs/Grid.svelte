@@ -21,8 +21,7 @@
 		};
 	}
 
-	class GridController extends OutputController<any> {
-		declare metadata: GridMetadata;
+	class GridController extends OutputController<any, GridMetadata> {
 	}
 
 	export let controller: GridController;

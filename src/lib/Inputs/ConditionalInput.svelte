@@ -30,8 +30,7 @@
 		controller: InputController<any>;
 	}
 
-	export class Controller extends InputController<ConditionalInput> {
-		declare metadata: ConditionalMetadata;
+	export class Controller extends InputController<ConditionalInput, ConditionalMetadata> {
 		public condition: string | null = null;
 		public view: InputController<any> | null = null;
 		public readonly views: View[] = [];

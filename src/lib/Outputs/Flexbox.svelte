@@ -27,12 +27,10 @@
 		};
 	}
 
-	class FlexboxController extends OutputController<any> {
-		declare metadata: FlexboxMetadata;
+	class FlexboxController extends OutputController<any, FlexboxMetadata> {
 	}
 
-	class FlexboxItemController extends OutputController<any> {
-		declare metadata: FlexboxItemMetadata;
+	class FlexboxItemController extends OutputController<any, FlexboxItemMetadata> {
 	}
 
 	export let controller: FlexboxController;

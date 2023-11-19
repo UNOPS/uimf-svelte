@@ -19,9 +19,8 @@
 		Value!: any;
 	}
 
-	export class Controller extends InputController<Radio> {
+	export class Controller extends InputController<Radio, RadioMetadata> {
 		public valueAsString: string | null = null;
-		declare metadata: RadioMetadata;
 		declare onChange: (() => any) | null;
 
 		public getValue(): Promise<Radio | null> {

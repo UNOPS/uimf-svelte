@@ -15,13 +15,12 @@
 		SecondaryPickerText: string;
 	}
 
-	export class Controller extends InputController<IValue> {
-		declare metadata: IMetadata;
+	export class Controller extends InputController<IValue, IMetadata> {
 		public primary: CreateInputResult;
 		public secondary: CreateInputResult;
 		public current?: InputController<any>;
 
-		constructor(options: CreateInputOptions) {
+		constructor(options: CreateInputOptions<IMetadata>) {
 			super(options);
 
 			this.primary = controlRegister.createInput({

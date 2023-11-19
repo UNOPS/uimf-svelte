@@ -19,8 +19,7 @@
 		};
 	}
 
-	class ExpandableController extends OutputController<ExpandableData> {
-		declare metadata: ExpandableMetadata;
+	class ExpandableController extends OutputController<ExpandableData, ExpandableMetadata> {
 	}
 
 	export let controller: ExpandableController;
