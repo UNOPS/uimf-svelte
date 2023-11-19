@@ -59,6 +59,7 @@ import * as InlineForm from '../Outputs/InlineForm.svelte';
 import * as PaginatedData from '../Outputs/PaginatedData.svelte';
 import * as Sequence from '../Outputs/Sequence.svelte';
 import * as CartItem from '../Outputs/CartItem.svelte';
+import * as CartItemOe from '../Outputs/CartItemOe.svelte';
 import * as Output from '../Outputs/Output.svelte';
 import * as SlaTimer from '../Outputs/SlaTimer.svelte';
 import * as ShipmentSize from '../Outputs/ShipmentSize.svelte';
@@ -292,6 +293,7 @@ defaultControlRegister.registerOutputComponent('link', Link, { displayAsBlock: f
 // App-specific components.
 defaultControlRegister.registerOutputComponent('event-description', EventDescription);
 defaultControlRegister.registerOutputComponent('cart-item', CartItem);
+defaultControlRegister.registerOutputComponent('cart-item-oe', CartItemOe);
 defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize);
 
 // To be deactivated until complete validation
