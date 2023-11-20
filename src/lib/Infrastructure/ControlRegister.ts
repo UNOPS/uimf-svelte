@@ -264,20 +264,20 @@ defaultControlRegister.registerInputComponent('multilevel-picker', MultiLevelPic
 // Outputs.
 defaultControlRegister.registerOutputComponent('action-list', ActionList, { alwaysHideLabel: true });
 defaultControlRegister.registerOutputComponent('alert', Alert, { alwaysHideLabel: true });
-defaultControlRegister.registerOutputComponent('boolean', Boolean);
+defaultControlRegister.registerOutputComponent('boolean', Boolean, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('datetime', DateTimeOutput, { displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('editable-value', EditableValue);
+defaultControlRegister.registerOutputComponent('editable-value', EditableValue, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('formlink', FormLink, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('flexbox', Flexbox, { alwaysHideLabel: true });
-defaultControlRegister.registerOutputComponent('grid', Grid);
+defaultControlRegister.registerOutputComponent('grid', Grid, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('icon', Icon, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('image', OutputImage);
 defaultControlRegister.registerOutputComponent('image-overlay', ImageOverlay);
 defaultControlRegister.registerOutputComponent('money', Money, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('number', Number, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('paginated-object-list', PaginatedObjectList);
-defaultControlRegister.registerOutputComponent('sequence', Sequence);
-defaultControlRegister.registerOutputComponent('sla-timer', SlaTimer);
+defaultControlRegister.registerOutputComponent('sequence', Sequence, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('sla-timer', SlaTimer, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('slider', Slider);
 defaultControlRegister.registerOutputComponent('state-diagram', StateDiagram);
 defaultControlRegister.registerOutputComponent('status', Status, { displayAsBlock: false });
@@ -291,19 +291,19 @@ defaultControlRegister.registerOutputComponent('preformatted-text', Preformatted
 defaultControlRegister.registerOutputComponent('link', Link, { displayAsBlock: false });
 
 // App-specific components.
-defaultControlRegister.registerOutputComponent('event-description', EventDescription);
-defaultControlRegister.registerOutputComponent('cart-item', CartItem);
-defaultControlRegister.registerOutputComponent('cart-item-oe', CartItemOe);
-defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize);
+defaultControlRegister.registerOutputComponent('event-description', EventDescription, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('cart-item', CartItem, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('cart-item-oe', CartItemOe, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize, { displayAsBlock: false });
 
 // To be deactivated until complete validation
-defaultControlRegister.registerOutputComponent('table', Table);
-defaultControlRegister.registerOutputComponent('inline-form', InlineForm);
-defaultControlRegister.registerOutputComponent('paginated-data', PaginatedData);
-defaultControlRegister.registerOutputComponent('output', Output);
+defaultControlRegister.registerOutputComponent('table', Table, { displayAsBlock: true });
+defaultControlRegister.registerOutputComponent('inline-form', InlineForm, { displayAsBlock: true });
+defaultControlRegister.registerOutputComponent('paginated-data', PaginatedData, { displayAsBlock: true });
+defaultControlRegister.registerOutputComponent('output', Output, { displayAsBlock: false });
 
 // These components can only be enabled once we are using the new Form as they depend on each others
-defaultControlRegister.registerOutputComponent('expandable', Expandable);
-defaultControlRegister.registerOutputComponent('object-list', ObjectList);
-defaultControlRegister.registerOutputComponent('nested-object', NestedObject);
-defaultControlRegister.registerOutputComponent('tuple', Tuple);
+defaultControlRegister.registerOutputComponent('expandable', Expandable, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('object-list', ObjectList, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('nested-object', NestedObject, { displayAsBlock: true });
+defaultControlRegister.registerOutputComponent('tuple', Tuple, { displayAsBlock: false });
