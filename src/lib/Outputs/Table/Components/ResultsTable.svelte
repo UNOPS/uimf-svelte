@@ -312,6 +312,12 @@
 				padding: 10px 15px;
 			}
 		}
+
+		td.col-min-width {
+			width: 1px;
+			padding-left: 8px;
+			padding-right: 8px;
+		}
 	}
 
 	:global(.table > tbody > tr.footer > td .outputs) {
