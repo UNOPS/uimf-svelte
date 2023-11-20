@@ -23,6 +23,7 @@
 	interface Option {
 		Value: any;
 		Label: string;
+		Description?: string;
 		HasChildren: boolean;
 		Selectable: boolean;
 	}
@@ -239,7 +240,14 @@
 		hideEmptyState={false}
 		placeholder="type to search..."
 		items={options}
-	/>
+	>
+		<div slot="item" let:item class={item.CssClass} class:item-slot={true}>
+			<span>{@html item.Label}</span>
+			{#if item.Description?.length > 0}
+				<small>{@html item.Description}</small>
+			{/if}
+		</div>
+	</Select>
 </div>
 
 <style lang="scss">
@@ -299,6 +307,30 @@
 		--multi-item-clear-icon-color: var(--bs-body-color);
 		--multi-item-outline: 1px solid var(--bs-border-color);
 		--multi-select-input-margin: 0 0;
+
+		.item-slot {
+			padding: 6px 0;
+			
+			&.inactive {
+				opacity: 0.5;
+			}
+
+			& > span {
+				line-height: 1.8em;
+				padding: 0;
+				margin: 0;
+				display: block;
+			}
+
+			& > small {
+				font-size: 0.8em;
+				display: block;
+				opacity: 0.5;
+				line-height: 1.2em;
+				padding: 4px 0 6px;
+				white-space: normal;
+			}
+		}
 
 		& > :global(.svelte-select.focused) {
 			box-shadow: 0 0 0 var(--bs-focus-ring-width) var(--bs-focus-ring-color);
