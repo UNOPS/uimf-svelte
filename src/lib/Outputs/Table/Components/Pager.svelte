@@ -127,8 +127,8 @@
 		async refresh() {
 			const me: OutputComponent = this as OutputComponent;
 
-			pager = new Pager(controller, inputFieldValues, me);
 			inputFieldValues = await controller.form!.getInputFieldValues();
+			pager = new Pager(controller, inputFieldValues, me);
 
 			// Make sure that the current page size is in the list of available page sizes.
 			pageSizes = [...new Set([10, 20, 50, 100, pager.paginatorValue.PageSize])].sort(
