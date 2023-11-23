@@ -229,7 +229,7 @@
 		--padding: 0 6px 0 10px;
 		--background: var(--bs-body-bg);
 		--input-color: var(--bs-body-color);
-		--font-size: var(--bs-body-font-size);
+		--font-size: #{$input-font-size};
 
 		--item-height: auto;
 		--item-color: var(--bs-body-color);
