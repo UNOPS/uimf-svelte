@@ -8,6 +8,7 @@
 		Color: string;
 		Tooltip: string;
 		Label: string;
+		FontColor?: string;
 	}
 
 	export let controller: OutputController<TagData>;
@@ -24,7 +25,8 @@
 {#if controller.value != null}
 	<span
 		class="label label-default"
-		style={controller.value.Color != null ? `background-color: ${controller.value.Color}` : ''}
+		style:background-color={controller.value.Color}
+		style:color={controller.value.FontColor}
 		use:tooltip={controller.value.Tooltip != null
 			? controller.value.Tooltip.replace(/'/g, '&apos;')
 			: ''}
