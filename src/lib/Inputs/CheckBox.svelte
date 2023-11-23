@@ -68,7 +68,7 @@
 {/if}
 
 <style lang="scss">
-	@import '../../scss/styles.scss';
+	@import '../../scss/styles.variables.scss';
 
 	.form-check-input {
 		margin: 9px 0 0 0;

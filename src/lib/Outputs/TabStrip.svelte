@@ -57,7 +57,7 @@
 {/if}
 
 <style lang="scss">
-	@import '../../scss/styles.scss';
+	@import '../../scss/styles.variables.scss';
 
 	.nav-tabs > li > a {
 		color: #555;

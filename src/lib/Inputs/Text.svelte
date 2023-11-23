@@ -49,7 +49,7 @@
 {/if}
 
 <style lang="scss">
-	@import '../../scss/styles.scss';
+	@import '../../scss/styles.variables.scss';
 
 	input.form-control {
 		min-height: $app-input-min-height;

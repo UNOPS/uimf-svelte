@@ -48,7 +48,7 @@
 </script>
 
 <style lang="scss">
-	@import '../../scss/styles.scss';
+	@import '../../scss/styles.variables.scss';
 
 	:global(.tippy-box) {
 		font-size: $font-size-base !important;

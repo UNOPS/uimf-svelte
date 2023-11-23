@@ -38,7 +38,7 @@
 {/if}
 
 <style lang="scss">
-	@import '../../scss/styles.scss';
+	@import '../../scss/styles.variables.scss';
 
 	div {
 		white-space: nowrap;

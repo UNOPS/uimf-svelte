@@ -173,7 +173,7 @@
 </div>
 
 <style lang="scss">
-	@import '../scss/styles.scss';
+	@import '../scss/styles.variables.scss';
 
 	.panel-footer {
 		display: flex;
