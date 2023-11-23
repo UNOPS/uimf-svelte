@@ -6,8 +6,9 @@
 
 	interface StatusData {
 		Label: string;
-		Tooltip: string;
-		Icon: string;
+		Tooltip: string | null;
+		Icon: string | null;
+		CssClass: string | null;
 	}
 
 	export let controller: OutputController<StatusData>;
@@ -22,7 +23,7 @@
 </script>
 
 {#if controller.value != null}
-	<span use:tooltip={controller.value.Tooltip}>
+	<span use:tooltip={controller.value.Tooltip} class={controller.value.CssClass}>
 		{#if controller.value.Icon != null}
 			<i class={controller.value.Icon} />
 		{/if}
