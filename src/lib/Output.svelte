@@ -68,8 +68,6 @@
 {/if}
 
 <style lang="scss">
-	@import '../scss/styles.scss';
-
 	.col-sm-10 {
 		padding-top: calc(0.375rem + 1px);
 	}
