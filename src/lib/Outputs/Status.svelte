@@ -43,4 +43,8 @@
 		min-width: 15px;
 		text-align: center;
 	}
+
+	:global(.badge > i) {
+		margin-right: 0;
+	}
 </style>
