@@ -34,7 +34,11 @@
 {/if}
 
 <style lang="scss">
+	@import '../../scss/styles.variables.scss';
+
 	i {
+		padding-left: 0;
+		margin-left: 0;
 		margin-right: 5px;
 		min-width: 15px;
 		text-align: center;
