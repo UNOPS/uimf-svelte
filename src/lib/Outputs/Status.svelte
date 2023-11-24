@@ -47,7 +47,7 @@
 	$status-categories: (
 		'success': $success,
 		'failure': $danger,
-		'ongoing': $info,
+		'ongoing': #a3ceff,
 		'completed': $light,
 		'pending': $warning
 	);
