@@ -44,7 +44,36 @@
 		text-align: center;
 	}
 
-	:global(.badge > i) {
-		margin-right: 0;
+	$status-categories: (
+		'success': $success,
+		'failure': $danger,
+		'ongoing': $info,
+		'completed': $light,
+		'pending': $warning
+	);
+
+	@each $category, $color in $status-categories {
+		.#{$category} > i {
+			color: $color;
+		}
+	}
+
+	:global(.badge) {
+		& > i {
+			margin-right: 0;
+		}
+
+		@each $category, $bg in $status-categories {
+			$color: color-contrast($bg);
+
+			&.#{$category} {
+				& > i {
+					color: $color;
+				}
+
+				color: $color;
+				background-color: $bg;
+			}
+		}
 	}
 </style>
