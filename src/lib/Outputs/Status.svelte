@@ -61,6 +61,7 @@
 	:global(.badge) {
 		& > i {
 			margin-right: 0;
+			margin-left: -4px;
 		}
 
 		@each $category, $bg in $status-categories {
