@@ -31,7 +31,7 @@
 </script>
 
 {#if controller.value?.Actions.length > 0}
-	<div class="action-list">
+	<div class="action-list 123">
 		{#each controller.value.Actions as action}
 			<div><FormLink controller={makeController(action)} /></div>
 		{/each}
@@ -51,6 +51,12 @@
 		padding: 0px;
 		width: 1px;
 		white-space: nowrap;
+	}
+
+	:global(.section) .action-list {
+		margin: -10px -25px 0 -25px;
+		padding: 5px 15px;
+		background: transparent;
 	}
 
 	.action-list {
