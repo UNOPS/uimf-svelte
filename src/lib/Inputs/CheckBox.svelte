@@ -72,5 +72,6 @@
 
 	.form-check-input {
 		margin: 9px 0 0 0;
+		outline: none !important;
 	}
 </style>
