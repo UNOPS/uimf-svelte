@@ -53,7 +53,7 @@
 		white-space: nowrap;
 	}
 
-	:global(.section) .action-list {
+	:global(.section > .form-group > div > div) > .action-list {
 		margin: -10px -25px 0 -25px;
 		padding: 5px 15px;
 		background: transparent;
