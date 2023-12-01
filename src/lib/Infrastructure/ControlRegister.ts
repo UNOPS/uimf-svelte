@@ -259,21 +259,17 @@ defaultControlRegister.registerOutputComponent('tree-view-selector', TreeViewSel
 defaultControlRegister.registerOutputComponent('html', Html, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('preformatted-text', PreformattedText);
 defaultControlRegister.registerOutputComponent('link', Link, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('table', Table, { displayAsBlock: true });
+defaultControlRegister.registerOutputComponent('inline-form', InlineForm, { displayAsBlock: true });
+defaultControlRegister.registerOutputComponent('paginated-data', PaginatedData, { displayAsBlock: true });
+defaultControlRegister.registerOutputComponent('output', Output, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('expandable', Expandable, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('object-list', ObjectList, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('nested-object', NestedObject, { displayAsBlock: true });
+defaultControlRegister.registerOutputComponent('tuple', Tuple, { displayAsBlock: false });
 
 // App-specific components.
 defaultControlRegister.registerOutputComponent('event-description', EventDescription, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('cart-item', CartItem, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('cart-item-oe', CartItemOe, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize, { displayAsBlock: false });
-
-// To be deactivated until complete validation
-defaultControlRegister.registerOutputComponent('table', Table, { displayAsBlock: true });
-defaultControlRegister.registerOutputComponent('inline-form', InlineForm, { displayAsBlock: true });
-defaultControlRegister.registerOutputComponent('paginated-data', PaginatedData, { displayAsBlock: true });
-defaultControlRegister.registerOutputComponent('output', Output, { displayAsBlock: false });
-
-// These components can only be enabled once we are using the new Form as they depend on each others
-defaultControlRegister.registerOutputComponent('expandable', Expandable, { displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('object-list', ObjectList, { displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('nested-object', NestedObject, { displayAsBlock: true });
-defaultControlRegister.registerOutputComponent('tuple', Tuple, { displayAsBlock: false });
