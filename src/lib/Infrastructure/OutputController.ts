@@ -1,5 +1,5 @@
 import EventSource from "./EventSource";
-import { FormController } from "./FormController";
+import { FormInstance } from "./FormController";
 import type IUimfApp from "./UimfApp";
 import type { ComponentMetadata } from "./uimf";
 import uuid from "./uuid";
@@ -7,7 +7,7 @@ import uuid from "./uuid";
 export interface CreateOutputOptions<TMetadata extends ComponentMetadata = ComponentMetadata> {
     metadata: TMetadata;
     data: any;
-    form: FormController | null;
+    form: FormInstance | null;
     app: IUimfApp;
 }
 
@@ -25,7 +25,7 @@ export class OutputController<T, TMetadata extends ComponentMetadata = Component
      * Gets form to which the field belongs. If the field is not rendered in a form
      * the value of this property may be `null`.
      */
-    public readonly form: FormController | null;
+    public readonly form: FormInstance | null;
 
     /**
      * Gets the app to which the field belongs.
@@ -37,7 +37,7 @@ export class OutputController<T, TMetadata extends ComponentMetadata = Component
         this.metadata = options.metadata as TMetadata;
         this.value = options.data;
         this.app = options.app;
-        this.form = options.form != null ? new FormController(options.form?.parentForm ?? null, options.form) : null;
+        this.form = options.form;
     }
 
     public metadata: TMetadata;

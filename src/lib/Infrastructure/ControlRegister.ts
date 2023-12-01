@@ -67,9 +67,6 @@ import * as Boolean from '../Outputs/Boolean.svelte';
 import * as EditableValue from "../Outputs/EditableValue.svelte";
 import * as Flexbox from "../Outputs/Flexbox.svelte";
 
-import UimfForm from '../Form.svelte';
-import { FormController, type FormInstance } from "./FormController";
-
 interface InputFieldControllerConstructor {
     new(options: CreateInputOptions): InputController<any>;
 }
@@ -111,15 +108,6 @@ export interface ComponentConfigurationOptions {
     alwaysHideLabel?: boolean;
     displayAsBlock?: boolean;
     hideIfNull?: boolean;
-}
-
-export interface CreateFormOptions {
-    parentForm: FormController | null;
-    form: FormInstance;
-    onCancel: () => any;
-    onFormLoaded: (arg0: any) => any;
-    onFormFailed: (arg0: any) => any;
-    target: HTMLElement;
 }
 
 export interface CreateInputResult {
@@ -174,24 +162,6 @@ export class ControlRegister {
     public hasOutputComponent(metadataType: string) {
         return this.outputs[metadataType] != null;
     }
-
-    createForm(options: CreateFormOptions) {
-        const controller = new FormController(options.parentForm, options.form);
-
-        return {
-            target: options.target,
-            controller: controller,
-            component: new UimfForm({
-                target: options.target,
-                props: {
-                    controller: controller,
-                    onCancel: options.onCancel,
-                    onFormLoaded: options.onFormLoaded,
-                    onFormFailed: options.onFormFailed
-                }
-            })
-        };
-    };
 
     createInput(options: CreateInputOptions, renderTarget?: HTMLElement): CreateInputResult {
         const registration = this.inputs[options.metadata.Type];

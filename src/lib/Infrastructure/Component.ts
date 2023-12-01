@@ -1,5 +1,4 @@
 import type EventSource from "./EventSource";
-import type { FormController } from "./FormController";
 import type { InputController } from "./InputController";
 import type { OutputController } from "./OutputController";
 
@@ -78,11 +77,5 @@ export class InputComponent extends Component<InputController<any>>{
 export class OutputComponent extends Component<OutputController<any>>{
     constructor(options: Options) {
         super('output:change', options);
-    }
-}
-
-export class FormComponent extends Component<FormController>{
-    constructor(options: Options) {
-        super('form:change', options);
     }
 }

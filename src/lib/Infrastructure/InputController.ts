@@ -2,7 +2,7 @@ import type { ComponentMetadata } from "./uimf";
 import EventSource from './EventSource';
 import uuid from "./uuid";
 import type IUimfApp from "./UimfApp";
-import type { FormController } from "./FormController";
+import type { FormInstance } from "./FormController";
 
 export interface Deferrer {
     resolve: () => void;
@@ -12,7 +12,7 @@ export interface Deferrer {
 export interface CreateInputOptions<TMetadata extends ComponentMetadata = ComponentMetadata> {
     metadata: TMetadata;
     defer: Deferrer | null;
-    form: FormController | null;
+    form: FormInstance | null;
     app: IUimfApp;
 }
 
@@ -38,7 +38,7 @@ export abstract class InputController<T, TMetadata extends ComponentMetadata = C
      * Gets form to which the field belongs. If the field is not rendered in a form
      * the value of this property may be `null`.
      */
-    public readonly form: FormController | null;
+    public readonly form: FormInstance | null;
 
     /**
      * Gets the app to which the field belongs.
