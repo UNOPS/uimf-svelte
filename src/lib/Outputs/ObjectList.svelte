@@ -6,24 +6,23 @@
 
 	export let controller: OutputController<any>;
 
-	export let hideLabel = true;
-
 	class ComponentController {
 		component: any;
 		controller: any;
 	}
 
-	let componentControllers: ComponentController[];
+	let componentControllers: ComponentController[] = [];
 
-	if(controller.value?.Items != null){
-				componentControllers = getComponentControllers(controller.value.Items);
+	if (controller.value?.Items != null) {
+		componentControllers = getComponentControllers(controller.value.Items);
 	}
 
 	let component = new OutputComponent({
-		
 		refresh() {
-			if(controller.value?.Items != null){
+			if (controller.value?.Items != null) {
 				componentControllers = getComponentControllers(controller.value.Items);
+			} else {
+				componentControllers = [];
 			}
 
 			controller.value = controller.value;
@@ -43,14 +42,12 @@
 			items.forEach((item) => {
 				let componentController = {
 					component: nestedComponent,
-					controller: new OutputController<any>(
-						{
-							metadata: controller.metadata,
-							data: null,
-							form: controller.form!,
-							app: controller.app
-						}
-					)
+					controller: new OutputController<any>({
+						metadata: controller.metadata,
+						data: null,
+						form: controller.form!,
+						app: controller.app
+					})
 				};
 
 				componentController.controller.setValue(item);
@@ -62,10 +59,7 @@
 	}
 </script>
 
-{#if controller.value != null}
-	{#if !hideLabel}
-		<div class="label">{controller.metadata.Label} :</div>
-	{/if}
+{#if componentControllers?.length > 0}
 	{#each componentControllers as componentController}
 		<div class={componentController.controller.metadata.CustomProperties.cssClass}>
 			<svelte:component
