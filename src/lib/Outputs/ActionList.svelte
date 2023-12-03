@@ -39,7 +39,7 @@
 {/if}
 
 <style lang="scss">
-	@import '../../scss/styles.variables.scss';
+	@import '../scss/styles.variables.scss';
 
 	:global(td > *) > .action-list {
 		padding: 3px 0px 3px 5px;

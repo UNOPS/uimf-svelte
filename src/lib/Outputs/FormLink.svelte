@@ -206,7 +206,7 @@
 {/if}
 
 <style lang="scss">
-	@import '../../scss/styles.variables.scss';
+	@import '../scss/styles.variables.scss';
 
 	.btn-primary {
 		color: white;

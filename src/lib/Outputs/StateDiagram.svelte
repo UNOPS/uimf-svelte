@@ -301,7 +301,7 @@
 </div>
 
 <style lang="scss">
-	@import '../../scss/styles.variables.scss';
+	@import '../scss/styles.variables.scss';
 
 	.link {
 		fill: none;

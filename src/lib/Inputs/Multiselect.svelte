@@ -60,7 +60,7 @@
 	let selected: Option[] = [];
 
 	let component = new InputComponent({
-		async init() { 
+		async init() {
 			cachedOptions = {};
 			selected = [];
 
@@ -160,7 +160,7 @@
 					case 'request':
 						return controller?.form?.inputs[p.Source]
 							.getValue()
-							.then((value) => (postData[p.Parameter] = value));
+							.then((value: any) => (postData[p.Parameter] = value));
 				}
 			});
 
@@ -221,7 +221,7 @@
 </div>
 
 <style lang="scss">
-	@import '../../scss/styles.variables.scss';
+	@import '../scss/styles.variables.scss';
 
 	.input-container {
 		width: 100%;

@@ -184,7 +184,7 @@
 					case 'request':
 						return controller?.form?.inputs[p.Source]
 							.getValue()
-							.then((value) => (postData[p.Parameter] = value));
+							.then((value: any) => (postData[p.Parameter] = value));
 				}
 			});
 
@@ -251,7 +251,7 @@
 </div>
 
 <style lang="scss">
-	@import '../../scss/styles.variables.scss';
+	@import '../scss/styles.variables.scss';
 
 	.input-container {
 		display: flex;
@@ -310,7 +310,7 @@
 
 		.item-slot {
 			padding: 6px 0;
-			
+
 			&.inactive {
 				opacity: 0.5;
 			}

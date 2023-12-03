@@ -131,7 +131,7 @@
 {/if}
 
 <style lang="scss">
-	@import '../../scss/styles.variables.scss';
+	@import '../scss/styles.variables.scss';
 
 	button.btn.btn-link {
 		margin: 0;

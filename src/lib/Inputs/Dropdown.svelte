@@ -156,7 +156,7 @@
 </select>
 
 <style lang="scss">
-	@import '../../scss/styles.variables.scss';
+	@import '../scss/styles.variables.scss';
 
 	select.form-select {
 		min-height: $app-input-min-height;

@@ -7,8 +7,19 @@ const config = {
     kit: {
         adapter: adapter()
     },
+    onwarn: (warning, handler) => {
+        const { code } = warning;
+        if (code === "css-unused-selector") {
+            return;
+        }
+
+        if (warning.filename.includes("node_modules")) {
+            return;
+        }
+
+        handler(warning);
+    },
     compilerOptions: {
-        generate: 'dom',
         accessors: false,
         legacy: true
     },

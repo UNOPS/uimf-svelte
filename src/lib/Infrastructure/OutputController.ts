@@ -1,5 +1,5 @@
 import EventSource from "./EventSource";
-import { FormInstance } from "./FormController";
+import type { FormInstance } from "./FormController";
 import type IUimfApp from "./UimfApp";
 import type { ComponentMetadata } from "./uimf";
 import uuid from "./uuid";

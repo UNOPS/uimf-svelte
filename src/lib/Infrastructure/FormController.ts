@@ -26,4 +26,6 @@ export interface FormInstance {
     currentUrl: string;
     useUrl: boolean;
     setInputFieldValues(formlink: FormLink): Promise<any>;
+    getInputFieldValues(): Promise<{ [key: string]: any; }>;
+    parentForm: FormInstance | null;
 }

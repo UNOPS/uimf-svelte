@@ -193,7 +193,7 @@
 {/if}
 
 <style lang="scss">
-	@import '../../../../scss/styles.variables.scss';
+	@import '../../../scss/styles.variables.scss';
 
 	nav {
 		--height: 32px;
@@ -250,7 +250,7 @@
 					box-shadow: none;
 				}
 
-				:global(& > i) {
+				& > :global(i) {
 					opacity: 0.5;
 					padding: 0 8px 0 10px;
 				}

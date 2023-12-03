@@ -143,7 +143,7 @@
 {/await}
 
 <style lang="scss">
-	@import '../../scss/styles.variables.scss';
+	@import '../scss/styles.variables.scss';
 
 	.buttons {
 		width: 100%;
