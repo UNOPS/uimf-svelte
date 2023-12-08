@@ -1,7 +1,9 @@
 <script lang="ts" context="module">
 	interface Image {
 		Source: string;
-		MaxWidth: string;
+		MaxWidth: string | null;
+		AltText: string | null;
+		Url: string | null;
 	}
 </script>
 
@@ -22,12 +24,23 @@
 </script>
 
 {#if controller.value != null}
-	<img
-		class="output-image"
-		style="max-width: {controller.value.MaxWidth};"
-		src={controller.value.Source}
-		alt="img"
-	/>
+	{#if controller.value.Url != null}
+		<a href={controller.value.Url}>
+			<img
+				class="output-image"
+				style:max-width={controller.value.MaxWidth}
+				src={controller.value.Source}
+				alt={controller.value.AltText}
+			/></a
+		>
+	{:else}
+		<img
+			class="output-image"
+			style:max-width={controller.value.MaxWidth}
+			src={controller.value.Source}
+			alt={controller.value.AltText}
+		/>
+	{/if}
 {/if}
 
 <style lang="scss">
