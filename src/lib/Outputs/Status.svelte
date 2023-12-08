@@ -45,6 +45,7 @@
 	}
 
 	$status-categories: (
+		'parked': #889fac,
 		'success': $success,
 		'failure': $danger,
 		'ongoing': #a3ceff,
