@@ -241,7 +241,7 @@ defaultControlRegister.registerOutputComponent('formlink', FormLink, { displayAs
 defaultControlRegister.registerOutputComponent('flexbox', Flexbox, { alwaysHideLabel: true });
 defaultControlRegister.registerOutputComponent('grid', Grid, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('icon', Icon, { displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('image', OutputImage);
+defaultControlRegister.registerOutputComponent('image', OutputImage, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('image-overlay', ImageOverlay);
 defaultControlRegister.registerOutputComponent('money', Money, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('number', Number, { displayAsBlock: false });
