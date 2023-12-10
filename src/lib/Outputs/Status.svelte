@@ -77,5 +77,14 @@
 				background-color: $bg;
 			}
 		}
+
+		&.status-tag {
+			font-size: 8px;
+			line-height: 1.2em;
+			padding: 2px 5px;
+			text-align: center;
+			border-radius: 2px;
+			vertical-align: middle;
+		}
 	}
 </style>
