@@ -29,6 +29,7 @@
 	import { tooltip } from '../Components/Tooltip.svelte';
 
 	export let controller: Controller;
+	export let disabled: boolean = false;
 
 	let allowed: boolean;
 	let cssClass: string;
@@ -82,6 +83,7 @@
 		<button
 			type="button"
 			class={cssClass ?? 'btn btn-default'}
+			disabled={disabled}
 			use:tooltip={controller.value.Tooltip}
 			on:click={() => {
 				switch (controller.value.Action) {

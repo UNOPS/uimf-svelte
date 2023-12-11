@@ -82,7 +82,7 @@
 		{#if bulkActionExtension.actions.length > 0 || controller.metadata.CustomProperties?.showExportButton}
 			<div class="btn-bar">
 				{#each bulkActionExtension.actions as action}
-					<FormLink controller={makeFormLinkController(action)} />
+					<FormLink controller={makeFormLinkController(action)} disabled={action.disabled}/>
 				{/each}
 
 				{#if controller.metadata.CustomProperties?.showExportButton && controller.form != null}
