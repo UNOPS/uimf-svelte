@@ -1,6 +1,13 @@
 <script lang="ts" context="module">
 	import { InputController } from '../Infrastructure/InputController';
-	export class Controller extends InputController<boolean> {
+
+	export interface BooleanMetadata extends ComponentMetadata {
+		CustomProperties: {
+			DefaultValue: boolean | null;
+		};
+	}
+
+	export class Controller extends InputController<boolean, BooleanMetadata> {
 		public getValue(): Promise<boolean | null> {
 			var result = this.deserialize(this.value?.toString() ?? null);
 			return Promise.resolve(result);
@@ -33,12 +40,21 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../Infrastructure/Component';
+	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
 
 	export let controller: Controller;
 
 	let component = new InputComponent({
 		init() {
 			controller.ready?.resolve();
+
+			if (
+				controller.value == null &&
+				controller.metadata.CustomProperties?.DefaultValue != null &&
+				controller.form?.hasOriginalInputValues() !== true
+			) {
+				controller.setValue(controller.metadata.CustomProperties.DefaultValue);
+			}
 		},
 		refresh() {
 			controller.value = controller.value;
