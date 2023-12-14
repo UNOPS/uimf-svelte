@@ -5,6 +5,7 @@
 	export interface ViewData {
 		Value: { [key: string]: any };
 	}
+
 	export class Controller extends InputController<ViewData, NestedComponentMetadata> {
 		declare views: Array<{
 			metadata: ComponentMetadata;
@@ -36,22 +37,40 @@
 		public getValue(): Promise<ViewData | null> {
 			let effectiveValue: { [x: string]: any } = {};
 
+			let allRequiredInputsHaveValues = true;
+
 			let promises = this.views.map(function (view) {
 				return view.controller.getValue().then(function (value: any) {
+					if (value == null && view.metadata.Required) {
+						allRequiredInputsHaveValues = false;
+					}
+
 					effectiveValue[view.metadata.Id] = value;
 				});
 			});
 
 			return Promise.all(promises).then(function () {
+				if (allRequiredInputsHaveValues === false) {
+					return null;
+				}
+
 				return { Value: effectiveValue };
 			});
 		}
 
 		public deserialize(value: string | null): Promise<ViewData | null> {
-			return Promise.resolve(JSON.parse(value ?? 'null') as ViewData);
+			const innerValue = value != null && value.trim().length > 0 ? JSON.parse(value) : null;
+
+			const outerValue = innerValue == null ? null : { Value: innerValue };
+
+			return Promise.resolve(outerValue);
 		}
 
 		public serialize(value: ViewData | null): string | null {
+			if (value == null) {
+				return null;
+			}
+
 			return JSON.stringify(value);
 		}
 
@@ -61,7 +80,7 @@
 			this.value = value ?? { Value: {} };
 
 			for (const view of this.views) {
-				promises.push(view.controller.setValue(this.value.Value[view.metadata.Id]));
+				promises.push(view.controller.setValue(this.value.Value[view.metadata.Id] ?? null));
 			}
 
 			return Promise.all(promises).then(() => {
