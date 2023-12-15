@@ -20,6 +20,13 @@
 			var promises = [];
 
 			for (let item of items.filter((t) => !t._deleted)) {
+				// Special case for primitive values which are always used in hidden inputs
+				// usually for bulk edits.
+				if (typeof(item) === 'number' || typeof(item) === 'string') {
+					resultItems.push(item);
+					continue;
+				}
+
 				let dto: IValueItem = {
 					_controllers: {},
 					_deleted: null
