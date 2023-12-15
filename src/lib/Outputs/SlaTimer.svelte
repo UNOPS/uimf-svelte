@@ -46,19 +46,21 @@
 		async refresh() {
 			controller.value = controller.value;
 
-			const expiresOn = toLocalTimezone(new Date(controller.value.ExpiresOn));
-			const startedOn = toLocalTimezone(new Date(controller.value.StartedOn));
+			if (controller.value != null) {
+				const expiresOn = toLocalTimezone(new Date(controller.value.ExpiresOn));
+				const startedOn = toLocalTimezone(new Date(controller.value.StartedOn));
 
-			tooltipContent =
-				`Duration: ${controller.value.AllocatedWorkingDays} working days` +
-				`<br>Started on: ${startedOn.toLocaleDateString('en-GB', datetimeAndTimezoneFormat)}` +
-				`<br>Expires on: ${expiresOn.toLocaleDateString('en-GB', datetimeAndTimezoneFormat)}`;
+				tooltipContent =
+					`Duration: ${controller.value.AllocatedWorkingDays} working days` +
+					`<br>Started on: ${startedOn.toLocaleDateString('en-GB', datetimeAndTimezoneFormat)}` +
+					`<br>Expires on: ${expiresOn.toLocaleDateString('en-GB', datetimeAndTimezoneFormat)}`;
 
-			expiresOnAsString = toLocalTimezone(expiresOn).toLocaleDateString(
-				'en-GB',
-				// Use different format for recent vs "long-time-ago" dates.
-				expiresOn.getFullYear() != new Date().getFullYear() ? dateFormat : datetimeFormat
-			);
+				expiresOnAsString = toLocalTimezone(expiresOn).toLocaleDateString(
+					'en-GB',
+					// Use different format for recent vs "long-time-ago" dates.
+					expiresOn.getFullYear() != new Date().getFullYear() ? dateFormat : datetimeFormat
+				);
+			}
 		}
 	});
 
