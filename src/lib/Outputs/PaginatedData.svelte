@@ -18,6 +18,3 @@
 {#if controller.value?.Results?.length > 0}
 	<Pager {controller} />
 {/if}
-
-<style lang="scss">
-</style>
