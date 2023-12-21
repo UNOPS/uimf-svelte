@@ -19,8 +19,6 @@ export class ExpandableExtension extends TableExtension {
             cell.style += "; cursor: pointer;";
 
             cell.onClick['expand'] = () => {
-                const index = table.cellIndex[cell.metadata.Id];
-
                 // Toggle the value.
                 let show = !this.expanded[cell.metadata.Id];
                 this.expanded[cell.metadata.Id] = show;
@@ -34,9 +32,13 @@ export class ExpandableExtension extends TableExtension {
 
     processBodyRow(table: Table, row: TableRowGroup<TableBodyCell>) {
         this.expandableCells.forEach(cell => {
+            if (row.data[cell.metadata.Id] == null) {
+                return;
+            }
+
             var hiddenCell = new TableBodyCell(
                 table.parent,
-                { Value: row.data[cell.metadata.Id].Hidden },
+                { Value: row.data[cell.metadata.Id]?.Hidden },
                 cell.metadata.CustomProperties.ItemTypes[1]);
 
             hiddenCell.colspan = table.head.main.cells.length;
