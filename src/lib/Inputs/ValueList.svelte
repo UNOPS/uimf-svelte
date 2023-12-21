@@ -38,7 +38,7 @@
 					if (controller instanceof InputController) {
 						promises.push(
 							controller.getValue().then(function (value) {
-								dto[key] = value;
+								dto[key] = value?.Value ?? value;
 							})
 						);
 					}
