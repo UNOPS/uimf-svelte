@@ -1,13 +1,31 @@
-import { defineConfig } from 'vite';
+import { defineConfig, normalizePath } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import babel from '@rollup/plugin-babel';
 import resolve from '@rollup/plugin-node-resolve';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
+import { viteStaticCopy } from 'vite-plugin-static-copy'
+import path from 'node:path';
+
+function getPath(relativePath) {
+	return normalizePath(path.resolve(__dirname, relativePath));
+}
 
 export default defineConfig({
 	plugins: [
 		svelte({
 			configFile: './svelte.config.js'
+		}),
+		viteStaticCopy({
+			targets: [
+				{
+					src: getPath('node_modules/@fortawesome/fontawesome-free/css/(fontawesome|regular|solid|brands).min.css'),
+					dest: getPath('static/fontawesome/css')
+				},
+				{
+					src: getPath('node_modules/@fortawesome/fontawesome-free/webfonts/*'),
+					dest: getPath('static/fontawesome/webfonts')
+				}
+			]
 		})
 	],
 	build:
