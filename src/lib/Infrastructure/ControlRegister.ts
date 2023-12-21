@@ -42,6 +42,7 @@ import * as Status from '../Outputs/Status.svelte';
 import * as NestedObject from "../Outputs/NestedObject.svelte";
 
 //To be deactivated until complete validation
+import * as DynamicInput from "../Inputs/DynamicInput.svelte";
 import * as Typeahead from '../Inputs/Typeahead.svelte'
 import * as Table from '../Outputs/Table.svelte';
 import * as ObjectList from '../Outputs/ObjectList.svelte';
@@ -230,6 +231,7 @@ defaultControlRegister.registerInputComponent('toggled-input', ToggledInput);
 defaultControlRegister.registerInputComponent('typeahead', Typeahead);
 defaultControlRegister.registerInputComponent('multiselect', MultiSelect);
 defaultControlRegister.registerInputComponent('multilevel-picker', MultiLevelPicker);
+defaultControlRegister.registerInputComponent('dynamic-input', DynamicInput, { displayAsBlock: false });
 
 // Outputs.
 defaultControlRegister.registerOutputComponent('action-list', ActionList, { alwaysHideLabel: true });
