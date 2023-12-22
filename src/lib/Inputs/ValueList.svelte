@@ -210,11 +210,13 @@
 			<thead>
 				<tr>
 					{#each columns as column}
-						<th
-							style={getColumnWidth(column.Metadata)}
-							use:tooltip={column.Metadata.CustomProperties?.Documentation}
-							>{column.Metadata.Label}</th
-						>
+						{#if !column.Metadata.Hidden}
+							<th
+								style={getColumnWidth(column.Metadata)}
+								use:tooltip={column.Metadata.CustomProperties?.Documentation}
+								>{column.Metadata.Label}</th
+							>
+						{/if}
 					{/each}
 					{#if metadata.CustomProperties.CanRemove || metadata.CustomProperties.CanAdd}
 						<th />
@@ -225,13 +227,15 @@
 				{#each rows.filter((t) => !t._deleted) as row}
 					<tr>
 						{#each columns as column}
-							<td class={column.Metadata.CustomProperties?.ColumnCssClass}>
-								{#if column.IsInput}
-									<Input controller={row._controllers[column.Metadata.Id]} hideLabel={true} />
-								{:else}
-									<Output controller={row._controllers[column.Metadata.Id]} hideLabel={true} />
-								{/if}
-							</td>
+							{#if !column.Metadata.Hidden}
+								<td class={column.Metadata.CustomProperties?.ColumnCssClass}>
+									{#if column.IsInput}
+										<Input controller={row._controllers[column.Metadata.Id]} hideLabel={true} />
+									{:else}
+										<Output controller={row._controllers[column.Metadata.Id]} hideLabel={true} />
+									{/if}
+								</td>
+							{/if}
 						{/each}
 						{#if metadata.CustomProperties.CanRemove == true}
 							<td class="col-action">
