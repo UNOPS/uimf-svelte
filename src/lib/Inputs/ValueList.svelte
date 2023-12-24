@@ -22,19 +22,15 @@
 			for (let item of items.filter((t) => !t._deleted)) {
 				// Special case for primitive values which are always used in hidden inputs
 				// usually for bulk edits.
-				if (typeof(item) === 'number' || typeof(item) === 'string') {
+				if (typeof item === 'number' || typeof item === 'string') {
 					resultItems.push(item);
 					continue;
 				}
 
-				let dto: IValueItem = {
-					_controllers: {},
-					_deleted: null
-				};
-
+				const dto: IValueItem = {};
 				resultItems.push(dto);
 
-				for (let [key, controller] of Object.entries(item._controllers)) {
+				for (let [key, controller] of Object.entries(item._controllers ?? {})) {
 					if (controller instanceof InputController) {
 						promises.push(
 							controller.getValue().then(function (value) {
@@ -45,9 +41,7 @@
 				}
 			}
 
-			await Promise.all(promises);
-
-			return Promise.resolve({ Items: resultItems });
+			return Promise.all(promises).then(() => ({ Items: resultItems }));
 		}
 
 		protected setValueInternal(value: IValueList | null): Promise<void> {
@@ -61,8 +55,8 @@
 
 	interface IValueItem {
 		[other: string]: unknown;
-		_controllers: Record<string, InputController<any> | OutputController<any>>;
-		_deleted: boolean | null;
+		_controllers?: Record<string, InputController<any> | OutputController<any>>;
+		_deleted?: boolean | null;
 	}
 
 	interface Metadata extends ComponentMetadata {
@@ -100,11 +94,13 @@
 
 			hasDropdowns = false;
 
-			columns = controller.metadata.CustomProperties.Fields.map((t) => {
-				hasDropdowns ||= ['typeahead', 'multiselect', 'dropdown'].includes(t.Metadata.Type);
+			columns = controller.metadata.CustomProperties.Fields.filter((t) => !t.Metadata.Hidden)
+				.map((t) => {
+					hasDropdowns ||= ['typeahead', 'multiselect', 'dropdown'].includes(t.Metadata.Type);
 
-				return t;
-			}).sort((a, b) => a.Metadata.OrderIndex - b.Metadata.OrderIndex);
+					return t;
+				})
+				.sort((a, b) => a.Metadata.OrderIndex - b.Metadata.OrderIndex);
 
 			controller.ready?.resolve();
 		},
@@ -144,13 +140,13 @@
 	beforeUpdate(async () => await component.setup(controller));
 
 	async function addNewRow(e: Event): Promise<void> {
-		var newRow: IValueItem = {
+		const newRow: IValueItem = {
 			_controllers: {},
 			_deleted: false
 		};
 
 		for (let column of columns) {
-			newRow._controllers[column.Metadata.Id] = await getController(column, newRow);
+			newRow._controllers![column.Metadata.Id] = await getController(column, newRow);
 		}
 
 		rows.push(newRow);
@@ -202,6 +198,17 @@
 				return 'min-width: 200px';
 		}
 	}
+
+	function getControllerOrException<T extends InputController<any> | OutputController<any>>(
+		row: IValueItem,
+		column: IField
+	): T {
+		if (row._controllers == null || row._controllers[column.Metadata.Id] == null) {
+			throw `Cannot find controller for column '${column.Metadata.Id}'.`;
+		}
+
+		return row._controllers[column.Metadata.Id] as T;
+	}
 </script>
 
 {#if rows != null && metadata != null}
@@ -230,9 +237,9 @@
 							{#if !column.Metadata.Hidden}
 								<td class={column.Metadata.CustomProperties?.ColumnCssClass}>
 									{#if column.IsInput}
-										<Input controller={row._controllers[column.Metadata.Id]} hideLabel={true} />
+										<Input controller={getControllerOrException(row, column)} hideLabel={true} />
 									{:else}
-										<Output controller={row._controllers[column.Metadata.Id]} hideLabel={true} />
+										<Output controller={getControllerOrException(row, column)} hideLabel={true} />
 									{/if}
 								</td>
 							{/if}
