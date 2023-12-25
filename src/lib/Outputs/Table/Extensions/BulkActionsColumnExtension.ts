@@ -4,8 +4,14 @@ import { TableExtension } from "../TableExtension";
 import type { TableHeadCell } from "../TableHeadCell";
 import type { TableRowGroup } from "../TableRowGroup";
 import { FormLink as FormLinkMetadata } from "../../../Infrastructure/uimf";
+import type { Row, IValueList } from "../../../Inputs/ValueList.svelte";
 
 export class BulkAction extends FormLinkMetadata {
+    declare public InputFieldValues: {
+        [key: string]: any;
+        ItemIds: IValueList;
+    };
+
     public refreshLabel() {
         let selectedCount = this.InputFieldValues.ItemIds.Items.length;
 
@@ -16,7 +22,7 @@ export class BulkAction extends FormLinkMetadata {
         }
     }
 
-    public addItem(itemId: any) {
+    public addItem(itemId: Row) {
         this.InputFieldValues.ItemIds.Items.push(itemId);
     }
 

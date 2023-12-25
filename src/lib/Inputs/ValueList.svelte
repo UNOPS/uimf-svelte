@@ -4,6 +4,8 @@
 	import type { ComponentMetadata } from '../Infrastructure/uimf';
 
 	export class Controller extends InputController<IValueList, Metadata> {
+		public rows: Row[] = [];
+
 		public deserialize(value: string): Promise<IValueList> {
 			var result = JSON.parse(value);
 			return Promise.resolve(result);
@@ -14,49 +16,118 @@
 		}
 
 		public async getValue(): Promise<IValueList> {
-			var items = this.value?.Items || [];
-			var resultItems: IValueItem[] = [];
+			const promises = [];
+			const rowDatas: Record<string, any>[] = [];
 
-			var promises = [];
-
-			for (let item of items.filter((t) => !t._deleted)) {
-				// Special case for primitive values which are always used in hidden inputs
-				// usually for bulk edits.
-				if (typeof item === 'number' || typeof item === 'string') {
-					resultItems.push(item);
+			for (const row of this.rows) {
+				if (row._deleted) {
 					continue;
 				}
 
-				const dto: IValueItem = {};
-				resultItems.push(dto);
+				const rowData: Record<string, any> = {};
+				rowDatas.push(rowData);
 
-				for (let [key, controller] of Object.entries(item._controllers ?? {})) {
-					if (controller instanceof InputController) {
-						promises.push(
-							controller.getValue().then(function (value) {
-								dto[key] = value?.Value ?? value;
-							})
-						);
+				for (const column of this.metadata.CustomProperties.Fields) {
+					var cell = row._controllers[column.Metadata.Id];
+
+					if (cell instanceof InputController) {
+						let promise = cell.getValue().then((t) => {
+							rowData[column.Metadata.Id] = t;
+						});
+
+						promises.push(promise);
 					}
 				}
 			}
 
-			return Promise.all(promises).then(() => ({ Items: resultItems }));
+			await Promise.all(promises);
+
+			var items = this.metadata.CustomProperties.IsPrimitive
+				? rowDatas.map((t) => t[this.metadata.CustomProperties.Fields[0].Metadata.Id])
+				: rowDatas;
+
+			return Promise.resolve({ Items: items });
 		}
 
-		protected setValueInternal(value: IValueList | null): Promise<void> {
-			return Promise.resolve();
+		protected async setValueInternal(value: IValueList | null): Promise<void> {
+			// Make sure that `field.value.Items` has a non-null value.
+			// This is important to ensure that the newly-added items
+			// can be retrieved (and POSTed).
+			this.value = {
+				Items: value?.Items ?? []
+			};
+
+			this.rows = [];
+
+			for (let rowIndex = 0; rowIndex < this.value.Items.length; ++rowIndex) {
+				const row: Row = {
+					index: rowIndex,
+					_controllers: {},
+					_deleted: false
+				};
+
+				this.rows[rowIndex] = row;
+
+				for (let column of this.metadata.CustomProperties.Fields) {
+					row._controllers[column.Metadata.Id] = await this.getNestedController(column, row);
+
+					if (column.IsInput) {
+						const inputController = row._controllers[column.Metadata.Id] as InputController<any>;
+
+						const innerValue = this.metadata.CustomProperties.IsPrimitive
+							? this.value.Items[rowIndex]
+							: this.value.Items[rowIndex][column.Metadata.Id];
+
+						await inputController.setValue(innerValue);
+					}
+				}
+			}
+		}
+
+		async getNestedController(
+			column: IField,
+			row: Row
+		): Promise<InputController<any> | OutputController<any>> {
+			if (column.IsInput) {
+				var inputController = controlRegister.createInput({
+					app: this.app,
+					form: this.form,
+					metadata: column.Metadata,
+					defer: null
+				}).controller;
+
+				// When the cell value changes, the overall `value-list` should
+				// also trigger the `input:change` event.
+				inputController.on('input:change', async () => {
+					await inputController.getValue().then((value) => {
+						if (this.metadata.CustomProperties.IsPrimitive) {
+							this.value!.Items[row.index] = value;
+						} else {
+							this.value!.Items[row.index][column.Metadata.Id] = value;
+						}
+					});
+				});
+
+				return inputController;
+			} else {
+				return controlRegister.createOutput({
+					app: this.app,
+					form: this.form,
+					metadata: column.Metadata,
+					data: this.value!.Items[row.index][column.Metadata.Id]
+				}).controller;
+			}
 		}
 	}
 
-	interface IValueList {
-		Items: IValueItem[];
+	export interface IValueList {
+		Items: any[] | number[] | string[];
 	}
 
-	interface IValueItem {
-		[other: string]: unknown;
-		_controllers?: Record<string, InputController<any> | OutputController<any>>;
-		_deleted?: boolean | null;
+	export interface Row {
+		index: number;
+		_controllers: Record<string, InputController<any> | OutputController<any>>;
+		_deleted: boolean | null;
 	}
 
 	interface Metadata extends ComponentMetadata {
@@ -64,6 +135,13 @@
 			Fields: IField[];
 			CanRemove?: boolean;
 			CanAdd?: boolean;
+
+			/**
+			 * If true, the value-list is an array of primitives (e.g. numbers or strings).
+			 * If false, the value-list is an array of objects where each object has a
+			 * collection of inputs/outputs.
+			 */
+			IsPrimitive: boolean;
 		};
 	}
 
@@ -83,7 +161,7 @@
 
 	export let controller: Controller;
 
-	let rows: IValueItem[] = [];
+	let rows: Row[] = [];
 	let columns: IField[] = [];
 	let metadata: Metadata | null = null;
 	let hasDropdowns: boolean = false;
@@ -94,59 +172,33 @@
 
 			hasDropdowns = false;
 
-			columns = controller.metadata.CustomProperties.Fields.filter((t) => !t.Metadata.Hidden)
-				.map((t) => {
-					hasDropdowns ||= ['typeahead', 'multiselect', 'dropdown'].includes(t.Metadata.Type);
+			columns = controller.metadata.CustomProperties.Fields.map((t) => {
+				hasDropdowns ||= ['typeahead', 'multiselect', 'dropdown'].includes(t.Metadata.Type);
 
-					return t;
-				})
-				.sort((a, b) => a.Metadata.OrderIndex - b.Metadata.OrderIndex);
+				return t;
+			}).sort((a, b) => a.Metadata.OrderIndex - b.Metadata.OrderIndex);
 
 			controller.ready?.resolve();
 		},
 		async refresh() {
-			// Make sure that `field.value.Items` has a non-null value.
-			// This is important to ensure that the newly-added items
-			// can be retrieved (and POSTed).
-			controller.value = {
-				Items: controller.value?.Items ?? []
-			};
-
-			for (let row of controller.value.Items) {
-				row._controllers = row._controllers || {};
-
-				for (let column of columns) {
-					if (row._controllers[column.Metadata.Id] == null) {
-						row._controllers[column.Metadata.Id] = await getController(column, row);
-					}
-
-					if (column.IsInput) {
-						const inputController = row._controllers[column.Metadata.Id] as InputController<any>;
-						const currentValue = inputController.getValue();
-
-						// To avoid unnecessary re-rendering and DOM events, we only update
-						// the value if it has actually changed.
-						if (row[column.Metadata.Id] != currentValue) {
-							await inputController.setValue(row[column.Metadata.Id]);
-						}
-					}
-				}
-			}
-
-			rows = controller.value?.Items || [];
+			rows = controller.rows || [];
 		}
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
 
 	async function addNewRow(e: Event): Promise<void> {
-		const newRow: IValueItem = {
+		const newRow: Row = {
+			index: rows.length,
 			_controllers: {},
 			_deleted: false
 		};
 
 		for (let column of columns) {
-			newRow._controllers![column.Metadata.Id] = await getController(column, newRow);
+			newRow._controllers![column.Metadata.Id] = await controller.getNestedController(
+				column,
+				newRow
+			);
 		}
 
 		rows.push(newRow);
@@ -163,35 +215,6 @@
 		input?.focus();
 	}
 
-	async function getController(
-		column: IField,
-		row: IValueItem
-	): Promise<InputController<any> | OutputController<any>> {
-		if (column.IsInput) {
-			var inputController = controlRegister.createInput({
-				app: controller.app,
-				form: controller.form,
-				metadata: column.Metadata,
-				defer: null
-			}).controller;
-
-			// When the cell value changes, the overall `value-list` should
-			// also trigger the `input:change` event.
-			inputController.on('input:change', async () => {
-				row[column.Metadata.Id] = inputController.getValue();
-			});
-
-			return inputController;
-		} else {
-			return controlRegister.createOutput({
-				app: controller.app,
-				form: controller.form,
-				metadata: column.Metadata,
-				data: row[column.Metadata.Id]
-			}).controller;
-		}
-	}
-
 	function getColumnWidth(item: ComponentMetadata) {
 		switch (item.Type) {
 			default:
@@ -200,7 +223,7 @@
 	}
 
 	function getControllerOrException<T extends InputController<any> | OutputController<any>>(
-		row: IValueItem,
+		row: Row,
 		column: IField
 	): T {
 		if (row._controllers == null || row._controllers[column.Metadata.Id] == null) {
