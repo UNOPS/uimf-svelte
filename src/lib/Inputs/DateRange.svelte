@@ -28,6 +28,9 @@
 			if (value != null) {
 				this.minValueAsString = this.serializeDate(value.Min);
 				this.maxValueAsString = this.serializeDate(value.Max);
+			} else {
+				this.minValueAsString = null;
+				this.maxValueAsString = null;
 			}
 
 			this.valuesAsString = this.serialize(value);
