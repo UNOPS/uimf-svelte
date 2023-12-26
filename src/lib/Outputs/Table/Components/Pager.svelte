@@ -153,7 +153,7 @@
 			<select
 				class="form-select page-size"
 				bind:value={pager.paginatorValue.PageSize}
-				on:blur={async () => {
+				on:change={async () => {
 					var values = pager.getInputFieldValuesForPage(1);
 
 					if (controller.form == null) {
