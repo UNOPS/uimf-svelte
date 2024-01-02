@@ -3,15 +3,27 @@
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../Infrastructure/Component';
 
-	export class Controller extends InputController<string> {
-		public getValue(): Promise<string | null> {
-			return Promise.resolve(this.value != null && this.value.length > 0 ? this.value : null);
+	interface IJsonObject {
+		Value: any;
+	}
+
+	export class Controller extends InputController<IJsonObject> {
+		public getValue(): Promise<IJsonObject | null> {
+			var result = this.value != null && this.value.Value != null ? this.value : null;
+
+			return Promise.resolve(result);
 		}
-		public deserialize(value: string | null): Promise<string | null> {
-			return Promise.resolve(value);
+
+		public deserialize(value: string | null): Promise<IJsonObject | null> {
+			if (value == null) {
+				return Promise.resolve(null);
+			}
+
+			return Promise.resolve(JSON.parse(value));
 		}
-		public serialize(value: string | null): string | null {
-			return value;
+
+		public serialize(value: IJsonObject | null): string | null {
+			return value == null || value.Value == null ? null : JSON.stringify(value.Value);
 		}
 	}
 </script>
