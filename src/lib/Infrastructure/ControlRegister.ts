@@ -20,6 +20,7 @@ import * as Consent from '../Inputs/Consent.svelte';
 import * as Paginator from '../Inputs/Paginator.svelte';
 import * as ValueList from '../Inputs/ValueList.svelte';
 import * as ToggledInput from '../Inputs/ToggledInput.svelte';
+import * as JsonObject from '../Inputs/JsonObject.svelte';
 
 // Outputs.
 import * as StateDiagram from "../Outputs/StateDiagram.svelte";
@@ -232,6 +233,7 @@ defaultControlRegister.registerInputComponent('typeahead', Typeahead);
 defaultControlRegister.registerInputComponent('multiselect', MultiSelect);
 defaultControlRegister.registerInputComponent('multilevel-picker', MultiLevelPicker);
 defaultControlRegister.registerInputComponent('dynamic-input', DynamicInput, { displayAsBlock: false });
+defaultControlRegister.registerInputComponent('json-object', JsonObject);
 
 // Outputs.
 defaultControlRegister.registerOutputComponent('action-list', ActionList, { alwaysHideLabel: true });

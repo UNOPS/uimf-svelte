@@ -9,21 +9,18 @@
 
 	export class Controller extends InputController<IJsonObject> {
 		public getValue(): Promise<IJsonObject | null> {
-			var result = this.value != null && this.value.Value != null ? this.value : null;
-
-			return Promise.resolve(result);
+			return Promise.resolve(this.value);
 		}
 
 		public deserialize(value: string | null): Promise<IJsonObject | null> {
-			if (value == null) {
-				return Promise.resolve(null);
-			}
-
-			return Promise.resolve(JSON.parse(value));
+			// Deserialize the inner value and then wrap it.
+			const innerValue = value == null ? null : JSON.parse(value);
+			return Promise.resolve({ Value: innerValue });
 		}
 
 		public serialize(value: IJsonObject | null): string | null {
-			return value == null || value.Value == null ? null : JSON.stringify(value.Value);
+			// Serialize the inner value.
+			return value?.Value != null ? JSON.stringify(value.Value) : null;
 		}
 	}
 </script>
