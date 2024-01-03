@@ -52,7 +52,7 @@
 			});
 		}
 
-		constructor(options: CreateInputOptions) {
+		constructor(options: CreateInputOptions<ConditionalMetadata>) {
 			super(options);
 
 			this.views = [];
