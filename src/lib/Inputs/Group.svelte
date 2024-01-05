@@ -29,33 +29,86 @@
 	beforeUpdate(async () => await component.setup(controller));
 </script>
 
+<script lang="ts">
+	let groupNames: string[] = [];
+	let data = {
+		value: null as any,
+		init: function (value: { Items: {} } | null) {
+			groupNames = value != null ? Object.keys(value.Items) : [];
+			this.value = value;
+		},
+		getValue: function () {
+			return this.value;
+		},
+		move: function (
+			item: any,
+			currentGroupIndex: string | number,
+			targetGroupIndex: string | number
+		) {
+			let currentGroup = this.value.Items[groupNames[currentGroupIndex]];
+			let targetGroup = this.value.Items[groupNames[targetGroupIndex]];
+			let index = currentGroup.indexOf(item);
+			if (index !== -1) {
+				currentGroup.splice(index, 1);
+			}
+			targetGroup.push(item);
+		},
+		moveAll: function (currentGroupIndex, targetGroupIndex) {
+			let currentGroup = this.value.Items[groupNames[currentGroupIndex]];
+			let targetGroup = this.value.Items[groupNames[targetGroupIndex]];
+			this.value.Items[groupNames[currentGroupIndex]] = [];
+			currentGroup.forEach(function (i) {
+				targetGroup.push(i);
+			});
+		},
+		isLastGroup: function (groupIndex: number) {
+			return groupIndex === groupNames.length - 1;
+		}
+	};
+</script>
 
 <div class="form-input-groups">
-    {#each Object.entries(data.value.Items) as [group, items], index (groupIndex)}
-        <div class="{last-group: isLastGroup(groupIndex), first-group: groupIndex === 0}" bind:groupIndex>
-            <div>
-                <span class="fa fa-arrow-left" on:click={() => moveAll(groupIndex, groupIndex - 1)}></span>
-                <span class="group-name">{group}</span>
-                <span class="fa fa-arrow-right" on:click={() => moveAll(groupIndex, groupIndex + 1)}></span>
-            </div>
-            <ul>
-                {#each items as i (i.Label)}
-                    <li>
-                        <span class="fa fa-arrow-left" on:click={() => move(i, groupIndex, groupIndex - 1)}></span>
-                        <span class="item-label">
-                            {i.Label}
-                            {#if i.Link != null}
-                                <a href={i.Link.Url} class="fa fa-external-link-alt fa-1x"></a>
-                            {/if}
-                        </span>
-                        <span class="fa fa-arrow-right" on:click={() => move(i, groupIndex, groupIndex + 1)}></span>
-                    </li>
-                {/each}
-            </ul>
-        </div>
-    {/each}
-</div>
+	<!-- svelte-ignore a11y-interactive-supports-focus -->
+	<!-- svelte-ignore a11y-no-static-element-interactions -->
+	<!-- svelte-ignore a11y-click-events-have-key-events -->
+	<!-- svelte-ignore a11y-missing-content -->
 
+	{#each Object.entries(data.value.Items) as [group, items], groupIndex}
+		<div class:last-group={data.isLastGroup(groupIndex)} class:first-group={groupIndex === 0}>
+			<div>
+				<span
+					class="fa fa-arrow-left"
+					on:click={() => data.moveAll(groupIndex, groupIndex - 1)}
+					on:keydown={() => data.moveAll(groupIndex, groupIndex - 1)}
+					role="button"
+				/>
+				<span class="group-name">{group}</span>
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<span class="fa fa-arrow-right" on:click={() => data.moveAll(groupIndex, groupIndex + 1)} />
+			</div>
+			<ul>
+				{#each items as i}
+					<li>
+						<span
+							class="fa fa-arrow-left"
+							on:click={() => data.move(i, groupIndex, groupIndex - 1)}
+						/>
+						<span class="item-label">
+							{i.Label}
+							{#if i.Link != null}
+								<a href={i.Link.Url} class="fa fa-external-link-alt fa-1x" />
+							{/if}
+						</span>
+						<span
+							class="fa fa-arrow-right"
+							on:click={() => data.move(i, groupIndex, groupIndex + 1)}
+						/>
+					</li>
+				{/each}
+			</ul>
+		</div>
+	{/each}
+</div>
 
 <style lang="scss">
 	.form-input-groups {
