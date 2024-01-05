@@ -21,7 +21,7 @@ import * as Paginator from '../Inputs/Paginator.svelte';
 import * as ValueList from '../Inputs/ValueList.svelte';
 import * as ToggledInput from '../Inputs/ToggledInput.svelte';
 import * as JsonObject from '../Inputs/JsonObject.svelte';
-import * as Groups from '../Inputs/Group.svelte';
+import * as Group from '../Inputs/Group.svelte';
 
 // Outputs.
 import * as StateDiagram from '../Outputs/StateDiagram.svelte';
@@ -251,7 +251,7 @@ defaultControlRegister.registerInputComponent('dynamic-input', DynamicInput, {
 	displayAsBlock: false
 });
 defaultControlRegister.registerInputComponent('json-object', JsonObject);
-defaultControlRegister.registerInputComponent('groups', Groups);
+defaultControlRegister.registerInputComponent('groups', Group);
 
 // Outputs.
 defaultControlRegister.registerOutputComponent('action-list', ActionList, {
