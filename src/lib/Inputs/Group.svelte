@@ -49,12 +49,11 @@
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
-	let runOnce = true;
 </script>
 
 {#if controller.value != null}
 	<div class="form-input-groups">
-		{#each Object.entries(controller.value.Items) as item}
+		{#each Object.entries(controller.value.Items) as item, index}
 			<div>
 				<span>
 					<h2>{item[0]}</h2>
@@ -65,12 +64,11 @@
 					{/each}
 				</ul>
 			</div>
-			{#if runOnce}
-				<span class="fa-solid fa-circle-arrow-left" />
-				<span class="fa-solid fa-circle-arrow-right" />
-				<script>
-					$: runOnce = false;
-				</script>
+
+			{#if index === 0}
+				<i class="fa-solid fa-arrow-left" />
+				<i class="fa-solid fa-arrow-right" />
+				<i class="fa fa-external-link-alt fa-1x" />
 			{/if}
 		{/each}
 	</div>
