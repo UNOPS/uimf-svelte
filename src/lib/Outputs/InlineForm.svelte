@@ -18,7 +18,8 @@
 			if (controller.value != null) {
 				var el = controller.app.renderForm({
 					data: controller.value,
-					metadata: controller.metadata
+					metadata: controller.metadata,
+					form: controller.form
 				});
 
 				container.appendChild(el);

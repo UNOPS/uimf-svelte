@@ -49,7 +49,7 @@ interface ColorOptions {
 }
 
 export default interface IUimfApp {
-    renderForm(options: { data: any, metadata: ComponentMetadata }): Element;
+    renderForm(options: { data: any, metadata: ComponentMetadata, form: FormInstance | null }): Element;
     runResponseHandler(response: FormResponse): Promise<void>;
     runClientFunctions(response: FormResponse): Promise<void>;
     handleCustomFormLinkAction(value: FormLinkData): void;
