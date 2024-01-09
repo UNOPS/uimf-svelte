@@ -69,7 +69,7 @@
 				this.rows[rowIndex] = row;
 
 				for (let column of this.metadata.CustomProperties.Fields) {
-					row._controllers[column.Metadata.Id] = await this.getNestedController(column, row);
+					row._controllers[column.Metadata.Id] = this.getNestedController(column, row);
 
 					if (column.IsInput) {
 						const inputController = row._controllers[column.Metadata.Id] as InputController<any>;
@@ -84,10 +84,7 @@
 			}
 		}
 
-		async getNestedController(
-			column: IField,
-			row: Row
-		): Promise<InputController<any> | OutputController<any>> {
+		getNestedController(column: IField, row: Row): InputController<any> | OutputController<any> {
 			if (column.IsInput) {
 				var inputController = controlRegister.createInput({
 					app: this.app,
@@ -196,10 +193,7 @@
 		};
 
 		for (let column of columns) {
-			newRow._controllers![column.Metadata.Id] = await controller.getNestedController(
-				column,
-				newRow
-			);
+			newRow._controllers![column.Metadata.Id] = controller.getNestedController(column, newRow);
 		}
 
 		rows.push(newRow);
