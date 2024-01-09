@@ -21,6 +21,7 @@ import * as Paginator from '../Inputs/Paginator.svelte';
 import * as ValueList from '../Inputs/ValueList.svelte';
 import * as ToggledInput from '../Inputs/ToggledInput.svelte';
 import * as JsonObject from '../Inputs/JsonObject.svelte';
+import * as MoneyInput from '../Inputs/Money.svelte';
 import * as Group from '../Inputs/Group.svelte';
 
 // Outputs.
@@ -71,7 +72,7 @@ import * as EditableValue from '../Outputs/EditableValue.svelte';
 import * as Flexbox from '../Outputs/Flexbox.svelte';
 
 interface InputFieldControllerConstructor {
-	new (options: CreateInputOptions): InputController<any>;
+	new(options: CreateInputOptions): InputController<any>;
 }
 
 interface InputRegistration {
@@ -189,11 +190,11 @@ export class ControlRegister {
 			component:
 				renderTarget != null
 					? new registration.component({
-							target: renderTarget,
-							props: {
-								controller: controller
-							}
-					  })
+						target: renderTarget,
+						props: {
+							controller: controller
+						}
+					})
 					: registration.component
 		};
 	}
@@ -213,11 +214,11 @@ export class ControlRegister {
 			component:
 				renderTarget != null
 					? new registration.component({
-							target: renderTarget,
-							props: {
-								controller: controller
-							}
-					  })
+						target: renderTarget,
+						props: {
+							controller: controller
+						}
+					})
 					: registration.component
 		};
 	}
@@ -251,6 +252,7 @@ defaultControlRegister.registerInputComponent('dynamic-input', DynamicInput, {
 	displayAsBlock: false
 });
 defaultControlRegister.registerInputComponent('json-object', JsonObject);
+defaultControlRegister.registerInputComponent('money', MoneyInput);
 defaultControlRegister.registerInputComponent('groups', Group);
 
 // Outputs.
