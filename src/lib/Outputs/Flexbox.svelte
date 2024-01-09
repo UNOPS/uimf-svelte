@@ -12,6 +12,7 @@
 			Wrap?: string;
 			CssClass?: string;
 			ItemPadding?: string;
+			JustifyContent?: string;
 		};
 	}
 
@@ -77,6 +78,7 @@
 		class={controller.metadata.CustomProperties.CssClass}
 		style:gap={controller.metadata.CustomProperties.Gap}
 		style:flex-wrap={controller.metadata.CustomProperties.Wrap}
+		style:justify-content={controller.metadata.CustomProperties.JustifyContent}
 	>
 		{#each fields as field}
 			<div
