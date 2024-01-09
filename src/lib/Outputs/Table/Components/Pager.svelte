@@ -258,6 +258,8 @@
 
 			& > li.active > .page-link {
 				border-color: var(--app-border-color);
+				background: #54ABD9;
+				color: white;
 			}
 		}
 	}
