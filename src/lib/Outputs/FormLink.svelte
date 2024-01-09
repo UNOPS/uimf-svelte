@@ -238,6 +238,7 @@
 	.btn {
 		border-radius: 0;
 		font-size: 1em;
+		text-decoration: none;
 
 		&:hover {
 			border-color: $app-btn-border-color;
