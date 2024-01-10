@@ -1,11 +1,47 @@
 <script context="module" lang="ts">
 	import { InputController } from '../Infrastructure/InputController';
 
-	export class Controller extends InputController<TypeaheadValue> {
+	interface TypeaheadItem extends TypeaheadValue {
+		Label: string;
+	}
+
+	interface TypeaheadMetadata extends ComponentMetadata {
+		DefaultValue: any;
+		CustomProperties: {
+			Source: string;
+			Parameters: Array<{
+				SourceType: string;
+				Parameter: string;
+				Source: string;
+			}>;
+			Items: Array<TypeaheadItem>;
+		};
+	}
+
+	export class Controller extends InputController<TypeaheadValue, TypeaheadMetadata> {
 		public getValue(): Promise<TypeaheadValue | null> {
 			var result = this.value?.Value != null ? this.value : null;
 
 			return Promise.resolve(result);
+		}
+
+		setValueInternal(value: TypeaheadValue | null): Promise<void> {
+			if (value == null || value.Value == '' || value.Value == null) {
+				var valueName =
+					this.metadata.DefaultValue != null && this.form?.hasOriginalInputValues() !== true
+						? this.metadata.DefaultValue
+						: null;
+
+				var index;
+
+				if (valueName !== null) {
+					index = this.app.getDefaultValue(valueName);
+				}
+
+				this.value = { Value: index };
+			}
+
+			return Promise.resolve();
 		}
 
 		public deserialize(value: string | null): Promise<TypeaheadValue | null> {
@@ -33,6 +69,7 @@
 	import Select from 'svelte-select';
 	import { InputComponent } from '../Infrastructure/Component';
 	import { beforeUpdate } from 'svelte';
+	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
 
 	interface Option extends TypeaheadValue {
 		Label: string;
@@ -148,7 +185,7 @@
 					case 'request':
 						return controller?.form?.inputs[p.Source]
 							.getValue()
-							.then((value) => (postData[p.Parameter] = value));
+							.then((value: any) => (postData[p.Parameter] = value));
 				}
 			});
 

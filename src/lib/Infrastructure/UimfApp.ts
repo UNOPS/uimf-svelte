@@ -68,4 +68,5 @@ export default interface IUimfApp {
     getForm(formId: string): Promise<FormInstance>;
     hasPermission(permission: string): boolean;
     colorFromString(str: string, options: ColorOptions): string;
+    getDefaultValue(valueName: string): any;
 }
