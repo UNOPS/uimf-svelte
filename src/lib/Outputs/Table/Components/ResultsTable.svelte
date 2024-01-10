@@ -8,8 +8,7 @@
 	import { ActionListColumnExtension } from '../Extensions/ActionListColumnExtension';
 	import { BulkAction, BulkActionsColumnExtension } from '../Extensions/BulkActionsColumnExtension';
 	import { RowExtension } from '../Extensions/RowExtension';
-	import type { Table } from '../Table';
-	import { TableBuilder } from '../TableBuilder';
+	import { Table } from '../Table';
 	import { ColumnExtension } from '../Extensions/ColumnExtension';
 	import { ExpandableExtension } from '../Extensions/ExpandableExtension';
 	import FormLink from '../../../Outputs/FormLink.svelte';
@@ -45,9 +44,23 @@
 				bulkActionExtension
 			];
 
-			const builder = new TableBuilder(extensions);
-			const rows = controller.value?.length != null ? controller.value : controller.value.Results;
-			table = builder.build(controller, rows, controller.metadata.CustomProperties?.Columns);
+			table = new Table({
+				parent: controller,
+				extensions: extensions,
+				columns: (controller.metadata.CustomProperties?.Columns ?? []).map(
+					(t: ComponentMetadata) => {
+						return {
+							Metadata: t,
+							IsInput: false
+						};
+					}
+				)
+			});
+
+			await table.setData(
+				controller.value?.length != null ? controller.value : controller.value?.Results ?? []
+			);
+
 			extraColspan = bulkActionExtension.actions.length > 0 ? 1 : 0;
 			type = controller.metadata.Type;
 
@@ -82,7 +95,7 @@
 		{#if bulkActionExtension.actions.length > 0 || controller.metadata.CustomProperties?.showExportButton}
 			<div class="btn-bar">
 				{#each bulkActionExtension.actions as action}
-					<FormLink controller={makeFormLinkController(action)} disabled={action.disabled}/>
+					<FormLink controller={makeFormLinkController(action)} disabled={action.disabled} />
 				{/each}
 
 				{#if controller.metadata.CustomProperties?.showExportButton && controller.form != null}

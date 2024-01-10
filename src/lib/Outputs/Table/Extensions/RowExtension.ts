@@ -27,7 +27,8 @@ export class RowExtension extends TableExtension {
 
     processTable(table: Table): void {
         if (!this.firstRowProcessed && this.groupCount > 1 && this.firstRow != null && this.groupByColumn != null) {
-            var groupCell = new TableBodyCell(table.parent, this.firstRow.data, this.groupByColumn);
+            const field = table.field(this.groupByColumn.Id);
+            const groupCell = new TableBodyCell(table.parent, this.firstRow.data, field);
 
             groupCell.colspan = table.head.main.cells.length;
 
@@ -44,7 +45,9 @@ export class RowExtension extends TableExtension {
         var currentGroup = JSON.stringify(row.data[this.groupByColumn.Id]);
 
         if (currentGroup != this.previousGroup) {
-            var groupCell = new TableBodyCell(table.parent, row.data, this.groupByColumn);
+            const field = table.field(this.groupByColumn.Id);
+            const groupCell = new TableBodyCell(table.parent, row.data, field);
+            
             groupCell.colspan = table.head.main.cells.length;
 
             if (this.firstRow != null || currentGroup !== "null") {

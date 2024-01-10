@@ -5,4 +5,3 @@ export * from './TableRow';
 export * from './TableBodyCell';
 export * from './TableHeadCell';
 export * from './TableExtension';
-export * from './TableBuilder';

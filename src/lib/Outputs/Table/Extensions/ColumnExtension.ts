@@ -1,5 +1,6 @@
 import type { ComponentMetadata } from "../../../Infrastructure/uimf";
 import { Colgroup } from "../Colgroup";
+import type { IField } from "../IColumn";
 import type { Table } from "../Table";
 import type { TableBodyCell } from "../TableBodyCell";
 import { TableExtension } from "../TableExtension";
@@ -40,12 +41,8 @@ export class ColumnExtension extends TableExtension {
 
     processBodyRow(table: Table, row: TableRowGroup<TableBodyCell>) {
         for (const column of this.columnsWithCssClass) {
-            const index = table.cellIndex[column.id];
-
-            // Index can be null if the column is hidden.
-            if (index != null) {
-                row.main.cells[index].cssClass = column.cssClass;
-            }
+            const cell = table.cell(row, column.id);
+            cell.cssClass = column.cssClass;
         }
     }
 
@@ -61,7 +58,10 @@ export class ColumnExtension extends TableExtension {
                 let thisGroupLabel = thisGroupConfig?.Group;
 
                 if (thisGroupLabel == null || thisGroupLabel != previousThCell?.label) {
-                    thAboveCell = new TableHeadCell({} as ComponentMetadata);
+                    thAboveCell = new TableHeadCell({
+                        IsInput: false,
+                        Metadata: {}
+                    } as IField);
 
                     thAboveCell.label = thisGroupLabel || '';
                     thAboveCell.colspan = 1;

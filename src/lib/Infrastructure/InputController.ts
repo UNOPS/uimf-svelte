@@ -3,6 +3,7 @@ import EventSource from './EventSource';
 import uuid from "./uuid";
 import type IUimfApp from "./UimfApp";
 import type { FormInstance } from "./FormController";
+import type { IFormComponent } from "./IFormComponent";
 
 export interface Deferrer {
     resolve: () => void;
@@ -16,7 +17,9 @@ export interface CreateInputOptions<TMetadata extends ComponentMetadata = Compon
     app: IUimfApp;
 }
 
-export abstract class InputController<T, TMetadata extends ComponentMetadata = ComponentMetadata> extends EventSource {
+export abstract class InputController<T, TMetadata extends ComponentMetadata = ComponentMetadata>
+    extends EventSource
+    implements IFormComponent {
     /**
      * Gets unique identifier for this `InputController` instance.
      */
@@ -83,7 +86,8 @@ export abstract class InputController<T, TMetadata extends ComponentMetadata = C
 
         return promise
             .then(() => this.setValueInternal(this.value))
-            .then(() => this.fire('input:change', this));
+            .then(() => this.fire('input:change', this))
+            .catch((e) => console.error('Something went wrong.', e));
     }
 
     /** 

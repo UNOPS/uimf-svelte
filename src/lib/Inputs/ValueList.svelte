@@ -1,10 +1,16 @@
 <script context="module" lang="ts">
-	import { InputController } from '../Infrastructure/InputController';
+	import { InputController, type CreateInputOptions } from '../Infrastructure/InputController';
 	import type { OutputController } from '../Infrastructure/OutputController';
 	import type { ComponentMetadata } from '../Infrastructure/uimf';
 
 	export class Controller extends InputController<IValueList, Metadata> {
-		public rows: Row[] = [];
+		public table: Table;
+
+		constructor(options: CreateInputOptions<Metadata>) {
+			super(options);
+
+			this.table = this.createTable();
+		}
 
 		public deserialize(value: string): Promise<IValueList> {
 			var result = JSON.parse(value);
@@ -19,24 +25,22 @@
 			const promises = [];
 			const rowDatas: Record<string, any>[] = [];
 
-			for (const row of this.rows) {
-				if (row._deleted) {
+			for (const row of this.table.body) {
+				if (row.deleted) {
 					continue;
 				}
 
 				const rowData: Record<string, any> = {};
 				rowDatas.push(rowData);
 
-				for (const column of this.metadata.CustomProperties.Fields) {
-					var cell = row._controllers[column.Metadata.Id];
+				for (const column of this.metadata.CustomProperties.Fields.filter((t) => t.IsInput)) {
+					var cell = this.table.controller(row, column.Metadata.Id) as InputController<any>;
 
-					if (cell instanceof InputController) {
-						let promise = cell.getValue().then((t) => {
-							rowData[column.Metadata.Id] = t;
-						});
+					let promise = cell.getValue().then((t) => {
+						rowData[column.Metadata.Id] = t;
+					});
 
-						promises.push(promise);
-					}
+					promises.push(promise);
 				}
 			}
 
@@ -57,63 +61,49 @@
 				Items: value?.Items ?? []
 			};
 
-			this.rows = [];
+			this.table = this.createTable();
 
-			for (let rowIndex = 0; rowIndex < this.value.Items.length; ++rowIndex) {
-				const row: Row = {
-					index: rowIndex,
-					_controllers: {},
-					_deleted: false
-				};
-
-				this.rows[rowIndex] = row;
+			const items = this.value.Items.map((item) => {
+				const data: { [key: string]: any } = {};
 
 				for (let column of this.metadata.CustomProperties.Fields) {
-					row._controllers[column.Metadata.Id] = this.getNestedController(column, row);
-
 					if (column.IsInput) {
-						const inputController = row._controllers[column.Metadata.Id] as InputController<any>;
-
-						const innerValue = this.metadata.CustomProperties.IsPrimitive
-							? this.value.Items[rowIndex]
-							: this.value.Items[rowIndex][column.Metadata.Id];
-
-						await inputController.setValue(innerValue);
+						data[column.Metadata.Id] = this.metadata.CustomProperties.IsPrimitive
+							? item
+							: item[column.Metadata.Id];
+					} else {
+						data[column.Metadata.Id] = item[column.Metadata.Id];
 					}
 				}
-			}
+
+				return data;
+			});
+
+			await this.table.setData(items);
 		}
 
-		getNestedController(column: IField, row: Row): InputController<any> | OutputController<any> {
-			if (column.IsInput) {
-				var inputController = controlRegister.createInput({
-					app: this.app,
-					form: this.form,
-					metadata: column.Metadata,
-					defer: null
-				}).controller;
-
-				// When the cell value changes, the overall `value-list` should
-				// also trigger the `input:change` event.
-				inputController.on('input:change', async () => {
-					await inputController.getValue().then((value) => {
+		private createTable(): Table {
+			return new Table({
+				parent: this,
+				columns: this.metadata.CustomProperties.Fields,
+				extensions: [
+					new DocumentationExtension(),
+					new ColumnExtension(),
+					new RowExtension(),
+					new ActionListColumnExtension(),
+					new ColumnExtension()
+				],
+				inputOnChange: async (row, cell) => {
+					// When the cell value changes, the overall `value-list` should also be updated.
+					await cell.getValue().then((value) => {
 						if (this.metadata.CustomProperties.IsPrimitive) {
 							this.value!.Items[row.index] = value;
 						} else {
-							this.value!.Items[row.index][column.Metadata.Id] = value;
+							this.value!.Items[row.index][cell.metadata.Id] = value;
 						}
 					});
-				});
-
-				return inputController;
-			} else {
-				return controlRegister.createOutput({
-					app: this.app,
-					form: this.form,
-					metadata: column.Metadata,
-					data: this.value!.Items[row.index][column.Metadata.Id]
-				}).controller;
-			}
+				}
+			});
 		}
 	}
 
@@ -142,27 +132,28 @@
 			IsPrimitive: boolean;
 		};
 	}
-
-	interface IField {
-		IsInput: boolean;
-		Metadata: ComponentMetadata;
-	}
 </script>
 
 <script lang="ts">
 	import { InputComponent } from '../Infrastructure/Component';
-	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
 	import { beforeUpdate, tick } from 'svelte';
 	import Input from '../Input.svelte';
 	import { tooltip } from '../Components/Tooltip.svelte';
 	import Output from '../Output.svelte';
+	import { Table, TableBodyCell, TableRowGroup } from '../Outputs/Table';
+	import { DocumentationExtension } from '../Outputs/Table/Extensions/DocumentationExtension';
+	import { ColumnExtension } from '../Outputs/Table/Extensions/ColumnExtension';
+	import { RowExtension } from '../Outputs/Table/Extensions/RowExtension';
+	import { ActionListColumnExtension } from '../Outputs/Table/Extensions/ActionListColumnExtension';
+	import type { IField } from '../Outputs/Table/IColumn';
 
 	export let controller: Controller;
 
-	let rows: Row[] = [];
 	let columns: IField[] = [];
 	let metadata: Metadata | null = null;
 	let hasDropdowns: boolean = false;
+	let table: Table | null = null;
+	let extraColspan: number = 0;
 
 	const component = new InputComponent({
 		init() {
@@ -179,25 +170,19 @@
 			controller.ready?.resolve();
 		},
 		async refresh() {
-			rows = controller.rows || [];
+			table = controller.table;
 		}
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
 
 	async function addNewRow(e: Event): Promise<void> {
-		const newRow: Row = {
-			index: rows.length,
-			_controllers: {},
-			_deleted: false
-		};
-
-		for (let column of columns) {
-			newRow._controllers![column.Metadata.Id] = controller.getNestedController(column, newRow);
+		if (table == null) {
+			throw 'Cannot add row to a `null` table.';
 		}
 
-		rows.push(newRow);
-		rows = rows;
+		table.addRow();
+		table.body = table.body;
 
 		// Let's wait for the DOM to update.
 		await tick();
@@ -210,57 +195,93 @@
 		input?.focus();
 	}
 
-	function getColumnWidth(item: ComponentMetadata) {
-		switch (item.Type) {
-			default:
-				return 'min-width: 200px';
-		}
-	}
-
 	function getControllerOrException<T extends InputController<any> | OutputController<any>>(
-		row: Row,
-		column: IField
+		row: TableRowGroup<TableBodyCell>,
+		column: TableBodyCell
 	): T {
-		if (row._controllers == null || row._controllers[column.Metadata.Id] == null) {
-			throw `Cannot find controller for column '${column.Metadata.Id}'.`;
-		}
-
-		return row._controllers[column.Metadata.Id] as T;
+		return controller.table?.controller(row, column.controller.metadata.Id) as T;
 	}
 </script>
 
-{#if rows != null && metadata != null}
+{#if table != null && table.body.length > 0 && metadata != null}
 	<div class="table-responsive" class:has-dropdowns={hasDropdowns}>
 		<table class="table table-borderless table-sm">
+			{#if table.colgroups?.length > 0}
+				{#each table.colgroups as colgroup}
+					<colgroup span={colgroup.span} class={colgroup.cssClass} style={colgroup.style} />
+				{/each}
+			{/if}
 			<thead>
-				<tr>
-					{#each columns as column}
-						{#if !column.Metadata.Hidden}
+				{#each table.head.above as header}
+					<tr>
+						{#each header.cells as cell, index}
 							<th
-								style={getColumnWidth(column.Metadata)}
-								use:tooltip={column.Metadata.CustomProperties?.Documentation}
-								>{column.Metadata.Label}</th
+								use:tooltip={cell.documentation}
+								style={cell.style}
+								colspan={cell.colspan + (index === 0 ? extraColspan : 0)}
+								class={cell.cssClass}>{cell.label}</th
 							>
-						{/if}
+						{/each}
+					</tr>
+				{/each}
+
+				<tr>
+					{#each table.head.main.cells as cell}
+						<th
+							use:tooltip={cell.documentation}
+							colspan={cell.colspan}
+							class={cell.cssClass}
+							style={cell.style}
+							on:click={() => cell.click()}
+						>
+							{#if cell.label?.length > 0}
+								{cell.label}
+							{:else if cell.documentation != null}
+								<div class="text-center">
+									<i class="fas fa-question-circle" />
+								</div>
+							{/if}</th
+						>
 					{/each}
 					{#if metadata.CustomProperties.CanRemove || metadata.CustomProperties.CanAdd}
 						<th />
 					{/if}
 				</tr>
+
+				{#each table.head.below as footer}
+					<tr>
+						{#each footer.cells as cell, index}
+							<th
+								use:tooltip={cell.documentation}
+								colspan={cell.colspan + (index === 0 ? extraColspan : 0)}
+								class={cell.cssClass}
+								style={cell.style}>{cell.label}</th
+							>
+						{/each}
+					</tr>
+				{/each}
 			</thead>
 			<tbody>
-				{#each rows.filter((t) => !t._deleted) as row}
-					<tr>
-						{#each columns as column}
-							{#if !column.Metadata.Hidden}
-								<td class={column.Metadata.CustomProperties?.ColumnCssClass}>
-									{#if column.IsInput}
-										<Input controller={getControllerOrException(row, column)} hideLabel={true} />
-									{:else}
-										<Output controller={getControllerOrException(row, column)} hideLabel={true} />
-									{/if}
+				{#each table.body.filter((t) => !t.deleted) as rowGroup}
+					{#each rowGroup.above as header, index}
+						<tr class="group-header">
+							{#each header.cells as cell}
+								<td colspan={cell.colspan + (index === 0 ? extraColspan : 0)} class={cell.cssClass}>
+									<Output controller={cell.controller} hideLabel={true} />
 								</td>
-							{/if}
+							{/each}
+						</tr>
+					{/each}
+
+					<tr>
+						{#each rowGroup.main.cells as cell}
+							<td colspan={cell.colspan} class={cell.cssClass}>
+								{#if cell.isInput}
+									<Input controller={getControllerOrException(rowGroup, cell)} hideLabel={true} />
+								{:else}
+									<Output controller={getControllerOrException(rowGroup, cell)} hideLabel={true} />
+								{/if}
+							</td>
 						{/each}
 						{#if metadata.CustomProperties.CanRemove == true}
 							<td class="col-action">
@@ -268,13 +289,28 @@
 									class="btn btn-outline-light"
 									type="button"
 									use:tooltip={'Remove row'}
-									on:click|preventDefault={() => (row._deleted = true)}
+									on:click|preventDefault={() => (rowGroup.deleted = true)}
 								>
 									<i class="fa fa-times" />
 								</button>
 							</td>
 						{/if}
 					</tr>
+
+					{#each rowGroup.below as footer}
+						{#if footer.append}
+							<tr class:d-none={!footer.visible} class="footer">
+								{#each footer.cells as cell, index}
+									<td
+										colspan={cell.colspan + (index === 0 ? extraColspan : 0)}
+										class={cell.cssClass}
+									>
+										<Output controller={cell.controller} hideLabel={true} />
+									</td>
+								{/each}
+							</tr>
+						{/if}
+					{/each}
 				{/each}
 			</tbody>
 			{#if metadata.CustomProperties.CanAdd}
@@ -296,11 +332,55 @@
 			{/if}
 		</table>
 	</div>
+{:else}
+	<div>No items found.</div>
 {/if}
 
 <style lang="scss">
-	.table-responsive {
-		width: 100%;
+	@import '../scss/styles.variables.scss';
+
+	div.table-responsive {
+		--inner-border-color: rgba(0, 0, 0, 0.03);
+		--outer-border-color: #ebebeb;
+		--group-border-color: #d6d6d645;
+
+		thead {
+			& > tr:last-child {
+				border-bottom-width: 3px;
+			}
+
+			& > tr > .has-documentation {
+				text-decoration: underline;
+				text-decoration-style: dashed;
+			}
+		}
+
+		tbody {
+			& > tr > td {
+				vertical-align: middle;
+			}
+		}
+
+		.group-header {
+			background: $app-soft-bg;
+
+			& > td {
+				padding: 15px 20px;
+			}
+		}
+
+		.column-group {
+			text-align: center;
+			border-bottom: 0px !important;
+			border-left: 3px solid var(--group-border-color);
+			border-right: 3px solid var(--group-border-color);
+		}
+
+		td.col-min-width {
+			width: 1px;
+			padding-left: 8px;
+			padding-right: 8px;
+		}
 	}
 
 	.has-dropdowns {

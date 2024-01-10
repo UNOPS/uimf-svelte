@@ -1,4 +1,5 @@
 import type { ComponentMetadata } from "../../Infrastructure/uimf";
+import type { IField } from "./IColumn";
 
 export class TableHeadCell {
     public cssClass: string;
@@ -9,8 +10,12 @@ export class TableHeadCell {
     public hidden: boolean | undefined;
     public style: any;
     public onClick: Record<string, () => void> = {};
+    public readonly isInput: boolean;
 
-    constructor(metadata: ComponentMetadata) {
+    constructor(column: IField) {
+        const metadata = column.Metadata;
+
+        this.isInput = column.IsInput;
         this.metadata = metadata;
         this.documentation = metadata.CustomProperties?.Documentation;
         this.label = metadata.Label;

@@ -4,7 +4,7 @@ export default class TableRow<T> {
     }
 
     public cells: T[] = [];
-
+    
     /**
      * Indicates if the row should be appended to DOM or not.
      */

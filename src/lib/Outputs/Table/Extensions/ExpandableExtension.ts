@@ -50,11 +50,10 @@ export class ExpandableExtension extends TableExtension {
 
             row.below.push(hiddenRow);
 
-            var index = table.cellIndex[cell.metadata.Id];
-            var mainCell = row.main.cells[index];
+            const controller = table.controller(row, cell.metadata.Id);
 
-            if (mainCell.controller.value != null) {
-                mainCell.controller.value.handler = function (show: boolean) {
+            if (controller.value != null) {
+                controller.value.handler = function (show: boolean) {
                     hiddenRow.append = true;
                     hiddenRow.visible = show;
 
