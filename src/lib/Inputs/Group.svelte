@@ -54,21 +54,50 @@
 {#if controller.value != null}
 	<div class="form-input-groups">
 		{#each Object.entries(controller.value.Items) as item, index}
-			<div>
-				<span>
-					<h2>{item[0]}</h2>
-				</span>
-				<ul>
-					{#each item[1] as i}
-						<li>{i.Label}</li>
-					{/each}
-				</ul>
-			</div>
-
-			{#if index === 0}
-				<i class="fa-solid fa-arrow-left" />
-				<i class="fa-solid fa-arrow-right" />
-				<i class="fa fa-external-link-alt fa-1x" />
+			{#if item[index] === 'Not Assigned'}
+				<div id="first-group">
+					<div>
+						<h2 class="group-name">Not Assigned</h2>
+						<i class="fa-solid fa-arrow-right" />
+					</div>
+					<ul>
+						{#each item[1] as i}
+							<li>
+								{i.Label}
+								<i class="fa fa-external-link-alt fa-1x" />
+								<div class="buttons">
+									<button
+										type="button"
+										class="btn btn-danger remove-button"
+										on:click={() => {
+											//moveTo. = '';
+											controller.setValue(null);
+										}}
+									>
+										<i class="fa-solid fa-arrow-right" />
+									</button>
+								</div>
+							</li>
+						{/each}
+					</ul>
+				</div>
+			{/if}
+			{#if item[index] != 'Not Assigned'}
+				<div id="last-group">
+					<div>
+						<i class="fa-solid fa-arrow-left" />
+						<h2 class="group-name">Assigned</h2>
+					</div>
+					<ul>
+						{#each item[1] as i}
+							<li>
+								<i class="fa-solid fa-arrow-left" />
+								{i.Label}
+								<i class="fa fa-external-link-alt fa-1x" />
+							</li>
+						{/each}
+					</ul>
+				</div>
 			{/if}
 		{/each}
 	</div>
@@ -94,7 +123,7 @@
 		border-width: 1px;
 	}
 
-	.form-input-groups > div > span {
+	.form-input-groups > div > div {
 		align-content: stretch;
 		align-items: stretch;
 		background: #2d3c4b;
@@ -103,14 +132,14 @@
 		flex-wrap: nowrap;
 		font-weight: bold;
 		justify-content: space-between;
-		padding-right: 16px;
+		padding: 5px 16px 5px 5px;
 	}
 
-	.form-input-groups > div > span {
+	.form-input-groups > div > div {
 		padding: 10px;
 	}
 
-	.form-input-groups > span.group-name {
+	.form-input-groups > div.group-name {
 		flex-grow: 10;
 		text-align: center;
 	}
@@ -128,7 +157,7 @@
 		align-items: center;
 		display: flex;
 		flex-wrap: nowrap;
-		justify-content: space-between;
+		justify-content: left;
 		padding: 0;
 	}
 
