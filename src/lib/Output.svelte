@@ -79,4 +79,17 @@
 	.inline {
 		display: inline;
 	}
+
+	:global(.output-section-heading) {
+		font-size: 1.5em;
+		margin: 20px 2px 10px;
+		display: block;
+		background: #8d93a2;
+		color: white;
+		padding: 5px 15px;
+
+		& > a {
+			color: white;
+		}
+	}
 </style>
