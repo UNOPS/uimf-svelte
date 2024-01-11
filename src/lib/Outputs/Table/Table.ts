@@ -168,6 +168,10 @@ export class Table extends EventSource {
         throw new Error(`Field with id '${id}' not found.`);
     }
 
+    fieldOrNull(id: string): IField | null {
+        return this.fields.find(t => t.Metadata.Id === id) ?? null;
+    }
+
     /**
      * Appends a new row to the table with null data.
      */
