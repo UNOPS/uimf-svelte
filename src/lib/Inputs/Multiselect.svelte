@@ -5,7 +5,7 @@
 		Items: any[];
 	}
 
-	export class Controller extends InputController<MultiselectValue> {
+	export class Controller extends InputController<MultiselectValue, TypeaheadMetadata> {
 		public deserialize(value: string | null): Promise<MultiselectValue | null> {
 			const parsedValue = value != null ? value.split(',') : null;
 			const result: MultiselectValue | null = parsedValue != null ? { Items: parsedValue } : null;
@@ -44,6 +44,7 @@
 	import { beforeUpdate } from 'svelte';
 	import Select from 'svelte-select';
 	import { InputComponent } from '../Infrastructure/Component';
+	import type { TypeaheadItem, TypeaheadMetadata } from './Typeahead.svelte';
 
 	interface Option {
 		Label: string;
@@ -64,8 +65,8 @@
 			cachedOptions = {};
 			selected = [];
 
-			let source = controller.metadata.CustomProperties.Source;
-			inlineItems = Array.isArray(source) ? augmentItems(source) : null;
+			const items = controller.metadata.CustomProperties.Items;
+			inlineItems = Array.isArray(items) ? augmentItems(items) : null;
 
 			controller.ready?.resolve();
 		},
@@ -97,18 +98,18 @@
 		await component.setup(controller);
 	});
 
-	function augmentItems(items: Option[]): Option[] {
+	function augmentItems(items: TypeaheadItem[]): Option[] {
 		if (items == null) {
 			return [];
 		}
 
-		if (!Array.isArray(items)) {
-			return [];
-		}
-
-		// Build "SearchText" field which will be used to find relevant matches.
-		items.forEach((c) => (c.SearchText = (c.Value + ' ' + c.Label).toLocaleLowerCase()));
-		return items;
+		return items.map((c) => {
+			return {
+				...c,
+				// Build "SearchText" field which will be used to find relevant matches.
+				SearchText: (c.Value + ' ' + c.Label).toLocaleLowerCase()
+			} as Option;
+		});
 	}
 
 	async function loadOptionsAndFilter(query: MultiselectValue | string): Promise<any> {
@@ -149,7 +150,7 @@
 				? { Query: query }
 				: { Ids: { Items: query.Items?.length > 0 ? query.Items : [] } };
 
-		const parameters: any[] = controller.metadata.CustomProperties['Parameters'];
+		const parameters = controller.metadata.CustomProperties.Parameters;
 
 		if (parameters != null) {
 			let promises = parameters.map((p) => {

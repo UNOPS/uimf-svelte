@@ -1,19 +1,19 @@
 <script context="module" lang="ts">
 	import { InputController } from '../Infrastructure/InputController';
 
-	interface TypeaheadItem extends TypeaheadValue {
+	export interface TypeaheadItem extends TypeaheadValue {
 		Label: string;
 	}
 
-	interface TypeaheadMetadata extends ComponentMetadata {
+	export interface TypeaheadMetadata extends ComponentMetadata {
 		DefaultValue: any;
 		CustomProperties: {
 			Source: string;
-			Parameters: Array<{
+			Parameters?: Array<{
 				SourceType: string;
 				Parameter: string;
 				Source: string;
-			}>;
+			}> | null;
 			Items: Array<TypeaheadItem>;
 		};
 	}
@@ -88,7 +88,7 @@
 		init() {
 			cachedOptions = {};
 
-			const source = controller.metadata.CustomProperties.Source;
+			const source = controller.metadata.CustomProperties.Items;
 			inlineItems = Array.isArray(source) ? augmentItems(source) : null;
 
 			controller.ready?.resolve();
@@ -124,14 +124,18 @@
 		await component.setup(controller);
 	});
 
-	function augmentItems(items: Option[]): Option[] {
+	function augmentItems(items: TypeaheadItem[]): Option[] {
 		if (items == null) {
 			return [];
 		}
 
-		// Build "SearchText" field which will be used to find relevant matches.
-		items.forEach((c) => (c.SearchText = (c.Value + ' ' + c.Label).toLocaleLowerCase()));
-		return items;
+		return items.map((c) => {
+			return {
+				...c,
+				// Build "SearchText" field which will be used to find relevant matches.
+				SearchText: (c.Value + ' ' + c.Label).toLocaleLowerCase()
+			} as Option;
+		});
 	}
 
 	async function loadOptionsAndFilter(query: string): Promise<Option[]> {
@@ -174,7 +178,7 @@
 				? { Ids: { Items: [query.Value] } }
 				: { Query: query };
 
-		const parameters: any[] = controller.metadata.CustomProperties['Parameters'];
+		const parameters = controller.metadata.CustomProperties.Parameters;
 
 		if (parameters != null) {
 			let promises = parameters.map((p) => {
