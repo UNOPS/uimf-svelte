@@ -1,10 +1,22 @@
+<script lang="ts" context="module">
+	interface IMetadata extends ComponentMetadata {
+		Items: any[];
+
+		CustomProperties: {
+			ItemTypes: ComponentMetadata;
+			cssClass: string;
+		};
+	}
+</script>
+
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
+	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
 
-	export let controller: OutputController<any>;
+	export let controller: OutputController<any, IMetadata>;
 
 	class ComponentController {
 		component: any;
@@ -32,30 +44,25 @@
 	beforeUpdate(async () => await component.setup(controller));
 
 	function getComponentControllers(items: any[]): any[] {
-		let componentControllerArray: ComponentController[] = [];
+		const inner = controller.metadata.CustomProperties.ItemTypes;
 
-		let nestedComponentType = controller.metadata.CustomProperties.ItemTypes.Type;
-
-		if (controlRegister.outputs[nestedComponentType] != undefined) {
-			let nestedComponent = controlRegister.outputs[nestedComponentType].component;
-
-			items.forEach((item) => {
-				let componentController = {
-					component: nestedComponent,
-					controller: new OutputController<any>({
-						metadata: controller.metadata,
-						data: null,
-						form: controller.form!,
-						app: controller.app
-					})
-				};
-
-				componentController.controller.setValue(item);
-				componentControllerArray.push(componentController);
-			});
+		if (controlRegister.outputs[inner.Type] == null) {
+			throw new Error(`Unknown output type '${inner.Type}'.`);
 		}
 
-		return componentControllerArray;
+		return items.map((item) => {
+			let componentController = {
+				component: controlRegister.outputs[inner.Type].component,
+				controller: new OutputController<any>({
+					metadata: inner,
+					data: item,
+					form: controller.form!,
+					app: controller.app
+				})
+			};
+
+			return componentController;
+		});
 	}
 </script>
 
