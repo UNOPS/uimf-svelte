@@ -41,8 +41,12 @@ export class ColumnExtension extends TableExtension {
 
     processBodyRow(table: Table, row: TableRowGroup<TableBodyCell>) {
         for (const column of this.columnsWithCssClass) {
-            const cell = table.cell(row, column.id);
-            cell.cssClass = column.cssClass;
+            const field = table.field(column.id);
+
+            if (!field.Hidden) {
+                const cell = table.cell(row, column.id);
+                cell.cssClass = column.cssClass;
+            }
         }
     }
 

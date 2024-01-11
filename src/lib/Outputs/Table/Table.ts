@@ -77,7 +77,8 @@ export class Table extends EventSource {
                 map[column.Metadata.Id] = {
                     IsInput: column.IsInput,
                     Metadata: column.Metadata,
-                    Index: index
+                    Index: index,
+                    Hidden: column.Metadata.Hidden
                 };
 
                 return map;
@@ -97,6 +98,8 @@ export class Table extends EventSource {
                     c.processHeadCell(this, cell, items);
                 });
 
+                this.field(cell.metadata.Id).Hidden = cell.hidden ?? false;
+
                 return cell;
             })
             .filter(t => !t.hidden);
@@ -107,7 +110,8 @@ export class Table extends EventSource {
                 map[column.metadata.Id] = {
                     IsInput: column.isInput,
                     Metadata: column.metadata,
-                    Index: index
+                    Index: index,
+                    Hidden: false
                 };
 
                 return map;
