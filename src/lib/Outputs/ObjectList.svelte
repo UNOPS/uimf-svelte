@@ -99,16 +99,17 @@
 		padding: 0.6em 0em 0em;
 	}
 
-	/* optional css from CustomProperties.cssClass */
-	.comma-separated-list > div {
-		display: inline;
-	}
+	.comma-separated-list {
+		& > div {
+			display: inline;
+		}
 
-	.comma-separated-list > div:last-child::after {
-		content: none;
-	}
+		& > div:last-child::after {
+			content: none;
+		}
 
-	.comma-separated-list > div::after {
-		content: ', ';
+		& > div::after {
+			content: ', ';
+		}
 	}
 </style>
