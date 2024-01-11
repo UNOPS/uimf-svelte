@@ -23,18 +23,18 @@
 		controller: any;
 	}
 
-	let componentControllers: ComponentController[] = [];
+	let nestedItems: ComponentController[] = [];
 
 	if (controller.value?.Items != null) {
-		componentControllers = getComponentControllers(controller.value.Items);
+		nestedItems = getNestedItems(controller.value.Items);
 	}
 
 	let component = new OutputComponent({
 		refresh() {
 			if (controller.value?.Items != null) {
-				componentControllers = getComponentControllers(controller.value.Items);
+				nestedItems = getNestedItems(controller.value.Items);
 			} else {
-				componentControllers = [];
+				nestedItems = [];
 			}
 
 			controller.value = controller.value;
@@ -43,7 +43,7 @@
 
 	beforeUpdate(async () => await component.setup(controller));
 
-	function getComponentControllers(items: any[]): any[] {
+	function getNestedItems(items: any[]): any[] {
 		const inner = controller.metadata.CustomProperties.ItemTypes;
 
 		if (controlRegister.outputs[inner.Type] == null) {
@@ -51,7 +51,7 @@
 		}
 
 		return items.map((item) => {
-			let componentController = {
+			return {
 				component: controlRegister.outputs[inner.Type].component,
 				controller: new OutputController<any>({
 					metadata: inner,
@@ -60,32 +60,29 @@
 					app: controller.app
 				})
 			};
-
-			return componentController;
 		});
 	}
 </script>
 
-{#if componentControllers?.length > 0}
-	{#each componentControllers as componentController}
-		<div class={componentController.controller.metadata.CustomProperties.cssClass}>
-			<svelte:component
-				this={componentController.component}
-				controller={componentController.controller}
-			/>
-		</div>
-	{/each}
+{#if nestedItems?.length > 0}
+	<div class={controller.metadata.CustomProperties?.cssClass}>
+		{#each nestedItems as item}
+			<div>
+				<svelte:component this={item.component} controller={item.controller} />
+			</div>
+		{/each}
+	</div>
 {/if}
 
 <style>
-	.line-separator {
+	.line-separator > div {
 		display: list-item;
 		list-style-type: none;
 		border-bottom: 0.1rem solid #4cb0e3;
 		padding: 10px;
 	}
 
-	.bullet-list {
+	.bullet-list > div {
 		display: list-item;
 		list-style-type: circle;
 		margin-left: 1.3em;
