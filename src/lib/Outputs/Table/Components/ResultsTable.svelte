@@ -21,6 +21,7 @@
 	import type { TableExtension } from '../TableExtension';
 	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
 	import { DocumentationExtension } from '../Extensions/DocumentationExtension';
+	import type { IField } from '../IColumn';
 
 	export let controller: OutputController<any>;
 	export let type: string;
@@ -52,7 +53,7 @@
 						return {
 							Metadata: t,
 							IsInput: false
-						};
+						} as IField;
 					}
 				)
 			});
