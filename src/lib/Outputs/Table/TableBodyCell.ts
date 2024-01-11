@@ -11,28 +11,28 @@ export class TableBodyCell {
     public colspan: number = 0;
     public readonly isInput: boolean;
 
-    constructor(parent: IFormComponent, data: any, column: IField) {
-        this.isInput = column.IsInput;
+    constructor(parent: IFormComponent, data: any, field: IField) {
+        this.isInput = field.IsInput;
 
-        if (column.IsInput) {
+        if (field.IsInput) {
             this.controller = controlRegister.createInput({
                 app: parent.app,
                 form: parent.form,
-                metadata: column.Metadata,
+                metadata: field.Metadata,
                 defer: null
             }).controller;
         }
         else {
             this.controller = new OutputController<any>(
                 {
-                    metadata: column.Metadata,
-                    data: data[column.Metadata.Id],
+                    metadata: field.Metadata,
+                    data: data[field.Metadata.Id],
                     form: parent.form!,
                     app: parent.app
                 }
             );
         }
 
-        this.cssClass = column.Metadata?.CustomProperties?.ColumnCssClass;
+        this.cssClass = field.Metadata?.CustomProperties?.ColumnCssClass;
     }
 }

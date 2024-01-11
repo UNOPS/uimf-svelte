@@ -1,6 +1,12 @@
+import type { ComponentMetadata } from "$lib/Infrastructure/uimf";
 import { TableBodyCell, type Table, type TableHeadCell, type TableRowGroup } from "..";
+import type { IField } from "../IColumn";
 import { TableExtension } from "../TableExtension";
 import TableRow from "../TableRow";
+
+interface ICustomProperties {
+    ItemTypes: ComponentMetadata[];
+}
 
 export class ExpandableExtension extends TableExtension {
     private expandableCells: TableHeadCell[] = [];
@@ -36,10 +42,18 @@ export class ExpandableExtension extends TableExtension {
                 return;
             }
 
+            const customProperties: ICustomProperties = cell.metadata.CustomProperties;
+            
+            const hiddenField: IField = {
+                Metadata: customProperties.ItemTypes[1],
+                IsInput: false,
+                Hidden: true
+            };
+
             var hiddenCell = new TableBodyCell(
                 table.parent,
                 { Value: row.data[cell.metadata.Id]?.Hidden },
-                cell.metadata.CustomProperties.ItemTypes[1]);
+                hiddenField);
 
             hiddenCell.colspan = table.head.main.cells.length;
 
