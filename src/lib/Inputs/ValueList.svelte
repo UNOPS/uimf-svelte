@@ -78,8 +78,6 @@
 
 				return data;
 			});
-
-			console.log(items);
 			
 			await this.table.setData(items);
 		}
