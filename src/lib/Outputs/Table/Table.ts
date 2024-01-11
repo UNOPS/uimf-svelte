@@ -18,6 +18,9 @@ export interface ITableOption {
 }
 
 interface IIndexedField extends IField {
+    /**
+     * Fields index within a collection.
+     */
     Index: number;
 }
 
