@@ -176,7 +176,7 @@
 
 		const parameters: any[] = controller.metadata.CustomProperties['Parameters'];
 
-		if (parameters !== null) {
+		if (parameters != null) {
 			let promises = parameters.map((p) => {
 				switch (p.SourceType) {
 					case 'response':
