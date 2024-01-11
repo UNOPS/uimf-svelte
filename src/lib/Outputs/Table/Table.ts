@@ -137,6 +137,12 @@ export class Table extends EventSource {
                     controller.setValue(item[cell.controller.metadata.Id]);
                 }
             }
+
+            for (let hiddenInput of row.hiddenInputs) {
+                const controller = hiddenInput as InputController<any>;
+                const promise = controller.setValue(item[hiddenInput.metadata.Id]);
+                promises.push(promise);
+            }
         }
 
         this.extensions.forEach(c => {
