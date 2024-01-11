@@ -79,6 +79,8 @@
 				return data;
 			});
 
+			console.log(items);
+			
 			await this.table.setData(items);
 		}
 
@@ -91,7 +93,8 @@
 					new ColumnExtension(),
 					new RowExtension(),
 					new ActionListColumnExtension(),
-					new ColumnExtension()
+					new ColumnExtension(),
+					new ValueListExtension()
 				],
 				inputOnChange: async (row, cell) => {
 					// When the cell value changes, the overall `value-list` should also be updated.
@@ -146,6 +149,7 @@
 	import { RowExtension } from '../Outputs/Table/Extensions/RowExtension';
 	import { ActionListColumnExtension } from '../Outputs/Table/Extensions/ActionListColumnExtension';
 	import type { IField } from '../Outputs/Table/IColumn';
+	import { ValueListExtension } from '../Outputs/Table/Extensions/ValueListExtension';
 
 	export let controller: Controller;
 
@@ -219,8 +223,18 @@
 								use:tooltip={cell.documentation}
 								style={cell.style}
 								colspan={cell.colspan + (index === 0 ? extraColspan : 0)}
-								class={cell.cssClass}>{cell.label}</th
+								class={cell.cssClass}
+								on:click={() => cell.click()}
 							>
+								{#if cell.component != null}
+									<svelte:component
+										this={cell.component.component}
+										controller={cell.component.controller}
+									/>
+								{:else}
+									{cell.label}
+								{/if}
+							</th>
 						{/each}
 					</tr>
 				{/each}
@@ -234,14 +248,19 @@
 							style={cell.style}
 							on:click={() => cell.click()}
 						>
-							{#if cell.label?.length > 0}
+							{#if cell.component != null}
+								<svelte:component
+									this={cell.component.component}
+									controller={cell.component.controller}
+								/>
+							{:else if cell.label?.length > 0}
 								{cell.label}
 							{:else if cell.documentation != null}
 								<div class="text-center">
 									<i class="fas fa-question-circle" />
 								</div>
-							{/if}</th
-						>
+							{/if}
+						</th>
 					{/each}
 					{#if metadata.CustomProperties.CanRemove || metadata.CustomProperties.CanAdd}
 						<th />
@@ -255,8 +274,18 @@
 								use:tooltip={cell.documentation}
 								colspan={cell.colspan + (index === 0 ? extraColspan : 0)}
 								class={cell.cssClass}
-								style={cell.style}>{cell.label}</th
+								style={cell.style}
+								on:click={() => cell.click()}
 							>
+								{#if cell.component != null}
+									<svelte:component
+										this={cell.component.component}
+										controller={cell.component.controller}
+									/>
+								{:else}
+									{cell.label}
+								{/if}
+							</th>
 						{/each}
 					</tr>
 				{/each}

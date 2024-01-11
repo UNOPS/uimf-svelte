@@ -130,7 +130,8 @@
 								use:tooltip={cell.documentation}
 								style={cell.style}
 								colspan={cell.colspan + (index === 0 ? extraColspan : 0)}
-								class={cell.cssClass}>{cell.label}</th
+								class={cell.cssClass}
+								on:click={() => cell.click()}>{cell.label}</th
 							>
 						{/each}
 					</tr>
@@ -176,7 +177,8 @@
 								use:tooltip={cell.documentation}
 								colspan={cell.colspan + (index === 0 ? extraColspan : 0)}
 								class={cell.cssClass}
-								style={cell.style}>{cell.label}</th
+								style={cell.style}
+								on:click={() => cell.click()}>{cell.label}</th
 							>
 						{/each}
 					</tr>

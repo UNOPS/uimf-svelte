@@ -1,3 +1,4 @@
+import type { CreateInputResult } from "../../Infrastructure/ControlRegister";
 import type { ComponentMetadata } from "../../Infrastructure/uimf";
 import type { IField } from "./IColumn";
 
@@ -11,6 +12,7 @@ export class TableHeadCell {
     public style: any;
     public onClick: Record<string, () => void> = {};
     public readonly isInput: boolean;
+    public component?: CreateInputResult | null;
 
     constructor(column: IField) {
         const metadata = column.Metadata;
