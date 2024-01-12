@@ -128,8 +128,6 @@
 		async refresh() {
 			const me: OutputComponent = this as OutputComponent;
 
-			console.log('pager', controller);
-
 			useUrl = controller.form?.parentForm != null && controller.form?.useUrl == true;
 
 			inputFieldValues = await controller.form!.getInputFieldValues();
