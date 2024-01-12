@@ -122,10 +122,15 @@
 	let inputFieldValues: any = {};
 	let pageSizes = [10, 20, 50, 100];
 	let pager: Pager;
+	let useUrl: boolean = true;
 
 	const component = new OutputComponent({
 		async refresh() {
 			const me: OutputComponent = this as OutputComponent;
+
+			console.log('pager', controller);
+
+			useUrl = controller.form?.parentForm != null && controller.form?.useUrl == true;
 
 			inputFieldValues = await controller.form!.getInputFieldValues();
 			pager = new Pager(controller, inputFieldValues, me);
@@ -160,13 +165,13 @@
 						throw new Error('Form is not set.');
 					}
 
-					if (controller.form.parentForm != null) {
-						new Page(controller.form, component, values, 1).go();
-					} else {
+					if (useUrl) {
 						await controller.app.goto({
 							Form: controller.form.metadata.Id,
 							InputFieldValues: values
 						});
+					} else {
+						new Page(controller.form, component, values, 1).go();
 					}
 				}}
 			>
@@ -179,12 +184,12 @@
 		<ul class="pagination">
 			{#each pager.pages as page}
 				<li class="page-item" class:active={page.index == pager.paginatorValue.PageIndex}>
-					{#if controller.form?.parentForm != null}
-						<button class="page-link" on:click={() => page.go()}>{@html page.label}</button>
-					{:else}
+					{#if useUrl}
 						{#await page.url(controller.app) then url}
 							<a class="page-link" href={url} data-sveltekit-noscroll>{@html page.label}</a>
 						{/await}
+					{:else}
+						<button class="page-link" on:click={() => page.go()}>{@html page.label}</button>
 					{/if}
 				</li>
 			{/each}
@@ -258,7 +263,7 @@
 
 			& > li.active > .page-link {
 				border-color: var(--app-border-color);
-				background: #54ABD9;
+				background: #54abd9;
 				color: white;
 			}
 		}
