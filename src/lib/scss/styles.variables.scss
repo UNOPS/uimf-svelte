@@ -1,10 +1,12 @@
-// 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
-@import "bootstrap/scss/functions";
-
 html,
 body {
   font-size: 12px;
 }
+
+// ---------------------------------------------------------- //
+// 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
+// ---------------------------------------------------------- //
+@import "bootstrap/scss/functions";
 
 // ---------------------------------------------------------- //
 // 2. Include any default variable overrides here
@@ -47,3 +49,4 @@ $theme-colors: map-merge($theme-colors, (
 // ---------------------------------------------------------- //
 @import "bootstrap/scss/maps";
 @import "bootstrap/scss/mixins";
+@import "bootstrap/scss/utilities";
