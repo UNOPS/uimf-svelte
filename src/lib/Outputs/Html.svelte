@@ -17,7 +17,7 @@
 	beforeUpdate(async () => await component.setup(controller));
 </script>
 
-{#if controller.value != null}
+{#if controller.value?.Value != null}
 	<span class={controller.metadata.CustomProperties?.cssClass}>{@html controller.value.Value}</span>
 {/if}
 
