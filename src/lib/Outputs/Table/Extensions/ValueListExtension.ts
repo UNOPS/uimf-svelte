@@ -14,37 +14,33 @@ interface ValueListInput {
 }
 
 export class ValueListExtension extends TableExtension {
-    private bulkActions: ComponentMetadata[] = [];
+    private bulkInputs: ComponentMetadata[] = [];
 
     init() {
     }
 
     processTable(table: Table): void {
-        if (this.bulkActions.length > 0) {
+        if (this.bulkInputs.length > 0) {
             const cells = table.head.main.cells.map(t => {
                 const cell = new TableHeadCell(table.field(t.metadata.Id));
 
+                const bulkInputMetadata = this.bulkInputs.find(c => c.Id == t.metadata.Id)!;
+
                 // Copy metadata and mark the bulk input as optional.
-                cell.metadata = JSON.parse(JSON.stringify(t.metadata));
-                cell.metadata.Required = false;
+                cell.metadata = bulkInputMetadata;
 
-                // Remove the label.
-                cell.label = '';
-
-                const action = this.bulkActions.find(c => c.Id == t.metadata.Id);
-
-                if (action != null) {
+                if (bulkInputMetadata != null) {
                     const bulkInput = controlRegister.createInput({
                         app: table.parent.app,
                         defer: null,
                         form: table.parent.form,
-                        metadata: action
+                        metadata: bulkInputMetadata
                     });
 
                     bulkInput.controller.on('input:change', () => {
                         bulkInput.controller.getValue().then(function (value) {
                             table.body.forEach(function (row) {
-                                var input = table.cell(row, action.Id);
+                                var input = table.cell(row, bulkInputMetadata.Id);
                                 input.controller.setValue(value);
                             });
                         });
@@ -69,7 +65,14 @@ export class ValueListExtension extends TableExtension {
         const inputProps: ValueListInput = cell.metadata.CustomProperties?.Input;
 
         if (inputProps?.ShowBulkInput === true) {
-            this.bulkActions.push(cell.metadata);
+            // Make a copy of the metadata, because we want to modify it
+            // to be slightly different from the individual row actions.
+            const metadata = JSON.parse(JSON.stringify(cell.metadata));
+
+            // Bulk inputs are always optional.
+            metadata.Required = false;
+
+            this.bulkInputs.push(metadata);
         }
     }
 }
