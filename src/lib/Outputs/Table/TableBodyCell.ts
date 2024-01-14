@@ -11,6 +11,11 @@ export class TableBodyCell {
     public colspan: number = 0;
     public readonly isInput: boolean;
 
+    /**
+     * Indicates whether the content of the cell should be hidden.
+     */
+    public hidden: boolean = false;
+
     constructor(parent: IFormComponent, data: any, field: IField) {
         this.isInput = field.IsInput;
 

@@ -63,22 +63,18 @@
 
 			this.table = this.createTable();
 
-			const items = this.value.Items.map((item) => {
-				const data: { [key: string]: any } = {};
+			const primitiveInput = this.metadata.CustomProperties.Fields.find(
+				(t) => t.IsInput && t.Metadata.CustomProperties?.IsPrimitive == true
+			);
 
-				for (let column of this.metadata.CustomProperties.Fields) {
-					if (column.IsInput) {
-						data[column.Metadata.Id] = this.metadata.CustomProperties.IsPrimitive
-							? item
-							: item[column.Metadata.Id];
-					} else {
-						data[column.Metadata.Id] = item[column.Metadata.Id];
-					}
+			const items = this.value.Items.map((item) => {
+				if (primitiveInput != null) {
+					return { [primitiveInput.Metadata.Id]: item };
 				}
 
-				return data;
+				return { ...item };
 			});
-			
+
 			await this.table.setData(items);
 		}
 
@@ -173,6 +169,10 @@
 		},
 		async refresh() {
 			table = controller.table;
+
+			table.on('input:change', function (e) {
+				table = table;
+			});
 		}
 	});
 
@@ -215,7 +215,7 @@
 			{/if}
 			<thead>
 				{#each table.head.above as header}
-					<tr>
+					<tr class={header.cssClass}>
 						{#each header.cells as cell, index}
 							<th
 								use:tooltip={cell.documentation}
@@ -266,7 +266,7 @@
 				</tr>
 
 				{#each table.head.below as footer}
-					<tr>
+					<tr class={footer.cssClass}>
 						{#each footer.cells as cell, index}
 							<th
 								use:tooltip={cell.documentation}
@@ -291,7 +291,7 @@
 			<tbody>
 				{#each table.body.filter((t) => !t.deleted) as rowGroup}
 					{#each rowGroup.above as header, index}
-						<tr class="group-header">
+						<tr class:group-header={true} class={header.cssClass}>
 							{#each header.cells as cell}
 								<td colspan={cell.colspan + (index === 0 ? extraColspan : 0)} class={cell.cssClass}>
 									<Output controller={cell.controller} hideLabel={true} />
@@ -303,10 +303,15 @@
 					<tr>
 						{#each rowGroup.main.cells as cell}
 							<td colspan={cell.colspan} class={cell.cssClass}>
-								{#if cell.isInput}
-									<Input controller={getControllerOrException(rowGroup, cell)} hideLabel={true} />
-								{:else}
-									<Output controller={getControllerOrException(rowGroup, cell)} hideLabel={true} />
+								{#if !cell.hidden}
+									{#if cell.isInput}
+										<Input controller={getControllerOrException(rowGroup, cell)} hideLabel={true} />
+									{:else}
+										<Output
+											controller={getControllerOrException(rowGroup, cell)}
+											hideLabel={true}
+										/>
+									{/if}
 								{/if}
 							</td>
 						{/each}
@@ -326,7 +331,7 @@
 
 					{#each rowGroup.below as footer}
 						{#if footer.append}
-							<tr class:d-none={!footer.visible} class="footer">
+							<tr class:d-none={!footer.visible} class:fotter={true} class={footer.cssClass}>
 								{#each footer.cells as cell, index}
 									<td
 										colspan={cell.colspan + (index === 0 ? extraColspan : 0)}
@@ -380,11 +385,25 @@
 				text-decoration: underline;
 				text-decoration-style: dashed;
 			}
+
+			& > tr.bulk-input-row > th {
+				background: $app-soft-bg;
+				border-bottom: 0 0 2px 0;
+			}
 		}
 
 		tbody {
 			& > tr > td {
 				vertical-align: middle;
+				padding: 14px 8px;
+
+				& :has(input) {
+					padding: 4px 8px;
+				}
+
+				& .min-width-200 {
+					min-width: 200px;
+				}
 			}
 		}
 
