@@ -137,7 +137,7 @@
 
 	div.with-icons {
 		white-space: nowrap;
-		display: flexbox;
+		display: flex;
 
 		& > label {
 			display: inline-flex;
