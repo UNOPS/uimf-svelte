@@ -125,7 +125,7 @@
 			{/if}
 			<thead>
 				{#each table.head.above as header}
-					<tr>
+					<tr class={header.cssClass}>
 						{#each header.cells as cell, index}
 							<th
 								use:tooltip={cell.documentation}
@@ -172,7 +172,7 @@
 					{/each}
 				</tr>
 				{#each table.head.below as footer}
-					<tr>
+					<tr class={footer.cssClass}>
 						{#each footer.cells as cell, index}
 							<th
 								use:tooltip={cell.documentation}
@@ -188,7 +188,7 @@
 			<tbody>
 				{#each table.body as rowGroup}
 					{#each rowGroup.above as header, index}
-						<tr class="group-header">
+						<tr class:group-header={true} class={header.cssClass}>
 							{#each header.cells as cell}
 								<td colspan={cell.colspan + (index === 0 ? extraColspan : 0)} class={cell.cssClass}>
 									<Output controller={cell.controller} hideLabel={true} />
@@ -222,7 +222,7 @@
 
 					{#each rowGroup.below as footer}
 						{#if footer.append}
-							<tr class:d-none={!footer.visible} class="footer">
+							<tr class:d-none={!footer.visible} class:fotter={true} class={footer.cssClass}>
 								{#each footer.cells as cell, index}
 									<td
 										colspan={cell.colspan + (index === 0 ? extraColspan : 0)}
