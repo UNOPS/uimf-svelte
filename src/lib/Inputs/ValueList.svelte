@@ -396,14 +396,14 @@
 			& > tr > td {
 				vertical-align: middle;
 				padding: 14px 8px;
+			}
 
-				& :has(input) {
-					padding: 4px 8px;
-				}
+			& > tr > td:has(input) {
+				padding: 4px 8px;
+			}
 
-				& .min-width-200 {
-					min-width: 200px;
-				}
+			& > tr > td.min-width-200 {
+				min-width: 200px;
 			}
 		}
 
