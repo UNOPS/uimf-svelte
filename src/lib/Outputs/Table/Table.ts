@@ -105,7 +105,8 @@ export class Table extends EventSource {
 
                 return cell;
             })
-            .filter(t => !t.hidden);
+            .filter(t => !t.hidden)
+            .sort((a, b) => a.orderIndex - b.orderIndex);
 
         this.columns = headCells
             .filter(t => !t.hidden)

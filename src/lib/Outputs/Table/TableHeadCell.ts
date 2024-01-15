@@ -14,6 +14,13 @@ export class TableHeadCell {
     public readonly isInput: boolean;
     public component?: CreateInputResult | null;
 
+    /**
+     * Defines the order index for this column inside the table.
+     * By default it will be set to the value of `Metadata.OrderIndex`,
+     * but can be changed by extensions.
+     */
+    public orderIndex: number;
+
     constructor(column: IField) {
         const metadata = column.Metadata;
 
@@ -23,6 +30,7 @@ export class TableHeadCell {
         this.label = metadata.Label;
         this.cssClass = "";
         this.hidden = metadata.Hidden;
+        this.orderIndex = metadata.OrderIndex;
     }
 
     public click() {

@@ -11,7 +11,8 @@ import type { TableRowGroup } from "../TableRowGroup";
 interface ColumnCustomProperty {
     Color: string;
     CssClass: string;
-    Group: string;
+    GroupLabel: string | null;
+    GroupOrderIndex: number | null;
 }
 
 export class ColumnExtension extends TableExtension {
@@ -36,6 +37,10 @@ export class ColumnExtension extends TableExtension {
                     cssClass: config.CssClass
                 });
             }
+
+            if (config.GroupOrderIndex != null) {
+                cell.orderIndex = config.GroupOrderIndex * 1000 + cell.metadata.OrderIndex;
+            }
         }
     }
 
@@ -59,7 +64,7 @@ export class ColumnExtension extends TableExtension {
 
             table.head.main.cells.forEach(headCell => {
                 let thisGroupConfig: ColumnCustomProperty = headCell.metadata.CustomProperties?.column;
-                let thisGroupLabel = thisGroupConfig?.Group;
+                let thisGroupLabel = thisGroupConfig?.GroupLabel;
 
                 if (thisGroupLabel == null || thisGroupLabel != previousThCell?.label) {
                     thAboveCell = new TableHeadCell({
@@ -84,14 +89,14 @@ export class ColumnExtension extends TableExtension {
                     let tdStyle: Record<string, string> = {};
                     let thStyle: Record<string, string> = {};
 
-                    if (thisGroupConfig?.Group != null) {
-                        tdStyle.background = thisGroupConfig.Color || table.parent.app.colorFromString(thisGroupConfig.Group, {
+                    if (thisGroupConfig?.GroupLabel != null) {
+                        tdStyle.background = thisGroupConfig.Color || table.parent.app.colorFromString(thisGroupConfig.GroupLabel, {
                             format: 'rgba',
                             alpha: 0.05,
                             luminosity: 'bright'
                         });
 
-                        thStyle.background = table.parent.app.colorFromString(thisGroupConfig.Group, {
+                        thStyle.background = table.parent.app.colorFromString(thisGroupConfig.GroupLabel, {
                             format: 'rgba',
                             hue: tdStyle.background,
                             alpha: 0.06,
