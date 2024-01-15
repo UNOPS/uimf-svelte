@@ -63,17 +63,15 @@
 
 			this.table = this.createTable();
 
-			const primitiveInput = this.metadata.CustomProperties.Fields.find(
-				(t) => t.IsInput && t.Metadata.CustomProperties?.IsPrimitive == true
-			);
-
 			const items = this.value.Items.map((item) => {
-				if (primitiveInput != null) {
-					return { [primitiveInput.Metadata.Id]: item };
+				if (this.metadata.CustomProperties.IsPrimitive === true) {
+					return { [this.metadata.CustomProperties.Fields[0].Metadata.Id]: item };
 				}
 
 				return { ...item };
 			});
+
+			console.log(items);
 
 			await this.table.setData(items);
 		}
