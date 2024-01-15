@@ -151,7 +151,6 @@
 	let metadata: Metadata | null = null;
 	let hasDropdowns: boolean = false;
 	let table: Table | null = null;
-	let extraColspan: number = 0;
 
 	const component = new InputComponent({
 		init() {
@@ -220,7 +219,7 @@
 							<th
 								use:tooltip={cell.documentation}
 								style={cell.style}
-								colspan={cell.colspan + (index === 0 ? extraColspan : 0)}
+								colspan={cell.colspan}
 								class={cell.cssClass}
 								on:click={() => cell.click()}
 							>
@@ -270,7 +269,7 @@
 						{#each footer.cells as cell, index}
 							<th
 								use:tooltip={cell.documentation}
-								colspan={cell.colspan + (index === 0 ? extraColspan : 0)}
+								colspan={cell.colspan}
 								class={cell.cssClass}
 								style={cell.style}
 								on:click={() => cell.click()}
@@ -293,7 +292,7 @@
 					{#each rowGroup.above as header, index}
 						<tr class:group-header={true} class={header.cssClass}>
 							{#each header.cells as cell}
-								<td colspan={cell.colspan + (index === 0 ? extraColspan : 0)} class={cell.cssClass}>
+								<td colspan={cell.colspan} class={cell.cssClass}>
 									<Output controller={cell.controller} hideLabel={true} />
 								</td>
 							{/each}
@@ -334,7 +333,7 @@
 							<tr class:d-none={!footer.visible} class:fotter={true} class={footer.cssClass}>
 								{#each footer.cells as cell, index}
 									<td
-										colspan={cell.colspan + (index === 0 ? extraColspan : 0)}
+										colspan={cell.colspan}
 										class={cell.cssClass}
 									>
 										<Output controller={cell.controller} hideLabel={true} />
@@ -348,7 +347,7 @@
 			{#if metadata.CustomProperties.CanAdd}
 				<tfoot>
 					<tr>
-						<td colspan={columns.length} />
+						<td colspan={columns.length - 1} />
 						<td class="col-action">
 							<button
 								class="btn btn-outline-primary"
@@ -437,5 +436,6 @@
 
 	.col-action {
 		width: 1px;
+		text-align: center;
 	}
 </style>
