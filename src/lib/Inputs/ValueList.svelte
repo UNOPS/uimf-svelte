@@ -83,7 +83,6 @@
 					new ColumnExtension(),
 					new RowExtension(),
 					new ActionListColumnExtension(),
-					new ColumnExtension(),
 					new ValueListExtension()
 				],
 				inputOnChange: async (row, cell) => {
