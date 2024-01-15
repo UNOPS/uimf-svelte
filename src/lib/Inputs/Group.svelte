@@ -47,15 +47,48 @@
 			controller.value = controller.value;
 		}
 	});
-
 	beforeUpdate(async () => await component.setup(controller));
+	export let groupNames: string[];
+
+	export function move(item: IItem, currentGroupIndex: number, targetGroupIndex: number): void {
+		let currentGroup = controller.value?.Items[groupNames[currentGroupIndex]];
+		let targetGroup = controller.value?.Items[groupNames[targetGroupIndex]];
+
+		if (currentGroup) {
+			if (currentGroup.indexOf(item) !== -1) {
+				currentGroup.splice(currentGroup.indexOf(item), 1);
+			}
+		}
+		if (targetGroup) {
+			targetGroup.push(item);
+		}
+	}
+	export function moveAll(item: IItem, currentGroupIndex: number, targetGroupIndex: number): void {
+		const currentGroup = controller.value?.Items[groupNames[currentGroupIndex]];
+		const targetGroup = controller.value?.Items[groupNames[targetGroupIndex]];
+
+		// Clear current group.
+		if (currentGroup) {
+			const currentGroupArray = controller.value?.Items[groupNames[currentGroupIndex]];
+			if (currentGroupArray) {
+				currentGroupArray.splice(0, currentGroupArray.length);
+			}
+		}
+
+		// Append items to target group.
+		if (currentGroup && targetGroup) {
+			currentGroup.forEach((i) => {
+				targetGroup.push(i);
+			});
+		}
+	}
 </script>
 
 {#if controller.value != null}
 	<div class="form-input-groups">
 		{#each Object.entries(controller.value.Items) as item, index}
 			{#if item[index] === 'Not Assigned'}
-				<div id="first-group">
+				<div>
 					<div>
 						<h2 class="group-name">Not Assigned</h2>
 						<i class="fa-solid fa-arrow-right" />
@@ -68,11 +101,9 @@
 								<div class="buttons">
 									<button
 										type="button"
-										class="btn btn-danger remove-button"
-										on:click={() => {
-											//moveTo. = '';
-											controller.setValue(null);
-										}}
+										class="btn"
+										on:click={() =>
+											move(i, item.indexOf(item[index]), item.indexOf(item[index + 1]))}
 									>
 										<i class="fa-solid fa-arrow-right" />
 									</button>
@@ -83,7 +114,7 @@
 				</div>
 			{/if}
 			{#if item[index] != 'Not Assigned'}
-				<div id="last-group">
+				<div>
 					<div>
 						<i class="fa-solid fa-arrow-left" />
 						<h2 class="group-name">Assigned</h2>
@@ -91,7 +122,13 @@
 					<ul>
 						{#each item[1] as i}
 							<li>
-								<i class="fa-solid fa-arrow-left" />
+								<button
+									type="button"
+									class="btn"
+									on:click={() => move(i, item.indexOf(item[index]), item.indexOf(item[index - 1]))}
+								>
+									<i class="fa-solid fa-arrow-left" />
+								</button>
 								{i.Label}
 								<i class="fa fa-external-link-alt fa-1x" />
 							</li>
