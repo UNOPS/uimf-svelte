@@ -253,7 +253,7 @@ defaultControlRegister.registerInputComponent('dynamic-input', DynamicInput, {
 });
 defaultControlRegister.registerInputComponent('json-object', JsonObject);
 defaultControlRegister.registerInputComponent('money', MoneyInput);
-defaultControlRegister.registerInputComponent('groups', Group);
+//defaultControlRegister.registerInputComponent('groups', Group);
 
 // Outputs.
 defaultControlRegister.registerOutputComponent('action-list', ActionList, {
