@@ -5,7 +5,7 @@
 		AltText: string | null;
 		Url: string | null;
 		Id: number | null;
-		ShowDeleteButton: boolean;
+		ShowDeleteButton: boolean | null;
 	}
 </script>
 
@@ -22,9 +22,8 @@
 		}
 	});
 
-	async function deleteImage(index: number) {
-
-		if(index == -1){
+	async function deleteImage(index: number | null) {
+		if (index == null) {
 			throw `Image index is missing.`;
 		}
 		type PostData = { Id: number };
@@ -32,7 +31,19 @@
 		let postData: PostData = { Id: index };
 
 		let response = controller.app
-			.postForm('delete-product-image', postData, null);
+			.postForm('delete-product-image', postData, null)
+			.then((response: any) => {
+				if (response.Result == true) {
+					controller.setValue({
+						Source: '',
+						MaxWidth: null,
+						AltText: null,
+						Url: null,
+						Id: null,
+						ShowDeleteButton: false
+					});
+				}
+			});
 
 		await response;
 	}
@@ -61,7 +72,7 @@
 		{/if}
 
 		{#if controller.value.ShowDeleteButton}
-			<button class="delete-button" on:click={() => deleteImage(controller.value.Id ?? -1)}>
+			<button class="delete-button" on:click={() => deleteImage(controller.value.Id)}>
 				<i class="fa-solid fa-trash-can" aria-hidden="true" />
 			</button>
 		{/if}
