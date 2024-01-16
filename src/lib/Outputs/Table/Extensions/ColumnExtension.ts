@@ -62,11 +62,19 @@ export class ColumnExtension extends TableExtension {
             let previousColgroup: Colgroup | null = null;
             let thAboveCell: TableHeadCell | null = null;
 
+            let previousGroupIdentity: string | null = null;
+
             table.head.main.cells.forEach(headCell => {
                 let thisGroupConfig: ColumnCustomProperty = headCell.metadata.CustomProperties?.column;
                 let thisGroupLabel = thisGroupConfig?.GroupLabel;
 
-                if (thisGroupLabel == null || thisGroupLabel != previousThCell?.label) {
+                let thisGroupIdentity =
+                    (thisGroupConfig?.GroupOrderIndex ?? '') +
+                    (thisGroupConfig?.GroupLabel ?? '');
+
+                if (thisGroupIdentity != previousGroupIdentity) {
+                    previousGroupIdentity = thisGroupIdentity;
+
                     thAboveCell = new TableHeadCell({
                         IsInput: false,
                         Metadata: {}
@@ -89,7 +97,8 @@ export class ColumnExtension extends TableExtension {
                     let tdStyle: Record<string, string> = {};
                     let thStyle: Record<string, string> = {};
 
-                    if (thisGroupConfig?.GroupLabel != null) {
+                    if (thisGroupConfig?.GroupLabel?.length != null &&
+                        thisGroupConfig?.GroupLabel.length > 0) {
                         tdStyle.background = thisGroupConfig.Color || table.parent.app.colorFromString(thisGroupConfig.GroupLabel, {
                             format: 'rgba',
                             alpha: 0.05,
@@ -115,7 +124,8 @@ export class ColumnExtension extends TableExtension {
             });
 
             // If there any column groups, then add the "column group" row.
-            if (thAboveCells.length != table.head.main.cells.length) {
+            if (thAboveCells.length != table.head.main.cells.length &&
+                thAboveCells.some(t => t.label?.length > 0)) {
                 table.head.above.push(new TableRow(thAboveCells));
             }
         }
