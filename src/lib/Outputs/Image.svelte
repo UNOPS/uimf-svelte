@@ -4,6 +4,8 @@
 		MaxWidth: string | null;
 		AltText: string | null;
 		Url: string | null;
+		Id: number | null;
+		ShowDeleteButton: boolean;
 	}
 </script>
 
@@ -20,27 +22,50 @@
 		}
 	});
 
+	async function deleteImage(index: number) {
+
+		if(index == -1){
+			throw `Image index is missing.`;
+		}
+		type PostData = { Id: number };
+
+		let postData: PostData = { Id: index };
+
+		let response = controller.app
+			.postForm('delete-product-image', postData, null);
+
+		await response;
+	}
+
 	beforeUpdate(async () => await component.setup(controller));
 </script>
 
 {#if controller.value != null}
-	{#if controller.value.Url != null}
-		<a href={controller.value.Url}>
+	<div style="position: relative; display: inline-block;">
+		{#if controller.value.Url != null}
+			<a href={controller.value.Url}>
+				<img
+					class="output-image"
+					style:max-width={controller.value.MaxWidth}
+					src={controller.value.Source}
+					alt={controller.value.AltText}
+				/>
+			</a>
+		{:else}
 			<img
 				class="output-image"
 				style:max-width={controller.value.MaxWidth}
 				src={controller.value.Source}
 				alt={controller.value.AltText}
-			/></a
-		>
-	{:else}
-		<img
-			class="output-image"
-			style:max-width={controller.value.MaxWidth}
-			src={controller.value.Source}
-			alt={controller.value.AltText}
-		/>
-	{/if}
+			/>
+		{/if}
+
+		{#if controller.value.ShowDeleteButton}
+			<button class="delete-button" on:click={() => deleteImage(controller.value.Id ?? -1)}>
+				<i class="fa-solid fa-trash-can" aria-hidden="true" />
+			</button>
+		{/if}
+	</div>
 {/if}
 
 <style lang="scss">
@@ -48,5 +73,18 @@
 
 	.output-image {
 		height: auto;
+		margin: 2px;
+	}
+
+	.delete-button {
+		position: absolute;
+		top: 2px;
+		right: 2px;
+		background-color: rgb(0, 140, 255);
+		border: none;
+		border-bottom-left-radius: 50%;
+		padding: 4px 10px 4px 10px;
+		cursor: pointer;
+		color: white;
 	}
 </style>
