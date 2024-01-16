@@ -294,7 +294,7 @@
 						</tr>
 					{/each}
 
-					<tr>
+					<tr class="main">
 						{#each rowGroup.main.cells as cell}
 							<td colspan={cell.colspan} class={cell.cssClass}>
 								{#if !cell.hidden}
@@ -399,10 +399,14 @@
 			& > tr > td.min-width-200 {
 				min-width: 200px;
 			}
+
+			& > tr.main:hover > td {
+				background-color: rgba(48, 60, 74, 0.548);
+			}
 		}
 
 		.group-header {
-			background: $app-soft-bg;
+			background: var(--group-border-color);
 
 			& > td {
 				padding: 15px 20px;
