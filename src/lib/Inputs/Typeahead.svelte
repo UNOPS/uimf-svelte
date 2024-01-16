@@ -25,25 +25,6 @@
 			return Promise.resolve(result);
 		}
 
-		setValueInternal(value: TypeaheadValue | null): Promise<void> {
-			if (value == null || value.Value == '' || value.Value == null) {
-				var valueName =
-					this.metadata.DefaultValue != null && this.form?.hasOriginalInputValues() !== true
-						? this.metadata.DefaultValue
-						: null;
-
-				var index;
-
-				if (valueName !== null) {
-					index = this.app.getDefaultValue(valueName);
-				}
-
-				this.value = { Value: index };
-			}
-
-			return Promise.resolve();
-		}
-
 		public deserialize(value: string | null): Promise<TypeaheadValue | null> {
 			var result = value == null || value === '' ? null : new TypeaheadValue(value);
 
@@ -92,6 +73,21 @@
 			inlineItems = Array.isArray(source) ? augmentItems(source) : null;
 
 			controller.ready?.resolve();
+
+			if (controller.value == null || controller.value.Value == '' || controller.value.Value == null) {
+				var valueName =
+					controller.metadata.DefaultValue != null && controller.form?.hasOriginalInputValues() !== true
+						? controller.metadata.DefaultValue
+						: null;
+
+				var index;
+
+				if (valueName !== null) {
+					index = controller.app.getDefaultValue(valueName);
+				}
+
+				controller.value = { Value: index };
+			}
 		},
 		async refresh() {
 			const capturedValue = controller.value;
