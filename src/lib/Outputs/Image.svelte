@@ -1,8 +1,8 @@
 <script lang="ts" context="module">
 	interface Image {
 		Source: string;
-		MaxWidth: string | null;
-		MaxHeight: string | null;
+		Width: string | null;
+		Height: string | null;
 		AltText: string | null;
 		Url: string | null;
 		Id: number | null;
@@ -37,8 +37,8 @@
 				if (response.Result == true) {
 					controller.setValue({
 						Source: '',
-						MaxWidth: null,
-						MaxHeight: null,
+						Width: null,
+						Height: null,
 						AltText: null,
 						Url: null,
 						Id: null,
@@ -59,7 +59,7 @@
 			<a href={controller.value.Url}>
 				<img
 					class="output-image"
-					style={`max-width: ${controller.value.MaxWidth}; max-height: ${controller.value.MaxHeight};`}
+					style={`width: ${controller.value.Width}; height: ${controller.value.Height};`}
 					src={controller.value.Source}
 					alt={controller.value.AltText}
 				/>
@@ -67,7 +67,7 @@
 		{:else}
 			<img
 				class="output-image"
-				style={`max-width: ${controller.value.MaxWidth}; max-height: ${controller.value.MaxHeight};`}
+				style={`width: ${controller.value.Width}; height: ${controller.value.Height};`}
 				src={controller.value.Source}
 				alt={controller.value.AltText}
 			/>
