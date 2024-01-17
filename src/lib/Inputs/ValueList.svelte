@@ -199,7 +199,7 @@
 	}
 </script>
 
-{#if table != null && table.body.length > 0 && metadata != null}
+{#if metadata != null && table != null && (table.body.length > 0 || metadata.CustomProperties.CanRemove || metadata.CustomProperties.CanAdd)}
 	<div class="table-responsive" class:has-dropdowns={hasDropdowns}>
 		<table class="table table-borderless table-sm">
 			{#if table.colgroups?.length > 0}
