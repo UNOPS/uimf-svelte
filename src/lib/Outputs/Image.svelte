@@ -2,6 +2,7 @@
 	interface Image {
 		Source: string;
 		MaxWidth: string | null;
+		MaxHeight: string | null;
 		AltText: string | null;
 		Url: string | null;
 		Id: number | null;
@@ -37,6 +38,7 @@
 					controller.setValue({
 						Source: '',
 						MaxWidth: null,
+						MaxHeight: null,
 						AltText: null,
 						Url: null,
 						Id: null,
@@ -57,7 +59,7 @@
 			<a href={controller.value.Url}>
 				<img
 					class="output-image"
-					style:max-width={controller.value.MaxWidth}
+					style={`max-width: ${controller.value.MaxWidth}; max-height: ${controller.value.MaxHeight};`}
 					src={controller.value.Source}
 					alt={controller.value.AltText}
 				/>
@@ -65,7 +67,7 @@
 		{:else}
 			<img
 				class="output-image"
-				style:max-width={controller.value.MaxWidth}
+				style={`max-width: ${controller.value.MaxWidth}; max-height: ${controller.value.MaxHeight};`}
 				src={controller.value.Source}
 				alt={controller.value.AltText}
 			/>
@@ -83,7 +85,6 @@
 	@import '../scss/styles.variables.scss';
 
 	.output-image {
-		height: auto;
 		margin: 2px;
 	}
 
