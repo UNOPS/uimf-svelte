@@ -401,7 +401,7 @@
 			}
 
 			& > tr.main:hover > td {
-				background-color: rgba(48, 60, 74, 0.548);
+				background-color: $app-soft-bg;
 			}
 		}
 
