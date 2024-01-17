@@ -32,23 +32,26 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../Infrastructure/Component';
-	import getItems from 'svelte-select/get-items';
 
 	export let controller: Controller;
+	export let groupNames: string[];
 
 	let component = new InputComponent({
 		init() {
 			controller.ready?.resolve();
 		},
 		refresh() {
-			console.log(controller);
-			console.log(controller.metadata);
 			console.log(controller.value);
+			if (controller.value?.Items != null) {
+				groupNames = Object.keys(controller.value?.Items);
+			} else {
+				groupNames = [];
+			}
+
 			controller.value = controller.value;
 		}
 	});
 	beforeUpdate(async () => await component.setup(controller));
-	export let groupNames: string[];
 
 	export function move(item: IItem, currentGroupIndex: number, targetGroupIndex: number): void {
 		let currentGroup = controller.value?.Items[groupNames[currentGroupIndex]];
@@ -62,8 +65,9 @@
 		if (targetGroup) {
 			targetGroup.push(item);
 		}
+		controller.value = controller.value;
 	}
-	export function moveAll(item: IItem, currentGroupIndex: number, targetGroupIndex: number): void {
+	export function moveAll(currentGroupIndex: number, targetGroupIndex: number): void {
 		const currentGroup = controller.value?.Items[groupNames[currentGroupIndex]];
 		const targetGroup = controller.value?.Items[groupNames[targetGroupIndex]];
 
@@ -81,6 +85,10 @@
 				targetGroup.push(i);
 			});
 		}
+		controller.value = controller.value;
+	}
+	function linkClick(item: IItem) {
+		window.location.href = item.Link;
 	}
 </script>
 
@@ -90,14 +98,26 @@
 			{#if item[index] === 'Not Assigned'}
 				<div>
 					<div>
-						<h2 class="group-name">Not Assigned</h2>
-						<i class="fa-solid fa-arrow-right" />
+						<h2>Not Assigned</h2>
+					</div>
+					<div>
+						<button
+							type="button"
+							class="btn"
+							on:click={() => moveAll(item.indexOf(item[index]), item.indexOf(item[index + 1]))}
+						>
+							<i class="fa-solid fa-arrow-right" />
+						</button>
 					</div>
 					<ul>
 						{#each item[1] as i}
 							<li>
-								{i.Label}
-								<i class="fa fa-external-link-alt fa-1x" />
+								<div>
+									{i.Label}
+									<button type="button" class="btn" on:click={() => linkClick(i)}>
+										<i class="fa fa-external-link-alt fa-1x" />
+									</button>
+								</div>
 								<div class="buttons">
 									<button
 										type="button"
@@ -116,8 +136,16 @@
 			{#if item[index] != 'Not Assigned'}
 				<div>
 					<div>
-						<i class="fa-solid fa-arrow-left" />
-						<h2 class="group-name">Assigned</h2>
+						<button
+							type="button"
+							class="btn"
+							on:click={() => moveAll(item.indexOf(item[index]), item.indexOf(item[index - 1]))}
+						>
+							<i class="fa-solid fa-arrow-left" />
+						</button>
+					</div>
+					<div>
+						<h2>Assigned</h2>
 					</div>
 					<ul>
 						{#each item[1] as i}
@@ -130,7 +158,9 @@
 									<i class="fa-solid fa-arrow-left" />
 								</button>
 								{i.Label}
-								<i class="fa fa-external-link-alt fa-1x" />
+								<button type="button" class="btn" on:click={() => linkClick(i)}>
+									<i class="fa fa-external-link-alt fa-1x" />
+								</button>
 							</li>
 						{/each}
 					</ul>
@@ -154,6 +184,10 @@
 		border-width: 1px 1px 1px 0;
 		flex-basis: 50%;
 		flex-grow: 1;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 10px;
 	}
 
 	.form-input-groups > div:first-child {
@@ -161,8 +195,8 @@
 	}
 
 	.form-input-groups > div > div {
-		align-content: stretch;
-		align-items: stretch;
+		align-content: center;
+		align-items: center;
 		background: #2d3c4b;
 		color: #fff;
 		display: flex;
@@ -187,11 +221,15 @@
 		margin: 0;
 		overflow-y: auto;
 		padding: 0;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 	}
 
 	.form-input-groups > div > ul > li {
 		align-content: stretch;
 		align-items: center;
+		justify-content: space-between;
 		display: flex;
 		flex-wrap: nowrap;
 		justify-content: left;
