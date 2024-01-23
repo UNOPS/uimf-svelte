@@ -42,7 +42,7 @@
 				return;
 			}
 
-			allowed = controller.app.hasRole(controller.value.RequiredPermission);
+			allowed = controller.app.hasPermission(controller.value.RequiredPermission);
 			cssClass = controller.value.CssClass ?? controller.metadata?.CustomProperties?.cssClass;
 		}
 	});

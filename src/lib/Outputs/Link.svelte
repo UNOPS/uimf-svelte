@@ -15,8 +15,6 @@
 
 	export let controller: OutputController<LinkData>;
 
-	let allowed = controller.value == null || controller.app.hasRole(controller.value.RequiredPermission!);
-
 	let component = new OutputComponent({
 		refresh() {
 			controller.value = controller.value;
@@ -27,7 +25,7 @@
 </script>
 
 {#if controller.value != null}
-	{#if allowed}
+	{#if controller.app.hasPermission(controller.value.RequiredPermission)}
 		<a
 			class={controller.value.CssClass}
 			href={controller.value.Url}

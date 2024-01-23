@@ -63,10 +63,9 @@ export default interface IUimfApp {
     postForm<T extends FormResponse>(form: string, data: any, config: any): Promise<T>;
     getApiFile(url: string): Promise<Response>;
     getApi(form: string): Promise<Response>;
-    hasRole(permission?: string): boolean;
     getResponseHandler(handler: string): any;
     getForm(formId: string): Promise<FormInstance>;
-    hasPermission(permission: string): boolean;
+    hasPermission(permission?: string | null): boolean;
     colorFromString(str: string, options: ColorOptions): string;
     getDefaultValue(valueName: string): any;
 }
