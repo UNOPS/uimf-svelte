@@ -35,16 +35,5 @@
 	</span>
 {/if}
 
-<style>
-	form-output-tag > .label {
-		border-radius: 2px !important;
-		vertical-align: text-bottom;
-		color: black;
-	}
-
-	form-output-tuple > * > .output-tag > form-output-tag > .label {
-		font-size: 10px;
-		line-height: 1.2em;
-		display: inline-block;
-	}
+<style lang="scss">
 </style>
