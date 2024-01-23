@@ -42,10 +42,12 @@
 		<ul class="nav nav-tabs">
 			{#each tabGroups as group, groupIndex}
 				{#each group.Tabs as tab, tabIndex}
-					<li class="nav-item" class:active={tab.Form === controller.value.CurrentTab}>
-						{#if groupIndex > 0 && tabIndex == 0}
+					{#if groupIndex > 0 && tabIndex == 0}
+						<li>
 							<span class="separator">~</span>
-						{/if}
+						</li>
+					{/if}
+					<li class="nav-item" class:active={tab.Form === controller.value.CurrentTab}>
 						{#await controller.app.makeUrl(tab) then url}
 							<a href={url}>{tab.Label}</a>
 						{/await}
@@ -70,5 +72,14 @@
 
 	.nav-tabs > li.active > a {
 		text-decoration: underline;
+	}
+
+	.separator {
+		padding: 0 10px;
+		font-size: 15px;
+		color: #04284f1c;
+		position: relative;
+		top: 9px;
+		font-weight: bold;
 	}
 </style>
