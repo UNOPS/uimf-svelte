@@ -8,6 +8,7 @@
 		InputFieldValues: any;
 		Label: string;
 		Style: string;
+		RequiredPermission: string | null;
 	}
 
 	interface TabGroup {
@@ -47,11 +48,13 @@
 							<span class="separator">~</span>
 						</li>
 					{/if}
-					<li class="nav-item" class:active={tab.Form === controller.value.CurrentTab}>
-						{#await controller.app.makeUrl(tab) then url}
-							<a href={url}>{tab.Label}</a>
-						{/await}
-					</li>
+					{#if controller.app.hasPermission(tab.RequiredPermission)}
+						<li class="nav-item" class:active={tab.Form === controller.value.CurrentTab}>
+							{#await controller.app.makeUrl(tab) then url}
+								<a href={url}>{tab.Label}</a>
+							{/await}
+						</li>
+					{/if}
 				{/each}
 			{/each}
 		</ul>
