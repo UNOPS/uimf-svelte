@@ -64,6 +64,7 @@
 
 	let inlineItems: Option[] | null = null;
 	let cachedOptions: Record<string, Promise<Option[]>> = {};
+	let defaultValue: TypeaheadValue | null;
 
 	let component = new InputComponent({
 		init() {
@@ -74,9 +75,14 @@
 
 			controller.ready?.resolve();
 
-			if (controller.value == null || controller.value.Value == '' || controller.value.Value == null) {
+			if (
+				controller.value == null ||
+				controller.value.Value == '' ||
+				controller.value.Value == null
+			) {
 				var valueName =
-					controller.metadata.DefaultValue != null && controller.form?.hasOriginalInputValues() !== true
+					controller.metadata.DefaultValue != null &&
+					controller.form?.hasOriginalInputValues() !== true
 						? controller.metadata.DefaultValue
 						: null;
 
@@ -84,18 +90,22 @@
 
 				if (valueName !== null) {
 					index = controller.app.getDefaultValue(valueName);
+					defaultValue = { Value: index };
 				}
-
-				controller.value = { Value: index };
 			}
 		},
 		async refresh() {
-			const capturedValue = controller.value;
+			const capturedValue = defaultValue ?? controller.value;
 
 			if (capturedValue != null && controller.serialize(capturedValue) != null) {
 				let results = await loadOptions(capturedValue);
 
 				if (controller.value != capturedValue) {
+					if (defaultValue != null) {
+						controller.value = capturedValue;
+						defaultValue = null;
+					}
+
 					// The value might have changed once the promise
 					// has been resolved. In this case we do nothing, because
 					// it would have been taken care of by another invocation.
