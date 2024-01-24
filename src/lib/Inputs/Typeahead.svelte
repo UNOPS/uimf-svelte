@@ -18,9 +18,16 @@
 		};
 	}
 
+	var initialized : boolean = false;
+
 	export class Controller extends InputController<TypeaheadValue, TypeaheadMetadata> {
 		public getValue(): Promise<TypeaheadValue | null> {
 			var result = this.value?.Value != null ? this.value : null;
+
+			if (!initialized && this.metadata.DefaultValue !== null) {
+				var index = this.app.getDefaultValue(this.metadata.DefaultValue);
+				return Promise.resolve({ Value: index });
+			}
 
 			return Promise.resolve(result);
 		}
@@ -75,23 +82,11 @@
 
 			controller.ready?.resolve();
 
-			if (
-				controller.value == null ||
-				controller.value.Value == '' ||
-				controller.value.Value == null
-			) {
-				var valueName =
-					controller.metadata.DefaultValue != null &&
-					controller.form?.hasOriginalInputValues() !== true
-						? controller.metadata.DefaultValue
-						: null;
-
-				var index;
-
-				if (valueName !== null) {
-					index = controller.app.getDefaultValue(valueName);
-					defaultValue = { Value: index };
-				}
+			initialized = false;
+			
+			if (controller.metadata.DefaultValue != null) {
+				var index = controller.app.getDefaultValue(controller.metadata.DefaultValue);
+				defaultValue = { Value: index };
 			}
 		},
 		async refresh() {
@@ -101,9 +96,11 @@
 				let results = await loadOptions(capturedValue);
 
 				if (controller.value != capturedValue) {
-					if (defaultValue != null) {
-						controller.value = capturedValue;
+					
+					if (!initialized && defaultValue != null) {
+						controller.setValue(defaultValue);
 						defaultValue = null;
+						initialized = true;
 					}
 
 					// The value might have changed once the promise
