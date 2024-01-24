@@ -2,6 +2,13 @@
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { beforeUpdate } from 'svelte';
 	import type { OutputController } from '../Infrastructure/OutputController';
+	import { onMount } from 'svelte';
+	import { spring, tweened } from 'svelte/motion';
+
+	interface IPieChartData {
+		Label: string;
+		Value: number;
+	}
 
 	interface IPieChartData {
 		Label: string;
