@@ -5,6 +5,10 @@
 		public valueAsString: string | null = null;
 
 		public getValue(): Promise<Date | null> {
+			if (this.value == null) {
+				return Promise.resolve(null);
+			}
+
 			var utc = this.convertToUtc(this.value);
 			return Promise.resolve(utc);
 		}
@@ -78,20 +82,35 @@
 	beforeUpdate(async () => await component.setup(controller));
 </script>
 
-<input
-	class="form-control"
-	bind:value={controller.valueAsString}
-	on:change={() => controller.setValue(controller.valueAsString)}
-	required={controller.metadata.Required}
-	type="date"
-/>
+<div style="display: flex; align-items: center;">
+	<input
+		class="form-control"
 		bind:value={controller.valueAsString}
 		on:blur={() => controller.setValue(controller.valueAsString)}
+		required={controller.metadata.Required}
+		type="date"
+	/>
+	<span
+		class="validity"
+		style="display: {controller.valueAsString == null ||
+		isNaN(new Date(controller.valueAsString).getTime()) ||
+		new Date(controller.valueAsString) < new Date('01/01/1970')
+			? 'none'
+			: 'inline-block'};"
+	/>
+</div>
 
 <style lang="scss">
 	@import '../scss/styles.variables.scss';
 
 	input.form-control {
 		min-height: $app-input-min-height;
+	}
+
+	input:valid + span::after {
+		content: '✓';
+		margin-left: 10px;
+		margin-top: 3px;
+		color: green;
 	}
 </style>
