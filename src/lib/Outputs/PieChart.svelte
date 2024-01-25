@@ -18,7 +18,6 @@
 		Data: IPieChartDisplayData[];
 	}
 
-	let accumulatedValue = 0;
 	export let size = 200; //size for PieChart
 	export let controller: OutputController<IPieChart>;
 
@@ -27,24 +26,21 @@
 			const data = controller.value.Data;
 			console.log(data);
 
-			let totalValue = controller.value.Data.reduce((total, data) => total + data.Value, 0);
-			controller.value.Data.forEach((data) => {
-				data.Value = (data.Value / totalValue) * 100;
-			});
-			// Calculate the start and end angles for each data item
-			controller.value.Data.forEach((data, i) => {
-				data.StartAngle = (2 * Math.PI * accumulatedValue) / 100;
-				data.EndAngle = (2 * Math.PI * (accumulatedValue + data.Value)) / 100;
-				accumulatedValue += data.Value;
-			});
-			controller.value.Data.forEach((data, i) => {
-				data.Color = controller.app.colorFromString(data.Label, {
-					format: 'cmyk',
-					alpha: 0.5,
-					luminosity: 'dark'
+			if (controller.value.Data) {
+				let accumulatedValue = 0;
+				let totalValue = controller.value.Data.reduce((total, data) => total + data.Value, 0);
+				controller.value.Data.forEach((data, i) => {
+					data.Value = (data.Value / totalValue) * 100;
+					data.StartAngle = (2 * Math.PI * accumulatedValue) / 100;
+					data.EndAngle = (2 * Math.PI * (accumulatedValue + data.Value)) / 100;
+					accumulatedValue += data.Value;
+					data.Color = controller.app.colorFromString(data.Label, {
+						format: 'cmyk',
+						alpha: 1,
+						luminosity: 'bright'
+					});
 				});
-			});
-
+			}
 			controller.value = controller.value;
 		}
 	});
@@ -56,15 +52,19 @@
 		<div class="piechart">
 			<svg width={size} height={size}>
 				{#each controller.value.Data as data (data.Label)}
-					<path
-						d="M{size / 2},{size / 2} L{size / 2 + (size / 2) * Math.cos(data.StartAngle)} {size /
-							2 +
-							(size / 2) * Math.sin(data.StartAngle)} A{size / 2},{size / 2} 0 {data.Value > 50
-							? 1
-							: 0},1 {size / 2 + (size / 2) * Math.cos(data.EndAngle)} {size / 2 +
-							(size / 2) * Math.sin(data.EndAngle)} Z"
-						fill={data.Color}
-					/>
+					{#if typeof data.StartAngle === 'number' && typeof data.EndAngle === 'number'}
+						<path
+							d="M{size / 2},{size / 2} L{size / 2 + (size / 2) * Math.cos(data.StartAngle)} {size /
+								2 +
+								(size / 2) * Math.sin(data.StartAngle)} A{size / 2},{size / 2} 0 {data.Value > 50
+								? 1
+								: 0},1 {size / 2 + (size / 2) * Math.cos(data.EndAngle)} {size / 2 +
+								(size / 2) * Math.sin(data.EndAngle)} Z"
+							fill={data.Color}
+						/>
+					{:else}
+						<p>Invalid</p>
+					{/if}
 				{/each}
 			</svg>
 		</div>
