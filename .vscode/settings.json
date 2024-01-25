@@ -1,5 +1,6 @@
 {
     "svelte.plugin.svelte.compilerWarnings": {
         "css-unused-selector": "ignore"
-    }
+    },
+    "editor.formatOnSaveMode": "file"
 }
