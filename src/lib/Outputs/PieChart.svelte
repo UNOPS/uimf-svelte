@@ -7,45 +7,49 @@
 		Color: string;
 		Label: string;
 		Value: number;
+	}
+
+	interface IPieChartDisplayData extends IPieChartData {
+		Color: string;
 		StartAngle: number;
 		EndAngle: number;
 	}
 
 	interface IPieChart {
-		Data: IPieChartData[];
+		Data: IPieChartDisplayData[];
 	}
 
+	let accumulatedValue = 0;
+	export let size = 200; //size for PieChart
 	export let controller: OutputController<IPieChart>;
 
 	let component = new OutputComponent({
 		refresh() {
 			const data = controller.value.Data;
 			console.log(data);
+
+			let totalValue = controller.value.Data.reduce((total, data) => total + data.Value, 0);
+			controller.value.Data.forEach((data) => {
+				data.Value = (data.Value / totalValue) * 100;
+			});
+			// Calculate the start and end angles for each data item
+			controller.value.Data.forEach((data, i) => {
+				data.StartAngle = (2 * Math.PI * accumulatedValue) / 100;
+				data.EndAngle = (2 * Math.PI * (accumulatedValue + data.Value)) / 100;
+				accumulatedValue += data.Value;
+			});
+			controller.value.Data.forEach((data, i) => {
+				data.Color = controller.app.colorFromString(data.Label, {
+					format: 'cmyk',
+					alpha: 0.5,
+					luminosity: 'dark'
+				});
+			});
+
 			controller.value = controller.value;
 		}
 	});
 	beforeUpdate(async () => await component.setup(controller));
-
-	$: totalValue = controller.value.Data.reduce((total, data) => total + data.Value, 0);
-	$: controller.value.Data.forEach((data) => {
-		data.Value = (data.Value / totalValue) * 100;
-	});
-
-	export let size = 200;
-	let accumulatedValue = 0;
-	// Calculate the start and end angles for each data item
-	$: controller.value.Data.forEach((data, i) => {
-		data.StartAngle = (2 * Math.PI * accumulatedValue) / 100;
-		data.EndAngle = (2 * Math.PI * (accumulatedValue + data.Value)) / 100;
-		accumulatedValue += data.Value;
-	});
-	$: controller.value.Data.forEach((data, i) => {
-		data.Color = controller.app.colorFromString(data.Label, {
-			format: 'cmyk',
-			alpha: 0.5,
-			luminosity: 'dark'
-		});
-	});
 </script>
 
 {#if controller.value.Data != null}
