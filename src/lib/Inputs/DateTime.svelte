@@ -85,6 +85,8 @@
 	required={controller.metadata.Required}
 	type="date"
 />
+		bind:value={controller.valueAsString}
+		on:blur={() => controller.setValue(controller.valueAsString)}
 
 <style lang="scss">
 	@import '../scss/styles.variables.scss';
