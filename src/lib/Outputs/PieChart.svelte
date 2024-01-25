@@ -20,6 +20,7 @@
 
 	export let size = 200; //size for PieChart
 	export let controller: OutputController<IPieChart>;
+	export let totalValue = 0;
 
 	let component = new OutputComponent({
 		refresh() {
@@ -28,7 +29,7 @@
 
 			if (controller.value.Data) {
 				let accumulatedValue = 0;
-				let totalValue = controller.value.Data.reduce((total, data) => total + data.Value, 0);
+				totalValue = controller.value.Data.reduce((total, data) => total + data.Value, 0);
 				controller.value.Data.forEach((data, i) => {
 					data.Value = (data.Value / totalValue) * 100;
 					data.StartAngle = (2 * Math.PI * accumulatedValue) / 100;
@@ -93,11 +94,6 @@
 		align-items: center;
 	}
 
-	.piechart-legend > ul > ol > span {
-		display: inline-block;
-		width: 1em;
-		height: 1em;
-	}
 	.piechart-legend > ul > ol > span {
 		display: inline-block;
 		width: 1em;
