@@ -4,7 +4,6 @@
 	import type { OutputController } from '../Infrastructure/OutputController';
 
 	interface IPieChartData {
-		Color: string;
 		Label: string;
 		Value: number;
 	}
