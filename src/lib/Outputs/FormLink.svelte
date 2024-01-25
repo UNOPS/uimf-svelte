@@ -83,7 +83,7 @@
 		<button
 			type="button"
 			class={cssClass ?? 'btn btn-default'}
-			disabled={disabled}
+			{disabled}
 			use:tooltip={controller.value.Tooltip}
 			on:click={() => {
 				switch (controller.value.Action) {
