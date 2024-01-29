@@ -1,20 +1,32 @@
 <script lang="ts" context="module">
 	import { InputController } from '../Infrastructure/InputController';
 
-	export class Controller extends InputController<Date> {
+	interface DateMetadata extends ComponentMetadata {
+		DefaultValue: any;
+	}
+
+	export class Controller extends InputController<Date, DateMetadata> {
 		public valueAsString: string | null = null;
+		public defaultDate: Date = this.parseDate(this.metadata.DefaultValue);
+		public initialised: Boolean | null = null;
 
 		public getValue(): Promise<Date | null> {
-			if (this.value == null) {
-				return Promise.resolve(null);
-			}
+			// if (this.value == null) {
+			// 	return Promise.resolve(null);
+			// }
 
 			var utc = this.convertToUtc(this.value);
+
 			return Promise.resolve(utc);
 		}
 
 		protected setValueInternal(value: Date | null): Promise<void> {
+			if (value != null) {
+				this.value = this.value;
+			}
+
 			this.valueAsString = this.serialize(value);
+
 			return Promise.resolve();
 		}
 
@@ -24,6 +36,7 @@
 			}
 
 			var result = this.convertToUtc(new Date(value));
+
 			return Promise.resolve(result);
 		}
 
@@ -39,6 +52,19 @@
 				'-' +
 				value.getDate().toString().padStart(2, '0')
 			);
+		}
+
+		public parseDate(value: any) {
+			if (value == null) {
+				return null;
+			}
+
+			if (value.indexOf('Date') !== -1) {
+				return eval(value);
+			}
+
+			var asInt = Date.parse(value);
+			return new Date(asInt);
 		}
 
 		/**
@@ -67,14 +93,22 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../Infrastructure/Component';
+	import type { ComponentMetadata } from '../Infrastructure/uimf';
 
 	export let controller: Controller;
 
 	let component = new InputComponent({
 		init() {
 			controller.ready?.resolve();
+			controller.initialised = false;
 		},
 		refresh() {
+			console.log('controller.defaultDate', controller.defaultDate);
+			if (!controller.initialised && controller.defaultDate != null) {
+				//controller.setValue(controller.defaultDate);
+				controller.initialised = true;
+			}
+
 			controller.valueAsString = controller.valueAsString;
 		}
 	});
