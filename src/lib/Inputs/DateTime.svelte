@@ -2,7 +2,10 @@
 	import { InputController } from '../Infrastructure/InputController';
 
 	interface DateMetadata extends ComponentMetadata {
-		DefaultValue: string | null;
+		CustomProperties: {
+			[propertyName: string]: any;
+			DefaultValue: string | null;
+		};
 	}
 
 	export class Controller extends InputController<Date, DateMetadata> {
@@ -95,7 +98,9 @@
 	let component = new InputComponent({
 		init() {
 			controller.ready?.resolve();
-			defaultValue = Controller.parseDefaultValue(controller.metadata.DefaultValue);
+			defaultValue = Controller.parseDefaultValue(
+				controller.metadata.CustomProperties?.DefaultValue
+			);
 		},
 		refresh() {
 			if (!initialised && defaultValue != null) {
