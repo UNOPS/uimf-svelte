@@ -137,6 +137,8 @@
 			pageSizes = [...new Set([10, 20, 50, 100, pager.paginatorValue.PageSize])].sort(
 				(a, b) => a - b
 			);
+
+			controller.value = controller.value;
 		}
 	});
 
