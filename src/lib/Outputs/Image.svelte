@@ -54,7 +54,7 @@
 </script>
 
 {#if controller.value != null}
-	<div style="position: relative; display: inline-block;">
+	<div class="image-container">
 		{#if controller.value.Url != null}
 			<a href={controller.value.Url}>
 				<img
@@ -83,6 +83,11 @@
 
 <style lang="scss">
 	@import '../scss/styles.variables.scss';
+
+	.image-container {
+		position: relative;
+		display: inline-block;
+	}
 
 	.output-image {
 		margin: 2px;
