@@ -60,7 +60,8 @@
 			<a href={controller.value.Url}>
 				<img
 					class="output-image"
-					style={`width: ${controller.value.Width}; height: ${height ?? controller.value.Height};`}
+					style:width={controller.value.Width}
+					style:height={height ?? controller.value.Height}
 					src={controller.value.Source}
 					alt={controller.value.AltText}
 				/>
@@ -68,7 +69,8 @@
 		{:else}
 			<img
 				class="output-image"
-				style={`width: ${controller.value.Width}; height: ${height ?? controller.value.Height};`}
+				style:width={controller.value.Width}
+				style:height={height ?? controller.value.Height}
 				src={controller.value.Source}
 				alt={controller.value.AltText}
 			/>
