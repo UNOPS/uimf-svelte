@@ -12,7 +12,7 @@
 	interface TupleMetadata extends ComponentMetadata {
 		CustomProperties: {
 			ItemTypes: ComponentMetadata[];
-			CssClass: string;
+			cssClass: string;
 		};
 	}
 
@@ -40,7 +40,7 @@
 	};
 </script>
 
-<div class={controller.metadata.CustomProperties.CssClass} class:tuple={true}>
+<div class={controller.metadata.CustomProperties.cssClass} class:tuple={true}>
 	{#each controller.metadata.CustomProperties.ItemTypes as item, idx}
 		<Output controller={getController(item, idx + 1)} hideLabel={true} />
 	{/each}
