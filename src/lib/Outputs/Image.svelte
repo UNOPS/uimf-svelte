@@ -16,6 +16,7 @@
 	import { OutputComponent } from '../Infrastructure/Component';
 
 	export let controller: OutputController<Image>;
+	export let height: string | null;
 
 	let component = new OutputComponent({
 		refresh() {
@@ -59,7 +60,7 @@
 			<a href={controller.value.Url}>
 				<img
 					class="output-image"
-					style={`width: ${controller.value.Width}; height: ${controller.value.Height};`}
+					style={`width: ${controller.value.Width}; height: ${height ?? controller.value.Height};`}
 					src={controller.value.Source}
 					alt={controller.value.AltText}
 				/>
@@ -67,7 +68,7 @@
 		{:else}
 			<img
 				class="output-image"
-				style={`width: ${controller.value.Width}; height: ${controller.value.Height};`}
+				style={`width: ${controller.value.Width}; height: ${height ?? controller.value.Height};`}
 				src={controller.value.Source}
 				alt={controller.value.AltText}
 			/>

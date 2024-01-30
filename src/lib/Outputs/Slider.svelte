@@ -23,14 +23,12 @@
 			let ItemController: ComponentController = {
 				index: i,
 				component: nestedComponent,
-				controller: new OutputController<any>(
-					{
-						metadata: controller.metadata,
-						data: null,
-						form: controller.form!,
-						app: controller.app
-					}
-				)
+				controller: new OutputController<any>({
+					metadata: controller.metadata,
+					data: null,
+					form: controller.form!,
+					app: controller.app
+				})
 			};
 
 			ItemController.controller.setValue(item.m_Item1);
@@ -40,14 +38,12 @@
 				let thumbnailController: ComponentController = {
 					index: i,
 					component: nestedComponent,
-					controller: new OutputController<any>(
-						{
-							metadata: controller.metadata,
-							data: null,
-							form: controller.form!,
-							app: controller.app
-						}
-					)
+					controller: new OutputController<any>({
+						metadata: controller.metadata,
+						data: null,
+						form: controller.form!,
+						app: controller.app
+					})
 				};
 
 				thumbnailController.controller.setValue(item.m_Item2);
@@ -91,6 +87,9 @@
 	if (controller.value != null) {
 		loadComponentControllers(controller.value.Items);
 	}
+
+	// 400 is arbitrary value of the height for a slider with a width of 600px
+	var dynamicHeight = 400 / componentItemControllers.length;
 </script>
 
 <div class="slider-container">
@@ -113,6 +112,7 @@
 						<svelte:component
 							this={componentThumbnailController.component}
 							controller={componentThumbnailController.controller}
+							height="{dynamicHeight}px"
 						/>
 					</div>
 				</button>
@@ -127,7 +127,6 @@
 		background-color: transparent;
 		cursor: pointer;
 		border: none;
-		height: 100px;
 	}
 
 	.slider-container {
@@ -178,10 +177,10 @@
 	}
 
 	.thumbnails-row {
-		height: 100px;
 		width: auto;
 		display: flex;
 		align-self: center;
+		max-height: 100px;
 	}
 
 	.thumbnail {
