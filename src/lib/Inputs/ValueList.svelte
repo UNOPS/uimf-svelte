@@ -327,10 +327,7 @@
 						{#if footer.append}
 							<tr class:d-none={!footer.visible} class:fotter={true} class={footer.cssClass}>
 								{#each footer.cells as cell, index}
-									<td
-										colspan={cell.colspan}
-										class={cell.cssClass}
-									>
+									<td colspan={cell.colspan} class={cell.cssClass}>
 										<Output controller={cell.controller} hideLabel={true} />
 									</td>
 								{/each}
