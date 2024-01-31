@@ -422,6 +422,10 @@
 			padding-left: 8px;
 			padding-right: 8px;
 		}
+
+		td.min-width-200 {
+			min-width: 200px;
+		}
 	}
 
 	.has-dropdowns {
