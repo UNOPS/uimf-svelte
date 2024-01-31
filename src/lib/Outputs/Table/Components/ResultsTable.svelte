@@ -336,7 +336,7 @@
 
 		tbody > tr.first-row-in-split-by-group > td {
 			border-top-width: 10px !important;
-			border-top-color: #f8f8f8 !important;
+			border-top-color: #ebebeb !important;
 		}
 
 		td.col-min-width {
