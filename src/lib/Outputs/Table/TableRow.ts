@@ -1,4 +1,7 @@
 export default class TableRow<T> {
+    private styleObject: { [unknown: string]: string } = {};
+    private classObject: { [unknown: string]: boolean } = {};
+
     constructor(cells: T[]) {
         this.cells = cells;
         this.cssClass = "";
@@ -27,11 +30,6 @@ export default class TableRow<T> {
     public style: string | null = null;
 
     /**
-     * The style to apply to the row element.
-     */
-    private styleObject: { [unknown: string]: string } = {};
-
-    /**
      * Adds an inline style for this row.
      * @param key The style key.
      * @param value The style value.
@@ -49,5 +47,26 @@ export default class TableRow<T> {
         }
 
         this.style = serialized.trim();
+    }
+
+    /**
+     * Adds a css class to the row.
+     * @param cssClass The css class or a space-delimited list of css classes to add.
+     */
+    public addClass(cssClass: string): void {
+        if (cssClass == null || cssClass == "") {
+            return;
+        }
+
+        const parts = cssClass.split(" ");
+
+        this.cssClass = this.cssClass ?? "";
+
+        parts.forEach(part => {
+            const singleClass = part.trim();
+
+            this.classObject[singleClass] = true;
+            this.cssClass += ` ${singleClass}`;
+        });
     }
 }

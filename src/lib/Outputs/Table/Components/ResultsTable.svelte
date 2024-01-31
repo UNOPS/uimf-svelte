@@ -137,7 +137,7 @@
 						{/each}
 					</tr>
 				{/each}
-				<tr style={table.head.main.style}>
+				<tr class={table.head.main.cssClass} style={table.head.main.style}>
 					{#if bulkActionExtension.actions.length > 0}
 						<th class="min-width">
 							<input
@@ -197,7 +197,7 @@
 						</tr>
 					{/each}
 
-					<tr style={rowGroup.main.style}>
+					<tr class={rowGroup.main.cssClass} style={rowGroup.main.style}>
 						{#if bulkActionExtension.actions.length > 0}
 							<td>
 								<input
@@ -332,6 +332,11 @@
 				border-bottom: var(--border);
 				padding: 10px 15px;
 			}
+		}
+
+		tbody > tr.first-row-in-split-by-group > td {
+			border-top-width: 10px !important;
+			border-top-color: #f8f8f8 !important;
 		}
 
 		td.col-min-width {
