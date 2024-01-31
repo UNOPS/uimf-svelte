@@ -125,7 +125,7 @@
 			{/if}
 			<thead>
 				{#each table.head.above as header}
-					<tr class={header.cssClass}>
+					<tr class={header.cssClass} style={header.style}>
 						{#each header.cells as cell, index}
 							<th
 								use:tooltip={cell.documentation}
@@ -137,7 +137,7 @@
 						{/each}
 					</tr>
 				{/each}
-				<tr>
+				<tr style={table.head.main.style}>
 					{#if bulkActionExtension.actions.length > 0}
 						<th class="min-width">
 							<input
@@ -172,7 +172,7 @@
 					{/each}
 				</tr>
 				{#each table.head.below as footer}
-					<tr class={footer.cssClass}>
+					<tr class={footer.cssClass} style={footer.style}>
 						{#each footer.cells as cell, index}
 							<th
 								use:tooltip={cell.documentation}
@@ -188,7 +188,7 @@
 			<tbody>
 				{#each table.body as rowGroup}
 					{#each rowGroup.above as header, index}
-						<tr class:group-header={true} class={header.cssClass}>
+						<tr class:group-header={true} class={header.cssClass} style={header.style}>
 							{#each header.cells as cell}
 								<td colspan={cell.colspan + (index === 0 ? extraColspan : 0)} class={cell.cssClass}>
 									<Output controller={cell.controller} hideLabel={true} />
@@ -197,7 +197,7 @@
 						</tr>
 					{/each}
 
-					<tr>
+					<tr style={rowGroup.main.style}>
 						{#if bulkActionExtension.actions.length > 0}
 							<td>
 								<input
@@ -222,7 +222,12 @@
 
 					{#each rowGroup.below as footer}
 						{#if footer.append}
-							<tr class:d-none={!footer.visible} class:fotter={true} class={footer.cssClass}>
+							<tr
+								class:d-none={!footer.visible}
+								class:fotter={true}
+								class={footer.cssClass}
+								style={footer.style}
+							>
 								{#each footer.cells as cell, index}
 									<td
 										colspan={cell.colspan + (index === 0 ? extraColspan : 0)}

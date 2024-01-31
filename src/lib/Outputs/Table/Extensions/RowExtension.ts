@@ -27,6 +27,11 @@ export class RowExtension extends TableExtension {
      */
     private groupByHeader: IField | null = null;
 
+    /**
+     * Field based on which we will determine the row's highlight color.
+     */
+    private color: string | null = null;
+
     private firstRow: TableRowGroup<TableBodyCell> | null = null;
     private firstRowProcessed: boolean = false;
     private groupCount: number = 0;
@@ -36,6 +41,7 @@ export class RowExtension extends TableExtension {
         this.previousGroup = null;
         this.firstRow = null;
         this.firstRowProcessed = false;
+        this.color = null;
     }
 
     processTable(table: Table): void {
@@ -76,6 +82,13 @@ export class RowExtension extends TableExtension {
 
             this.previousGroup = currentGroup;
         }
+
+        if (this.color != null) {
+            const seed = row.data[this.color];
+            const rowColor = table.parent.app.colorFromString(seed);
+
+            row.main.addStyle('border-left', `5px solid ${rowColor}`);
+        }
     }
 
     processHeadCell(table: Table, cell: TableHeadCell) {
@@ -97,5 +110,7 @@ export class RowExtension extends TableExtension {
                 this.groupByHeader = table.fieldOrNull(rowMetadata.GroupByHeader ?? this.groupBy.Id);
             }
         }
+
+        this.color = rowMetadata.Color;
     }
 }
