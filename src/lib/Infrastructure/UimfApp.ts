@@ -66,6 +66,6 @@ export default interface IUimfApp {
     getResponseHandler(handler: string): any;
     getForm(formId: string): Promise<FormInstance>;
     hasPermission(permission?: string | null): boolean;
-    colorFromString(str: string, options: ColorOptions): string;
+    colorFromString(str: string, options?: ColorOptions | null): string;
     getDefaultValue(valueName: string): any;
 }
