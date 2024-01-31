@@ -103,7 +103,6 @@ export class RowExtension extends TableExtension {
 
             if (this.rowsProcessed != 0 && currentSplit != this.previousSplit) {
                 row.main.addClass('first-row-in-split-by-group');
-                console.log(row, this.rowsProcessed, currentSplit, this.previousSplit);
             }
 
             this.previousSplit = currentSplit;
