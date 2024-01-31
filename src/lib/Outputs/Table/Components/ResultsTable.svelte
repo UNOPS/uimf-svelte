@@ -157,7 +157,7 @@
 						<th
 							use:tooltip={cell.documentation}
 							colspan={cell.colspan}
-							class="{table.columns.Value.Metadata.CustomProperties.column.CssClass}{cell.cssClass}"
+							class={cell.cssClass}
 							style={cell.style}
 							on:click={() => cell.click()}
 						>
@@ -247,10 +247,6 @@
 
 <style lang="scss">
 	@import '../../../scss/styles.variables.scss';
-
-	.min-width-200 {
-		min-width: 200px;
-	}
 
 	.min-width {
 		width: 1px;
