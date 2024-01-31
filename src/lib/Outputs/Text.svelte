@@ -31,4 +31,15 @@
 		text-align: left;
 		padding: 0.6em 0em 0em;
 	}
+
+	.title {
+		font-weight: bold;
+		font-size: larger;
+		color: #000;
+		text-align: left;
+		padding: 0.6em 0.5em;
+		margin: 20px 0px 2px;
+		background-color: #ebebeb;
+		display: block;
+	}
 </style>
