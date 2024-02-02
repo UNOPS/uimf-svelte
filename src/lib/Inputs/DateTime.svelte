@@ -89,15 +89,32 @@
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../Infrastructure/Component';
 	import type { ComponentMetadata } from '../Infrastructure/uimf';
+	import { tooltip } from '../Components/Tooltip.svelte';
 
 	export let controller: Controller;
 
 	let initialised = false;
 	let defaultValue: Date | null;
 
+	export let minDate: string | null;
+	export let maxDate: string | null;
+
+	let minDateString: string | null;
+	let maxDateString: string | null;
+
 	let component = new InputComponent({
 		init() {
 			controller.ready?.resolve();
+
+			if (minDate != null) {
+				minDateString =
+					controller.convertToUtc(new Date(minDate))?.toISOString().split('T')[0] ?? null;
+			}
+			if (maxDate != null) {
+				maxDateString =
+					controller.convertToUtc(new Date(maxDate))?.toISOString().split('T')[0] ?? null;
+			}
+
 			defaultValue = Controller.parseDefaultValue(
 				controller.metadata.CustomProperties?.DefaultValue
 			);
@@ -107,7 +124,6 @@
 				controller.setValue(defaultValue);
 				initialised = true;
 			}
-
 			controller.valueAsString = controller.valueAsString;
 		}
 	});
@@ -121,6 +137,9 @@
 		bind:value={controller.valueAsString}
 		required={controller.metadata.Required}
 		type="date"
+		min={minDateString}
+		max={maxDateString}
+		use:tooltip={`minimum date=${minDateString} maximum=${maxDateString}`}
 	/>
 </div>
 
