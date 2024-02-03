@@ -48,6 +48,18 @@
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
+
+	function confirmAndRun(callback: () => void) {
+		if (controller.value.ConfirmationMessage != null) {
+			controller.app
+				.confirm({
+					bodyText: controller.value.ConfirmationMessage
+				})
+				.then(callback);
+		} else {
+			callback();
+		}
+	}
 </script>
 
 {#if controller.value != null}
@@ -98,7 +110,7 @@
 						}
 						break;
 					case 'open-modal':
-						var callback = function () {
+						confirmAndRun(() => {
 							const originalUrl = window.location.href;
 
 							return controller.app
@@ -144,42 +156,21 @@
 										}
 									}
 								});
-						};
-
-						if (controller.value.ConfirmationMessage != null) {
-							controller.app
-								.confirm({
-									bodyText: controller.value.ConfirmationMessage
-								})
-								.then(callback);
-						} else {
-							callback();
-						}
+						});
 						break;
 					case 'run':
-						{
-							var callback = function () {
-								return controller.app
-									.postForm(controller.value.Form, controller.value.InputFieldValues, {
-										skipClientFunctions: true
-									})
-									.then(function (response) {
-										controller.app.runResponseHandler(response);
-										controller.app.runClientFunctions(response);
-										controller.form?.submit(false);
-									});
-							};
+						confirmAndRun(() => {
+							return controller.app
+								.postForm(controller.value.Form, controller.value.InputFieldValues, {
+									skipClientFunctions: true
+								})
+								.then(function (response) {
+									controller.app.runResponseHandler(response);
+									controller.app.runClientFunctions(response);
+									controller.form?.submit(false);
+								});
+						});
 
-							if (controller.value.ConfirmationMessage != null) {
-								return controller.app
-									.confirm({
-										bodyText: controller.value.ConfirmationMessage
-									})
-									.then(callback);
-							} else {
-								callback();
-							}
-						}
 						break;
 					case 'open-html-modal':
 						{
