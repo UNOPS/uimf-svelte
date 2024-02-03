@@ -147,7 +147,7 @@
 						};
 
 						if (controller.value.ConfirmationMessage != null) {
-							return controller.app
+							controller.app
 								.confirm({
 									bodyText: controller.value.ConfirmationMessage
 								})
