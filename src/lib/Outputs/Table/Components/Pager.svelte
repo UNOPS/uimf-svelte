@@ -5,6 +5,7 @@
 	import type UimfApp from '../../../Infrastructure/UimfApp';
 	import { PaginationParameters } from '../../../Inputs/Paginator.svelte';
 	import { beforeUpdate } from 'svelte';
+	import type { TableMetadata } from './ResultsTable.svelte';
 
 	export class Page {
 		constructor(
@@ -54,7 +55,7 @@
 		public toRow: number;
 
 		constructor(
-			controller: OutputController<any>,
+			controller: OutputController<any, TableMetadata>,
 			inputFieldValues: any,
 			component: OutputComponent
 		) {
@@ -117,7 +118,7 @@
 </script>
 
 <script lang="ts">
-	export let controller: OutputController<any>;
+	export let controller: OutputController<any, TableMetadata>;
 
 	let inputFieldValues: any = {};
 	let pageSizes = [10, 20, 50, 100];

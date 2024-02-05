@@ -3,10 +3,10 @@
 	import type { OutputController } from '../Infrastructure/OutputController';
 	import type { ComponentMetadata } from '../Infrastructure/uimf';
 
-	export class Controller extends InputController<IValueList, Metadata> {
+	export class Controller extends InputController<IValueList, ValueListMetadata> {
 		public table: Table;
 
-		constructor(options: CreateInputOptions<Metadata>) {
+		constructor(options: CreateInputOptions<ValueListMetadata>) {
 			super(options);
 
 			this.table = this.createTable();
@@ -109,7 +109,7 @@
 		_deleted: boolean | null;
 	}
 
-	interface Metadata extends ComponentMetadata {
+	export interface ValueListMetadata extends ComponentMetadata {
 		CustomProperties: {
 			Fields: IField[];
 			CanRemove?: boolean;
@@ -143,7 +143,7 @@
 	export let controller: Controller;
 
 	let columns: IField[] = [];
-	let metadata: Metadata | null = null;
+	let metadata: ValueListMetadata | null = null;
 	let hasDropdowns: boolean = false;
 	let table: Table | null = null;
 
