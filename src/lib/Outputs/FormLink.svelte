@@ -173,7 +173,7 @@
 
 						break;
 					case 'open-html-modal':
-						{
+						confirmAndRun(() => {
 							let resolve = JSON.parse(controller.value.Resolve) || {};
 							resolve.$stateParams = JSON.parse(controller.value.StateParams) || {};
 
@@ -181,7 +181,7 @@
 								throw new Error('TemplateUrl is not defined.');
 							}
 
-							controller.app
+							return controller.app
 								.openHtmlModal({
 									templateUrl: controller.value.TemplateUrl,
 									controller: controller.value.Controller,
@@ -190,7 +190,8 @@
 								.then(function () {
 									controller.form?.submit(true);
 								});
-						}
+						});
+
 						break;
 					default:
 						controller.app.handleCustomFormLinkAction(controller.value);
