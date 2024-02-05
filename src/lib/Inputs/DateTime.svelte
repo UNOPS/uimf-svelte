@@ -49,6 +49,14 @@
 			);
 		}
 
+		ToValidDateString(date: string | null): string | null {
+			if (date == null) {
+				return null;
+			}
+
+			return this.convertToUtc(new Date(date))?.toISOString().split('T')[0] ?? null;
+		}
+
 		/**
 		 * Removes browser's automatic timezone adjustments, by converting the date into
 		 * the UTC timezone.
@@ -96,8 +104,8 @@
 	let initialised = false;
 	let defaultValue: Date | null;
 
-	export let minDate: string | null;
-	export let maxDate: string | null;
+	let minDate: string | null;
+	let maxDate: string | null;
 
 	let minDateString: string | null;
 	let maxDateString: string | null;
@@ -105,15 +113,6 @@
 	let component = new InputComponent({
 		init() {
 			controller.ready?.resolve();
-
-			if (minDate != null) {
-				minDateString =
-					controller.convertToUtc(new Date(minDate))?.toISOString().split('T')[0] ?? null;
-			}
-			if (maxDate != null) {
-				maxDateString =
-					controller.convertToUtc(new Date(maxDate))?.toISOString().split('T')[0] ?? null;
-			}
 
 			defaultValue = Controller.parseDefaultValue(
 				controller.metadata.CustomProperties?.DefaultValue
@@ -124,11 +123,32 @@
 				controller.setValue(defaultValue);
 				initialised = true;
 			}
+
+			minDate = controller.form?.response[controller.metadata.CustomProperties.MinDateValue]?.value;
+			maxDate = controller.form?.response[controller.metadata.CustomProperties.MaxDateValue]?.value;
+
+			minDateString = controller.ToValidDateString(minDate);
+			maxDateString = controller.ToValidDateString(maxDate);
+
 			controller.valueAsString = controller.valueAsString;
 		}
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
+
+	function getTooltipMessage(minDateString: string | null, maxDateString: string | null): string {
+		var message = 'Pick a date';
+
+		if (minDateString != null && maxDateString == null) {
+			message += ` after ${minDateString}`;
+		} else if (minDateString == null && maxDateString != null) {
+			message += ` before ${maxDateString}`;
+		} else if (minDateString != null && maxDateString != null) {
+			message += ` between ${minDateString} and ${maxDateString}`;
+		}
+
+		return message;
+	}
 </script>
 
 <div>
@@ -139,7 +159,7 @@
 		type="date"
 		min={minDateString}
 		max={maxDateString}
-		use:tooltip={`minimum date=${minDateString} maximum=${maxDateString}`}
+		use:tooltip={getTooltipMessage(minDateString, maxDateString)}
 	/>
 </div>
 
