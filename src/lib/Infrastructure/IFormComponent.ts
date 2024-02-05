@@ -5,7 +5,7 @@ import type { ComponentMetadata } from "./uimf";
 /**
  * Represents an input or an output component.
  */
-export interface IFormComponent {
+export interface IFormComponent<TMetadata extends ComponentMetadata = ComponentMetadata> {
     /**
      * Gets form to which the field belongs. If the field is not rendered in a form
      * the value of this property may be `null`.
@@ -20,5 +20,5 @@ export interface IFormComponent {
     /**
      * Gets metadata for this input/output component.
      */
-    readonly metadata: ComponentMetadata;
+    readonly metadata: TMetadata;
 }

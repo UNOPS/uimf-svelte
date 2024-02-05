@@ -10,10 +10,10 @@
 
 	import type { OutputController } from '../Infrastructure/OutputController';
 	import Pager from './Table/Components/Pager.svelte';
-	import ResultsTable from './Table/Components/ResultsTable.svelte';
+	import ResultsTable, { type TableMetadata } from './Table/Components/ResultsTable.svelte';
 	import { OutputComponent } from '../Infrastructure/Component';
 
-	export let controller: OutputController<PaginatedData>;
+	export let controller: OutputController<PaginatedData, TableMetadata>;
 
 	let component = new OutputComponent({
 		refresh() {

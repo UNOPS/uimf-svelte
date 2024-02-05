@@ -1,4 +1,15 @@
 <script context="module" lang="ts">
+	export interface TableMetadata extends ComponentMetadata {
+		CustomProperties: {
+			showExportButton: boolean;
+			CssClass: string;
+			tableConfig: any;
+			Columns: ComponentMetadata[];
+			Customizations: {
+				Paginator: string;
+			};
+		};
+	}
 </script>
 
 <script lang="ts">
@@ -23,7 +34,7 @@
 	import { DocumentationExtension } from '../Extensions/DocumentationExtension';
 	import type { IField } from '../IColumn';
 
-	export let controller: OutputController<any>;
+	export let controller: OutputController<any, TableMetadata>;
 	export let type: string;
 
 	let allRowsSelected: boolean = false;
