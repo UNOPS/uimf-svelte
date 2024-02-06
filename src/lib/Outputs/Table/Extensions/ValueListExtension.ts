@@ -98,7 +98,7 @@ export class ValueListExtension extends TableExtension {
         }
     }
 
-    processHeadCell(table: Table, cell: TableHeadCell, rows: any[]): void {
+    processHeadCell(table: Table, cell: TableHeadCell, rows: any[]): Promise<void> {
         const inputProps: ValueListInput = cell.metadata.CustomProperties?.Input;
 
         if (inputProps != null) {
@@ -127,5 +127,7 @@ export class ValueListExtension extends TableExtension {
                 });
             }
         }
+
+        return Promise.resolve();
     }
 }

@@ -55,7 +55,10 @@ export class BulkActionsColumnExtension extends TableExtension {
         this.table = table;
     }
 
-    processHeadCell(table: Table, cell: TableHeadCell, rows: any[]) { }
+    processHeadCell(table: Table, cell: TableHeadCell, rows: any[]): Promise<void> {
+        return Promise.resolve();
+    }
+
     processBodyRow(table: Table, row: TableRowGroup<TableBodyCell>) {
         if (this.bulkActionProperty == null) {
             return;

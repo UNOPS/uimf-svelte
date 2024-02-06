@@ -17,7 +17,7 @@ export class ExpandableExtension extends TableExtension {
         this.expanded = {};
     }
 
-    processHeadCell(table: Table, cell: TableHeadCell, rows: any[]) {
+    processHeadCell(table: Table, cell: TableHeadCell, rows: any[]): Promise<void> {
         if (cell.metadata.Type === 'expandable') {
             this.expandableCells.push(cell);
 
@@ -33,6 +33,8 @@ export class ExpandableExtension extends TableExtension {
                 });
             };
         }
+
+        return Promise.resolve();
     }
 
     processBodyRow(table: Table, row: TableRowGroup<TableBodyCell>) {

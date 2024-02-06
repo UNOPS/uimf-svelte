@@ -111,11 +111,11 @@ export class RowExtension extends TableExtension {
         this.rowsProcessed += 1;
     }
 
-    processHeadCell(table: Table, cell: TableHeadCell) {
+    processHeadCell(table: Table, cell: TableHeadCell): Promise<void> {
         // We only support one group by column,
         // so if it's already set, we can skip the rest.
         if (this.groupBy != null) {
-            return;
+            return Promise.resolve();
         }
 
         const rowMetadata: RowCustomProperty = table.parent.metadata.CustomProperties?.row || {};
@@ -133,5 +133,7 @@ export class RowExtension extends TableExtension {
 
         this.color = rowMetadata.Color;
         this.splitBy = rowMetadata.SplitBy;
+
+        return Promise.resolve();
     }
 }
