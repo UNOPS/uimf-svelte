@@ -5,6 +5,7 @@ import type { TableHeadCell } from "../TableHeadCell";
 import type { TableRowGroup } from "../TableRowGroup";
 import { FormLink as FormLinkMetadata } from "../../../Infrastructure/uimf";
 import type { Row, IValueList } from "../../../Inputs/ValueList.svelte";
+import type { TableMetadata } from "../Components/ResultsTable.svelte";
 
 export class BulkAction extends FormLinkMetadata {
     declare public InputFieldValues: {
@@ -42,12 +43,14 @@ export class BulkAction extends FormLinkMetadata {
 }
 
 export class BulkActionsColumnExtension extends TableExtension {
-    private bulkActionProperty!: string;
+    private bulkActionProperty: string | null | undefined;
     public actions: BulkAction[] = [];
     private table!: Table;
 
     init(table: Table) {
-        this.bulkActionProperty = table.parent.metadata.CustomProperties?.bulkActions;
+        const metadata = table.parent.metadata as TableMetadata;
+
+        this.bulkActionProperty = metadata.CustomProperties?.bulkActions;
         this.actions = [];
         this.table = table;
     }
