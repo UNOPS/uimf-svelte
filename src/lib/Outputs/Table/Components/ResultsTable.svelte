@@ -58,7 +58,9 @@
 				bulkActionExtension
 			];
 
-			table = new Table({
+			// Build the table inside a temporary variable first, so that we can replace
+			// the table in one go without causing any flickering in the browser.
+			const tempTable = new Table({
 				parent: controller,
 				extensions: extensions,
 				columns: (controller.metadata.CustomProperties?.Columns ?? []).map(
@@ -71,9 +73,11 @@
 				)
 			});
 
-			await table.setData(
+			await tempTable.setData(
 				controller.value?.length != null ? controller.value : controller.value?.Results ?? []
 			);
+
+			table = tempTable;
 
 			extraColspan = bulkActionExtension.actions.length > 0 ? 1 : 0;
 			type = controller.metadata.Type;
