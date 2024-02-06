@@ -239,7 +239,7 @@
 							</td>
 						{/if}
 						{#each rowGroup.main.cells as cell}
-							<td colspan={cell.colspan} class={cell.cssClass}>
+							<td colspan={cell.colspan} class={cell.cssClass} bind:this={cell.element}>
 								<Output controller={cell.controller} hideLabel={true} />
 							</td>
 						{/each}
