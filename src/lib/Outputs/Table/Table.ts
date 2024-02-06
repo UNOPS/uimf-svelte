@@ -260,4 +260,10 @@ export class Table extends EventSource {
         throw new Error(`Column with id '${columnId}' not found.`);
     }
 
+    /**
+     * Forces the table to re-render.
+     */
+    forceRender() {
+        this.fire('table:data:updated', null);
+    }
 }
