@@ -18,6 +18,12 @@ export class TableHeadCell {
     public component?: CreateInputResult | null;
 
     /**
+     * Indicates if the data is sorted by this column in ascending (true) or descending (false) order.
+     * If null or undefined, then the data is not sorted by this column.
+     */
+    public ascending?: boolean;
+
+    /**
      * Defines the order index for this column inside the table.
      * By default it will be set to the value of `Metadata.OrderIndex`,
      * but can be changed by extensions.

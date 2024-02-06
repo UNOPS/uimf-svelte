@@ -184,8 +184,16 @@
 								<div class="text-center">
 									<i class="fas fa-question-circle" />
 								</div>
-							{/if}</th
-						>
+							{/if}
+
+							{#if cell.ascending === true}
+								<i class="fa-solid fa-sort-down" />
+							{:else if cell.ascending === false}
+								<i class="fa-solid fa-sort-up" />
+							{:else if cell.cssClassManager.cssClassObject['sortable'] === true}
+								<i class="fa-solid fa-sort" />
+							{/if}
+						</th>
 					{/each}
 				</tr>
 				{#each table.head.below as footer}
@@ -364,6 +372,27 @@
 
 		td.min-width-200 {
 			min-width: 200px;
+		}
+
+		th.sortable {
+			cursor: pointer;
+
+			& > i {
+				position: relative;
+				margin: 0 0 0 5px;
+
+				&.fa-sort-up {
+					top: 4px;
+				}
+
+				&.fa-sort-down {
+					top: -2px;
+				}
+
+				&.fa-sort {
+					opacity: 0.2;
+				}
+			}
 		}
 	}
 
