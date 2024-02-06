@@ -95,16 +95,20 @@ export class Table extends EventSource {
             c.init(this);
         });
 
-        let headCells = this.fields
+        let headCellsPromises = this.fields
             .sort((a, b) => a.Metadata.OrderIndex - b.Metadata.OrderIndex)
             .map((t) => {
                 var cell = new TableHeadCell(t);
-                this.extensions.forEach(c => {
-                    c.processHeadCell(this, cell, items);
+                const promises = this.extensions.map(c => {
+                    return c.processHeadCell(this, cell, items);
                 });
 
-                this.field(cell.metadata.Id).Hidden = cell.hidden ?? false;
+                return Promise.all(promises).then(() => cell);
+            });
 
+        let headCells = (await Promise.all(headCellsPromises))
+            .map(cell => {
+                this.field(cell.metadata.Id).Hidden = cell.hidden ?? false;
                 return cell;
             })
             .filter(t => !t.hidden)

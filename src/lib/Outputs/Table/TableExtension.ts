@@ -25,7 +25,9 @@ export abstract class TableExtension {
      * @param cell the column that is being processed.
      * @param rows all the data rows.
      */
-    processHeadCell(table: Table, cell: TableHeadCell, rows: any[]) { }
+    processHeadCell(table: Table, cell: TableHeadCell, rows: any[]): Promise<void> {
+        return Promise.resolve();
+    }
 
     /**
      * This method represents the third phase in the table processing (after the
