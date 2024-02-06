@@ -1,3 +1,4 @@
+import type { InputController } from "./InputController";
 import type IUimfApp from "./UimfApp";
 import type { ComponentMetadata, FormLink } from "./uimf";
 
@@ -19,7 +20,7 @@ export interface FormInstance {
     fire(event: string, args: { postOnLoad: any; }): any;
     metadata: FormMetadata;
     response: { [key: string]: any };
-    inputs: { [key: string]: any };
+    inputs: { [key: string]: InputController<any> };
     originalInputValues: { [key: string]: any };
     app: IUimfApp;
     hasOriginalInputValues: () => boolean;
