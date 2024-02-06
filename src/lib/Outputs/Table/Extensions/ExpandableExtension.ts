@@ -72,7 +72,7 @@ export class ExpandableExtension extends TableExtension {
                     hiddenRow.append = true;
                     hiddenRow.visible = show;
 
-                    table.fire("table:data:updated", null);
+                    table.forceRender();
                 };
             }
         });
