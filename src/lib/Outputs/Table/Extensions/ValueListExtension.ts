@@ -73,7 +73,7 @@ export class ValueListExtension extends TableExtension {
             });
 
             const row = new TableRow<TableHeadCell>(cells);
-            row.cssClass += ' bulk-input-row';
+            row.cssClassManager.addClass('bulk-input-row');
 
             table.head.below.push(row);
         }

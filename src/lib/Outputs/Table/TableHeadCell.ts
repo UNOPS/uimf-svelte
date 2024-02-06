@@ -1,15 +1,18 @@
 import type { CreateInputResult } from "../../Infrastructure/ControlRegister";
 import type { ComponentMetadata } from "../../Infrastructure/uimf";
+import { CssClassManager } from "./CssClassManager";
 import type { IField } from "./IColumn";
+import { InlineStyleManager } from "./InlineStyleManager";
 
 export class TableHeadCell {
-    public cssClass: string;
+    public cssClassManager: CssClassManager = new CssClassManager();
+    public styleManager: InlineStyleManager = new InlineStyleManager();
+
     public label: string;
     public documentation: string;
     public colspan: number = 0;
     public metadata: ComponentMetadata;
     public hidden: boolean | undefined;
-    public style: any;
     public onClick: Record<string, () => void> = {};
     public readonly isInput: boolean;
     public component?: CreateInputResult | null;
@@ -28,7 +31,6 @@ export class TableHeadCell {
         this.metadata = metadata;
         this.documentation = metadata.CustomProperties?.Documentation;
         this.label = metadata.Label;
-        this.cssClass = "";
         this.hidden = metadata.Hidden;
         this.orderIndex = metadata.OrderIndex;
     }
@@ -39,4 +41,19 @@ export class TableHeadCell {
             handler();
         });
     }
+
+    /**
+     * The css class to apply to <tr> element.
+     */
+    public get cssClass(): string | null {
+        return this.cssClassManager.cssClass;
+    }
+
+    /**
+    * The inline style to apply to the row.
+    */
+    public get style(): string | null {
+        return this.styleManager.style;
+    }
 }
+
