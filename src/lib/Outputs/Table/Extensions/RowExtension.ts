@@ -95,14 +95,14 @@ export class RowExtension extends TableExtension {
             const seed = row.data[this.color];
             const rowColor = table.parent.app.colorFromString(seed);
 
-            row.main.addStyle('border-left', `5px solid ${rowColor}`);
+            row.main.styleManager.add('border-left', `5px solid ${rowColor}`);
         }
 
         if (this.splitBy != null) {
             const currentSplit = JSON.stringify(row.data[this.splitBy]);
 
             if (this.rowsProcessed != 0 && currentSplit != this.previousSplit) {
-                row.main.addClass('first-row-in-split-by-group');
+                row.main.cssClassManager.addClass('first-row-in-split-by-group');
             }
 
             this.previousSplit = currentSplit;

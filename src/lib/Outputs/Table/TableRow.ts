@@ -1,10 +1,12 @@
+import { CssClassManager } from "./CssClassManager";
+import { InlineStyleManager } from "./InlineStyleManager";
+
 export default class TableRow<T> {
-    private styleObject: { [unknown: string]: string } = {};
-    private classObject: { [unknown: string]: boolean } = {};
+    public cssClassManager: CssClassManager = new CssClassManager();
+    public styleManager: InlineStyleManager = new InlineStyleManager();
 
     constructor(cells: T[]) {
         this.cells = cells;
-        this.cssClass = "";
     }
 
     public cells: T[] = [];
@@ -22,51 +24,14 @@ export default class TableRow<T> {
     /**
      * The css class to apply to <tr> element.
      */
-    public cssClass: string;
-
-    /**
-     * The inline style to apply to the row.
-     */
-    public style: string | null = null;
-
-    /**
-     * Adds an inline style for this row.
-     * @param key The style key.
-     * @param value The style value.
-     */
-    public addStyle(key: string, value: string): void {
-        this.styleObject[key] = value;
-
-        let serialized = "";
-
-        for (const key in this.styleObject) {
-            if (this.styleObject.hasOwnProperty(key)) {
-                const value = this.styleObject[key];
-                serialized += `${key}: ${value}; `;
-            }
-        }
-
-        this.style = serialized.trim();
+    public get cssClass(): string | null {
+        return this.cssClassManager.cssClass;
     }
 
     /**
-     * Adds a css class to the row.
-     * @param cssClass The css class or a space-delimited list of css classes to add.
-     */
-    public addClass(cssClass: string): void {
-        if (cssClass == null || cssClass == "") {
-            return;
-        }
-
-        const parts = cssClass.split(" ");
-
-        this.cssClass = this.cssClass ?? "";
-
-        parts.forEach(part => {
-            const singleClass = part.trim();
-
-            this.classObject[singleClass] = true;
-            this.cssClass += ` ${singleClass}`;
-        });
+    * The inline style to apply to the row.
+    */
+    public get style(): string | null {
+        return this.styleManager.style;
     }
 }

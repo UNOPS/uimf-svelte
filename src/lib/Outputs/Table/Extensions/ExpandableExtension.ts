@@ -21,8 +21,7 @@ export class ExpandableExtension extends TableExtension {
         if (cell.metadata.Type === 'expandable') {
             this.expandableCells.push(cell);
 
-            cell.style = cell.style ?? "";
-            cell.style += "; cursor: pointer;";
+            cell.styleManager.add('cursor', 'pointer');
 
             cell.onClick['expand'] = () => {
                 // Toggle the value.
@@ -43,7 +42,7 @@ export class ExpandableExtension extends TableExtension {
             }
 
             const customProperties: ICustomProperties = cell.metadata.CustomProperties;
-            
+
             const hiddenField: IField = {
                 Metadata: customProperties.ItemTypes[1],
                 IsInput: false,

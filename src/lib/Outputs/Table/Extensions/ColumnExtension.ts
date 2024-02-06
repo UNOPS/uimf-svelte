@@ -1,5 +1,6 @@
-import type { ComponentMetadata } from "../../../Infrastructure/uimf";
+import type { InputController } from "$lib/Infrastructure/InputController";
 import { Colgroup } from "../Colgroup";
+import type { TableMetadata } from "../Components/ResultsTable.svelte";
 import type { IField } from "../IColumn";
 import type { Table } from "../Table";
 import type { TableBodyCell } from "../TableBodyCell";
@@ -7,12 +8,14 @@ import { TableExtension } from "../TableExtension";
 import { TableHeadCell } from "../TableHeadCell";
 import TableRow from "../TableRow";
 import type { TableRowGroup } from "../TableRowGroup";
+import type { Controller as PaginatorController } from "../../../Inputs/Paginator.svelte";
 
 interface ColumnCustomProperty {
     Color: string;
     CssClass: string;
     GroupLabel: string | null;
     GroupOrderIndex: number | null;
+    SortableBy: string | null;
 }
 
 export class ColumnExtension extends TableExtension {
@@ -40,6 +43,31 @@ export class ColumnExtension extends TableExtension {
 
             if (config.GroupOrderIndex != null) {
                 cell.orderIndex = config.GroupOrderIndex * 1000 + cell.metadata.OrderIndex;
+            }
+
+            if (config.SortableBy != null) {
+                cell.cssClassManager.addClass('sortable');
+
+                cell.onClick['sort'] = function () {
+                    console.log('Sort by ' + config.SortableBy);
+                    console.log(table.parent.metadata.CustomProperties);
+
+                    if (table.parent.metadata.Type === 'paginated-data') {
+                        let metadata: TableMetadata = table.parent.metadata as TableMetadata;
+                        let paginatorName = metadata.CustomProperties.Customizations.Paginator;
+                        let paginator: PaginatorController = table.parent.form?.inputs[paginatorName] as PaginatorController;
+
+                        paginator.getValue().then((value) => {
+                            return paginator.setValue({
+                                Ascending: !(value?.Ascending),
+                                OrderBy: config.SortableBy,
+                                PageIndex: value?.PageIndex ?? 0,
+                                PageSize: value?.PageSize ?? 10
+                            });
+                        });
+
+                    }
+                };
             }
         }
     }
@@ -82,7 +110,7 @@ export class ColumnExtension extends TableExtension {
 
                     thAboveCell.label = thisGroupLabel || '';
                     thAboveCell.colspan = 1;
-                    thAboveCell.cssClass = thisGroupLabel != null ? 'column-group' : '';
+                    thAboveCell.cssClassManager.addClass(thisGroupLabel != null ? 'column-group' : null);
 
                     thAboveCells.push(thAboveCell);
                     previousThCell = thAboveCell;
@@ -90,7 +118,7 @@ export class ColumnExtension extends TableExtension {
                     // Create new colgroup.
                     var colgroup = new Colgroup();
                     colgroup.span = thAboveCell.colspan;
-                    colgroup.cssClass = thAboveCell.cssClass;
+                    colgroup.cssClassManager.set(thAboveCell.cssClassManager.cssClassObject);
                     table.colgroups.push(colgroup);
                     previousColgroup = colgroup;
 
@@ -113,14 +141,14 @@ export class ColumnExtension extends TableExtension {
                         });
                     }
 
-                    colgroup.style = Object.keys(tdStyle).map(key => `${key}: ${tdStyle[key]}`).join(';');
-                    thAboveCell.style = Object.keys(thStyle).map(key => `${key}: ${thStyle[key]}`).join(';');
+                    colgroup.styleManager.set(tdStyle);
+                    thAboveCell.styleManager.set(thStyle);
                 } else if (previousThCell != null && previousColgroup != null) {
                     previousThCell.colspan += 1;
                     previousColgroup.span += 1;
                 }
 
-                headCell.style = (headCell.style ?? "") + ";" + thAboveCell!.style;
+                headCell.styleManager.addMany(thAboveCell!.styleManager.styleObject);
             });
 
             // If there any column groups, then add the "column group" row.
