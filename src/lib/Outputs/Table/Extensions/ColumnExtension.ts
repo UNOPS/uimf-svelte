@@ -28,7 +28,7 @@ export class ColumnExtension extends TableExtension {
         this.columnsWithCssClass = [];
     }
 
-    processHeadCell(table: Table, cell: TableHeadCell, rows: any[]) {
+    async processHeadCell(table: Table, cell: TableHeadCell, rows: any[]): Promise<void> {
         var config: ColumnCustomProperty = cell.metadata.CustomProperties?.column;
 
         if (config != null) {
@@ -46,28 +46,35 @@ export class ColumnExtension extends TableExtension {
             }
 
             if (config.SortableBy != null) {
-                cell.cssClassManager.addClass('sortable');
+                if (table.parent.metadata.Type === 'paginated-data') {
+                    let metadata: TableMetadata = table.parent.metadata as TableMetadata;
+                    let paginatorName = metadata.CustomProperties.Customizations.Paginator;
+                    let paginator: PaginatorController = table.parent.form?.inputs[paginatorName] as PaginatorController;
 
-                cell.onClick['sort'] = function () {
-                    console.log('Sort by ' + config.SortableBy);
-                    console.log(table.parent.metadata.CustomProperties);
+                    cell.cssClassManager.addClass('sortable');
 
-                    if (table.parent.metadata.Type === 'paginated-data') {
-                        let metadata: TableMetadata = table.parent.metadata as TableMetadata;
-                        let paginatorName = metadata.CustomProperties.Customizations.Paginator;
-                        let paginator: PaginatorController = table.parent.form?.inputs[paginatorName] as PaginatorController;
+                    // Set the initial sort direction and corresponding styles.
+                    await paginator.getValue().then(value => {
+                        if (value?.OrderBy === config.SortableBy) {
+                            const ascending = !(value?.Ascending);
+                            cell.ascending = ascending;
+                        }
+                    });
 
-                        paginator.getValue().then((value) => {
-                            return paginator.setValue({
-                                Ascending: !(value?.Ascending),
-                                OrderBy: config.SortableBy,
-                                PageIndex: value?.PageIndex ?? 0,
-                                PageSize: value?.PageSize ?? 10
-                            });
-                        });
+                    cell.onClick['sort'] = function () {
+                        paginator.getValue()
+                            .then((value) => {
+                                return paginator.setValue({
+                                    Ascending: !(value?.Ascending),
+                                    OrderBy: config.SortableBy,
+                                    PageIndex: value?.PageIndex ?? 1,
+                                    PageSize: value?.PageSize ?? 10
+                                });
+                            })
+                            .then(() => table.parent.form?.submit());
 
-                    }
-                };
+                    };
+                }
             }
         }
     }
