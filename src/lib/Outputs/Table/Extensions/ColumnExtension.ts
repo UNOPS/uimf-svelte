@@ -16,6 +16,7 @@ interface ColumnCustomProperty {
     GroupLabel: string | null;
     GroupOrderIndex: number | null;
     SortableBy: string | null;
+    AllowLocalSort: boolean;
 }
 
 export class ColumnExtension extends TableExtension {
@@ -73,6 +74,34 @@ export class ColumnExtension extends TableExtension {
                             })
                             .then(() => table.parent.form?.submit());
 
+                    };
+                }
+            }
+
+            if (config.AllowLocalSort) {
+                if (table.parent.metadata.Type === 'table') {
+                    cell.cssClassManager.addClass('sortable');
+
+                    cell.onClick['sort'] = function () {
+                        table.head.main.cells.forEach(c => {
+                            if (c.metadata.Id !== cell.metadata.Id) {
+                                c.ascending = null;
+                            }
+                        });
+
+                        cell.ascending = !cell.ascending;
+
+                        table.body.sort((a, b) => {
+                            const aRow = cell.ascending ? b : a;
+                            const bRow = cell.ascending ? a : b;
+
+                            const aValue = table.cell(aRow, cell.metadata.Id).element?.innerText ?? '';
+                            const bValue = table.cell(bRow, cell.metadata.Id).element?.innerText ?? '';
+
+                            return aValue.localeCompare(bValue);
+                        });
+
+                        table.forceRender();
                     };
                 }
             }

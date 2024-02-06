@@ -10,6 +10,7 @@ export class TableBodyCell {
     public cssClass: string;
     public colspan: number = 0;
     public readonly isInput: boolean;
+    public element: HTMLElement | null = null;
 
     /**
      * Indicates whether the content of the cell should be hidden.

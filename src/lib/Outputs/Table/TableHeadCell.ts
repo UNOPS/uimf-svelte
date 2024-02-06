@@ -21,7 +21,7 @@ export class TableHeadCell {
      * Indicates if the data is sorted by this column in ascending (true) or descending (false) order.
      * If null or undefined, then the data is not sorted by this column.
      */
-    public ascending?: boolean;
+    public ascending?: boolean | null;
 
     /**
      * Defines the order index for this column inside the table.
