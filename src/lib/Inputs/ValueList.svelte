@@ -115,6 +115,7 @@
 			CanRemove?: boolean;
 			CanAdd?: boolean;
 			GroupBy?: string;
+			row: any;
 
 			/**
 			 * If true, the value-list is an array of primitives (e.g. numbers or strings).

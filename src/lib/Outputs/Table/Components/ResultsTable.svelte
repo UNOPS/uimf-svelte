@@ -4,7 +4,9 @@
 			showExportButton: boolean;
 			CssClass: string;
 			tableConfig: any;
+			row: any;
 			Columns: ComponentMetadata[];
+			bulkActions?: string;
 			Customizations: {
 				Paginator: string;
 			};
