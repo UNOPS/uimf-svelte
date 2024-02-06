@@ -35,7 +35,7 @@
             let result = `${value.PageIndex}-${value.PageSize}`;
 
             if (value.OrderBy != null) {
-                result += `-${value.OrderBy}-${value.Ascending}}`;
+				result += `-${value.OrderBy}-${value.Ascending}`;
             }
 
             return result;
