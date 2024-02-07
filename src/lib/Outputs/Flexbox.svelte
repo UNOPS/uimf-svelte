@@ -107,4 +107,13 @@
 		display: flex;
 		width: 100%;
 	}
+
+	.boxed {
+		background-color: #ffffff;
+		border: 1px solid #d1d1d1;
+		border-radius: 10px;
+		padding: 20px;
+		box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+		height: fit-content;
+	}
 </style>
