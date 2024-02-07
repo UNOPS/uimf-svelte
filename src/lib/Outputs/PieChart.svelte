@@ -10,11 +10,6 @@
 		Value: number;
 	}
 
-	interface IPieChartData {
-		Label: string;
-		Value: number;
-	}
-
 	interface IPieChartDisplayData extends IPieChartData {
 		Color: string;
 		StartAngle: number;

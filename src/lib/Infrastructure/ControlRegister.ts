@@ -45,6 +45,7 @@ import * as DateTimeOutput from '../Outputs/DateTime.svelte';
 import * as EventDescription from '../Outputs/EventDescription.svelte';
 import * as Status from '../Outputs/Status.svelte';
 import * as NestedObject from '../Outputs/NestedObject.svelte';
+import * as TidyTree from '../Outputs/TidyTree.svelte';
 
 //To be deactivated until complete validation
 import * as DynamicInput from '../Inputs/DynamicInput.svelte';
@@ -74,7 +75,7 @@ import * as EditableValue from '../Outputs/EditableValue.svelte';
 import * as Flexbox from '../Outputs/Flexbox.svelte';
 
 interface InputFieldControllerConstructor {
-	new(options: CreateInputOptions): InputController<any>;
+	new (options: CreateInputOptions): InputController<any>;
 }
 
 interface InputRegistration {
@@ -192,11 +193,11 @@ export class ControlRegister {
 			component:
 				renderTarget != null
 					? new registration.component({
-						target: renderTarget,
-						props: {
-							controller: controller
-						}
-					})
+							target: renderTarget,
+							props: {
+								controller: controller
+							}
+					  })
 					: registration.component
 		};
 	}
@@ -216,11 +217,11 @@ export class ControlRegister {
 			component:
 				renderTarget != null
 					? new registration.component({
-						target: renderTarget,
-						props: {
-							controller: controller
-						}
-					})
+							target: renderTarget,
+							props: {
+								controller: controller
+							}
+					  })
 					: registration.component
 		};
 	}
@@ -279,7 +280,11 @@ defaultControlRegister.registerOutputComponent('image-overlay', ImageOverlay);
 defaultControlRegister.registerOutputComponent('money', Money, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('number', Number, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('paginated-object-list', PaginatedObjectList);
-defaultControlRegister.registerOutputComponent('pie-chart', PieChart, { displayAsBlock: true, hideIfNull: true });
+defaultControlRegister.registerOutputComponent('pie-chart', PieChart, {
+	displayAsBlock: true,
+	hideIfNull: true
+});
+defaultControlRegister.registerOutputComponent('tidy-tree', TidyTree, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('sequence', Sequence, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('sla-timer', SlaTimer, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('slider', Slider);
