@@ -68,18 +68,11 @@
 			.data(root.links())
 			.enter()
 			.append('path')
-			.attr('class', 'link')
-			.attr(
-				'd',
-				d3
-					.linkVertical()
-					.x(function (d: { y: any }) {
-						return d.y;
-					})
-					.y(function (d: { x: any }) {
-						return d.x;
-					})
-			);
+			.style('stroke', 'black')
+			.style('stroke-width', '1px')
+			.attr('d', function (d: { source: { y: any; x: any }; target: { y: any; x: any } }) {
+				return `M${d.source.y},${d.source.x} L${d.target.y},${d.target.x}`;
+			});
 
 		let node = g
 			.selectAll('.node')
@@ -117,9 +110,5 @@
 	}
 	.node text {
 		font: 12px sans-serif;
-	}
-	.link {
-		fill: #000000;
-		stroke-width: 1px;
 	}
 </style>
