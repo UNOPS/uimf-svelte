@@ -16,15 +16,6 @@
 	export let controller: OutputController<ITidyTree>;
 	export let items: ITidyTreeData[] = [];
 
-	var margin = {
-			top: 20,
-			right: 120,
-			bottom: 20,
-			left: 120
-		},
-		width = 960 - margin.right - margin.left,
-		height = 500 - margin.top - margin.bottom;
-
 	let component = new OutputComponent({
 		refresh() {
 			if (controller.value.Node) {
@@ -39,15 +30,12 @@
 
 	beforeUpdate(async () => await component.setup(controller));
 
-	// Function to render the tidy tree
 	function renderTree(items: ITidyTreeData[]) {
-		// Create a map of nodes
 		let nodeMap = new Map();
 		items.forEach((item) => {
 			nodeMap.set(item.Id, { ...item, children: [] });
 		});
 
-		// Connect children to their parents and connect nodes with no parent to a super parent
 		let superParent: ITidyTreeData & { children: ITidyTreeData[] } = {
 			Id: -1,
 			Label: 'Super Parent',
@@ -66,14 +54,11 @@
 			}
 		});
 
-		// Create a hierarchy from the root
 		let root = d3.hierarchy(superParent);
 
-		// Create a tree layout
 		let treeLayout = d3.tree().size([500, 500]);
 		treeLayout(root);
 
-		// Now you can use root.leaves() and root.links() to get the positions of the nodes and the links between them
 		let svg = d3.select('#tree').append('svg').attr('width', 600).attr('height', 600);
 
 		let g = svg.append('g').attr('transform', 'translate(50,50)');
@@ -127,16 +112,14 @@
 
 <style>
 	.node circle {
-		fill: #fff;
-		stroke: steelblue;
+		fill: #000000;
 		stroke-width: 1px;
 	}
 	.node text {
 		font: 12px sans-serif;
 	}
 	.link {
-		fill: none;
-		stroke: #ccc;
-		stroke-width: 0.5px;
+		fill: #000000;
+		stroke-width: 1px;
 	}
 </style>
