@@ -121,7 +121,7 @@
 	export let controller: OutputController<any, TableMetadata>;
 
 	let inputFieldValues: any = {};
-	let pageSizes = [10, 20, 50, 100];
+	let pageSizes = [10, 20, 50, 100, 500];
 	let pager: Pager;
 	let useUrl: boolean = true;
 
@@ -135,7 +135,7 @@
 			pager = new Pager(controller, inputFieldValues, me);
 
 			// Make sure that the current page size is in the list of available page sizes.
-			pageSizes = [...new Set([10, 20, 50, 100, pager.paginatorValue.PageSize])].sort(
+			pageSizes = [...new Set([10, 20, 50, 100, 500, pager.paginatorValue.PageSize])].sort(
 				(a, b) => a - b
 			);
 
