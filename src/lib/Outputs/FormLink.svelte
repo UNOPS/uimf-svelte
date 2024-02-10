@@ -63,8 +63,8 @@
 </script>
 
 {#if controller.value != null}
-	{#if controller.value.Action == null || controller.value.Action === 'redirect' || controller.value.Action === 'redirect-to-url'}
-		{#if !allowed}
+	{#if [null, 'redirect', 'redirect-to-url', 'void'].includes(controller.value.Action)}
+		{#if !allowed || controller.value.Action === 'void'}
 			<span class={cssClass} use:tooltip={controller.value.Tooltip}>
 				{#if controller.value.Icon}
 					<i
