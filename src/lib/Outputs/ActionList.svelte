@@ -14,7 +14,17 @@
 
 	let component = new OutputComponent({
 		refresh() {
-			controller.value = controller.value;
+			const value = controller.value;
+
+			if (value != null) {
+				for (let i = 0; i < value.Actions.length; i++) {
+					// By default we want all buttons (even if they're just links) to have
+					// the same styling.
+					value.Actions[i].CssClass = value.Actions[i].CssClass ?? 'btn btn-default';
+				}
+			}
+
+			controller.value = value;
 		}
 	});
 
@@ -31,7 +41,7 @@
 </script>
 
 {#if controller.value?.Actions.length > 0}
-	<div class="action-list 123">
+	<div class="action-list">
 		{#each controller.value.Actions as action}
 			<div><FormLink controller={makeController(action)} /></div>
 		{/each}
