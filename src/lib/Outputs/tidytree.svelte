@@ -55,24 +55,24 @@
 		});
 
 		let root = d3.hierarchy(superParent);
-
 		let treeLayout = d3.tree().size([500, 500]);
 		treeLayout(root);
 
 		let svg = d3.select('#tree').append('svg').attr('width', 600).attr('height', 600);
 
 		let g = svg.append('g').attr('transform', 'translate(50,50)');
+		let curve = function (d: { source: { y: any; x: any }; target: { y: any; x: any } }) {
+			return `M${d.source.y},${d.source.x} L${d.target.y},${d.target.x}`;
+		};
 
 		let link = g
 			.selectAll('.link')
 			.data(root.links())
 			.enter()
 			.append('path')
-			.style('stroke', 'black')
-			.style('stroke-width', '1px')
-			.attr('d', function (d: { source: { y: any; x: any }; target: { y: any; x: any } }) {
-				return `M${d.source.y},${d.source.x} L${d.target.y},${d.target.x}`;
-			});
+			.style('stroke', 'grey')
+			.style('stroke-width', '1.5px')
+			.attr('d', curve);
 
 		let node = g
 			.selectAll('.node')
