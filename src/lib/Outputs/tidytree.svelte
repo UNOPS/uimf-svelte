@@ -20,9 +20,6 @@
 		refresh() {
 			if (controller.value.Node) {
 				items = controller.value.Node;
-				items.forEach((item) => {
-					console.log(item.Id + ', ' + item.Label + ', ' + item.ParentId);
-				});
 				renderTree(items);
 			}
 		}
@@ -32,10 +29,6 @@
 
 	function renderTree(items: ITidyTreeData[]) {
 		let nodeMap = new Map();
-		items.forEach((item) => {
-			nodeMap.set(item.Id, { ...item, children: [] });
-		});
-
 		let superParent: ITidyTreeData & { children: ITidyTreeData[] } = {
 			Id: -1,
 			Label: 'Super Parent',
@@ -43,6 +36,7 @@
 			children: []
 		};
 		items.forEach((item) => {
+			nodeMap.set(item.Id, { ...item, children: [] });
 			let node = nodeMap.get(item.Id);
 			if (item.ParentId === null) {
 				superParent.children.push(node);
