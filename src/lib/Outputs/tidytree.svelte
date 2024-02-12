@@ -14,14 +14,14 @@
 		Node: ITidyTreeData[];
 	}
 	export let controller: OutputController<ITidyTree>;
-	export let items: ITidyTreeData[] = [];
+	let svgContainer: HTMLElement | null = null;
 
 	let component = new OutputComponent({
 		refresh() {
-			if (controller.value.Node) {
-				items = controller.value.Node;
-				renderTree(items);
+			if (controller.value) {
+				renderTree(controller.value.Node);
 			}
+			// Handle null condition
 		}
 	});
 
@@ -52,15 +52,15 @@
 		let treeLayout = d3.tree().size([500, 500]);
 		treeLayout(root);
 
-		let svg = d3.select('#tree').append('svg').attr('width', 600).attr('height', 600);
+		// Fit letters to image; up to 15 chars
+		let svg = d3.select(svgContainer).append('svg').attr('width', 600).attr('height', 600);
 
 		let g = svg.append('g').attr('transform', 'translate(50,50)');
 		let curve = function (d: { source: { y: any; x: any }; target: { y: any; x: any } }) {
 			return `M${d.source.y},${d.source.x} L${d.target.y},${d.target.x}`;
 		};
 
-		let link = g
-			.selectAll('.link')
+		g.selectAll('.link')
 			.data(root.links())
 			.enter()
 			.append('path')
@@ -95,7 +95,7 @@
 	}
 </script>
 
-<div id="tree" />
+<div bind:this={svgContainer} />
 
 <style>
 	.node circle {
