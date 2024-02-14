@@ -21,7 +21,7 @@
 
 	let component = new OutputComponent({
 		async refresh() {
-			nestedControllers = createNestedControllers(controller.value.Results);
+			nestedControllers = createNestedControllers(controller.value?.Results);
 			controller.value = controller.value;
 		}
 	});
@@ -30,18 +30,19 @@
 
 	function createNestedControllers(results: any[]) {
 		let controllerArray: OutputController<any>[] = [];
+		if (results != null) {
+			results.forEach((result) => {
+				let childController = new OutputController<any>({
+					metadata: controller.metadata,
+					data: null,
+					form: controller.form!,
+					app: controller.app
+				});
 
-		results.forEach((result) => {
-			let childController = new OutputController<any>({
-				metadata: controller.metadata,
-				data: null,
-				form: controller.form!,
-				app: controller.app
+				childController.setValue(result);
+				controllerArray.push(childController);
 			});
-
-			childController.setValue(result);
-			controllerArray.push(childController);
-		});
+		}
 
 		return controllerArray;
 	}
