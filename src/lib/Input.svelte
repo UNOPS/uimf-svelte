@@ -37,7 +37,7 @@
 			component = componentRegistration.component;
 
 			defaultCssClass = componentRegistration.config.displayAsBlock ? 'block' : 'inline';
-			documentation = controller.metadata.CustomProperties?.Documentation;
+			documentation = controller.metadata.CustomProperties?.documentation;
 
 			controller.ready?.resolve();
 		},

@@ -37,7 +37,7 @@
 			hideIfNull = controller.metadata.CustomProperties?.hideIfNull != null;
 
 			defaultCssClass = componentRegistration.config.displayAsBlock ? 'block' : 'inline';
-			documentation = controller.metadata.CustomProperties?.Documentation;
+			documentation = controller.metadata.CustomProperties?.documentation;
 
 			controller = controller;
 		}
