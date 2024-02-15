@@ -33,3 +33,11 @@
 </script>
 
 <div bind:this={container} />
+
+<style lang="scss">
+	@import '../scss/styles.variables.scss';
+
+	:global(.section.output-inline-form) {
+		padding: 0;
+	}
+</style>

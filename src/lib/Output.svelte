@@ -68,6 +68,15 @@
 {/if}
 
 <style lang="scss">
+	.row {
+		margin-left: 0 !important;
+		margin-right: 0 !important;
+	}
+
+	.col-form-label {
+		padding-left: 15px !important;
+	}
+
 	.col-sm-10 {
 		padding-top: calc(0.375rem + 1px);
 	}
