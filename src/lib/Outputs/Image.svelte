@@ -49,8 +49,8 @@
 						AltText: null,
 						Url: null,
 						Id: null,
-						ShowMenu: false,
-						IsActivated: false
+						ShowMenu: null,
+						IsActivated: null
 					});
 				}
 			});
