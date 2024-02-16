@@ -42,7 +42,7 @@
 
 <script lang="ts">
 	import { digl } from '@crinkles/digl';
-	import type { Rank } from '@crinkles/digl/dist/types';
+	import type { Graph, Rank } from '@crinkles/digl/dist/types';
 	import { onMount } from 'svelte';
 	import Panzoom from '@panzoom/panzoom';
 
@@ -52,35 +52,48 @@
 
 	export let controller: OutputController<Network>;
 
+	let edges: { source: string; target: string }[] = [];
+	let states: any[] = [];
+	let ranks: Graph | null = null;
+	let stateDiagramSvg: SVGSVGElement;
+	let nodes: Node[] = [];
+	let links: Transition[] = [];
+	let graphHeight = 1;
+
 	let component = new OutputComponent({
 		refresh() {
 			controller.value = controller.value;
+
+			if (controller.value == null) {
+				edges = [];
+				states = [];
+				ranks = null;
+				nodes = [];
+				links = [];
+			} else {
+				edges = controller.value.Transitions.map((t) => {
+					return {
+						source: t.From.toString(),
+						target: t.To.toString()
+					};
+				});
+
+				states = controller.value.States.map((t) => {
+					return {
+						...t,
+						width: 5 * t.Name.length + 50,
+						height: 40
+					};
+				});
+
+				ranks = digl(edges);
+				nodes = drawDiagram(ranks[0]);
+				links = getAllPoints(controller.value.Transitions);
+			}
 		}
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
-
-	const edges = controller.value.Transitions.map((t) => {
-		return {
-			source: t.From.toString(),
-			target: t.To.toString()
-		};
-	});
-
-	const states = controller.value.States.map((t) => {
-		return {
-			...t,
-			width: 5 * t.Name.length + 50,
-			height: 40
-		};
-	});
-
-	let stateDiagramSvg: SVGSVGElement;
-
-	let nodes: Node[] = [];
-	let links: Transition[] = [];
-
-	let graphHeight = 1;
 
 	/**
 	 * Draws the diagram based on the ranks
@@ -217,15 +230,11 @@
 		};
 	};
 
-	let ranks = digl(edges);
-	nodes = drawDiagram(ranks[0]);
-	links = getAllPoints(controller.value.Transitions);
-
 	onMount(() => {
-		function getSvgElement() {
+		function getSvgElement(): Promise<SVGSVGElement> {
 			return new Promise((resolve: any) => {
 				const checkElement = () => {
-					const element = stateDiagramSvg;
+					const element: SVGSVGElement = stateDiagramSvg;
 					if (element !== null) {
 						resolve(element);
 					} else {
@@ -268,7 +277,8 @@
 		</defs>
 		<g
 			transform={`translate(${window.innerWidth / (12 - (10 - nodes.length))}, 100) scale(${
-				(nodes.length / 10 + 0.1 * window.innerWidth) / ((200 + nodes.length * 5) + 2000 / window.innerWidth)
+				(nodes.length / 10 + 0.1 * window.innerWidth) /
+				(200 + nodes.length * 5 + 2000 / window.innerWidth)
 			})`}
 		>
 			{#each nodes as n}
