@@ -3,7 +3,6 @@
 	import { beforeUpdate, onMount } from 'svelte';
 	import type { OutputController } from '../Infrastructure/OutputController';
 	import * as d3 from 'd3';
-	import { hierarchy, tree } from 'd3-hierarchy';
 
 	interface ITidyTreeData {
 		Id: number;
@@ -15,13 +14,15 @@
 	}
 	export let controller: OutputController<ITidyTree>;
 	let svgContainer: HTMLElement | null = null;
+	let nullContainer: HTMLElement;
 
 	let component = new OutputComponent({
 		refresh() {
 			if (controller.value) {
 				renderTree(controller.value.Node);
+			} else {
+				nullContainer.innerHTML = 'Data not found';
 			}
-			// Handle null condition
 		}
 	});
 
@@ -90,12 +91,13 @@
 			})
 			.style('text-anchor', (d: { children: any }) => (d.children ? 'end' : 'start'))
 			.text(function (d: { data: { Label: any } }) {
-				return d.data.Label;
+				return d.data.Label.length > 15 ? d.data.Label.substring(0, 15) + '...' : d.data.Label;
 			});
 	}
 </script>
 
 <div bind:this={svgContainer} />
+<div bind:this={nullContainer} />
 
 <style>
 	.node circle {
