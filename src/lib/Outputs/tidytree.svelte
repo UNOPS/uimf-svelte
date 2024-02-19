@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { OutputComponent } from '../Infrastructure/Component';
-	import { beforeUpdate, onMount } from 'svelte';
+	import { beforeUpdate } from 'svelte';
 	import type { OutputController } from '../Infrastructure/OutputController';
 	import * as d3 from 'd3';
 
@@ -20,9 +20,7 @@
 		refresh() {
 			if (controller.value) {
 				renderTree(controller.value.Node);
-			} else {
-				nullContainer.innerHTML = 'Data not found';
-			}
+			} else nullContainer.innerHTML = 'Data not found';
 		}
 	});
 
