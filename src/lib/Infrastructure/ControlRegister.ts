@@ -74,7 +74,7 @@ import * as EditableValue from '../Outputs/EditableValue.svelte';
 import * as Flexbox from '../Outputs/Flexbox.svelte';
 
 interface InputFieldControllerConstructor {
-	new (options: CreateInputOptions): InputController<any>;
+	new(options: CreateInputOptions): InputController<any>;
 }
 
 interface InputRegistration {
@@ -192,11 +192,11 @@ export class ControlRegister {
 			component:
 				renderTarget != null
 					? new registration.component({
-							target: renderTarget,
-							props: {
-								controller: controller
-							}
-					  })
+						target: renderTarget,
+						props: {
+							controller: controller
+						}
+					})
 					: registration.component
 		};
 	}
@@ -216,11 +216,11 @@ export class ControlRegister {
 			component:
 				renderTarget != null
 					? new registration.component({
-							target: renderTarget,
-							props: {
-								controller: controller
-							}
-					  })
+						target: renderTarget,
+						props: {
+							controller: controller
+						}
+					})
 					: registration.component
 		};
 	}
@@ -255,7 +255,7 @@ defaultControlRegister.registerInputComponent('dynamic-input', DynamicInput, {
 });
 defaultControlRegister.registerInputComponent('json-object', JsonObject);
 defaultControlRegister.registerInputComponent('money', MoneyInput);
-//defaultControlRegister.registerInputComponent('groups', Group);
+defaultControlRegister.registerInputComponent('groups', Group);
 
 // Outputs.
 defaultControlRegister.registerOutputComponent('action-list', ActionList, {
