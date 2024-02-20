@@ -34,14 +34,13 @@
 	import { InputComponent } from '../Infrastructure/Component';
 
 	export let controller: Controller;
-	export let groupNames: string[];
+	let groupNames: string[];
 
 	let component = new InputComponent({
 		init() {
 			controller.ready?.resolve();
 		},
 		refresh() {
-			console.log(controller.value);
 			if (controller.value?.Items != null) {
 				groupNames = Object.keys(controller.value?.Items);
 			} else {
@@ -53,7 +52,7 @@
 	});
 	beforeUpdate(async () => await component.setup(controller));
 
-	export function move(item: IItem, currentGroupIndex: number, targetGroupIndex: number): void {
+	function move(item: IItem, currentGroupIndex: number, targetGroupIndex: number): void {
 		let currentGroup = controller.value?.Items[groupNames[currentGroupIndex]];
 		let targetGroup = controller.value?.Items[groupNames[targetGroupIndex]];
 
@@ -67,23 +66,18 @@
 		}
 		controller.value = controller.value;
 	}
-	export function moveAll(currentGroupIndex: number, targetGroupIndex: number): void {
+	function moveAll(currentGroupIndex: number, targetGroupIndex: number): void {
 		const currentGroup = controller.value?.Items[groupNames[currentGroupIndex]];
 		const targetGroup = controller.value?.Items[groupNames[targetGroupIndex]];
 
-		// Clear current group.
 		if (currentGroup) {
 			const currentGroupArray = controller.value?.Items[groupNames[currentGroupIndex]];
 			if (currentGroupArray) {
+				currentGroup.forEach((i) => {
+					targetGroup?.push(i);
+				});
 				currentGroupArray.splice(0, currentGroupArray.length);
 			}
-		}
-
-		// Append items to target group.
-		if (currentGroup && targetGroup) {
-			currentGroup.forEach((i) => {
-				targetGroup.push(i);
-			});
 		}
 		controller.value = controller.value;
 	}
@@ -98,17 +92,20 @@
 			{#if item[index] === 'Not Assigned'}
 				<div>
 					<div>
-						<h2>Not Assigned</h2>
+						<span>
+							<h6>Not Assigned</h6>
+						</span>
+						<span>
+							<button
+								type="button"
+								class="btn"
+								on:click={() => moveAll(item.indexOf(item[index]), item.indexOf(item[index + 1]))}
+							>
+								<i class="fa fa-solid fa-arrow-right" />
+							</button>
+						</span>
 					</div>
-					<div>
-						<button
-							type="button"
-							class="btn"
-							on:click={() => moveAll(item.indexOf(item[index]), item.indexOf(item[index + 1]))}
-						>
-							<i class="fa-solid fa-arrow-right" />
-						</button>
-					</div>
+
 					<ul>
 						{#each item[1] as i}
 							<li>
@@ -125,7 +122,7 @@
 										on:click={() =>
 											move(i, item.indexOf(item[index]), item.indexOf(item[index + 1]))}
 									>
-										<i class="fa-solid fa-arrow-right" />
+										<i class="fa fa-solid fa-arrow-right" />
 									</button>
 								</div>
 							</li>
@@ -136,31 +133,37 @@
 			{#if item[index] != 'Not Assigned'}
 				<div>
 					<div>
-						<button
-							type="button"
-							class="btn"
-							on:click={() => moveAll(item.indexOf(item[index]), item.indexOf(item[index - 1]))}
-						>
-							<i class="fa-solid fa-arrow-left" />
-						</button>
+						<span>
+							<button
+								type="button"
+								class="btn"
+								on:click={() => moveAll(item.indexOf(item[index]), item.indexOf(item[index - 1]))}
+							>
+								<i class="fa fa-solid fa-arrow-left" />
+							</button>
+						</span>
+						<span>
+							<h6>Assigned</h6>
+						</span>
 					</div>
-					<div>
-						<h2>Assigned</h2>
-					</div>
+
 					<ul>
 						{#each item[1] as i}
 							<li>
-								<button
-									type="button"
-									class="btn"
-									on:click={() => move(i, item.indexOf(item[index]), item.indexOf(item[index - 1]))}
-								>
-									<i class="fa-solid fa-arrow-left" />
-								</button>
-								{i.Label}
-								<button type="button" class="btn" on:click={() => linkClick(i)}>
-									<i class="fa fa-external-link-alt fa-1x" />
-								</button>
+								<div>
+									<button
+										type="button"
+										class="btn"
+										on:click={() =>
+											move(i, item.indexOf(item[index]), item.indexOf(item[index - 1]))}
+									>
+										<i class="fa fa-solid fa-arrow-left" />
+									</button>
+									{i.Label}
+									<button type="button" class="btn" on:click={() => linkClick(i)}>
+										<i class="fa fa-external-link-alt fa-1x" />
+									</button>
+								</div>
 							</li>
 						{/each}
 					</ul>
@@ -172,68 +175,46 @@
 
 <style lang="scss">
 	.form-input-groups {
-		align-content: stretch;
-		align-items: stretch;
 		display: flex;
-		flex-wrap: nowrap;
 		justify-content: space-between;
 	}
 
 	.form-input-groups > div {
 		border: 1px solid #bfc6ce;
 		border-width: 1px 1px 1px 0;
-		flex-basis: 50%;
-		flex-grow: 1;
-		display: flex;
-		justify-content: space-between;
 		align-items: center;
-		padding: 10px;
 	}
 
 	.form-input-groups > div:first-child {
 		border-width: 1px;
 	}
-
-	.form-input-groups > div > div {
+	.form-input-groups > div > div > span {
+		display: grid;
 		align-content: center;
-		align-items: center;
 		background: #2d3c4b;
 		color: #fff;
-		display: flex;
-		flex-wrap: nowrap;
 		font-weight: bold;
-		justify-content: space-between;
-		padding: 5px 16px 5px 5px;
+		padding: 0px 10px 0px 0px;
 	}
-
-	.form-input-groups > div > div {
+	.form-input-groups > div > div > span > h6 {
 		padding: 10px;
-	}
-
-	.form-input-groups > div.group-name {
-		flex-grow: 10;
-		text-align: center;
+		display: flex;
+		justify-content: space-between;
 	}
 
 	.form-input-groups > div > ul {
 		height: 300px;
-		list-style: none inside;
-		margin: 0;
+		list-style-type: none;
+		padding-left: 10px;
 		overflow-y: auto;
-		padding: 0;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
 	}
 
 	.form-input-groups > div > ul > li {
-		align-content: stretch;
-		align-items: center;
-		justify-content: space-between;
 		display: flex;
-		flex-wrap: nowrap;
-		justify-content: left;
-		padding: 0;
+		justify-content: space-between;
+		align-items: center;
+		border-spacing: 2px;
+		border-bottom: 1px solid #eee;
 	}
 
 	.form-input-groups > div > ul > li:hover {
@@ -242,7 +223,6 @@
 
 	.form-input-groups > div > ul > li > .item-label {
 		flex-grow: 10;
-		padding: 8px;
 	}
 
 	.last-group .fa-arrow-right {
