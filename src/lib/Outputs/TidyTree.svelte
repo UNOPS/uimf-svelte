@@ -14,13 +14,17 @@
 	}
 	export let controller: OutputController<ITidyTree>;
 	let svgContainer: HTMLElement | null = null;
-	let nullContainer: HTMLElement;
+	let nullContainer: HTMLElement | null = null;
 
 	let component = new OutputComponent({
 		refresh() {
 			if (controller.value) {
 				renderTree(controller.value.Node);
-			} else nullContainer.innerHTML = 'Data not found';
+			} else {
+				if (nullContainer) {
+					nullContainer.innerHTML = 'Data not found';
+				}
+			}
 		}
 	});
 
@@ -30,7 +34,7 @@
 		let nodeMap = new Map();
 		let superParent: ITidyTreeData & { children: ITidyTreeData[] } = {
 			Id: -1,
-			Label: 'Super Parent',
+			Label: 'Node',
 			ParentId: null,
 			children: []
 		};
@@ -47,16 +51,18 @@
 			}
 		});
 
-		let root = d3.hierarchy(superParent);
+		let root = d3.hierarchy(superParent) as d3.HierarchyNode<unknown>;
 		let treeLayout = d3.tree().size([500, 500]);
 		treeLayout(root);
 
 		// Fit letters to image; up to 15 chars
-		let svg = d3.select(svgContainer).append('svg').attr('width', 600).attr('height', 600);
+		let svg = d3.select(svgContainer).append('svg').attr('width', 900).attr('height', 600);
 
 		let g = svg.append('g').attr('transform', 'translate(50,50)');
-		let curve = function (d: { source: { y: any; x: any }; target: { y: any; x: any } }) {
-			return `M${d.source.y},${d.source.x} L${d.target.y},${d.target.x}`;
+		let curve = function (d: d3.HierarchyLink<unknown>) {
+			let source = d.source as any;
+			let target = d.target as any;
+			return `M${source.y},${source.x} L${target.y},${target.x}`;
 		};
 
 		g.selectAll('.link')
@@ -72,11 +78,12 @@
 			.data(root.descendants())
 			.enter()
 			.append('g')
-			.attr('class', function (d: { children: any }) {
+			.attr('class', (d) => {
 				return 'node' + (d.children ? ' node--internal' : ' node--leaf');
 			})
-			.attr('transform', function (d: { x: string; y: string }) {
-				return 'translate(' + d.y + ',' + d.x + ')';
+			.attr('transform', function (d) {
+				let node = d as any;
+				return 'translate(' + node.y + ',' + node.x + ')';
 			});
 
 		node.append('circle').attr('r', 5);
@@ -84,12 +91,13 @@
 		node
 			.append('text')
 			.attr('dx', '5px')
-			.attr('x', function (d: { children: any }) {
+			.attr('x', function (d) {
 				return d.children ? -10 : 10;
 			})
-			.style('text-anchor', (d: { children: any }) => (d.children ? 'end' : 'start'))
-			.text(function (d: { data: { Label: any } }) {
-				return d.data.Label.length > 15 ? d.data.Label.substring(0, 15) + '...' : d.data.Label;
+			.style('text-anchor', (d) => (d.children ? 'end' : 'start'))
+			.text(function (d: d3.HierarchyNode<unknown>) {
+				let data = d.data as ITidyTreeData;
+				return data.Label.length > 15 ? data.Label.substring(0, 15) + '...' : data.Label;
 			});
 	}
 </script>
@@ -104,5 +112,6 @@
 	}
 	.node text {
 		font: 12px sans-serif;
+		font-weight: bold;
 	}
 </style>
