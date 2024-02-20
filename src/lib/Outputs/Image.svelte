@@ -6,15 +6,17 @@
 		AltText: string | null;
 		Url: string | null;
 		Id: number | null;
-		ShowMenu: boolean | null;
 		IsActivated: boolean | null;
+		MenuActions: ActionListData | null;
 	}
 </script>
 
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
-	import type { OutputController } from '../Infrastructure/OutputController';
+	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
+	import ActionList, { ActionListController, type ActionListData } from './ActionList.svelte';
+	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
 
 	export let controller: OutputController<Image>;
 	export let height: string | null;
@@ -26,70 +28,21 @@
 			isMenuOpen = false;
 		},
 		refresh() {
+			if (controller.value?.MenuActions != null) {
+				buildControllers(controller.value?.MenuActions);
+			}
+
 			controller.value = controller.value;
 		}
 	});
 
-	async function deleteImage(index: number | null) {
-		if (index == null) {
-			throw `Image index is missing.`;
-		}
-		type PostData = { Id: number };
-
-		let postData: PostData = { Id: index };
-
-		let response = controller.app
-			.postForm('delete-product-image', postData, null)
-			.then((response: any) => {
-				if (response.Result == true) {
-					controller.setValue({
-						Source: '',
-						Width: null,
-						Height: null,
-						AltText: null,
-						Url: null,
-						Id: null,
-						ShowMenu: null,
-						IsActivated: null
-					});
-				}
-			});
-
-		await response;
-	}
-
-	async function activateImage(index: number | null, activated: boolean) {
-		if (index == null) {
-			throw `Image index is missing.`;
-		}
-		type PostData = { ImageId: number; Activate: boolean };
-
-		let postData: PostData = { ImageId: index, Activate: !activated };
-
-		let response = controller.app
-			.postForm('change-product-image-activation', postData, null)
-			.then((response: any) => {
-				if (response.Result == true) {
-					controller.value.IsActivated = !activated;
-				}
-			});
-
-		await response;
-	}
-
-	async function editImage(index: number | null) {
-		if (index == null) {
-			throw `Image index is missing.`;
-		}
-
-		let response = controller.app.openModal({
-			form: 'edit-product-image',
-			inputFieldValues: {
-				Id: index
-			}
-		});
-
-		await response;
+	function buildControllers(data: ActionListData) {
+		return new OutputController<ActionListData>({
+			metadata: {} as ComponentMetadata,
+			data: data,
+			form: controller.form!,
+			app: controller.app
+		}) as ActionListController;
 	}
 
 	beforeUpdate(async () => await component.setup(controller));
@@ -121,17 +74,20 @@
 			<div class="watermark">Deactivated</div>
 		{/if}
 
-		{#if controller.value.ShowMenu}
+		{#if controller.value.MenuActions != null}
 			<div class="image-menu">
 				<button
-					class="delete-button"
+					class="menu-button"
 					on:click={() => (isMenuOpen = !isMenuOpen)}
-					aria-label="Ouvrir le menu contextuel"
+					aria-label="Open image menu"
 				>
 					<i class="fa-solid fa-gear" />
 				</button>
+				<!-- svelte-ignore a11y-unknown-role -->
+				<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+				<!-- svelte-ignore a11y-no-static-element-interactions -->
 				<div
-					role="menu"
+					role="menu-button"
 					tabindex="0"
 					class="context-menu"
 					style="display: {isMenuOpen ? 'block' : 'none'}"
@@ -142,38 +98,12 @@
 						}
 					}}
 				>
-					<!-- svelte-ignore a11y-click-events-have-key-events -->
-					<div
-						role="menuitem"
-						tabindex="0"
-						class="context-menu-item"
-						on:click={() => editImage(controller.value.Id)}
-					>
-						<i class="context-menu-item-icon fa-solid fa-edit" aria-hidden="true" /> Edit
-					</div>
-					<!-- svelte-ignore a11y-click-events-have-key-events -->
-					<div
-						role="menuitem"
-						tabindex="0"
-						class="context-menu-item"
-						on:click={() =>
-							activateImage(controller.value.Id, controller.value.IsActivated == true)}
-					>
-						{#if controller.value.IsActivated}
-							<i class="context-menu-item-icon fa-solid fa-circle-stop" aria-hidden="true" /> Deactivate
-						{:else}
-							<i class="context-menu-item-icon fa-solid fa-circle-play" aria-hidden="true" /> Activate
-						{/if}
-					</div>
-					<!-- svelte-ignore a11y-click-events-have-key-events -->
-					<div
-						role="menuitem"
-						tabindex="0"
-						class="context-menu-item"
-						on:click={() => deleteImage(controller.value.Id)}
-					>
-						<i class="context-menu-item-icon fa-solid fa-trash-can" aria-hidden="true" /> Delete
-					</div>
+					{#if controller.value.MenuActions}
+						<ActionList
+							controller={buildControllers(controller.value.MenuActions)}
+							isVertical={true}
+						/>
+					{/if}
 				</div>
 			</div>
 		{/if}
@@ -241,7 +171,7 @@
 		padding: 4px 10px 4px 10px;
 	}
 
-	.delete-button {
+	.menu-button {
 		cursor: pointer;
 		color: white;
 		border: none;
