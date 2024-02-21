@@ -14,13 +14,17 @@
 	}
 	export let controller: OutputController<ITidyTree>;
 	let svgContainer: HTMLElement | null = null;
-	let nullContainer: HTMLElement;
+	let nullContainer: HTMLElement | null = null;
 
 	let component = new OutputComponent({
 		refresh() {
 			if (controller.value) {
 				renderTree(controller.value.Node);
-			} else nullContainer.innerHTML = 'Data not found';
+			} else {
+				if (nullContainer) {
+					nullContainer.innerHTML = 'Data not found';
+				}
+			}
 		}
 	});
 
@@ -30,7 +34,7 @@
 		let nodeMap = new Map();
 		let superParent: ITidyTreeData & { children: ITidyTreeData[] } = {
 			Id: -1,
-			Label: 'Super Parent',
+			Label: 'Node',
 			ParentId: null,
 			children: []
 		};
@@ -52,7 +56,7 @@
 		treeLayout(root);
 
 		// Fit letters to image; up to 15 chars
-		let svg = d3.select(svgContainer).append('svg').attr('width', 600).attr('height', 600);
+		let svg = d3.select(svgContainer).append('svg').attr('width', 900).attr('height', 600);
 
 		let g = svg.append('g').attr('transform', 'translate(50,50)');
 		let curve = function (d: d3.HierarchyLink<unknown>) {
@@ -108,5 +112,6 @@
 	}
 	.node text {
 		font: 12px sans-serif;
+		font-weight: bold;
 	}
 </style>
