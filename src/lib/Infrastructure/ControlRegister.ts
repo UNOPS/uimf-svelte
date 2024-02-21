@@ -45,6 +45,7 @@ import * as EventDescription from '../Outputs/EventDescription.svelte';
 import * as Status from '../Outputs/Status.svelte';
 import * as NestedObject from '../Outputs/NestedObject.svelte';
 import * as TidyTree from '../Outputs/TidyTree.svelte';
+import * as LineChart from '../Outputs/LineChart.svelte';
 
 //To be deactivated until complete validation
 import * as DynamicInput from '../Inputs/DynamicInput.svelte';
@@ -283,6 +284,7 @@ defaultControlRegister.registerOutputComponent('pie-chart', PieChart, {
 	hideIfNull: true
 });
 defaultControlRegister.registerOutputComponent('tidy-tree', TidyTree, { displayAsBlock: true });
+defaultControlRegister.registerOutputComponent('line-chart', LineChart, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('sequence', Sequence, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('sla-timer', SlaTimer, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('slider', Slider);
