@@ -8,7 +8,7 @@
 	interface ILineChartData {
 		Label: string;
 		Value: number;
-		Year: Date;
+		Year: number;
 	}
 	interface ILineChart {
 		Data: ILineChartData[];
@@ -34,32 +34,28 @@
 			if (controller.value) {
 				data = controller.value.Data;
 				console.log(data);
-				if (data[1] && data[1].Year instanceof Date) {
-					console.log(data[1].Year.getFullYear());
+				if (data[1] && data[1].Year) {
+					console.log(data[1].Year);
 				}
-				const xExtent = d3.extent(
-					data.map((d) => {
-						const date = new Date(d.Year);
-						return date.getFullYear();
-					})
-				);
+				const xExtent = d3.extent(data.map((d) => +d.Year));
 
 				const yExtent = d3.extent(data.map((d) => d.Value));
 				console.log(data[0].Year, data[0].Value);
 				xScale = d3
 					.scaleLinear()
 					.domain(xExtent[0] === undefined ? [0, 0] : xExtent)
-					.range([5, 95]);
+					.range([marginLeft, width - marginRight]);
 
 				yScale = d3
 					.scaleLinear()
 					.domain(yExtent[0] === undefined ? [0, 0] : yExtent)
-					.range([5, 75]);
+					.range([height - marginBottom, marginTop]);
 				// the path generator
-				pathLine = line<ILineChartData>()
-					.x((d) => xScale(+d.Year)) // convert date to timestamp
+				pathLine = d3
+					.line<ILineChartData>()
+					.x((d) => xScale(d.Year))
 					.y((d) => yScale(d.Value))
-					.curve(curveBasis);
+					.curve(d3.curveBasis);
 			} else console.log('No value');
 		}
 	});
@@ -81,7 +77,7 @@
 
 				<!-- X-Axis Tick Labels -->
 				<text fill="currentColor" text-anchor="middle" x={xScale(tick)} y={22}>
-					{new Date(tick).getFullYear()}
+					{tick}
 				</text>
 			{/each}
 		</g>
@@ -124,7 +120,7 @@
 
 			<!-- Y-Axis Label -->
 			<text fill="currentColor" text-anchor="start" x={-marginLeft} y={15}>
-				↑ Daily close ($)
+				{data[0].Label}
 			</text>
 		</g>
 
@@ -134,8 +130,8 @@
 
 <style>
 	path {
-		stroke: purple;
-		stroke-width: 1;
+		stroke: rgb(0, 7, 143);
+		stroke-width: 1.5;
 		fill: none;
 		stroke-linecap: round;
 	}
