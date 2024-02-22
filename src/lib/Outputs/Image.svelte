@@ -99,10 +99,7 @@
 					}}
 				>
 					{#if controller.value.MenuActions}
-						<ActionList
-							controller={buildControllers(controller.value.MenuActions)}
-							isVertical={true}
-						/>
+						<ActionList controller={buildControllers(controller.value.MenuActions)} />
 					{/if}
 				</div>
 			</div>
