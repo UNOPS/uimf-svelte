@@ -3,7 +3,7 @@
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
 	import FormLink, { type FormLinkData } from './FormLink.svelte';
-	
+
 	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
 
 	export interface ActionListData {
@@ -15,8 +15,7 @@
 <script lang="ts">
 	import type { Controller } from '../Outputs/FormLink.svelte';
 	export let controller: OutputController<ActionListData>;
-	export let isVertical: boolean = false;
-	
+
 	let component = new OutputComponent({
 		refresh() {
 			const value = controller.value;
@@ -46,9 +45,9 @@
 </script>
 
 {#if controller.value?.Actions.length > 0}
-	<div class={isVertical ? 'action-list-vertical' :'action-list' }>
+	<div class="action-list">
 		{#each controller.value.Actions as action}
-			<div><FormLink controller={makeController(action)} isVertical = {isVertical}/></div>
+			<div><FormLink controller={makeController(action)} /></div>
 		{/each}
 	</div>
 {/if}
@@ -79,14 +78,6 @@
 		border-width: 0;
 		padding: 5px 15px;
 		text-align: right;
-		margin-left: 0;
-		margin-right: 0;
-	}
-
-	.action-list-vertical {
-		background-color: $app-soft-bg;
-		border-width: 0;
-		text-align: left;
 		margin-left: 0;
 		margin-right: 0;
 	}

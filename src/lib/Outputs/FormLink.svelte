@@ -33,7 +33,6 @@
 
 	let allowed: boolean;
 	let cssClass: string;
-	export let isVertical: boolean = false;
 
 	let component = new OutputComponent({
 		async refresh() {
@@ -95,7 +94,7 @@
 	{:else if allowed}
 		<button
 			type="button"
-			class={cssClass ?? isVertical ? 'btn full-width' : 'btn btn-default'}
+			class={cssClass ?? 'btn btn-default'}
 			{disabled}
 			use:tooltip={controller.value.Tooltip}
 			on:click={() => {
@@ -248,10 +247,6 @@
 		&:hover {
 			border-color: $app-btn-border-color;
 		}
-	}
-
-	.full-width {
-		width: 100%;
 	}
 
 	i.icon-right-margin {
