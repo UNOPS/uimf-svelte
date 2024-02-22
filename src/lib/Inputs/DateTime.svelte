@@ -124,8 +124,11 @@
 				initialised = true;
 			}
 
-			minDate = controller.form?.response[controller.metadata.CustomProperties.MinDateValue]?.value;
-			maxDate = controller.form?.response[controller.metadata.CustomProperties.MaxDateValue]?.value;
+			const minDateField = controller.metadata.CustomProperties?.MenDateValue;
+			const maxDateField = controller.metadata.CustomProperties?.MaxDateValue;
+
+			minDate = minDateField != null ? controller.form?.response[minDateField]?.value : null;
+			maxDate = maxDateField != null ? controller.form?.response[maxDateField]?.value : null;
 
 			minDateString = controller.ToValidDateString(minDate);
 			maxDateString = controller.ToValidDateString(maxDate);
