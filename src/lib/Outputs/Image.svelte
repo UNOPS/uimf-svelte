@@ -99,7 +99,9 @@
 					}}
 				>
 					{#if controller.value.MenuActions}
-						<ActionList controller={buildControllers(controller.value.MenuActions)} />
+						<ActionList
+							controller={buildControllers(controller.value.MenuActions)}
+						/>
 					{/if}
 				</div>
 			</div>
@@ -109,6 +111,18 @@
 
 <style lang="scss">
 	@import '../scss/styles.variables.scss';
+
+	$btn-size: 100px;
+
+	:global(.image-menu .context-menu .action-list button) {
+		width:$btn-size;
+		border: none;
+	}
+
+	:global(.image-menu .context-menu .action-list) {
+		margin:0px;
+		padding: 0px;
+	}
 
 	.watermark {
 		position: absolute;
@@ -138,7 +152,7 @@
 	.context-menu-item {
 		padding: 9px 20px;
 		cursor: pointer;
-		min-width: 120px;
+		min-width: $btn-size;
 	}
 
 	.context-menu-item:hover {
