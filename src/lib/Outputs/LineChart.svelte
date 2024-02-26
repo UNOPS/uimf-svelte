@@ -3,20 +3,20 @@
 	import { beforeUpdate } from 'svelte';
 	import type { OutputController } from '../Infrastructure/OutputController';
 	import * as d3 from 'd3';
-	import { curveBasis, line } from 'd3';
 
 	interface ILineChartData {
 		Label: string;
 		Value: number;
-		Year: number;
+		Year: Date;
 	}
 	interface ILineChart {
 		Data: ILineChartData[];
 	}
-	let pathLine = line<ILineChartData>()
-		.x((d) => 0)
-		.y((d) => 0)
-		.curve(curveBasis);
+	let pathLine = d3
+		.line<ILineChartData>()
+		.x(() => 0)
+		.y(() => 0)
+		.curve(d3.curveBasis);
 	let xScale: any;
 	let yScale: any;
 	let width = 928;
@@ -32,15 +32,9 @@
 	let component = new OutputComponent({
 		refresh() {
 			if (controller.value) {
-				data = controller.value.Data;
-				console.log(data);
-				if (data[1] && data[1].Year) {
-					console.log(data[1].Year);
-				}
-				const xExtent = d3.extent(data.map((d) => +d.Year));
-
+				data = controller.value.Data.map((d) => ({ ...d, Year: new Date(d.Year) }));
+				const xExtent = d3.extent(data.map((d) => d.Year.getFullYear()));
 				const yExtent = d3.extent(data.map((d) => d.Value));
-				console.log(data[0].Year, data[0].Value);
 				xScale = d3
 					.scaleLinear()
 					.domain(xExtent[0] === undefined ? [0, 0] : xExtent)
@@ -50,13 +44,12 @@
 					.scaleLinear()
 					.domain(yExtent[0] === undefined ? [0, 0] : yExtent)
 					.range([height - marginBottom, marginTop]);
-				// the path generator
 				pathLine = d3
 					.line<ILineChartData>()
-					.x((d) => xScale(d.Year))
+					.x((d) => xScale(d.Year.getFullYear()))
 					.y((d) => yScale(d.Value))
 					.curve(d3.curveBasis);
-			} else console.log('No value');
+			}
 		}
 	});
 
@@ -67,29 +60,20 @@
 
 {#if xScale && yScale}
 	<svg {width} {height} viewBox="0 0 {width} {height}" style:max-width="100%" style:height="auto">
-		<!-- X-Axis -->
 		<g transform="translate(0,{height - marginBottom})">
 			<line stroke="currentColor" x1={marginLeft - 6} x2={width} />
 
 			{#each xScale.ticks() as tick}
-				<!-- X-Axis Ticks -->
 				<line stroke="currentColor" x1={xScale(tick)} x2={xScale(tick)} y1={0} y2={6} />
-
-				<!-- X-Axis Tick Labels -->
 				<text fill="currentColor" text-anchor="middle" x={xScale(tick)} y={22}>
 					{tick}
 				</text>
 			{/each}
 		</g>
 
-		<!-- Y-Axis and Grid Lines -->
 		<g transform="translate({marginLeft},0)">
 			{#each yScale.ticks() as tick}
 				{#if tick !== 0}
-					<!-- 
-          Grid Lines. 
-          Note: First line is skipped since the x-axis is already present at 0. 
-        -->
 					<line
 						stroke="currentColor"
 						stroke-opacity="0.1"
@@ -98,15 +82,8 @@
 						y1={yScale(tick)}
 						y2={yScale(tick)}
 					/>
-
-					<!-- 
-          Y-Axis Ticks. 
-          Note: First tick is skipped since the x-axis already acts as a tick. 
-        -->
 					<line stroke="currentColor" x1={0} x2={-6} y1={yScale(tick)} y2={yScale(tick)} />
 				{/if}
-
-				<!-- Y-Axis Tick Labels -->
 				<text
 					fill="currentColor"
 					text-anchor="end"
@@ -118,7 +95,6 @@
 				</text>
 			{/each}
 
-			<!-- Y-Axis Label -->
 			<text fill="currentColor" text-anchor="start" x={-marginLeft} y={15}>
 				{data[0].Label}
 			</text>
