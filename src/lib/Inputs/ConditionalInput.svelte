@@ -91,7 +91,7 @@
 
 			const matchingViewValue = value.Value[matchingView.controller.metadata.Id];
 
-			return matchingView.controller.setValue(matchingViewValue);
+			return matchingView.controller.setValue(matchingViewValue.Value);
 		}
 
 		public deserialize(value: string | null): Promise<ConditionalInput | null> {
