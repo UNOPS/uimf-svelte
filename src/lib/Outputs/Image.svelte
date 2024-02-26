@@ -115,13 +115,17 @@
 	$btn-size: 100px;
 
 	:global(.image-menu .context-menu .action-list button) {
-		width:$btn-size;
+		width: $btn-size;
 		border: none;
 	}
 
 	:global(.image-menu .context-menu .action-list) {
-		margin:0px;
-		padding: 0px;
+		margin: 0;
+		padding: 0;
+	}
+
+	:global(.image-menu .context-menu .action-list > div) {
+		margin-right:0;
 	}
 
 	.watermark {
