@@ -17,6 +17,7 @@
 	let defaultCssClass: string;
 	let hideIfNull: boolean;
 	let thisHideLabel: boolean;
+	let required: boolean;
 
 	const componentController = new InputComponent({
 		init() {
@@ -39,6 +40,8 @@
 			defaultCssClass = componentRegistration.config.displayAsBlock ? 'block' : 'inline';
 			documentation = controller.metadata.CustomProperties?.documentation;
 
+			required = controller.metadata.Required;
+
 			controller.ready?.resolve();
 		},
 		refresh() {
@@ -54,14 +57,14 @@
 {#if controller.value != null || !hideIfNull}
 	{#if thisHideLabel}
 		<div class={contentCssClass || defaultCssClass} use:tooltip={contentTooltip}>
-			<svelte:component this={component} {controller} />
+			<svelte:component this={component} {controller} required={required}/>
 		</div>
 	{:else if controller.metadata == null}
 		<strong>null metadata</strong>
 	{:else}
 		<label class="form-label" use:tooltip={documentation}>{controller.metadata.Label}:</label>
 		<div class={contentCssClass || defaultCssClass} use:tooltip={contentTooltip}>
-			<svelte:component this={component} {controller} />
+			<svelte:component this={component} {controller} required={required}/>
 		</div>
 	{/if}
 {/if}
