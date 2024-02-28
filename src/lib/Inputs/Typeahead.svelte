@@ -102,6 +102,11 @@
 						defaultValue = null;
 						initialized = true;
 					}
+
+					// The value might have changed once the promise
+					// has been resolved. In this case we do nothing, because
+					// it would have been taken care of by another invocation.
+					return;
 				}
 
 				controller.value =
