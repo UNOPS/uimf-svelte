@@ -18,7 +18,7 @@
 		};
 	}
 
-	var initialized : boolean = false;
+	var initialized: boolean = false;
 
 	export class Controller extends InputController<TypeaheadValue, TypeaheadMetadata> {
 		public getValue(): Promise<TypeaheadValue | null> {
@@ -101,8 +101,9 @@
 						controller.setValue(defaultValue);
 						defaultValue = null;
 						initialized = true;
+					} else {
+						controller.value = results[0];
 					}
-
 					// The value might have changed once the promise
 					// has been resolved. In this case we do nothing, because
 					// it would have been taken care of by another invocation.
