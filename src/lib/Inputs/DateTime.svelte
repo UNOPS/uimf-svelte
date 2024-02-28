@@ -124,7 +124,7 @@
 				initialised = true;
 			}
 
-			const minDateField = controller.metadata.CustomProperties?.MenDateValue;
+			const minDateField = controller.metadata.CustomProperties?.MinDateValue;
 			const maxDateField = controller.metadata.CustomProperties?.MaxDateValue;
 
 			minDate = minDateField != null ? controller.form?.response[minDateField]?.value : null;
