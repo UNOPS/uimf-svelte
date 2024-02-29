@@ -116,4 +116,8 @@
 		box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 		height: fit-content;
 	}
+
+	.height700{
+		height: 750px;
+	}
 </style>
