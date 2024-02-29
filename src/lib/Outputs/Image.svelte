@@ -8,6 +8,7 @@
 		Id: number | null;
 		IsActivated: boolean | null;
 		MenuActions: ActionListData | null;
+		DisplayOrder: number | null;
 	}
 </script>
 
@@ -75,6 +76,10 @@
 		{/if}
 
 		{#if controller.value.MenuActions != null}
+			<div class="display-order">{controller.value.DisplayOrder}</div>
+		{/if}
+
+		{#if controller.value.MenuActions != null}
 			<div class="image-menu">
 				<button
 					class="menu-button"
@@ -99,9 +104,7 @@
 					}}
 				>
 					{#if controller.value.MenuActions}
-						<ActionList
-							controller={buildControllers(controller.value.MenuActions)}
-						/>
+						<ActionList controller={buildControllers(controller.value.MenuActions)} />
 					{/if}
 				</div>
 			</div>
@@ -125,7 +128,7 @@
 	}
 
 	:global(.image-menu .context-menu .action-list > div) {
-		margin-right:0;
+		margin-right: 0;
 	}
 
 	.watermark {
@@ -176,14 +179,25 @@
 		margin: 2px;
 	}
 
+	.display-order {
+		font-weight: bold;
+		position: absolute;
+		top: 2px;
+		left: 2px;
+		background-color: #c8ff6f;
+		border: none;
+		border-bottom-right-radius: 50%;
+		padding: 6px 12px;
+	}
+
 	.image-menu {
 		position: absolute;
 		top: 2px;
 		right: 2px;
-		background-color: rgb(0, 140, 255);
+		background-color: #008cff;
 		border: none;
 		border-bottom-left-radius: 50%;
-		padding: 4px 10px 4px 10px;
+		padding: 5px;
 	}
 
 	.menu-button {
