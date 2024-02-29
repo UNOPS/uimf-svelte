@@ -90,6 +90,10 @@
 
 	// 400 is arbitrary value of the height for a slider with a width of 600px
 	var dynamicHeight = 400 / componentItemControllers.length;
+
+	if(dynamicHeight > 150){
+		dynamicHeight = 150;
+	}
 </script>
 
 <div class="slider-container">
