@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
 	import { InputController } from '../Infrastructure/InputController';
-	export class Controller extends InputController<number> {
+	export class Controller extends InputController<number, ComponentMetadata<NumberConfiguration>> {
 		public getValue(): Promise<number | null> {
 			return Promise.resolve(this.value);
 		}
@@ -19,15 +19,24 @@
 			return value == null ? null : value.toString();
 		}
 	}
+
+	interface NumberConfiguration {
+		MinValue: number | null;
+		MaxValue: number | null;
+	}
 </script>
 
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../Infrastructure/Component';
+	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
 
 	export let controller: Controller;
 
 	let multiplier: number = 1;
+
+	let min: number | null;
+	let max: number | null;
 
 	let component = new InputComponent({
 		init() {
@@ -35,6 +44,12 @@
 			controller.ready?.resolve();
 		},
 		refresh() {
+			const minField = controller.metadata.Component.Configuration?.MinValue;
+			const maxField = controller.metadata.Component.Configuration?.MaxValue;
+
+			min = minField != null ? controller.form?.response[minField]?.value : null;
+			max = maxField != null ? controller.form?.response[maxField]?.value : null;
+
 			controller.value = controller.value;
 		}
 	});
@@ -57,6 +72,8 @@
 	required={controller.metadata.Required}
 	step={1 / multiplier}
 	type="number"
+	{min}
+	{max}
 />
 
 <style lang="scss">
