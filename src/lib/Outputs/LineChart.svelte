@@ -8,15 +8,12 @@
 		Label: string;
 		Value: number;
 		Year: Date;
+		Category?: string; // Include the Category property
 	}
 	interface ILineChart {
 		Data: ILineChartData[];
 	}
-	let pathLine = d3
-		.line<ILineChartData>()
-		.x(() => 0)
-		.y(() => 0)
-		.curve(d3.curveBasis);
+
 	let xScale: any;
 	let yScale: any;
 	let width = 928;
@@ -26,7 +23,7 @@
 	let marginBottom = 30;
 	let marginLeft = 40;
 	let data: ILineChartData[] = [];
-
+	let paths: { d: string; label: string }[] = [];
 	export let controller: OutputController<ILineChart>;
 
 	let component = new OutputComponent({
@@ -44,22 +41,43 @@
 					.scaleLinear()
 					.domain(yExtent[0] === undefined ? [0, 0] : yExtent)
 					.range([height - marginBottom, marginTop]);
-				pathLine = d3
-					.line<ILineChartData>()
-					.x((d) => xScale(d.Year.getFullYear()))
-					.y((d) => yScale(d.Value))
-					.curve(d3.curveBasis);
+
+				const dataByCategory = d3.group(data, (d) => d.Category); // Group data by category
+
+				paths = Array.from(dataByCategory, ([category, values]) => {
+					const pathGenerator = d3
+						.line<ILineChartData>()
+						.x((d) => xScale(d.Year.getFullYear()))
+						.y((d) => yScale(d.Value))
+						.curve(d3.curveBasis);
+
+					const pathData = pathGenerator(values);
+					return {
+						d: pathData || '', // Convert null to an empty string
+						label: category || 'Unknown' // Provide a default label if undefined
+					};
+				});
 			}
 		}
 	});
-
+	function colorByIndex(index: number) {
+		const colors = ['steelblue', 'red', 'green', 'purple', 'orange'];
+		return colors[index % colors.length];
+	}
 	beforeUpdate(async () => {
 		await component.setup(controller);
 	});
 </script>
 
 {#if xScale && yScale}
-	<svg {width} {height} viewBox="0 0 {width} {height}" style:max-width="100%" style:height="auto">
+	<h2>Automobile Sales in Thailand</h2>
+	<svg
+		{width}
+		{height}
+		viewBox="0 0 {width} {height + 50}"
+		style:max-width="100%"
+		style:height="auto"
+	>
 		<g transform="translate(0,{height - marginBottom})">
 			<line stroke="currentColor" x1={marginLeft - 6} x2={width} />
 
@@ -94,21 +112,37 @@
 					{tick}
 				</text>
 			{/each}
-
-			<text fill="currentColor" text-anchor="start" x={-marginLeft} y={15}>
-				{data[0].Label}
-			</text>
+		</g>
+		<g
+			class="legend"
+			transform={`translate(${width / 2 - (paths.length * 100) / 2},${height + 30})`}
+		>
+			{#each paths as { d, label }, index (label)}
+				<g transform={`translate(${index * 100}, 0)`}>
+					<rect width="20" height="20" fill={colorByIndex(index)} />
+					<text x="25" y="15" font-size="1em">{label}</text>
+				</g>
+			{/each}
 		</g>
 
-		<path fill="none" stroke="steelblue" stroke-width="1.5" d={pathLine(data)} />
+		{#each paths as { d, label }, index (label)}
+			<path fill="none" stroke={colorByIndex(index)} stroke-width="1.5" {d} />
+		{/each}
 	</svg>
 {/if}
 
 <style>
+	h2 {
+		text-align: center;
+	}
 	path {
-		stroke: rgb(0, 7, 143);
+		/* stroke: rgb(0, 7, 143); */
 		stroke-width: 1.5;
 		fill: none;
 		stroke-linecap: round;
+	}
+	.legend text {
+		fill: currentColor;
+		font-size: 16px;
 	}
 </style>
