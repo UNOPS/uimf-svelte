@@ -21,6 +21,7 @@
 	}
 
 	interface NumberConfiguration {
+		Precision: number | null;
 		MinValue: number | null;
 		MaxValue: number | null;
 	}
@@ -40,13 +41,13 @@
 
 	let component = new InputComponent({
 		init() {
-			multiplier = Math.pow(10, controller.metadata.CustomProperties?.numberPrecision ?? 0);
-			controller.ready?.resolve();
-		},
-		refresh() {
+			multiplier = Math.pow(10, controller.metadata.Component.Configuration?.Precision ?? 0);
 			min = controller.metadata.Component.Configuration?.MinValue;
 			max = controller.metadata.Component.Configuration?.MaxValue;
 
+			controller.ready?.resolve();
+		},
+		refresh() {
 			controller.value = controller.value;
 		}
 	});
