@@ -4,7 +4,7 @@
 	import { OutputComponent } from '../Infrastructure/Component';
 	import FormLink, { type FormLinkData } from './FormLink.svelte';
 
-	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
 
 	export interface ActionListData {
 		Actions: any[];
@@ -36,7 +36,7 @@
 
 	const makeController = (value: FormLinkData) => {
 		return new OutputController<FormLinkData>({
-			metadata: {} as ComponentMetadata,
+			metadata: {} as IFieldMetadata,
 			data: value,
 			form: controller.form!,
 			app: controller.app

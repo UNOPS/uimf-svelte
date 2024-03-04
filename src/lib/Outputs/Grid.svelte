@@ -3,7 +3,7 @@
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
-	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
 
 	interface OutputField {
 		component: any;
@@ -11,13 +11,13 @@
 	}
 
 	interface Configuration {
-		Properties: ComponentMetadata[];
+		Properties: IFieldMetadata[];
 		Areas: string;
 		Rows: string;
 		Columns: string;
 	}
 
-	class GridController extends OutputController<any, ComponentMetadata<Configuration>> {}
+	class GridController extends OutputController<any, IFieldMetadata<Configuration>> {}
 
 	export let controller: GridController;
 

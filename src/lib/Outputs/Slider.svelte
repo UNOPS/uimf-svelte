@@ -9,9 +9,9 @@
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
-	import type { ComponentMetadata, IComponent } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata, IComponent } from '$lib/Infrastructure/uimf';
 
-	export let controller: OutputController<any, ComponentMetadata<SliderConfiguration>>;
+	export let controller: OutputController<any, IFieldMetadata<SliderConfiguration>>;
 	class ComponentController {
 		index: number = 1;
 		component: any;

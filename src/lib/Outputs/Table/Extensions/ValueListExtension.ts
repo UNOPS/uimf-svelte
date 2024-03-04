@@ -1,6 +1,6 @@
 import type { InputController } from "../../../Infrastructure/InputController";
 import { defaultControlRegister as controlRegister } from "../../../Infrastructure/ControlRegister";
-import type { ComponentMetadata } from "../../../Infrastructure/uimf";
+import type { IFieldMetadata } from "../../../Infrastructure/uimf";
 import type { Table } from "../Table";
 import type { TableBodyCell } from "../TableBodyCell";
 import { TableExtension } from "../TableExtension";
@@ -21,7 +21,7 @@ interface IInputCondition {
 }
 
 export class ValueListExtension extends TableExtension {
-    private bulkInputs: Record<string, ComponentMetadata> = {};
+    private bulkInputs: Record<string, IFieldMetadata> = {};
     private inputConditions: IInputCondition[] = [];
 
     init() {

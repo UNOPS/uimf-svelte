@@ -9,7 +9,7 @@ export interface OutputOptions {
     tooltip: string;
 }
 
-export interface ComponentMetadata<TConfiguration = any> {
+export interface IFieldMetadata<TConfiguration = any> {
     Id: string;
     Required: boolean;
     Hidden: boolean;
@@ -24,8 +24,8 @@ export interface IComponent<T = any | null | undefined> {
     Configuration: T;
 }
 
-export interface NestedComponentMetadata extends ComponentMetadata {
-    Properties: ComponentMetadata[]
+export interface NestedComponentMetadata extends IFieldMetadata {
+    Properties: IFieldMetadata[]
 }
 
 export interface InputField {

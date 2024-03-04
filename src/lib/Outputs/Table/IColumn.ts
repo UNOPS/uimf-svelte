@@ -1,4 +1,4 @@
-import type { ComponentMetadata } from "../../Infrastructure/uimf";
+import type { IFieldMetadata } from "../../Infrastructure/uimf";
 
 export interface IField {
     /**
@@ -16,5 +16,5 @@ export interface IField {
     /**
      * Metadata describing the input/output field.
      */
-    Metadata: ComponentMetadata;
+    Metadata: IFieldMetadata;
 }

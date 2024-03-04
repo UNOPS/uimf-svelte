@@ -8,9 +8,9 @@
 		};
 	}
 
-	interface IMetadata extends ComponentMetadata {
-		Primary: ComponentMetadata;
-		Secondary: ComponentMetadata;
+	interface IMetadata extends IFieldMetadata {
+		Primary: IFieldMetadata;
+		Secondary: IFieldMetadata;
 		PrimaryPickerText: string;
 		SecondaryPickerText: string;
 	}
@@ -37,7 +37,7 @@
 				metadata: this.metadata.Secondary
 			});
 
-            this.current = this.primary.controller;
+			this.current = this.primary.controller;
 		}
 
 		public async getValue(): Promise<IValue | null> {
@@ -86,7 +86,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../Infrastructure/Component';
-	import type { ComponentMetadata } from '../Infrastructure/uimf';
+	import type { IFieldMetadata } from '../Infrastructure/uimf';
 	import {
 		defaultControlRegister as controlRegister,
 		type CreateInputResult

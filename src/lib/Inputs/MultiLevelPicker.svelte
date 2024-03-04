@@ -8,7 +8,7 @@
 		}> | null;
 	}
 
-	export class Controller extends InputController<Value, ComponentMetadata<Configuration>> {
+	export class Controller extends InputController<Value, IFieldMetadata<Configuration>> {
 		public deserialize(value: string): Promise<Value | null> {
 			var result = value == null || value === '' ? null : { Value: value };
 			return Promise.resolve(result);
@@ -51,7 +51,7 @@
 	import { InputController } from '../Infrastructure/InputController';
 	import { InputComponent } from '../Infrastructure/Component';
 	import type { FormResponse } from '../Infrastructure/UimfApp';
-	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
 
 	export let controller: Controller;
 

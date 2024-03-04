@@ -5,7 +5,7 @@
 	import DateTime, { DateTimeController } from './DateTime.svelte';
 	import type { FormLinkData } from './FormLink.svelte';
 	import FormLink from './FormLink.svelte';
-	import type { ComponentMetadata } from '../Infrastructure/uimf';
+	import type { IFieldMetadata } from '../Infrastructure/uimf';
 
 	interface EventDescriptionData {
 		Event: string | null;
@@ -27,7 +27,7 @@
 
 	const makeFormLinkController = (value: FormLinkData) => {
 		return new OutputController<FormLinkData>({
-			metadata: {} as ComponentMetadata,
+			metadata: {} as IFieldMetadata,
 			data: value,
 			form: controller.form!,
 			app: controller.app

@@ -1,25 +1,25 @@
 <script lang="ts" context="module">
 	import { InputController, type CreateInputOptions } from '../Infrastructure/InputController';
-	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
 
 	export interface ViewData {
 		Value: { [key: string]: any };
 	}
 
 	export interface NestedComponentMetadata {
-		Properties: ComponentMetadata[];
+		Properties: IFieldMetadata[];
 	}
 
 	export class Controller extends InputController<
 		ViewData,
-		ComponentMetadata<NestedComponentMetadata>
+		IFieldMetadata<NestedComponentMetadata>
 	> {
 		declare views: Array<{
-			metadata: ComponentMetadata;
+			metadata: IFieldMetadata;
 			controller: InputController<any>;
 		}>;
 
-		constructor(options: CreateInputOptions<ComponentMetadata<NestedComponentMetadata>>) {
+		constructor(options: CreateInputOptions<IFieldMetadata<NestedComponentMetadata>>) {
 			super(options);
 
 			this.views = [];

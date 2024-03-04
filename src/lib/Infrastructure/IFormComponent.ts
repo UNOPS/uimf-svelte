@@ -1,11 +1,11 @@
 import type { FormInstance } from "./FormController";
 import type IUimfApp from "./UimfApp";
-import type { ComponentMetadata } from "./uimf";
+import type { IFieldMetadata } from "./uimf";
 
 /**
  * Represents an input or an output component.
  */
-export interface IFormComponent<TMetadata extends ComponentMetadata = ComponentMetadata> {
+export interface IFormComponent<TMetadata extends IFieldMetadata = IFieldMetadata> {
     /**
      * Gets form to which the field belongs. If the field is not rendered in a form
      * the value of this property may be `null`.

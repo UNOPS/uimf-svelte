@@ -1,11 +1,11 @@
 import type { InputController } from "./InputController";
 import type IUimfApp from "./UimfApp";
-import type { ComponentMetadata, FormLink } from "./uimf";
+import type { IFieldMetadata, FormLink } from "./uimf";
 
-interface FormMetadata extends ComponentMetadata {
-    InputFields: ComponentMetadata[];
+interface FormMetadata extends IFieldMetadata {
+    InputFields: IFieldMetadata[];
     PostOnLoad: any;
-    OutputFields: ComponentMetadata[];
+    OutputFields: IFieldMetadata[];
     CloseOnPostIfModal: boolean;
     PostOnLoadValidation: boolean;
 }

@@ -3,7 +3,7 @@
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
-	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
 
 	interface Configuration {
 		Fields: FlexboxItemMetadata[];
@@ -19,7 +19,7 @@
 		controller: FlexboxItemController;
 	}
 
-	interface FlexboxItemMetadata extends ComponentMetadata {
+	interface FlexboxItemMetadata extends IFieldMetadata {
 		CustomProperties?: {
 			Flexbox?: {
 				FlexBasis?: string;
@@ -28,7 +28,7 @@
 		};
 	}
 
-	class FlexboxController extends OutputController<any, ComponentMetadata<Configuration>> {}
+	class FlexboxController extends OutputController<any, IFieldMetadata<Configuration>> {}
 
 	class FlexboxItemController extends OutputController<any, FlexboxItemMetadata> {}
 

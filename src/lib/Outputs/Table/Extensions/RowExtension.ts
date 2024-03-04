@@ -1,5 +1,5 @@
 
-import type { ComponentMetadata } from "../../../Infrastructure/uimf";
+import type { IFieldMetadata } from "../../../Infrastructure/uimf";
 import { Table, TableBodyCell, TableHeadCell, TableRowGroup } from "..";
 import { TableExtension } from "../TableExtension";
 import TableRow from "../TableRow";
@@ -21,7 +21,7 @@ export class RowExtension extends TableExtension {
      * Field based on which the rows will be grouped. 
      * If null, then rows will not be grouped.
      */
-    private groupBy: ComponentMetadata | null = null;
+    private groupBy: IFieldMetadata | null = null;
 
     /**
      * Field based on which will be used as a header for the 

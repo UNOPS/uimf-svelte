@@ -1,15 +1,15 @@
 <script context="module" lang="ts">
 	import { InputController, type CreateInputOptions } from '../Infrastructure/InputController';
 	import type { OutputController } from '../Infrastructure/OutputController';
-	import type { ComponentMetadata } from '../Infrastructure/uimf';
+	import type { IFieldMetadata } from '../Infrastructure/uimf';
 
 	export class Controller extends InputController<
 		IValueList,
-		ComponentMetadata<ValueListConfiguration>
+		IFieldMetadata<ValueListConfiguration>
 	> {
 		public table: Table;
 
-		constructor(options: CreateInputOptions<ComponentMetadata<ValueListConfiguration>>) {
+		constructor(options: CreateInputOptions<IFieldMetadata<ValueListConfiguration>>) {
 			super(options);
 
 			this.table = this.createTable();
@@ -146,7 +146,7 @@
 	export let controller: Controller;
 
 	let columns: IField[] = [];
-	let metadata: ComponentMetadata<ValueListConfiguration> | null = null;
+	let metadata: IFieldMetadata<ValueListConfiguration> | null = null;
 	let hasDropdowns: boolean = false;
 	let table: Table | null = null;
 

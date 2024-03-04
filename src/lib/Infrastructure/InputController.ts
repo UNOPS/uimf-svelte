@@ -1,4 +1,4 @@
-import type { ComponentMetadata } from "./uimf";
+import type { IFieldMetadata } from "./uimf";
 import EventSource from './EventSource';
 import uuid from "./uuid";
 import type IUimfApp from "./UimfApp";
@@ -10,14 +10,14 @@ export interface Deferrer {
     promise: Promise<any>;
 };
 
-export interface CreateInputOptions<TMetadata extends ComponentMetadata = ComponentMetadata> {
+export interface CreateInputOptions<TMetadata extends IFieldMetadata = IFieldMetadata> {
     metadata: TMetadata;
     defer: Deferrer | null;
     form: FormInstance | null;
     app: IUimfApp;
 }
 
-export abstract class InputController<T, TMetadata extends ComponentMetadata = ComponentMetadata>
+export abstract class InputController<T, TMetadata extends IFieldMetadata = IFieldMetadata>
     extends EventSource
     implements IFormComponent {
     /**

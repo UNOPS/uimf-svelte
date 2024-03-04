@@ -5,7 +5,7 @@
 		Consented: boolean;
 	}
 
-	export interface ConsentMetadata extends ComponentMetadata {
+	export interface ConsentMetadata extends IFieldMetadata {
 		Explanation: string;
 	}
 
@@ -46,7 +46,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../Infrastructure/Component';
-	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
 
 	export let controller: Controller;
 

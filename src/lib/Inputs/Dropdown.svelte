@@ -20,7 +20,7 @@
 		DefaultValue?: string | null;
 	}
 
-	interface DropdownMetadata extends ComponentMetadata<Configuration> {}
+	interface DropdownMetadata extends IFieldMetadata<Configuration> {}
 
 	export class Controller extends InputController<DropdownValue, DropdownMetadata> {
 		public valueAsString: string | null = null;
@@ -108,7 +108,7 @@
 
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
-	import type { ComponentMetadata } from '../Infrastructure/uimf';
+	import type { IFieldMetadata } from '../Infrastructure/uimf';
 	import { InputComponent } from '../Infrastructure/Component';
 
 	export let controller: Controller;

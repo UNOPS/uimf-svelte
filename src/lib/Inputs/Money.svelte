@@ -17,7 +17,7 @@
 		Precision: number;
 	}
 
-	interface IMetadata extends ComponentMetadata {
+	interface IMetadata extends IFieldMetadata {
 		CustomProperties?: ICustomProperty | null;
 	}
 
@@ -65,7 +65,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../Infrastructure/Component';
-	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
 	import { SessionStorageVariable } from '../Infrastructure/SessionStorageVariable';
 
 	export let controller: Controller;

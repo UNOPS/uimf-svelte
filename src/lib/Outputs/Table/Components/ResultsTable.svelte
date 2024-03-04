@@ -1,10 +1,10 @@
 <script context="module" lang="ts">
 	export interface TableConfiguration {
-		Columns: ComponentMetadata[];
+		Columns: IFieldMetadata[];
 		Paginator: string;
 	}
 
-	export interface TableMetadata<T = TableConfiguration> extends ComponentMetadata<T> {
+	export interface TableMetadata<T = TableConfiguration> extends IFieldMetadata<T> {
 		CustomProperties: {
 			showExportButton: boolean;
 			CssClass: string;
@@ -36,7 +36,7 @@
 	import { tooltip } from '../../../Components/Tooltip.svelte';
 	import Output from '../../../Output.svelte';
 	import type { TableExtension } from '../TableExtension';
-	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
 	import { DocumentationExtension } from '../Extensions/DocumentationExtension';
 	import type { IField } from '../IColumn';
 
@@ -68,7 +68,7 @@
 				parent: controller,
 				extensions: extensions,
 				columns: (controller.metadata.Component.Configuration!.Columns ?? []).map(
-					(t: ComponentMetadata) => {
+					(t: IFieldMetadata) => {
 						return {
 							Metadata: t,
 							IsInput: false
@@ -102,7 +102,7 @@
 
 	const makeFormLinkController = (formlink: FormLinkData | BulkAction) => {
 		return new OutputController<FormLinkData>({
-			metadata: {} as ComponentMetadata,
+			metadata: {} as IFieldMetadata,
 			data: formlink,
 			form: controller.form,
 			app: controller.app

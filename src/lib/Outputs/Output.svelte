@@ -3,9 +3,9 @@
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
-	import type { ComponentMetadata, IComponent } from '../Infrastructure/uimf';
+	import type { IFieldMetadata, IComponent } from '../Infrastructure/uimf';
 
-	export let controller: OutputController<any, ComponentMetadata<Configuration>>;
+	export let controller: OutputController<any, IFieldMetadata<Configuration>>;
 
 	interface Configuration {
 		Inner: IComponent;

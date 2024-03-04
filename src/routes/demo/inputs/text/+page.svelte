@@ -1,18 +1,18 @@
 <script lang="ts" type="module">
 	import { defaultControlRegister as controlRegister } from '$lib/Infrastructure/ControlRegister';
 	import type IUimfApp from '$lib/Infrastructure/UimfApp';
-	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
 	import CodeEditor from '../../../../docs/CodeEditor.svelte';
 	import MetadataCompatibilityTable from '../../../../docs/MetadataCompatibilityTable.svelte';
 
-	const componentRegistry = controlRegister.inputs['text']
+	const componentRegistry = controlRegister.inputs['text'];
 	const fakeApp = {} as IUimfApp;
 	let metadata = {
 		Required: true,
 		CustomProperties: {
 			multiline: false
 		}
-	} as ComponentMetadata;
+	} as IFieldMetadata;
 
 	$: rawMetadata = processMetadata(metadata);
 

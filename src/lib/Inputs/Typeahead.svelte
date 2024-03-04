@@ -17,7 +17,7 @@
 		SelectAll?: boolean;
 	}
 
-	export interface TypeaheadMetadata extends ComponentMetadata<Configuration> {}
+	export interface TypeaheadMetadata extends IFieldMetadata<Configuration> {}
 
 	var initialized: boolean = false;
 
@@ -58,7 +58,7 @@
 	import Select from 'svelte-select';
 	import { InputComponent } from '../Infrastructure/Component';
 	import { beforeUpdate } from 'svelte';
-	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
 
 	interface Option extends TypeaheadValue {
 		Label: string;

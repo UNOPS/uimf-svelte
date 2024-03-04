@@ -17,7 +17,7 @@
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
 	import ActionList, { ActionListController, type ActionListData } from './ActionList.svelte';
-	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
 
 	export let controller: OutputController<Image>;
 	export let height: string | null;
@@ -39,7 +39,7 @@
 
 	function buildControllers(data: ActionListData) {
 		return new OutputController<ActionListData>({
-			metadata: {} as ComponentMetadata,
+			metadata: {} as IFieldMetadata,
 			data: data,
 			form: controller.form!,
 			app: controller.app

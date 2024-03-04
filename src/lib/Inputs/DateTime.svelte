@@ -1,7 +1,7 @@
 <script lang="ts" context="module">
 	import { InputController } from '../Infrastructure/InputController';
 
-	interface DateMetadata extends ComponentMetadata {
+	interface DateMetadata extends IFieldMetadata {
 		CustomProperties: {
 			[propertyName: string]: any;
 			DefaultValue: string | null;
@@ -96,7 +96,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../Infrastructure/Component';
-	import type { ComponentMetadata } from '../Infrastructure/uimf';
+	import type { IFieldMetadata } from '../Infrastructure/uimf';
 	import { tooltip } from '../Components/Tooltip.svelte';
 
 	export let controller: Controller;

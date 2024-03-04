@@ -3,10 +3,10 @@
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { beforeUpdate } from 'svelte';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
-	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
 
 	interface Configuration {
-		Properties: ComponentMetadata[];
+		Properties: IFieldMetadata[];
 	}
 
 	class ComponentController {
@@ -16,7 +16,7 @@
 
 	const handleClick = (tabValue: number) => () => (activeTabValue = tabValue);
 
-	export let controller: OutputController<any, ComponentMetadata<Configuration>>;
+	export let controller: OutputController<any, IFieldMetadata<Configuration>>;
 
 	let component = new OutputComponent({
 		refresh() {
@@ -31,7 +31,7 @@
 	let tabs: any[] = getComponentControllers(controller.metadata.Component.Configuration.Properties);
 	export let activeTabValue = tabs[0].controller.metadata.Id;
 
-	function getComponentControllers(properties: ComponentMetadata[]): any[] {
+	function getComponentControllers(properties: IFieldMetadata[]): any[] {
 		let componentControllerArray: ComponentController[] = [];
 
 		properties.forEach((property) => {

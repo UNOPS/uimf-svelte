@@ -1,29 +1,26 @@
 <script lang="ts" context="module">
 	import { InputController, type CreateInputOptions } from '../Infrastructure/InputController';
-	import type { ComponentMetadata, NestedComponentMetadata } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
 
 	export interface ViewData {
 		Metadata: any;
 		Value: any;
 	}
 
-	export class Controller extends InputController<ViewData, ComponentMetadata> {
+	export class Controller extends InputController<ViewData, IFieldMetadata> {
 		declare view: {
-			metadata: ComponentMetadata;
+			metadata: IFieldMetadata;
 			controller: InputController<any>;
 		};
 
-		constructor(options: CreateInputOptions<ComponentMetadata>) {
+		constructor(options: CreateInputOptions<IFieldMetadata>) {
 			super(options);
 		}
 
 		public getValue(): Promise<ViewData | null> {
-			let effectiveValue: any = {};
-
 			if (this.view != null) {
-				console.log(this.view.controller.value);
-
 				var self = this;
+
 				return this.view.controller.getValue().then(function (value: any) {
 					return {
 						Metadata: self.view.metadata,

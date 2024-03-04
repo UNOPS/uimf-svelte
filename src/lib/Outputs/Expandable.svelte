@@ -9,7 +9,7 @@
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
-	import type { ComponentMetadata, IComponent } from '../Infrastructure/uimf';
+	import type { IFieldMetadata, IComponent } from '../Infrastructure/uimf';
 	import Output from '../Output.svelte';
 
 	interface ExpandableData {
@@ -22,7 +22,7 @@
 
 	class ExpandableController extends OutputController<
 		ExpandableData,
-		ComponentMetadata<ExpandableConfiguration>
+		IFieldMetadata<ExpandableConfiguration>
 	> {}
 
 	export let controller: ExpandableController;

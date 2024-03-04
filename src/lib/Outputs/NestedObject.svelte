@@ -2,14 +2,14 @@
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
-	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
 	import Output from '../Output.svelte';
 
 	interface Configuration {
-		Properties: ComponentMetadata[];
+		Properties: IFieldMetadata[];
 	}
 
-	class Controller extends OutputController<any, ComponentMetadata<Configuration>> {}
+	class Controller extends OutputController<any, IFieldMetadata<Configuration>> {}
 
 	export let controller: Controller;
 

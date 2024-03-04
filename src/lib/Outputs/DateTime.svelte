@@ -1,17 +1,16 @@
 <script lang="ts" context="module">
-	export interface DateTimeMetadata extends ComponentMetadata {
+	export interface DateTimeMetadata extends IFieldMetadata {
 		HideTime: boolean;
 	}
 
-	export class DateTimeController extends OutputController<string, DateTimeMetadata> {
-	}
+	export class DateTimeController extends OutputController<string, DateTimeMetadata> {}
 </script>
 
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
-	import type { ComponentMetadata } from '../Infrastructure/uimf';
+	import type { IFieldMetadata } from '../Infrastructure/uimf';
 
 	export let controller: DateTimeController;
 	let options: Intl.DateTimeFormatOptions | null = null;
@@ -35,7 +34,7 @@
 						second: '2-digit'
 				  };
 		},
-		refresh() {			
+		refresh() {
 			valueAsString =
 				controller.value != null
 					? new Date(controller.value).toLocaleDateString('en-GB', options!)

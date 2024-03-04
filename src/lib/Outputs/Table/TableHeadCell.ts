@@ -1,5 +1,5 @@
 import type { CreateInputResult } from "../../Infrastructure/ControlRegister";
-import type { ComponentMetadata } from "../../Infrastructure/uimf";
+import type { IFieldMetadata } from "../../Infrastructure/uimf";
 import { CssClassManager } from "./CssClassManager";
 import type { IField } from "./IColumn";
 import { InlineStyleManager } from "./InlineStyleManager";
@@ -11,7 +11,7 @@ export class TableHeadCell {
     public label: string;
     public documentation: string;
     public colspan: number = 0;
-    public metadata: ComponentMetadata;
+    public metadata: IFieldMetadata;
     public hidden: boolean | undefined;
     public onClick: Record<string, () => void> = {};
     public readonly isInput: boolean;

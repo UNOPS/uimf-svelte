@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
 	import { InputController, type CreateInputOptions } from '../Infrastructure/InputController';
-	import type { ComponentMetadata, NestedComponentMetadata } from '../Infrastructure/uimf';
+	import type { IFieldMetadata, NestedComponentMetadata } from '../Infrastructure/uimf';
 
 	export interface Option {
 		Label: string;
@@ -25,10 +25,7 @@
 		controller: InputController<any>;
 	}
 
-	export class Controller extends InputController<
-		ConditionalInput,
-		ComponentMetadata<Configuration>
-	> {
+	export class Controller extends InputController<ConditionalInput, IFieldMetadata<Configuration>> {
 		public condition: string | null = null;
 		public view: InputController<any> | null = null;
 		public readonly views: View[] = [];
@@ -50,7 +47,7 @@
 			});
 		}
 
-		constructor(options: CreateInputOptions<ComponentMetadata<Configuration>>) {
+		constructor(options: CreateInputOptions<IFieldMetadata<Configuration>>) {
 			super(options);
 
 			this.views = [];
