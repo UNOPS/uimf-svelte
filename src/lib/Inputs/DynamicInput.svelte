@@ -15,8 +15,6 @@
 
 		constructor(options: CreateInputOptions<ComponentMetadata>) {
 			super(options);
-
-			//this.view = {};
 		}
 
 		public getValue(): Promise<ViewData | null> {
@@ -27,14 +25,13 @@
 
 				var self = this;
 				return this.view.controller.getValue().then(function (value: any) {
-
 					return {
 						Metadata: self.view.metadata,
 						Value: value
 					};
 				});
 			}
-			
+
 			return Promise.resolve(null);
 		}
 
@@ -97,7 +94,7 @@
 
 {#if controller.view?.controller != null}
 	<div>
-		<Input controller={controller.view.controller} hideLabel={true}/>
+		<Input controller={controller.view.controller} hideLabel={true} />
 	</div>
 {/if}
 
