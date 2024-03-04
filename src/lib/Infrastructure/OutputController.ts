@@ -16,7 +16,7 @@ export interface CreateOutputOptions<TMetadata extends ComponentMetadata = Compo
  * Controller for an output field. Each output field in a form will have `OutputController assigned to it
  * so that output fields can be managed via a consistent API.
  */
-export class OutputController<T, TMetadata extends ComponentMetadata = ComponentMetadata>
+export class OutputController<TValue, TMetadata extends ComponentMetadata = ComponentMetadata>
     extends EventSource
     implements IFormComponent {
     /**
@@ -48,13 +48,13 @@ export class OutputController<T, TMetadata extends ComponentMetadata = Component
     /**
      * Value of the output field.
      */
-    public value: T;
+    public value: TValue;
 
     /**
      * Sets output field's value.
      * @param data New value for the output field.
      */
-    public setValue(data: T) {
+    public setValue(data: TValue) {
         this.value = data;
 
         this.fire("output:change", this);

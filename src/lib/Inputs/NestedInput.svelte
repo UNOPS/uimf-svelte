@@ -1,26 +1,33 @@
 <script lang="ts" context="module">
 	import { InputController, type CreateInputOptions } from '../Infrastructure/InputController';
-	import type { ComponentMetadata, NestedComponentMetadata } from '$lib/Infrastructure/uimf';
+	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
 
 	export interface ViewData {
 		Value: { [key: string]: any };
 	}
 
-	export class Controller extends InputController<ViewData, NestedComponentMetadata> {
+	export interface NestedComponentMetadata {
+		Properties: ComponentMetadata[];
+	}
+
+	export class Controller extends InputController<
+		ViewData,
+		ComponentMetadata<NestedComponentMetadata>
+	> {
 		declare views: Array<{
 			metadata: ComponentMetadata;
 			controller: InputController<any>;
 		}>;
 
-		constructor(options: CreateInputOptions<NestedComponentMetadata>) {
+		constructor(options: CreateInputOptions<ComponentMetadata<NestedComponentMetadata>>) {
 			super(options);
 
 			this.views = [];
 
-			this.metadata.Properties.sort((x, y) => x.OrderIndex - y.OrderIndex);
+			this.metadata.Component.Configuration.Properties.sort((x, y) => x.OrderIndex - y.OrderIndex);
 
-			for (const view of this.metadata.Properties) {
-				let controllerClass = controlRegister.inputs[view.Type].controller;
+			for (const view of this.metadata.Component.Configuration.Properties) {
+				let controllerClass = controlRegister.inputs[view.Component.Type].controller;
 
 				this.views.push({
 					metadata: view,

@@ -1,13 +1,11 @@
 <script lang="ts" context="module">
 	import { InputController } from '../Infrastructure/InputController';
 
-	export interface BooleanMetadata extends ComponentMetadata {
-		CustomProperties: {
-			DefaultValue: boolean | null;
-		};
+	interface Configuration {
+		DefaultValue: boolean | null;
 	}
 
-	export class Controller extends InputController<boolean, BooleanMetadata> {
+	export class Controller extends InputController<boolean, ComponentMetadata<Configuration>> {
 		public getValue(): Promise<boolean | null> {
 			var result = this.deserialize(this.value?.toString() ?? null);
 			return Promise.resolve(result);
@@ -50,10 +48,10 @@
 
 			if (
 				controller.value == null &&
-				controller.metadata.CustomProperties?.DefaultValue != null &&
+				controller.metadata.Component.Configuration.DefaultValue != null &&
 				controller.form?.hasOriginalInputValues() !== true
 			) {
-				controller.setValue(controller.metadata.CustomProperties.DefaultValue);
+				controller.setValue(controller.metadata.Component.Configuration.DefaultValue);
 			}
 		},
 		refresh() {

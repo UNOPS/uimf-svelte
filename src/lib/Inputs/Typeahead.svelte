@@ -5,18 +5,19 @@
 		Label: string;
 	}
 
-	export interface TypeaheadMetadata extends ComponentMetadata {
-		DefaultValue: any;
-		CustomProperties: {
+	interface Configuration {
+		Source?: string | null;
+		Parameters?: Array<{
+			SourceType: string;
+			Parameter: string;
 			Source: string;
-			Parameters?: Array<{
-				SourceType: string;
-				Parameter: string;
-				Source: string;
-			}> | null;
-			Items: Array<TypeaheadItem>;
-		};
+		}> | null;
+		Items?: Array<TypeaheadItem>;
+		DefaultValue?: string | null;
+		SelectAll?: boolean;
 	}
+
+	export interface TypeaheadMetadata extends ComponentMetadata<Configuration> {}
 
 	var initialized: boolean = false;
 
@@ -24,8 +25,8 @@
 		public getValue(): Promise<TypeaheadValue | null> {
 			var result = this.value?.Value != null ? this.value : null;
 
-			if (!initialized && this.metadata.DefaultValue !== null) {
-				var index = this.app.getDefaultValue(this.metadata.DefaultValue);
+			if (!initialized && this.metadata.Component.Configuration.DefaultValue != null) {
+				var index = this.app.getDefaultValue(this.metadata.Component.Configuration.DefaultValue);
 				return Promise.resolve({ Value: index });
 			}
 
@@ -77,15 +78,17 @@
 		init() {
 			cachedOptions = {};
 
-			const source = controller.metadata.CustomProperties.Items;
+			const source = controller.metadata.Component.Configuration.Items;
 			inlineItems = Array.isArray(source) ? augmentItems(source) : null;
 
 			controller.ready?.resolve();
 
 			initialized = false;
-			
-			if (controller.metadata.DefaultValue != null) {
-				var index = controller.app.getDefaultValue(controller.metadata.DefaultValue);
+
+			if (controller.metadata.Component.Configuration.DefaultValue != null) {
+				var index = controller.app.getDefaultValue(
+					controller.metadata.Component.Configuration.DefaultValue
+				);
 				defaultValue = { Value: index };
 			}
 		},
@@ -96,7 +99,6 @@
 				let results = await loadOptions(capturedValue);
 
 				if (controller.value != capturedValue) {
-					
 					if (!initialized && defaultValue != null) {
 						controller.setValue(defaultValue);
 						defaultValue = null;
@@ -182,26 +184,24 @@
 				? { Ids: { Items: [query.Value] } }
 				: { Query: query };
 
-		const parameters = controller.metadata.CustomProperties.Parameters;
+		const parameters = controller.metadata.Component.Configuration.Parameters ?? [];
 
-		if (parameters != null) {
-			let promises = parameters.map((p) => {
-				switch (p.SourceType) {
-					case 'response':
-						postData[p.Parameter] = controller?.form?.response[p.Source]?.value;
-						return Promise.resolve();
-					case 'request':
-						return controller?.form?.inputs[p.Source]
-							.getValue()
-							.then((value: any) => (postData[p.Parameter] = value));
-				}
-			});
+		let promises = parameters.map((p) => {
+			switch (p.SourceType) {
+				case 'response':
+					postData[p.Parameter] = controller?.form?.response[p.Source]?.value;
+					return Promise.resolve();
+				case 'request':
+					return controller?.form?.inputs[p.Source]
+						.getValue()
+						.then((value: any) => (postData[p.Parameter] = value));
+			}
+		});
 
-			await Promise.all(promises);
-		}
+		await Promise.all(promises);
 
 		let response = controller.app
-			.postForm(controller.metadata.CustomProperties.Source, postData, null)
+			.postForm(controller.metadata.Component.Configuration.Source!, postData, null)
 			.then((t: any) => {
 				return augmentItems(t.Items);
 			});

@@ -1,5 +1,14 @@
 <script context="module" lang="ts">
-	export class Controller extends InputController<Value> {
+	interface Configuration {
+		Form: string;
+		Parameters?: Array<{
+			SourceType: string;
+			Parameter: string;
+			Source: string;
+		}> | null;
+	}
+
+	export class Controller extends InputController<Value, ComponentMetadata<Configuration>> {
 		public deserialize(value: string): Promise<Value | null> {
 			var result = value == null || value === '' ? null : { Value: value };
 			return Promise.resolve(result);
@@ -42,6 +51,7 @@
 	import { InputController } from '../Infrastructure/InputController';
 	import { InputComponent } from '../Infrastructure/Component';
 	import type { FormResponse } from '../Infrastructure/UimfApp';
+	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
 
 	export let controller: Controller;
 
@@ -121,7 +131,7 @@
 		await setRequestParameters(postData);
 
 		cachedOptions[cacheKey] = controller.app
-			.postForm<Response>(controller.metadata.CustomProperties.Form, postData, null)
+			.postForm<Response>(controller.metadata.Component.Configuration.Form, postData, null)
 			.then((t) => {
 				loading = false;
 				return t.Path ?? [];
@@ -159,7 +169,7 @@
 		loading = true;
 
 		cachedOptions[cacheKey] = controller.app
-			.postForm<Response>(controller.metadata.CustomProperties.Form, postData, null)
+			.postForm<Response>(controller.metadata.Component.Configuration.Form, postData, null)
 			.then((t) => {
 				loading = false;
 				return t.Items ?? [];
@@ -173,25 +183,21 @@
 	}
 
 	function setRequestParameters(postData: any): Promise<any> {
-		const parameters: any[] = controller.metadata.CustomProperties?.Parameters;
+		const parameters = controller.metadata.Component.Configuration.Parameters ?? [];
 
-		if (parameters != null) {
-			let promises = parameters.map((p) => {
-				switch (p.SourceType) {
-					case 'response':
-						postData[p.Parameter] = controller?.form?.response[p.Source]?.value;
-						return Promise.resolve();
-					case 'request':
-						return controller?.form?.inputs[p.Source]
-							.getValue()
-							.then((value: any) => (postData[p.Parameter] = value));
-				}
-			});
+		let promises = parameters.map((p) => {
+			switch (p.SourceType) {
+				case 'response':
+					postData[p.Parameter] = controller?.form?.response[p.Source]?.value;
+					return Promise.resolve();
+				case 'request':
+					return controller?.form?.inputs[p.Source]
+						.getValue()
+						.then((value: any) => (postData[p.Parameter] = value));
+			}
+		});
 
-			return Promise.all(promises);
-		}
-
-		return Promise.resolve();
+		return Promise.all(promises);
 	}
 
 	async function selectItem(index: number) {

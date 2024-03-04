@@ -5,15 +5,11 @@
 	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
 	import Output from '../Output.svelte';
 
-	interface NestedObjectMetadata extends ComponentMetadata {
-		CustomProperties: {
-			Properties: ComponentMetadata[];
-			Customizations: any;
-		};
+	interface Configuration {
+		Properties: ComponentMetadata[];
 	}
 
-	class Controller extends OutputController<any, NestedObjectMetadata> {
-	}
+	class Controller extends OutputController<any, ComponentMetadata<Configuration>> {}
 
 	export let controller: Controller;
 
@@ -21,7 +17,7 @@
 
 	let component = new OutputComponent({
 		refresh() {
-			fields = controller.metadata.CustomProperties.Properties.filter((t) => !t.Hidden)
+			fields = controller.metadata.Component.Configuration.Properties.filter((t) => !t.Hidden)
 				.sort((a, b) => a.OrderIndex - b.OrderIndex)
 				.map((property) => {
 					return new OutputController<any>({

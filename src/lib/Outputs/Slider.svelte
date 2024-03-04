@@ -1,10 +1,17 @@
+<script lang="ts" context="module">
+	export interface SliderConfiguration {
+		Item: IComponent;
+	}
+</script>
+
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
+	import type { ComponentMetadata, IComponent } from '$lib/Infrastructure/uimf';
 
-	export let controller: OutputController<any>;
+	export let controller: OutputController<any, ComponentMetadata<SliderConfiguration>>;
 	class ComponentController {
 		index: number = 1;
 		component: any;
@@ -15,24 +22,31 @@
 	let componentThumbnailControllers: ComponentController[] = [];
 
 	function loadComponentControllers(items: any[]) {
-		let nestedComponentType = controller.metadata.CustomProperties.ItemTypes.Type;
+		let nestedComponentType = controller.metadata.Component.Configuration.Item.Type;
 		let nestedComponent = controlRegister.outputs[nestedComponentType].component;
 
 		let i = 1;
 		items.forEach((item) => {
-			let ItemController: ComponentController = {
+			let itemController: ComponentController = {
 				index: i,
 				component: nestedComponent,
 				controller: new OutputController<any>({
-					metadata: controller.metadata,
+					metadata: {
+						Component: controller.metadata.Component.Configuration.Item,
+						Hidden: false,
+						Id: Date.now().toString(),
+						Label: '',
+						OrderIndex: 0,
+						Required: false
+					},
 					data: null,
 					form: controller.form!,
 					app: controller.app
 				})
 			};
 
-			ItemController.controller.setValue(item.m_Item1);
-			componentItemControllers.push(ItemController);
+			itemController.controller.setValue(item.m_Item1);
+			componentItemControllers.push(itemController);
 
 			if (item.m_Item2 != null) {
 				let thumbnailController: ComponentController = {
@@ -91,7 +105,7 @@
 	// 400 is arbitrary value of the height for a slider with a width of 600px
 	var dynamicHeight = 400 / componentItemControllers.length;
 
-	if(dynamicHeight > 150){
+	if (dynamicHeight > 150) {
 		dynamicHeight = 150;
 	}
 </script>

@@ -3,10 +3,13 @@
 	import type { OutputController } from '../Infrastructure/OutputController';
 	import type { ComponentMetadata } from '../Infrastructure/uimf';
 
-	export class Controller extends InputController<IValueList, ValueListMetadata> {
+	export class Controller extends InputController<
+		IValueList,
+		ComponentMetadata<ValueListConfiguration>
+	> {
 		public table: Table;
 
-		constructor(options: CreateInputOptions<ValueListMetadata>) {
+		constructor(options: CreateInputOptions<ComponentMetadata<ValueListConfiguration>>) {
 			super(options);
 
 			this.table = this.createTable();
@@ -33,7 +36,9 @@
 				const rowData: Record<string, any> = {};
 				rowDatas.push(rowData);
 
-				for (const column of this.metadata.CustomProperties.Fields.filter((t) => t.IsInput)) {
+				for (const column of this.metadata.Component.Configuration.Fields.filter(
+					(t) => t.IsInput
+				)) {
 					var cell = this.table.controller(row, column.Metadata.Id) as InputController<any>;
 
 					let promise = cell.getValue().then((t) => {
@@ -46,8 +51,8 @@
 
 			await Promise.all(promises);
 
-			var items = this.metadata.CustomProperties.IsPrimitive
-				? rowDatas.map((t) => t[this.metadata.CustomProperties.Fields[0].Metadata.Id])
+			var items = this.metadata.Component.Configuration.IsPrimitive
+				? rowDatas.map((t) => t[this.metadata.Component.Configuration.Fields[0].Metadata.Id])
 				: rowDatas;
 
 			return Promise.resolve({ Items: items });
@@ -64,8 +69,8 @@
 			this.table = this.createTable();
 
 			const items = this.value.Items.map((item) => {
-				if (this.metadata.CustomProperties.IsPrimitive === true) {
-					return { [this.metadata.CustomProperties.Fields[0].Metadata.Id]: item };
+				if (this.metadata.Component.Configuration.IsPrimitive === true) {
+					return { [this.metadata.Component.Configuration.Fields[0].Metadata.Id]: item };
 				}
 
 				return { ...item };
@@ -77,7 +82,7 @@
 		private createTable(): Table {
 			return new Table({
 				parent: this,
-				columns: this.metadata.CustomProperties.Fields,
+				columns: this.metadata.Component.Configuration.Fields,
 				extensions: [
 					new DocumentationExtension(),
 					new ColumnExtension(),
@@ -88,7 +93,7 @@
 				inputOnChange: async (row, cell) => {
 					// When the cell value changes, the overall `value-list` should also be updated.
 					await cell.getValue().then((value) => {
-						if (this.metadata.CustomProperties.IsPrimitive) {
+						if (this.metadata.Component.Configuration.IsPrimitive) {
 							this.value!.Items[row.index] = value;
 						} else {
 							this.value!.Items[row.index][cell.metadata.Id] = value;
@@ -109,21 +114,18 @@
 		_deleted: boolean | null;
 	}
 
-	export interface ValueListMetadata extends ComponentMetadata {
-		CustomProperties: {
-			Fields: IField[];
-			CanRemove?: boolean;
-			CanAdd?: boolean;
-			GroupBy?: string;
-			row: any;
+	export interface ValueListConfiguration {
+		Fields: IField[];
+		CanRemove?: boolean;
+		CanAdd?: boolean;
+		Row: { GroupBy?: string };
 
-			/**
-			 * If true, the value-list is an array of primitives (e.g. numbers or strings).
-			 * If false, the value-list is an array of objects where each object has a
-			 * collection of inputs/outputs.
-			 */
-			IsPrimitive: boolean;
-		};
+		/**
+		 * If true, the value-list is an array of primitives (e.g. numbers or strings).
+		 * If false, the value-list is an array of objects where each object has a
+		 * collection of inputs/outputs.
+		 */
+		IsPrimitive: boolean;
 	}
 </script>
 
@@ -144,7 +146,7 @@
 	export let controller: Controller;
 
 	let columns: IField[] = [];
-	let metadata: ValueListMetadata | null = null;
+	let metadata: ComponentMetadata<ValueListConfiguration> | null = null;
 	let hasDropdowns: boolean = false;
 	let table: Table | null = null;
 
@@ -154,8 +156,10 @@
 
 			hasDropdowns = false;
 
-			columns = controller.metadata.CustomProperties.Fields.map((t) => {
-				hasDropdowns ||= ['typeahead', 'multiselect', 'dropdown'].includes(t.Metadata.Type);
+			columns = controller.metadata.Component.Configuration.Fields.map((t) => {
+				hasDropdowns ||= ['typeahead', 'multiselect', 'dropdown'].includes(
+					t.Metadata.Component.Type
+				);
 
 				return t;
 			}).sort((a, b) => a.Metadata.OrderIndex - b.Metadata.OrderIndex);
@@ -200,7 +204,7 @@
 	}
 </script>
 
-{#if metadata != null && table != null && (table.body.length > 0 || metadata.CustomProperties.CanRemove || metadata.CustomProperties.CanAdd)}
+{#if metadata != null && table != null && (table.body.length > 0 || metadata.Component.Configuration.CanRemove || metadata.Component.Configuration.CanAdd)}
 	<div class="table-responsive" class:has-dropdowns={hasDropdowns}>
 		<table class="table table-borderless table-sm">
 			{#if table.colgroups?.length > 0}
@@ -255,7 +259,7 @@
 							{/if}
 						</th>
 					{/each}
-					{#if metadata.CustomProperties.CanRemove || metadata.CustomProperties.CanAdd}
+					{#if metadata.Component.Configuration.CanRemove || metadata.Component.Configuration.CanAdd}
 						<th />
 					{/if}
 				</tr>
@@ -310,7 +314,7 @@
 								{/if}
 							</td>
 						{/each}
-						{#if metadata.CustomProperties.CanRemove == true}
+						{#if metadata.Component.Configuration.CanRemove == true}
 							<td class="col-action">
 								<button
 									class="btn btn-outline-light"
@@ -337,7 +341,7 @@
 					{/each}
 				{/each}
 			</tbody>
-			{#if metadata.CustomProperties.CanAdd}
+			{#if metadata.Component.Configuration.CanAdd}
 				<tfoot>
 					<tr>
 						<td colspan={columns.length - 1} />

@@ -11,10 +11,16 @@
 	import { beforeUpdate } from 'svelte';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
 	import Pager from './Table/Components/Pager.svelte';
+	import type { ComponentMetadata, IComponent } from '$lib/Infrastructure/uimf';
+	import type { TableMetadata } from './Table/Components/ResultsTable.svelte';
 
-	export let controller: OutputController<PaginatedObjectList>;
+	export let controller: OutputController<PaginatedObjectList, TableMetadata<Configuration>>;
 
-	let nestedComponentType = controller.metadata.CustomProperties.ItemTypes.Type;
+	interface Configuration {
+		Item: IComponent;
+	}
+
+	let nestedComponentType = controller.metadata.Component.Configuration!.Item.Type;
 	let nestedComponent = controlRegister.outputs[nestedComponentType].component;
 
 	let nestedControllers: OutputController<any>[];

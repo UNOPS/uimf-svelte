@@ -1,8 +1,15 @@
+<script lang="ts" context="module">
+	export interface ExpandableConfiguration {
+		Visible: IComponent;
+		Hidden: IComponent;
+	}
+</script>
+
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
-	import type { ComponentMetadata } from '../Infrastructure/uimf';
+	import type { ComponentMetadata, IComponent } from '../Infrastructure/uimf';
 	import Output from '../Output.svelte';
 
 	interface ExpandableData {
@@ -13,14 +20,10 @@
 		show: (show: boolean) => void;
 	}
 
-	interface ExpandableMetadata extends ComponentMetadata {
-		CustomProperties: {
-			ItemTypes: ComponentMetadata[];
-		};
-	}
-
-	class ExpandableController extends OutputController<ExpandableData, ExpandableMetadata> {
-	}
+	class ExpandableController extends OutputController<
+		ExpandableData,
+		ComponentMetadata<ExpandableConfiguration>
+	> {}
 
 	export let controller: ExpandableController;
 
@@ -43,14 +46,28 @@
 			controller.value.show = toggle;
 
 			visible = new OutputController<any>({
-				metadata: controller.metadata.CustomProperties.ItemTypes[0],
+				metadata: {
+					Component: controller.metadata.Component.Configuration.Visible,
+					Hidden: false,
+					Id: Date.now().toString(),
+					Label: '',
+					OrderIndex: 0,
+					Required: false
+				},
 				data: controller.value.Visible,
 				form: controller.form!,
 				app: controller.app
 			});
 
 			hidden = new OutputController<any>({
-				metadata: controller.metadata.CustomProperties.ItemTypes[1],
+				metadata: {
+					Component: controller.metadata.Component.Configuration.Hidden,
+					Hidden: false,
+					Id: Date.now().toString(),
+					Label: '',
+					OrderIndex: 0,
+					Required: false
+				},
 				data: controller.value.Hidden,
 				form: controller.form!,
 				app: controller.app

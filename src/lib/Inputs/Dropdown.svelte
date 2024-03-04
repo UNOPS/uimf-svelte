@@ -9,18 +9,18 @@
 		Label: string;
 	}
 
-	interface DropdownMetadata extends ComponentMetadata {
-		DefaultValue: any;
-		CustomProperties: {
+	interface Configuration {
+		Source?: string | null;
+		Parameters?: Array<{
+			SourceType: string;
+			Parameter: string;
 			Source: string;
-			Parameters: Array<{
-				SourceType: string;
-				Parameter: string;
-				Source: string;
-			}>;
-			Items: Array<DropdownItem>;
-		};
+		}>;
+		Items?: Array<DropdownItem>;
+		DefaultValue?: string | null;
 	}
+
+	interface DropdownMetadata extends ComponentMetadata<Configuration> {}
 
 	export class Controller extends InputController<DropdownValue, DropdownMetadata> {
 		public valueAsString: string | null = null;
@@ -34,8 +34,10 @@
 			return this.ensureItemsAreLoaded().then((items) => {
 				if (value == null || value.Value == '' || value.Value == null) {
 					const effectiveValue =
-						this.metadata.DefaultValue != null && this.form?.hasOriginalInputValues() !== true
-							? items.find((i) => i.Value == this.metadata.DefaultValue) ?? null
+						this.metadata.Component.Configuration.DefaultValue != null &&
+						this.form?.hasOriginalInputValues() !== true
+							? items.find((i) => i.Value == this.metadata.Component.Configuration.DefaultValue) ??
+							  null
 							: null;
 
 					this.value = this.metadata.Required ? effectiveValue : effectiveValue ?? { Value: '' };
@@ -65,50 +67,36 @@
 				return Promise.resolve(this.items);
 			}
 
-			if (this.metadata.CustomProperties.Items != null) {
-				this.items = this.metadata.CustomProperties.Items;
-				return Promise.resolve(this.metadata.CustomProperties.Items);
+			if (this.metadata.Component.Configuration.Items != null) {
+				this.items = this.metadata.Component.Configuration.Items;
+				return Promise.resolve(this.metadata.Component.Configuration.Items);
 			}
 
 			let formData: { [key: string]: any } = {};
 
-			let parameters = this.metadata.CustomProperties.Parameters;
+			let parameters = this.metadata.Component.Configuration.Parameters ?? [];
 
-			if (parameters != null) {
-				const promises = parameters.map(async (item) => {
-					switch (item.SourceType) {
-						case 'response':
-							formData[item.Parameter] = this.form?.response[item.Source].value;
-							return Promise.resolve();
-						case 'request':
-							formData[item.Parameter] = await this.form?.inputs[item.Source].getValue();
-							if (formData[item.Parameter] == null) {
-								formData[item.Parameter] = this.form?.originalInputValues[item.Source];
-							}
+			const promises = parameters.map(async (item) => {
+				switch (item.SourceType) {
+					case 'response':
+						formData[item.Parameter] = this.form?.response[item.Source].value;
+						return Promise.resolve();
+					case 'request':
+						formData[item.Parameter] = await this.form?.inputs[item.Source].getValue();
+						if (formData[item.Parameter] == null) {
+							formData[item.Parameter] = this.form?.originalInputValues[item.Source];
+						}
 
-							return Promise.resolve();
-					}
-				});
+						return Promise.resolve();
+				}
+			});
 
-				await Promise.all(promises);
-			}
+			await Promise.all(promises);
 
-			return await fetch('api/form/run', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					Accept: 'application/json, text/plain, */*'
-				},
-				body: JSON.stringify([
-					{
-						Form: this.metadata.CustomProperties.Source,
-						InputFieldValues: formData
-					}
-				])
-			})
-				.then((response) => response.json())
-				.then((data) => {
-					this.items = data[0].Data.Items.map((t: any) => {
+			return await this.app
+				.postForm(this.metadata.Component.Configuration.Source!, formData, null)
+				.then((response: any) => {
+					this.items = response.Items.map((t: any) => {
 						return { Value: t.Value, Label: t.Label };
 					});
 

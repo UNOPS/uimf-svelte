@@ -20,10 +20,10 @@
 
 	const componentController = new OutputComponent({
 		refresh() {
-			const componentRegistration = controlRegister.outputs[controller.metadata.Type];
+			const componentRegistration = controlRegister.outputs[controller.metadata.Component.Type];
 
 			if (componentRegistration == null) {
-				throw `Cannot find output for type '${controller.metadata.Type}'.`;
+				throw `Cannot find output for type '${controller.metadata.Component.Type}'.`;
 			}
 
 			component = componentRegistration.component;

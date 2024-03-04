@@ -3,9 +3,13 @@
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
-	import type { ComponentMetadata } from '../Infrastructure/uimf';
+	import type { ComponentMetadata, IComponent } from '../Infrastructure/uimf';
 
-	export let controller: OutputController<any>;
+	export let controller: OutputController<any, ComponentMetadata<Configuration>>;
+
+	interface Configuration {
+		Inner: IComponent;
+	}
 
 	class ComponentController {
 		component: any;
@@ -15,8 +19,7 @@
 	let component = new OutputComponent({
 		refresh() {
 			componentController = getComponentController(
-				controller.metadata.CustomProperties?.NestedMetadata ??
-					controller.metadata.CustomProperties.ItemTypes.CustomProperties.NestedMetadata
+				controller.metadata.Component.Configuration.Inner
 			);
 
 			controller.value = controller.value;
@@ -27,11 +30,18 @@
 
 	let componentController: ComponentController;
 
-	function getComponentController(nestedMetadata: ComponentMetadata): any {
+	function getComponentController(inner: IComponent): any {
 		let componentController: ComponentController = {
-			component: controlRegister.outputs[nestedMetadata.Type].component,
+			component: controlRegister.outputs[inner.Type].component,
 			controller: new OutputController<any>({
-				metadata: nestedMetadata,
+				metadata: {
+					Hidden: false,
+					Id: Date.now().toString(),
+					Label: '',
+					OrderIndex: 0,
+					Required: false,
+					Component: inner
+				},
 				data: null,
 				form: controller.form!,
 				app: controller.app

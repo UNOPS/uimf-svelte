@@ -5,15 +5,13 @@
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
 	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
 
-	interface FlexboxMetadata extends ComponentMetadata {
-		CustomProperties: {
-			Fields: FlexboxItemMetadata[];
-			Gap?: string;
-			Wrap?: string;
-			CssClass?: string;
-			ItemPadding?: string;
-			JustifyContent?: string;
-		};
+	interface Configuration {
+		Fields: FlexboxItemMetadata[];
+		Gap?: string;
+		Wrap?: string;
+		CssClass?: string;
+		ItemPadding?: string;
+		JustifyContent?: string;
 	}
 
 	interface FlexboxItem {
@@ -30,7 +28,7 @@
 		};
 	}
 
-	class FlexboxController extends OutputController<any, FlexboxMetadata> {}
+	class FlexboxController extends OutputController<any, ComponentMetadata<Configuration>> {}
 
 	class FlexboxItemController extends OutputController<any, FlexboxItemMetadata> {}
 
@@ -53,7 +51,7 @@
 			return [];
 		}
 
-		return controller.metadata.CustomProperties.Fields.sort(
+		return controller.metadata.Component.Configuration.Fields.sort(
 			(a, b) => a.OrderIndex - b.OrderIndex
 		).map((item) => {
 			const field = controlRegister.createOutput({
@@ -75,10 +73,10 @@
 {#if fields?.length > 0}
 	<div
 		class:flex-container={true}
-		class={controller.metadata.CustomProperties.CssClass}
-		style:gap={controller.metadata.CustomProperties.Gap}
-		style:flex-wrap={controller.metadata.CustomProperties.Wrap}
-		style:justify-content={controller.metadata.CustomProperties.JustifyContent}
+		class={controller.metadata.Component.Configuration.CssClass}
+		style:gap={controller.metadata.Component.Configuration.Gap}
+		style:flex-wrap={controller.metadata.Component.Configuration.Wrap}
+		style:justify-content={controller.metadata.Component.Configuration.JustifyContent}
 	>
 		{#each fields as field}
 			<div
@@ -117,7 +115,7 @@
 		height: fit-content;
 	}
 
-	.height700{
+	.height700 {
 		height: 750px;
 	}
 </style>

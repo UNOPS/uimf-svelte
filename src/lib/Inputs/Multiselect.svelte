@@ -65,7 +65,7 @@
 			cachedOptions = {};
 			selected = [];
 
-			const items = controller.metadata.CustomProperties.Items;
+			const items = controller.metadata.Component.Configuration.Items;
 			inlineItems = Array.isArray(items) ? augmentItems(items) : null;
 
 			controller.ready?.resolve();
@@ -150,26 +150,24 @@
 				? { Query: query }
 				: { Ids: { Items: query.Items?.length > 0 ? query.Items : [] } };
 
-		const parameters = controller.metadata.CustomProperties.Parameters;
+		const parameters = controller.metadata.Component.Configuration.Parameters ?? [];
 
-		if (parameters != null) {
-			let promises = parameters.map((p) => {
-				switch (p.SourceType) {
-					case 'response':
-						postData[p.Parameter] = controller?.form?.response[p.Source]?.value;
-						return Promise.resolve();
-					case 'request':
-						return controller?.form?.inputs[p.Source]
-							.getValue()
-							.then((value: any) => (postData[p.Parameter] = value));
-				}
-			});
+		let promises = parameters.map((p) => {
+			switch (p.SourceType) {
+				case 'response':
+					postData[p.Parameter] = controller?.form?.response[p.Source]?.value;
+					return Promise.resolve();
+				case 'request':
+					return controller?.form?.inputs[p.Source]
+						.getValue()
+						.then((value: any) => (postData[p.Parameter] = value));
+			}
+		});
 
-			await Promise.all(promises);
-		}
+		await Promise.all(promises);
 
 		let response = controller.app
-			.postForm(controller.metadata.CustomProperties.Source, postData, null)
+			.postForm(controller.metadata.Component.Configuration.Source!, postData, null)
 			.then((t: any) => {
 				return augmentItems(t.Items);
 			});

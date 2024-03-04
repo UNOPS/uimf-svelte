@@ -1,8 +1,5 @@
 <script lang="ts" context="module">
-	import {
-		InputController,
-		type CreateInputOptions
-	} from '../Infrastructure/InputController';
+	import { InputController, type CreateInputOptions } from '../Infrastructure/InputController';
 	import type { ComponentMetadata, NestedComponentMetadata } from '../Infrastructure/uimf';
 
 	export interface Option {
@@ -10,12 +7,10 @@
 		Value: string;
 	}
 
-	export interface ConditionalMetadata extends ComponentMetadata {
-		CustomProperties: {
-			Options: Array<Option>;
-			Views: NestedComponentMetadata[];
-			ConditionIsReadonly: boolean;
-		};
+	interface Configuration {
+		Options: Option[];
+		Views: NestedComponentMetadata[];
+		ConditionIsReadonly?: boolean;
 	}
 
 	interface ConditionalInput {
@@ -30,7 +25,10 @@
 		controller: InputController<any>;
 	}
 
-	export class Controller extends InputController<ConditionalInput, ConditionalMetadata> {
+	export class Controller extends InputController<
+		ConditionalInput,
+		ComponentMetadata<Configuration>
+	> {
 		public condition: string | null = null;
 		public view: InputController<any> | null = null;
 		public readonly views: View[] = [];
@@ -52,13 +50,13 @@
 			});
 		}
 
-		constructor(options: CreateInputOptions<ConditionalMetadata>) {
+		constructor(options: CreateInputOptions<ComponentMetadata<Configuration>>) {
 			super(options);
 
 			this.views = [];
 
-			for (const view of this.metadata.CustomProperties.Views) {
-				let controllerClass = controlRegister.inputs[view.Type].controller;
+			for (const view of this.metadata.Component.Configuration.Views) {
+				let controllerClass = controlRegister.inputs[view.Component.Type].controller;
 
 				this.views.push({
 					showIf: view.CustomProperties.showIfConditionIs,
@@ -144,8 +142,8 @@
 </script>
 
 <div>
-	{#if controller.metadata.CustomProperties.ConditionIsReadonly !== true}
-		{#each controller.metadata.CustomProperties.Options as option}
+	{#if controller.metadata.Component.Configuration.ConditionIsReadonly !== true}
+		{#each controller.metadata.Component.Configuration.Options as option}
 			{@const selected = controller.condition === option.Value}
 			<label class:selected class:not-selected={!selected}>
 				<input
@@ -162,7 +160,7 @@
 
 	{#if controller.view != null}
 		<svelte:component
-			this={controlRegister.inputs[controller.view.metadata.Type].component}
+			this={controlRegister.inputs[controller.view.metadata.Component.Type].component}
 			controller={controller.view}
 		/>
 	{/if}

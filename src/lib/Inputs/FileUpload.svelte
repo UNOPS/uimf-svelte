@@ -1,6 +1,11 @@
 <script lang="ts" context="module">
 	import { InputController } from '../Infrastructure/InputController';
 
+	interface Configuration {
+		AcceptedFileTypes: string;
+		NeedFileName: boolean;
+	}
+
 	export interface FileData {
 		dataUrl: string | null;
 		name: string | null;
@@ -8,14 +13,7 @@
 		type: string | null;
 	}
 
-	interface FileUploadMetadata extends ComponentMetadata {
-		CustomProperties: {
-			AcceptedFileTypes: string;
-			NeedFileName: boolean;
-		};
-	}
-
-	export class Controller extends InputController<FileData, FileUploadMetadata> {
+	export class Controller extends InputController<FileData, ComponentMetadata<Configuration>> {
 		public getValue(): Promise<FileData | null> {
 			if (this.value?.dataUrl == null || this.value.dataUrl.length === 0) {
 				return Promise.resolve(null);
@@ -96,7 +94,7 @@
 	let fileInput: HTMLInputElement;
 </script>
 
-{#if controller.metadata.CustomProperties.NeedFileName}
+{#if controller.metadata.Component.Configuration.NeedFileName}
 	<label for="file-name">File name:</label>
 	<input
 		type="text"
@@ -110,7 +108,7 @@
 
 <input
 	bind:this={fileInput}
-	accept={controller.metadata.CustomProperties.AcceptedFileTypes}
+	accept={controller.metadata.Component.Configuration.AcceptedFileTypes}
 	class="form-control file-input"
 	required={controller.metadata.Required && !controller.metadata.Hidden}
 	type="file"

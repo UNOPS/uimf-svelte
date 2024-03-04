@@ -47,9 +47,9 @@ export class ColumnExtension extends TableExtension {
             }
 
             if (config.SortableBy != null) {
-                if (table.parent.metadata.Type === 'paginated-data') {
+                if (table.parent.metadata.Component.Type === 'paginated-data') {
                     let metadata: TableMetadata = table.parent.metadata as TableMetadata;
-                    let paginatorName = metadata.CustomProperties.Customizations.Paginator;
+                    let paginatorName = metadata.Component.Configuration!.Paginator;
                     let paginator: PaginatorController = table.parent.form?.inputs[paginatorName] as PaginatorController;
 
                     cell.cssClassManager.addClass('sortable');
@@ -79,7 +79,7 @@ export class ColumnExtension extends TableExtension {
             }
 
             if (config.AllowLocalSort) {
-                if (table.parent.metadata.Type === 'table') {
+                if (table.parent.metadata.Component.Type === 'table') {
                     cell.cssClassManager.addClass('sortable');
 
                     cell.onClick['sort'] = function () {

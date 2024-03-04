@@ -9,14 +9,19 @@ export interface OutputOptions {
     tooltip: string;
 }
 
-export interface ComponentMetadata {
+export interface ComponentMetadata<TConfiguration = any> {
     Id: string;
     Required: boolean;
     Hidden: boolean;
     CustomProperties?: any | null;
     Label: string;
-    Type: string;
     OrderIndex: number;
+    Component: IComponent<TConfiguration>;
+}
+
+export interface IComponent<T = any | null | undefined> {
+    Type: string;
+    Configuration: T;
 }
 
 export interface NestedComponentMetadata extends ComponentMetadata {
@@ -59,18 +64,18 @@ export interface FormMetadata {
  * Represents a reference to a form.
  */
 export class FormLink {
-	/**
-	 * Gets or sets name of the form to link to.
-	 */
-	public Form!: string;
+    /**
+     * Gets or sets name of the form to link to.
+     */
+    public Form!: string;
 
-	/**
-	 * Gets or sets values for the input fields of the form (i.e. - <see cref="FormMetadata.InputFields"/>).
-	 */
-	public InputFieldValues: any;
+    /**
+     * Gets or sets values for the input fields of the form (i.e. - <see cref="FormMetadata.InputFields"/>).
+     */
+    public InputFieldValues: any;
 
-	/**
-	 * Gets or sets label to be shown on the client when rendering the link.
-	 */
-	public Label?: string;
+    /**
+     * Gets or sets label to be shown on the client when rendering the link.
+     */
+    public Label?: string;
 }

@@ -21,10 +21,10 @@
 
 	const componentController = new InputComponent({
 		init() {
-			const componentRegistration = controlRegister.inputs[controller.metadata.Type];
+			const componentRegistration = controlRegister.inputs[controller.metadata.Component.Type];
 
 			if (componentRegistration == null) {
-				throw `Cannot find input for type '${controller.metadata.Type}'.`;
+				throw `Cannot find input for type '${controller.metadata.Component.Type}'.`;
 			}
 
 			thisHideLabel =
@@ -57,14 +57,14 @@
 {#if controller.value != null || !hideIfNull}
 	{#if thisHideLabel}
 		<div class={contentCssClass || defaultCssClass} use:tooltip={contentTooltip}>
-			<svelte:component this={component} {controller} required={required}/>
+			<svelte:component this={component} {controller} {required} />
 		</div>
 	{:else if controller.metadata == null}
 		<strong>null metadata</strong>
 	{:else}
 		<label class="form-label" use:tooltip={documentation}>{controller.metadata.Label}:</label>
 		<div class={contentCssClass || defaultCssClass} use:tooltip={contentTooltip}>
-			<svelte:component this={component} {controller} required={required}/>
+			<svelte:component this={component} {controller} {required} />
 		</div>
 	{/if}
 {/if}

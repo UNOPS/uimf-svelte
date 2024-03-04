@@ -13,7 +13,6 @@ import * as MultiLevelPicker from '../Inputs/MultiLevelPicker.svelte';
 import * as InputNumber from '../Inputs/Number.svelte';
 import * as NumberRange from '../Inputs/NumberRange.svelte';
 import * as Dropdown from '../Inputs/Dropdown.svelte';
-import * as ArrayInput from '../Inputs/ArrayInput.svelte';
 import * as DateRange from '../Inputs/DateRange.svelte';
 import * as RichTextEditor from '../Inputs/RichTextEditor.svelte';
 import * as Consent from '../Inputs/Consent.svelte';
@@ -180,10 +179,10 @@ export class ControlRegister {
 	}
 
 	createInput(options: CreateInputOptions, renderTarget?: HTMLElement): CreateInputResult {
-		const registration = this.inputs[options.metadata.Type];
+		const registration = this.inputs[options.metadata.Component.Type];
 
 		if (registration == null) {
-			throw `Cannot find input component '${options.metadata.Type}'.`;
+			throw `Cannot find input component '${options.metadata.Component.Type}'.`;
 		}
 
 		const controller = new registration.controller(options);
@@ -204,10 +203,10 @@ export class ControlRegister {
 	}
 
 	createOutput(options: CreateOutputOptions, renderTarget?: HTMLElement): CreateOutputResult {
-		const registration = this.outputs[options.metadata.Type];
+		const registration = this.outputs[options.metadata.Component.Type];
 
 		if (registration == null) {
-			throw `Cannot find output component '${options.metadata.Type}'.`;
+			throw `Cannot find output component '${options.metadata.Component.Type}'.`;
 		}
 
 		const controller = new OutputController<any>(options);
@@ -242,7 +241,6 @@ defaultControlRegister.registerInputComponent('number', InputNumber);
 defaultControlRegister.registerInputComponent('number-range', NumberRange);
 defaultControlRegister.registerInputComponent('dropdown', Dropdown);
 defaultControlRegister.registerInputComponent('rich-text-editor', RichTextEditor);
-defaultControlRegister.registerInputComponent('array-input', ArrayInput);
 defaultControlRegister.registerInputComponent('date-range', DateRange);
 defaultControlRegister.registerInputComponent('consent', Consent, { alwaysHideLabel: true });
 defaultControlRegister.registerInputComponent('paginator', Paginator);

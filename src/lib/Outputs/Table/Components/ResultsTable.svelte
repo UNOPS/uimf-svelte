@@ -1,11 +1,15 @@
 <script context="module" lang="ts">
-	export interface TableMetadata extends ComponentMetadata {
+	export interface TableConfiguration {
+		Columns: ComponentMetadata[];
+		Paginator: string;
+	}
+
+	export interface TableMetadata<T = TableConfiguration> extends ComponentMetadata<T> {
 		CustomProperties: {
 			showExportButton: boolean;
 			CssClass: string;
 			tableConfig: any;
 			row: any;
-			Columns: ComponentMetadata[];
 			bulkActions?: string;
 			Customizations: {
 				Paginator: string;
@@ -63,7 +67,7 @@
 			const tempTable = new Table({
 				parent: controller,
 				extensions: extensions,
-				columns: (controller.metadata.CustomProperties?.Columns ?? []).map(
+				columns: (controller.metadata.Component.Configuration!.Columns ?? []).map(
 					(t: ComponentMetadata) => {
 						return {
 							Metadata: t,
@@ -80,7 +84,7 @@
 			table = tempTable;
 
 			extraColspan = bulkActionExtension.actions.length > 0 ? 1 : 0;
-			type = controller.metadata.Type;
+			type = controller.metadata.Component.Type;
 
 			inputFieldValues = await controller.form?.getInputFieldValues();
 
@@ -91,7 +95,7 @@
 	});
 
 	beforeUpdate(async () => {
-		if (controller?.metadata?.Type == type || type == null) {
+		if (controller?.metadata?.Component.Type == type || type == null) {
 			await component.setup(controller);
 		}
 	});

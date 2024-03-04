@@ -10,19 +10,14 @@
 		controller: any;
 	}
 
-	interface GridMetadata extends ComponentMetadata {
-		CustomProperties: {
-			Properties: ComponentMetadata[];
-			Customizations: {
-				Areas: string;
-				Rows: string;
-				Columns: string;
-			};
-		};
+	interface Configuration {
+		Properties: ComponentMetadata[];
+		Areas: string;
+		Rows: string;
+		Columns: string;
 	}
 
-	class GridController extends OutputController<any, GridMetadata> {
-	}
+	class GridController extends OutputController<any, ComponentMetadata<Configuration>> {}
 
 	export let controller: GridController;
 
@@ -42,7 +37,7 @@
 			return [];
 		}
 
-		return controller.metadata.CustomProperties.Properties.sort(
+		return controller.metadata.Component.Configuration.Properties.sort(
 			(a, b) => a.OrderIndex - b.OrderIndex
 		).map((property) => {
 			const field = controlRegister.createOutput({
@@ -64,9 +59,9 @@
 {#if fields?.length > 0}
 	<div
 		class="layout"
-		style:grid-template-areas={controller.metadata.CustomProperties.Customizations.Areas}
-		style:grid-template-rows={controller.metadata.CustomProperties.Customizations.Rows}
-		style:grid-template-columns={controller.metadata.CustomProperties.Customizations.Columns}
+		style:grid-template-areas={controller.metadata.Component.Configuration.Areas}
+		style:grid-template-rows={controller.metadata.Component.Configuration.Rows}
+		style:grid-template-columns={controller.metadata.Component.Configuration.Columns}
 	>
 		{#each fields as field}
 			<div style:grid-area={field.controller.metadata.CustomProperties?.gridArea}>

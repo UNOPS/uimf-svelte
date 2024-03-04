@@ -1,12 +1,8 @@
-import type { ComponentMetadata } from "$lib/Infrastructure/uimf";
+import type { ExpandableConfiguration } from "$lib/Outputs/Expandable.svelte";
 import { TableBodyCell, type Table, type TableHeadCell, type TableRowGroup } from "..";
 import type { IField } from "../IColumn";
 import { TableExtension } from "../TableExtension";
 import TableRow from "../TableRow";
-
-interface ICustomProperties {
-    ItemTypes: ComponentMetadata[];
-}
 
 export class ExpandableExtension extends TableExtension {
     private expandableCells: TableHeadCell[] = [];
@@ -18,7 +14,7 @@ export class ExpandableExtension extends TableExtension {
     }
 
     processHeadCell(table: Table, cell: TableHeadCell, rows: any[]): Promise<void> {
-        if (cell.metadata.Type === 'expandable') {
+        if (cell.metadata.Component.Type === 'expandable') {
             this.expandableCells.push(cell);
 
             cell.styleManager.add('cursor', 'pointer');
@@ -43,10 +39,17 @@ export class ExpandableExtension extends TableExtension {
                 return;
             }
 
-            const customProperties: ICustomProperties = cell.metadata.CustomProperties;
+            const configuration: ExpandableConfiguration = cell.metadata.Component.Configuration;
 
             const hiddenField: IField = {
-                Metadata: customProperties.ItemTypes[1],
+                Metadata: {
+                    Component: configuration.Hidden,
+                    Id: cell.metadata.Id + '_hidden',
+                    Label: '',
+                    OrderIndex: 0,
+                    Hidden: false,
+                    Required: false
+                },
                 IsInput: false,
                 Hidden: true
             };

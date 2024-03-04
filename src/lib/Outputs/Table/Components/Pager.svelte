@@ -64,7 +64,7 @@
 			this.component = component;
 
 			// The basics.
-			this.paginatorId = controller.metadata.CustomProperties.Customizations.Paginator;
+			this.paginatorId = controller.metadata.Component.Configuration!.Paginator;
 			this.paginatorValue = this.form.inputs[this.paginatorId].value || new PaginationParameters();
 			this.pageCount = Math.ceil(controller.value.TotalCount / this.paginatorValue.PageSize);
 
@@ -144,7 +144,7 @@
 	});
 
 	beforeUpdate(async () => {
-		if (controller?.metadata?.Type == 'paginated-data') {
+		if (controller?.metadata?.Component.Type == 'paginated-data') {
 			await component.setup(controller);
 		}
 	});

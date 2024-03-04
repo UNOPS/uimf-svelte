@@ -1,9 +1,10 @@
 <script lang="ts" context="module">
-	interface IMetadata extends ComponentMetadata {
-		Items: any[];
+	interface Configuration {
+		Inner: IComponent;
+	}
 
+	interface IMetadata extends ComponentMetadata<Configuration> {
 		CustomProperties: {
-			ItemTypes: ComponentMetadata;
 			cssClass: string;
 		};
 	}
@@ -14,7 +15,7 @@
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
-	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
+	import type { ComponentMetadata, IComponent } from '$lib/Infrastructure/uimf';
 
 	export let controller: OutputController<any, IMetadata>;
 
@@ -44,7 +45,7 @@
 	beforeUpdate(async () => await component.setup(controller));
 
 	function getNestedItems(items: any[]): any[] {
-		const inner = controller.metadata.CustomProperties.ItemTypes;
+		const inner = controller.metadata.Component.Configuration.Inner;
 
 		if (controlRegister.outputs[inner.Type] == null) {
 			throw new Error(`Unknown output type '${inner.Type}'.`);
@@ -54,7 +55,14 @@
 			return {
 				component: controlRegister.outputs[inner.Type].component,
 				controller: new OutputController<any>({
-					metadata: inner,
+					metadata: {
+						Component: inner,
+						Hidden: false,
+						Id: Date.now().toString(),
+						Label: '',
+						OrderIndex: 0,
+						Required: false
+					},
 					data: item,
 					form: controller.form!,
 					app: controller.app

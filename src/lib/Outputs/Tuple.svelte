@@ -2,16 +2,19 @@
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
-	import type { ComponentMetadata } from '../Infrastructure/uimf';
+	import type { ComponentMetadata, IComponent } from '../Infrastructure/uimf';
 	import Output from '../Output.svelte';
 
 	interface TupleData {
 		[id: string]: any;
 	}
 
-	interface TupleMetadata extends ComponentMetadata {
+	interface Configuration {
+		ItemTypes: IComponent[];
+	}
+
+	interface TupleMetadata extends ComponentMetadata<Configuration> {
 		CustomProperties: {
-			ItemTypes: ComponentMetadata[];
 			cssClass: string;
 		};
 	}
@@ -28,10 +31,17 @@
 
 	beforeUpdate(async () => await component.setup(controller));
 
-	const getController = (item: ComponentMetadata, idx: number) => {
+	const getController = (item: IComponent, idx: number) => {
 		let value = controller.value == null ? null : controller.value[`m_Item${idx}`];
 		return new OutputController<any>({
-			metadata: item,
+			metadata: {
+				Component: item,
+				Label: '',
+				Hidden: false,
+				Id: Date.now().toString(),
+				OrderIndex: 0,
+				Required: false
+			},
 			data: value,
 			form: controller.form,
 			app: controller.app
@@ -39,8 +49,8 @@
 	};
 </script>
 
-<div class={controller.metadata.CustomProperties.cssClass} class:tuple={true}>
-	{#each controller.metadata.CustomProperties.ItemTypes as item, idx}
+<div class={controller.metadata.CustomProperties?.cssClass} class:tuple={true}>
+	{#each controller.metadata.Component.Configuration.ItemTypes as item, idx}
 		<Output controller={getController(item, idx + 1)} hideLabel={true} />
 	{/each}
 </div>

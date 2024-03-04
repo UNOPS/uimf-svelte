@@ -1,6 +1,10 @@
 <script lang="ts" context="module">
 	import { InputController } from '../Infrastructure/InputController';
 
+	interface Configuration {
+		Options: Option[];
+	}
+
 	export interface Option {
 		CssClass: string;
 		Icon: string;
@@ -9,11 +13,7 @@
 		Value: any;
 	}
 
-	export interface RadioMetadata extends ComponentMetadata {
-		CustomProperties: {
-			Options: Array<Option>;
-		};
-	}
+	export interface RadioMetadata extends ComponentMetadata<Configuration> {}
 
 	export class Radio {
 		Value!: any;
@@ -37,7 +37,7 @@
 			} else {
 				const asString = value?.Value.toString();
 				this.valueAsString =
-					this.metadata.CustomProperties.Options.find(
+					this.metadata.Component.Configuration.Options.find(
 						(t) => t.Value.toString() === asString || t.Label === asString
 					)?.Value.toString() ?? null;
 			}
@@ -52,7 +52,9 @@
 				return Promise.resolve(null);
 			}
 
-			var option = this.metadata.CustomProperties.Options.find((t) => t.Value.toString() === value);
+			var option = this.metadata.Component.Configuration.Options.find(
+				(t) => t.Value.toString() === value
+			);
 
 			var result = option != null ? { Value: parseInt(value) } : null;
 
@@ -81,7 +83,8 @@
 		init() {
 			controller.onChange = onChange;
 			controller.ready?.resolve();
-			withIcons = controller.metadata.CustomProperties.Options.find((t) => t.Icon != null) != null;
+			withIcons =
+				controller.metadata.Component.Configuration.Options.find((t) => t.Icon != null) != null;
 		},
 		refresh() {
 			controller.value = controller.value;
@@ -92,7 +95,7 @@
 </script>
 
 <div class:with-icons={withIcons}>
-	{#each controller.metadata.CustomProperties.Options as option}
+	{#each controller.metadata.Component.Configuration.Options as option}
 		{@const selected = controller.valueAsString === option.Value.toString()}
 		<label class={option.CssClass} class:selected class:not-selected={!selected}>
 			<input

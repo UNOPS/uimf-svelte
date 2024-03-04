@@ -3,6 +3,11 @@
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { beforeUpdate } from 'svelte';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
+	import type { ComponentMetadata } from '$lib/Infrastructure/uimf';
+
+	interface Configuration {
+		Properties: ComponentMetadata[];
+	}
 
 	class ComponentController {
 		component: any;
@@ -11,11 +16,11 @@
 
 	const handleClick = (tabValue: number) => () => (activeTabValue = tabValue);
 
-	export let controller: OutputController<any>;
+	export let controller: OutputController<any, ComponentMetadata<Configuration>>;
 
 	let component = new OutputComponent({
 		refresh() {
-			tabs = getComponentControllers(controller.metadata.CustomProperties.Properties);
+			tabs = getComponentControllers(controller.metadata.Component.Configuration.Properties);
 
 			controller.value = controller.value;
 		}
@@ -23,15 +28,15 @@
 
 	beforeUpdate(async () => await component.setup(controller));
 
-	let tabs: any[] = getComponentControllers(controller.metadata.CustomProperties.Properties);
-    export let activeTabValue = tabs[0].controller.metadata.Id;
-	
-	function getComponentControllers(properties: any[]): any[] {
+	let tabs: any[] = getComponentControllers(controller.metadata.Component.Configuration.Properties);
+	export let activeTabValue = tabs[0].controller.metadata.Id;
+
+	function getComponentControllers(properties: ComponentMetadata[]): any[] {
 		let componentControllerArray: ComponentController[] = [];
 
 		properties.forEach((property) => {
 			let componentController = {
-				component: controlRegister.outputs[property.Type].component,
+				component: controlRegister.outputs[property.Component.Type].component,
 				controller: new OutputController<any>({
 					metadata: property,
 					data: null,
@@ -61,18 +66,18 @@
 				tabindex="0"
 				role="button"
 				aria-label={`Switch to ${tab.controller.metadata.Label}`}
-			>{tab.controller.metadata.Label}</span>
+				>{tab.controller.metadata.Label}</span
+			>
 		</li>
 	{/each}
 </ul>
 {#each tabs as tab}
 	{#if activeTabValue == tab.controller.metadata.Id}
 		<div class="box">
-			<svelte:component this={tab.component} controller={tab.controller}/>
+			<svelte:component this={tab.component} controller={tab.controller} />
 		</div>
 	{/if}
 {/each}
-
 
 <style>
 	.box {
