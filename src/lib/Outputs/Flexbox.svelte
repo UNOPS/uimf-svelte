@@ -82,7 +82,7 @@
 			<div
 				class={field.controller.metadata.CustomProperties?.Flexbox?.CssClass}
 				style:flex-basis={field.controller.metadata.CustomProperties?.Flexbox?.FlexBasis}
-				style:padding={controller.metadata.CustomProperties.ItemPadding}
+				style:padding={controller.metadata.CustomProperties?.ItemPadding}
 			>
 				{#if field.controller.metadata.Label?.length > 0}
 					<h3>{field.controller.metadata.Label}</h3>

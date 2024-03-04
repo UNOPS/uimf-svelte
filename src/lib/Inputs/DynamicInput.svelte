@@ -1,17 +1,17 @@
 <script lang="ts" context="module">
 	import { InputController, type CreateInputOptions } from '../Infrastructure/InputController';
-	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { IComponent, IFieldMetadata } from '$lib/Infrastructure/uimf';
 
 	export interface ViewData {
-		Metadata: any;
+		Metadata: IComponent;
 		Value: any;
 	}
 
 	export class Controller extends InputController<ViewData, IFieldMetadata> {
-		declare view: {
-			metadata: IFieldMetadata;
+		public view: {
+			metadata: IComponent;
 			controller: InputController<any>;
-		};
+		} | null = null;
 
 		constructor(options: CreateInputOptions<IFieldMetadata>) {
 			super(options);
@@ -22,8 +22,10 @@
 				var self = this;
 
 				return this.view.controller.getValue().then(function (value: any) {
+					console.log('view metadata', self.view);
+
 					return {
-						Metadata: self.view.metadata,
+						Metadata: self.view!.metadata,
 						Value: value
 					};
 				});
@@ -51,7 +53,14 @@
 				this.view = {
 					metadata: value.Metadata,
 					controller: new controllerClass({
-						metadata: value.Metadata,
+						metadata: {
+							Component: value.Metadata,
+							Hidden: false,
+							Id: Date.now().toString(),
+							Label: '',
+							OrderIndex: 0,
+							Required: false
+						},
 						form: this.form,
 						defer: null,
 						app: this.app

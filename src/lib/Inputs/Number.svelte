@@ -44,11 +44,8 @@
 			controller.ready?.resolve();
 		},
 		refresh() {
-			const minField = controller.metadata.Component.Configuration?.MinValue;
-			const maxField = controller.metadata.Component.Configuration?.MaxValue;
-
-			min = minField != null ? controller.form?.response[minField]?.value : null;
-			max = maxField != null ? controller.form?.response[maxField]?.value : null;
+			min = controller.metadata.Component.Configuration?.MinValue;
+			max = controller.metadata.Component.Configuration?.MaxValue;
 
 			controller.value = controller.value;
 		}

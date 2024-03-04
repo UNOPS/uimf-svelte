@@ -22,13 +22,11 @@
 				.map((property) => {
 					return new OutputController<any>({
 						metadata: property,
-						data: controller.value?.Value == null ? null : controller.value.Value[property.Id],
+						data: controller.value?.Value == null ? null : controller.value?.Value[property.Id],
 						form: controller.form,
 						app: controller.app
 					});
 				});
-
-			controller.value = controller.value;
 		}
 	});
 
