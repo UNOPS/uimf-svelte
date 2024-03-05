@@ -3,6 +3,12 @@
 		Visible: IComponent;
 		Hidden: IComponent;
 	}
+
+	export interface ExpandableData {
+		ShowButton: boolean;
+		Visible: any;
+		Hidden: any;
+	}
 </script>
 
 <script lang="ts">
@@ -12,16 +18,13 @@
 	import type { IFieldMetadata, IComponent } from '../Infrastructure/uimf';
 	import Output from '../Output.svelte';
 
-	interface ExpandableData {
-		ShowButton: boolean;
-		Visible: any;
-		Hidden: any;
+	interface ExpandableItem extends ExpandableData {
 		handler: (show: boolean) => void | null;
 		show: (show: boolean) => void;
 	}
 
 	class ExpandableController extends OutputController<
-		ExpandableData,
+		ExpandableItem,
 		IFieldMetadata<ExpandableConfiguration>
 	> {}
 

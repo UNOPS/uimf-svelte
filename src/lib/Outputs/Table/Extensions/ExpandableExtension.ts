@@ -1,4 +1,4 @@
-import type { ExpandableConfiguration } from "$lib/Outputs/Expandable.svelte";
+import type { ExpandableConfiguration, ExpandableData } from "$lib/Outputs/Expandable.svelte";
 import { TableBodyCell, type Table, type TableHeadCell, type TableRowGroup } from "..";
 import type { IField } from "../IColumn";
 import { TableExtension } from "../TableExtension";
@@ -44,19 +44,21 @@ export class ExpandableExtension extends TableExtension {
             const hiddenField: IField = {
                 Metadata: {
                     Component: configuration.Hidden,
-                    Id: cell.metadata.Id + '_hidden',
+                    Id: 'Hidden',
                     Label: '',
                     OrderIndex: 0,
                     Hidden: false,
                     Required: false
                 },
                 IsInput: false,
-                Hidden: true
+                Hidden: false
             };
+
+            let data: ExpandableData = row.data[cell.metadata.Id];
 
             var hiddenCell = new TableBodyCell(
                 table.parent,
-                { Value: row.data[cell.metadata.Id]?.Hidden },
+                { 'Hidden': data?.Hidden },
                 hiddenField);
 
             hiddenCell.colspan = table.head.main.cells.length;
