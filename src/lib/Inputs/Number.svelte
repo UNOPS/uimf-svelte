@@ -41,7 +41,13 @@
 
 	let component = new InputComponent({
 		init() {
-			multiplier = Math.pow(10, controller.metadata.Component.Configuration?.Precision ?? 0);
+			const precision = controller.metadata.Component.Configuration?.Precision ?? 0;
+
+			if (precision < 0 || precision > 100) {
+				throw 'Precision must be between 0 and 100. Otherwise it will lead to invalid values.';
+			}
+
+			multiplier = Math.pow(10, precision);
 			min = controller.metadata.Component.Configuration?.MinValue;
 			max = controller.metadata.Component.Configuration?.MaxValue;
 
