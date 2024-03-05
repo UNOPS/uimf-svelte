@@ -4,11 +4,19 @@
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
 	import type { IFieldMetadata, IComponent } from '../Infrastructure/uimf';
+	import { tooltip } from '../Components/Tooltip.svelte';
 
-	export let controller: OutputController<any, IFieldMetadata<Configuration>>;
+	export let controller: OutputController<OutputData, IFieldMetadata<Configuration>>;
 
 	interface Configuration {
 		Inner: IComponent;
+	}
+
+	interface OutputData {
+		CssClass: string | null;
+		Popover: string | null;
+		Tooltip: string | null;
+		Value: any;
 	}
 
 	class ComponentController {
@@ -18,8 +26,9 @@
 
 	let component = new OutputComponent({
 		refresh() {
-			componentController = getComponentController(
-				controller.metadata.Component.Configuration.Inner
+			innerComponent = getInner(
+				controller.metadata.Component.Configuration.Inner,
+				controller.value?.Value
 			);
 
 			controller.value = controller.value;
@@ -28,11 +37,16 @@
 
 	beforeUpdate(async () => await component.setup(controller));
 
-	let componentController: ComponentController;
+	let innerComponent: ComponentController;
 
-	function getComponentController(inner: IComponent): any {
-		let componentController: ComponentController = {
-			component: controlRegister.outputs[inner.Type].component,
+	function getInner(component: IComponent, value: any): any {
+		if (value == null) {
+			// Do not display anything if the value is null.
+			return null;
+		}
+
+		let inner: ComponentController = {
+			component: controlRegister.outputs[component.Type].component,
 			controller: new OutputController<any>({
 				metadata: {
 					Hidden: false,
@@ -40,7 +54,7 @@
 					Label: '',
 					OrderIndex: 0,
 					Required: false,
-					Component: inner
+					Component: component
 				},
 				data: null,
 				form: controller.form!,
@@ -48,19 +62,14 @@
 			})
 		};
 
-		componentController.controller.setValue(controller.value?.Value);
+		inner.controller.setValue(value);
 
-		return componentController;
+		return inner;
 	}
 </script>
 
-{#if componentController != null}
-	<div class={controller.metadata.CustomProperties?.cssClass}>
-		<div class={componentController.controller.metadata.CustomProperties?.cssClass}>
-			<svelte:component
-				this={componentController.component}
-				controller={componentController.controller}
-			/>
-		</div>
+{#if innerComponent != null}
+	<div class={controller.value.CssClass} use:tooltip={controller.value.Tooltip}>
+		<svelte:component this={innerComponent.component} controller={innerComponent.controller} />
 	</div>
 {/if}
