@@ -22,8 +22,6 @@
 				var self = this;
 
 				return this.view.controller.getValue().then(function (value: any) {
-					console.log('view metadata', self.view);
-
 					return {
 						Metadata: self.view!.metadata,
 						Value: value
