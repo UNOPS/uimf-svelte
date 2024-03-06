@@ -7,8 +7,8 @@
 	interface ILineChartData {
 		Label: string;
 		Value: number;
-		Year: Date;
-		Category?: string; // Include the Category property
+		Date: Date;
+		Category?: string;
 	}
 	interface ILineChart {
 		Data: ILineChartData[];
@@ -29,8 +29,9 @@
 	let component = new OutputComponent({
 		refresh() {
 			if (controller.value) {
-				data = controller.value.Data.map((d) => ({ ...d, Year: new Date(d.Year) }));
-				const xExtent = d3.extent(data.map((d) => d.Year.getFullYear()));
+				data = controller.value.Data.map((d) => ({ ...d, Date: new Date(d.Date) }));
+				console.log(data);
+				const xExtent = d3.extent(data.map((d) => d.Date.getFullYear()));
 				const yExtent = d3.extent(data.map((d) => d.Value));
 				xScale = d3
 					.scaleLinear()
@@ -42,19 +43,19 @@
 					.domain(yExtent[0] === undefined ? [0, 0] : yExtent)
 					.range([height - marginBottom, marginTop]);
 
-				const dataByCategory = d3.group(data, (d) => d.Category); // Group data by category
+				const dataByCategory = d3.group(data, (d) => d.Category);
 
 				paths = Array.from(dataByCategory, ([category, values]) => {
 					const pathGenerator = d3
 						.line<ILineChartData>()
-						.x((d) => xScale(d.Year.getFullYear()))
+						.x((d) => xScale(d.Date.getDate()))
 						.y((d) => yScale(d.Value))
 						.curve(d3.curveBasis);
 
 					const pathData = pathGenerator(values);
 					return {
-						d: pathData || '', // Convert null to an empty string
-						label: category || 'Unknown' // Provide a default label if undefined
+						d: pathData || '',
+						label: category || 'Unknown'
 					};
 				});
 			}
@@ -70,7 +71,7 @@
 </script>
 
 {#if xScale && yScale}
-	<h2>Automobile Sales in Thailand</h2>
+	<h2>{data[0].Label}</h2>
 	<svg
 		{width}
 		{height}
@@ -136,7 +137,6 @@
 		text-align: center;
 	}
 	path {
-		/* stroke: rgb(0, 7, 143); */
 		stroke-width: 1.5;
 		fill: none;
 		stroke-linecap: round;
