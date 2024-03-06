@@ -74,7 +74,6 @@
 </script>
 
 {#if xScale && yScale}
-	<h2>{data[0].Label}</h2>
 	<svg
 		{width}
 		{height}
@@ -135,9 +134,6 @@
 {/if}
 
 <style>
-	h2 {
-		text-align: center;
-	}
 	path {
 		stroke-width: 1.5;
 		fill: none;
