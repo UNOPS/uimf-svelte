@@ -31,11 +31,11 @@
 			if (controller.value) {
 				data = controller.value.Data.map((d) => ({ ...d, Date: new Date(d.Date) }));
 				console.log(data);
-				const xExtent = d3.extent(data.map((d) => d.Date.getFullYear()));
+				const xExtent = d3.extent(data.map((d) => d.Date));
 				const yExtent = d3.extent(data.map((d) => d.Value));
 				xScale = d3
-					.scaleLinear()
-					.domain(xExtent[0] === undefined ? [0, 0] : xExtent)
+					.scaleTime()
+					.domain(xExtent[0] === undefined ? [new Date(), new Date()] : xExtent)
 					.range([marginLeft, width - marginRight]);
 
 				yScale = d3
@@ -48,7 +48,7 @@
 				paths = Array.from(dataByCategory, ([category, values]) => {
 					const pathGenerator = d3
 						.line<ILineChartData>()
-						.x((d) => xScale(d.Date.getDate()))
+						.x((d) => xScale(d.Date))
 						.y((d) => yScale(d.Value))
 						.curve(d3.curveBasis);
 
@@ -64,6 +64,9 @@
 	function colorByIndex(index: number) {
 		const colors = ['steelblue', 'red', 'green', 'purple', 'orange'];
 		return colors[index % colors.length];
+	}
+	function uniqueTicks(ticks: number[]): number[] {
+		return [...new Set(ticks.map((tick) => Math.round(tick)))];
 	}
 	beforeUpdate(async () => {
 		await component.setup(controller);
@@ -83,15 +86,14 @@
 			<line stroke="currentColor" x1={marginLeft - 6} x2={width} />
 
 			{#each xScale.ticks() as tick}
-				<line stroke="currentColor" x1={xScale(tick)} x2={xScale(tick)} y1={0} y2={6} />
 				<text fill="currentColor" text-anchor="middle" x={xScale(tick)} y={22}>
-					{tick}
+					{d3.timeFormat('%d %b')(tick)}
 				</text>
 			{/each}
 		</g>
 
 		<g transform="translate({marginLeft},0)">
-			{#each yScale.ticks() as tick}
+			{#each uniqueTicks(yScale.ticks()) as tick}
 				{#if tick !== 0}
 					<line
 						stroke="currentColor"
@@ -110,7 +112,7 @@
 					x={-9}
 					y={yScale(tick)}
 				>
-					{tick}
+					{Math.round(tick)}
 				</text>
 			{/each}
 		</g>
