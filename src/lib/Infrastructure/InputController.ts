@@ -17,7 +17,7 @@ export interface CreateInputOptions<TMetadata extends IFieldMetadata = IFieldMet
     app: IUimfApp;
 }
 
-export abstract class InputController<T, TMetadata extends IFieldMetadata = IFieldMetadata>
+export abstract class InputController<TValue, TMetadata extends IFieldMetadata = IFieldMetadata>
     extends EventSource
     implements IFormComponent {
     /**
@@ -30,7 +30,7 @@ export abstract class InputController<T, TMetadata extends IFieldMetadata = IFie
      * and does not necessarily represent the actual value that is will be returned
      * by `getValue` method.
      */
-    public value: T | null;
+    public value: TValue | null;
 
     /**
      * Gets input field's metadata.
@@ -68,7 +68,7 @@ export abstract class InputController<T, TMetadata extends IFieldMetadata = IFie
      * @param value Value to set. This value can either be the actual value
      * or its serialized representation.
      */
-    public setValue(value: T | string | null): Promise<void> {
+    public setValue(value: TValue | string | null): Promise<void> {
         var promise = null;
 
         if (value == null) {
@@ -95,25 +95,25 @@ export abstract class InputController<T, TMetadata extends IFieldMetadata = IFie
      * applied when input's value is set.
      * @param value Input's new value.
      */
-    protected setValueInternal(value: T | null): Promise<void> {
+    protected setValueInternal(value: TValue | null): Promise<void> {
         return Promise.resolve();
     }
 
     /**
      * Gets current value of this input field.
      */
-    public abstract getValue(): Promise<T | null>;
+    public abstract getValue(): Promise<TValue | null>;
 
     /**
      * Deserializes string into a valid value or null.
      */
-    public abstract deserialize(value: string | null): Promise<T | null>;
+    public abstract deserialize(value: string | null): Promise<TValue | null>;
 
     /**
      * Serializes given value.
      * @param value value to serialize.
      */
-    public abstract serialize(value: T | null): string | null;
+    public abstract serialize(value: TValue | null): string | null;
 
     /**
      * Gets current value and serializes it to string.
