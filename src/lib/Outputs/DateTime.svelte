@@ -1,16 +1,17 @@
 <script lang="ts" context="module">
-	export interface DateTimeMetadata extends IFieldMetadata {
-		HideTime: boolean;
+	export interface Configuration {
+		HideTime?: boolean;
+		Format?: string;
 	}
 
-	export class DateTimeController extends OutputController<string, DateTimeMetadata> {}
+	export class DateTimeController extends OutputController<string, IFieldMetadata<Configuration>> {}
 </script>
 
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
-	import type { IFieldMetadata } from '../Infrastructure/uimf';
+	import type { IComponent, IFieldMetadata } from '../Infrastructure/uimf';
 
 	export let controller: DateTimeController;
 	let options: Intl.DateTimeFormatOptions | null = null;
@@ -19,20 +20,21 @@
 
 	let component = new OutputComponent({
 		init() {
-			options = controller.metadata.HideTime
-				? {
-						day: '2-digit',
-						month: '2-digit',
-						year: 'numeric'
-				  }
-				: {
-						day: '2-digit',
-						month: '2-digit',
-						year: 'numeric',
-						hour: '2-digit',
-						minute: '2-digit',
-						second: '2-digit'
-				  };
+			options =
+				controller.metadata.Component.Configuration?.HideTime === true
+					? {
+							day: '2-digit',
+							month: '2-digit',
+							year: 'numeric'
+					  }
+					: {
+							day: '2-digit',
+							month: '2-digit',
+							year: 'numeric',
+							hour: '2-digit',
+							minute: '2-digit',
+							second: '2-digit'
+					  };
 		},
 		refresh() {
 			valueAsString =
