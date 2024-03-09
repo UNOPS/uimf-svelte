@@ -1,6 +1,13 @@
 <script lang="ts" context="module">
 	import { InputController } from '../Infrastructure/InputController';
-	export class Controller extends InputController<string> {
+
+	interface Configuration {
+		MinLength?: number;
+		MaxLength?: number;
+		Multiline: boolean;
+	}
+
+	export class Controller extends InputController<string, IFieldMetadata<Configuration>> {
 		public getValue(): Promise<string | null> {
 			return Promise.resolve(this.value != null && this.value.length > 0 ? this.value : null);
 		}
@@ -16,6 +23,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../Infrastructure/Component';
+	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
 
 	export let controller: Controller;
 
@@ -31,11 +39,13 @@
 	beforeUpdate(async () => await component.setup(controller));
 </script>
 
-{#if controller.metadata.CustomProperties?.multiline}
+{#if controller.metadata.Component.Configuration?.Multiline === true}
 	<textarea
 		class="form-control"
 		bind:value={controller.value}
 		required={controller.metadata.Required}
+		minlength={controller.metadata.Component.Configuration?.MinLength}
+		maxlength={controller.metadata.Component.Configuration?.MaxLength}
 	/>
 {:else}
 	<input
@@ -44,6 +54,8 @@
 		on:change={() => controller.setValue(controller.value)}
 		bind:value={controller.value}
 		required={controller.metadata.Required}
+		minlength={controller.metadata.Component.Configuration?.MinLength}
+		maxlength={controller.metadata.Component.Configuration?.MaxLength}
 		type="text"
 	/>
 {/if}
