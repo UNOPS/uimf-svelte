@@ -39,11 +39,15 @@
 			metadata: {
 				Id: '',
 				Required: false,
-				HideTime: controller.value?.HideTime ?? false,
 				Hidden: false,
 				Label: '',
-				Type: 'datetime',
-				OrderIndex: 0
+				OrderIndex: 0,
+				Component: {
+					Type: 'datetime',
+					Configuration: {
+						HideTime: controller.value?.HideTime ?? false
+					}
+				}
 			},
 			data: controller.value.Date,
 			form: controller.form!,
