@@ -1,6 +1,7 @@
 <script lang="ts" context="module">
 	interface Configuration {
 		Inner: IComponent;
+		CssClass?: string;
 	}
 
 	interface IMetadata extends IFieldMetadata<Configuration> {
@@ -73,7 +74,10 @@
 </script>
 
 {#if nestedItems?.length > 0}
-	<div class={controller.metadata.CustomProperties?.cssClass}>
+	<div
+		class={controller.metadata.Component.Configuration?.CssClass ??
+			controller.metadata.CustomProperties?.cssClass}
+	>
 		{#each nestedItems as item}
 			<div>
 				<svelte:component this={item.component} controller={item.controller} />
