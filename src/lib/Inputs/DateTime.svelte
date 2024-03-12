@@ -115,7 +115,7 @@
 			controller.ready?.resolve();
 
 			defaultValue = Controller.parseDefaultValue(
-				controller.metadata.CustomProperties?.DefaultValue
+				controller.metadata.Component?.Configuration?.DefaultValue
 			);
 		},
 		refresh() {
@@ -124,8 +124,8 @@
 				initialised = true;
 			}
 
-			const minDateField = controller.metadata.CustomProperties?.MinDateValue;
-			const maxDateField = controller.metadata.CustomProperties?.MaxDateValue;
+			const minDateField = controller.metadata.Component?.Configuration?.MinDateValue;
+			const maxDateField = controller.metadata.Component?.Configuration?.MaxDateValue;
 
 			minDate = minDateField != null ? controller.form?.response[minDateField]?.value : null;
 			maxDate = maxDateField != null ? controller.form?.response[maxDateField]?.value : null;
