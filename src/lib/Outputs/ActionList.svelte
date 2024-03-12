@@ -80,6 +80,7 @@
 		text-align: right;
 		margin-left: 0;
 		margin-right: 0;
+		min-height: 41px;
 	}
 
 	.action-list > span {
