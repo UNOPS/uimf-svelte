@@ -24,6 +24,10 @@
 	let marginLeft = 40;
 	let data: ILineChartData[] = [];
 	let paths: { d: string; label: string }[] = [];
+	let title = '';
+	let isHovered = false;
+	let x;
+	let y;
 	export let controller: OutputController<ILineChart>;
 
 	let component = new OutputComponent({
@@ -49,8 +53,7 @@
 					const pathGenerator = d3
 						.line<ILineChartData>()
 						.x((d) => xScale(d.Date))
-						.y((d) => yScale(d.Value))
-						.curve(d3.curveBasis);
+						.y((d) => yScale(d.Value));
 
 					const pathData = pathGenerator(values);
 					return {
@@ -67,6 +70,18 @@
 	}
 	function uniqueTicks(ticks: number[]): number[] {
 		return [...new Set(ticks.map((tick) => Math.round(tick)))];
+	}
+	function mouseOver(event: { pageX: number; pageY: number }) {
+		isHovered = true;
+		x = event.pageX + 5;
+		y = event.pageY + 5;
+	}
+	function mouseMove(event: { pageX: number; pageY: number }) {
+		x = event.pageX + 5;
+		y = event.pageY + 5;
+	}
+	function mouseLeave() {
+		isHovered = false;
 	}
 	beforeUpdate(async () => {
 		await component.setup(controller);
@@ -129,15 +144,28 @@
 
 		{#each paths as { d, label }, index (label)}
 			<path fill="none" stroke={colorByIndex(index)} stroke-width="1.5" {d} />
+			{#each data as point, i}
+				<circle
+					cx={xScale(point.Date)}
+					cy={yScale(point.Value)}
+					r="3"
+					fill="#000"
+					tabindex="0"
+					role="button"
+					aria-label={`Value: ${point.Value}, Date: ${point.Date.toDateString()}`}
+				/>
+			{/each}
 		{/each}
 	</svg>
 {/if}
 
 <style>
 	path {
-		stroke-width: 1.5;
-		fill: none;
-		stroke-linecap: round;
+		fill: transparent;
+		stroke-width: 2.5;
+		stroke-linejoin: round;
+		stroke-dasharray: 4400;
+		stroke-dashoffset: 0;
 	}
 	.legend text {
 		fill: currentColor;
