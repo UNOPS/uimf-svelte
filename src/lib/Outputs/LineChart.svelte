@@ -24,10 +24,10 @@
 	let marginLeft = 40;
 	let data: ILineChartData[] = [];
 	let paths: { d: string; label: string }[] = [];
-	let title = '';
-	let isHovered = false;
-	let x;
-	let y;
+	let tooltipContent: ILineChartData | null = null;
+	let tooltipVisible: boolean = false;
+	let tooltipX: number = 0;
+	let tooltipY: number = 0;
 	export let controller: OutputController<ILineChart>;
 
 	let component = new OutputComponent({
@@ -71,17 +71,37 @@
 	function uniqueTicks(ticks: number[]): number[] {
 		return [...new Set(ticks.map((tick) => Math.round(tick)))];
 	}
-	function mouseOver(event: { pageX: number; pageY: number }) {
-		isHovered = true;
-		x = event.pageX + 5;
-		y = event.pageY + 5;
+	function showTooltip(d: ILineChartData) {
+		tooltipContent = d;
+		tooltipVisible = true;
 	}
-	function mouseMove(event: { pageX: number; pageY: number }) {
-		x = event.pageX + 5;
-		y = event.pageY + 5;
+	function onMouseEnter(event: MouseEvent, d: ILineChartData) {
+		if (event.currentTarget instanceof SVGGraphicsElement && event.currentTarget.ownerSVGElement) {
+			const svg = event.currentTarget.ownerSVGElement;
+			const ctm = svg.getScreenCTM();
+			if (ctm) {
+				console.log(ctm, tooltipX, tooltipY);
+				const rect = svg.getBoundingClientRect();
+				const point = svg.createSVGPoint();
+				point.x = event.clientX;
+				point.y = event.clientY;
+				const invertedCTM = ctm.inverse();
+				const cursorPoint = point.matrixTransform(invertedCTM);
+				tooltipX = cursorPoint.x;
+				tooltipY = cursorPoint.y;
+				tooltipContent = d;
+				showTooltip(d);
+			} else {
+				console.error('Unable to get the screen CTM');
+			}
+		}
 	}
-	function mouseLeave() {
-		isHovered = false;
+
+	function onFocus(d: ILineChartData) {
+		showTooltip(d);
+	}
+	function onMouseLeave() {
+		tooltipContent = null;
 	}
 	beforeUpdate(async () => {
 		await component.setup(controller);
@@ -153,10 +173,25 @@
 					tabindex="0"
 					role="button"
 					aria-label={`Value: ${point.Value}, Date: ${point.Date.toDateString()}`}
+					on:mouseover={(event) => onMouseEnter(event, point)}
+					on:mouseout={onMouseLeave}
+					on:focus={() => onFocus(point)}
+					on:blur={onMouseLeave}
 				/>
 			{/each}
 		{/each}
 	</svg>
+{/if}
+{#if tooltipVisible && tooltipContent}
+	<div
+		class="tooltip"
+		style="left: {tooltipX}px; top: {tooltipY}px; transform: translate(-50%, -100%);"
+	>
+		<p><strong>Label:</strong> {tooltipContent.Label}</p>
+		<p><strong>Value:</strong> {tooltipContent.Value}</p>
+		<p><strong>Date:</strong> {tooltipContent.Date.toDateString()}</p>
+		<p><strong>Category:</strong> {tooltipContent.Category}</p>
+	</div>
 {/if}
 
 <style>
@@ -167,8 +202,29 @@
 		stroke-dasharray: 4400;
 		stroke-dashoffset: 0;
 	}
+	@keyframes draw {
+		from {
+			stroke-dashoffset: 4400;
+		}
+		to {
+			stroke-dashoffset: 0;
+		}
+	}
 	.legend text {
 		fill: currentColor;
 		font-size: 16px;
+	}
+	.tooltip {
+		position: fixed;
+		padding: 10px;
+		background: white;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+		pointer-events: none;
+		z-index: 100;
+		transform: translate(-50%, -20px);
+		white-space: nowrap;
+		display: block;
 	}
 </style>
