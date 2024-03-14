@@ -25,16 +25,16 @@
 	let data: ILineChartData[] = [];
 	let paths: { d: string; label: string }[] = [];
 	let tooltipContent: ILineChartData | null = null;
-	let tooltipVisible: boolean = false;
 	let tooltipX: number = 0;
 	let tooltipY: number = 0;
+	let hoverTooltip: any = null;
+
 	export let controller: OutputController<ILineChart>;
 
 	let component = new OutputComponent({
 		refresh() {
 			if (controller.value) {
 				data = controller.value.Data.map((d) => ({ ...d, Date: new Date(d.Date) }));
-				console.log(data);
 				const xExtent = d3.extent(data.map((d) => d.Date));
 				const yExtent = d3.extent(data.map((d) => d.Value));
 				xScale = d3
@@ -71,24 +71,19 @@
 	function uniqueTicks(ticks: number[]): number[] {
 		return [...new Set(ticks.map((tick) => Math.round(tick)))];
 	}
-	function showTooltip(d: ILineChartData) {
-		tooltipContent = d;
-		tooltipVisible = true;
+	function showTooltip(point: any) {
+		hoverTooltip = point;
+	}
+	function hideTooltip() {
+		hoverTooltip = null;
 	}
 	function onMouseEnter(event: MouseEvent, d: ILineChartData) {
 		if (event.currentTarget instanceof SVGGraphicsElement && event.currentTarget.ownerSVGElement) {
 			const svg = event.currentTarget.ownerSVGElement;
 			const ctm = svg.getScreenCTM();
 			if (ctm) {
-				console.log(ctm, tooltipX, tooltipY);
-				const rect = svg.getBoundingClientRect();
-				const point = svg.createSVGPoint();
-				point.x = event.clientX;
-				point.y = event.clientY;
-				const invertedCTM = ctm.inverse();
-				const cursorPoint = point.matrixTransform(invertedCTM);
-				tooltipX = cursorPoint.x;
-				tooltipY = cursorPoint.y;
+				tooltipX = event.clientX;
+				tooltipY = event.clientY - 5;
 				tooltipContent = d;
 				showTooltip(d);
 			} else {
@@ -96,12 +91,11 @@
 			}
 		}
 	}
-
 	function onFocus(d: ILineChartData) {
 		showTooltip(d);
 	}
 	function onMouseLeave() {
-		tooltipContent = null;
+		hideTooltip();
 	}
 	beforeUpdate(async () => {
 		await component.setup(controller);
@@ -154,7 +148,7 @@
 			class="legend"
 			transform={`translate(${width / 2 - (paths.length * 100) / 2},${height + 30})`}
 		>
-			{#each paths as { d, label }, index (label)}
+			{#each paths as { label }, index (label)}
 				<g transform={`translate(${index * 100}, 0)`}>
 					<rect width="20" height="20" fill={colorByIndex(index)} />
 					<text x="25" y="15" font-size="1em">{label}</text>
@@ -168,7 +162,7 @@
 				<circle
 					cx={xScale(point.Date)}
 					cy={yScale(point.Value)}
-					r="3"
+					r="5"
 					fill="#000"
 					tabindex="0"
 					role="button"
@@ -182,34 +176,18 @@
 		{/each}
 	</svg>
 {/if}
-{#if tooltipVisible && tooltipContent}
-	<div
-		class="tooltip"
-		style="left: {tooltipX}px; top: {tooltipY}px; transform: translate(-50%, -100%);"
-	>
-		<p><strong>Label:</strong> {tooltipContent.Label}</p>
-		<p><strong>Value:</strong> {tooltipContent.Value}</p>
-		<p><strong>Date:</strong> {tooltipContent.Date.toDateString()}</p>
-		<p><strong>Category:</strong> {tooltipContent.Category}</p>
+{#if hoverTooltip}
+	<div class="tooltip" style="left: {tooltipX + 10}px; top: {tooltipY}px;">
+		<strong>Error Count:</strong>
+		{hoverTooltip.Value}<br />
+		<strong>Date:</strong>
+		{hoverTooltip.Date.toDateString()}<br />
+		<strong>Category:</strong>
+		{hoverTooltip.Category}
 	</div>
 {/if}
 
 <style>
-	path {
-		fill: transparent;
-		stroke-width: 2.5;
-		stroke-linejoin: round;
-		stroke-dasharray: 4400;
-		stroke-dashoffset: 0;
-	}
-	@keyframes draw {
-		from {
-			stroke-dashoffset: 4400;
-		}
-		to {
-			stroke-dashoffset: 0;
-		}
-	}
 	.legend text {
 		fill: currentColor;
 		font-size: 16px;
@@ -221,10 +199,10 @@
 		border: 1px solid #ccc;
 		border-radius: 4px;
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+		transform: translate(-50%, -100%);
 		pointer-events: none;
-		z-index: 100;
-		transform: translate(-50%, -20px);
 		white-space: nowrap;
 		display: block;
+		opacity: 1;
 	}
 </style>
