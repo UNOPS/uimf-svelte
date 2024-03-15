@@ -5,7 +5,7 @@
 	import * as d3 from 'd3';
 
 	interface ILineChartData {
-		Label: string;
+		Message: string;
 		Value: number;
 		Date: Date;
 		Category?: string;
@@ -36,7 +36,10 @@
 			if (controller.value) {
 				data = controller.value.Data.map((d) => ({ ...d, Date: new Date(d.Date) }));
 				const xExtent = d3.extent(data.map((d) => d.Date));
-				const yExtent = d3.extent(data.map((d) => d.Value));
+				const yExtent = d3.extent(data.map((d) => d.Value)) as
+					| [number, number]
+					| [undefined, undefined];
+				const yDomain = yExtent[0] === undefined || yExtent[1] === undefined ? [0, 0] : yExtent;
 				xScale = d3
 					.scaleTime()
 					.domain(xExtent[0] === undefined ? [new Date(), new Date()] : xExtent)
@@ -44,7 +47,7 @@
 
 				yScale = d3
 					.scaleLinear()
-					.domain(yExtent[0] === undefined ? [0, 0] : yExtent)
+					.domain(yDomain)
 					.range([height - marginBottom, marginTop]);
 
 				const dataByCategory = d3.group(data, (d) => d.Category);
@@ -182,8 +185,8 @@
 		{hoverTooltip.Value}<br />
 		<strong>Date:</strong>
 		{hoverTooltip.Date.toDateString()}<br />
-		<strong>Category:</strong>
-		{hoverTooltip.Category}
+		<strong>Message:</strong>
+		{hoverTooltip.Message}
 	</div>
 {/if}
 
