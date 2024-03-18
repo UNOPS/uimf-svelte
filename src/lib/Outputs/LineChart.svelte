@@ -124,7 +124,7 @@
 		</g>
 
 		<g transform="translate({marginLeft},0)">
-			{#each uniqueTicks(yScale.ticks()) as tick}
+			{#each uniqueTicks(yScale.ticks(10).concat([0])) as tick}
 				{#if tick !== 0}
 					<line
 						stroke="currentColor"
