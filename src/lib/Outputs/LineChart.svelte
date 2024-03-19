@@ -35,6 +35,7 @@
 		refresh() {
 			if (controller.value) {
 				data = controller.value.Data.map((d) => ({ ...d, Date: new Date(d.Date) }));
+				console.log(data);
 				const xExtent = d3.extent(data.map((d) => d.Date));
 				const yExtent = d3.extent(data.map((d) => d.Value)) as
 					| [number, number]
@@ -181,11 +182,11 @@
 {/if}
 {#if hoverTooltip}
 	<div class="tooltip" style="left: {tooltipX + 10}px; top: {tooltipY}px;">
-		<strong>Error Count:</strong>
+		<strong>Total Errors:</strong>
 		{hoverTooltip.Value}<br />
 		<strong>Date:</strong>
 		{hoverTooltip.Date.toDateString()}<br />
-		<strong>Message:</strong>
+		<strong>Errors:</strong>
 		{hoverTooltip.Message}
 	</div>
 {/if}
