@@ -35,7 +35,7 @@
 		refresh() {
 			if (controller.value) {
 				data = controller.value.Data.map((d) => ({ ...d, Date: new Date(d.Date) }));
-				console.log(data);
+
 				const xExtent = d3.extent(data.map((d) => d.Date));
 				const yExtent = d3.extent(data.map((d) => d.Value)) as
 					| [number, number]
