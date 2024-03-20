@@ -186,8 +186,8 @@
 		{hoverTooltip.Value}<br />
 		<strong>Date:</strong>
 		{hoverTooltip.Date.toDateString()}<br />
-		<strong>Errors:</strong>
-		{hoverTooltip.Message}
+		<strong>Errors:</strong><br />
+		<pre>{@html hoverTooltip.Message}</pre>
 	</div>
 {/if}
 
