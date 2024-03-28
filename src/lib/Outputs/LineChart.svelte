@@ -13,6 +13,15 @@
 	interface ILineChart {
 		Data: ILineChartData[];
 	}
+	// interface PieChartData {
+	// 	Label: string;
+	// 	Value: number;
+	// }
+	// interface IPieChartDisplayData extends PieChartData {
+	// 	Color: string;
+	// 	StartAngle: number;
+	// 	EndAngle: number;
+	// }
 
 	let xScale: any;
 	let yScale: any;
@@ -28,6 +37,15 @@
 	let tooltipX: number = 0;
 	let tooltipY: number = 0;
 	let hoverTooltip: any = null;
+
+	//Variables for PieChart
+	// let pie: any;
+	// let arc: any;
+	// let pieData: IPieChartDisplayData[] = [];
+	// let categoryValueSum: [any, any][];
+	// let radius: number;
+	// let size = 200;
+	// let totalValue = 0;
 
 	export let controller: OutputController<ILineChart>;
 
@@ -65,6 +83,30 @@
 						label: category || 'Unknown'
 					};
 				});
+				// categoryValueSum = d3.rollups(
+				// 	data,
+				// 	(v) => d3.sum(v, (d) => d.Value),
+				// 	(d) => d.Category ?? 'Unknown'
+				// );
+
+				// pieData = categoryValueSum.map(([Label, Value], i) => ({
+				// 	Label,
+				// 	Value
+				// }));
+				// console.log(pieData);
+				// let accumulatedValue = 0;
+				// totalValue = pieData.reduce((total, item) => total + item.Value, 0);
+				// pieData.forEach((item, i) => {
+				// 	item.Value = (item.Value / totalValue) * 100;
+				// 	item.StartAngle = (2 * Math.PI * accumulatedValue) / 100;
+				// 	item.EndAngle = (2 * Math.PI * (accumulatedValue + item.Value)) / 100;
+				// 	accumulatedValue += item.Value;
+				// 	item.Color = controller.app.colorFromString(item.Label, {
+				// 		format: 'cmyk',
+				// 		alpha: 1,
+				// 		luminosity: 'bright'
+				// 	});
+				// });
 			}
 		}
 	});
@@ -101,97 +143,128 @@
 	function onMouseLeave() {
 		hideTooltip();
 	}
+
 	beforeUpdate(async () => {
 		await component.setup(controller);
 	});
 </script>
 
-{#if xScale && yScale}
-	<svg
-		{width}
-		{height}
-		viewBox="0 0 {width} {height + 50}"
-		style:max-width="100%"
-		style:height="auto"
-	>
-		<g transform="translate(0,{height - marginBottom})">
-			<line stroke="currentColor" x1={marginLeft - 6} x2={width} />
+<div class="flex-container">
+	<div class="left-container">
+		{#if xScale && yScale}
+			<svg
+				{width}
+				{height}
+				viewBox="0 0 {width} {height + 50}"
+				style:max-width="100%"
+				style:height="auto"
+			>
+				<g transform="translate(0,{height - marginBottom})">
+					<line stroke="currentColor" x1={marginLeft - 6} x2={width} />
 
-			{#each xScale.ticks() as tick}
-				<text fill="currentColor" text-anchor="middle" x={xScale(tick)} y={22}>
-					{d3.timeFormat('%d %b')(tick)}
-				</text>
-			{/each}
-		</g>
-
-		<g transform="translate({marginLeft},0)">
-			{#each uniqueTicks(yScale.ticks(10).concat([0])) as tick}
-				{#if tick !== 0}
-					<line
-						stroke="currentColor"
-						stroke-opacity="0.1"
-						x1={0}
-						x2={width - marginLeft}
-						y1={yScale(tick)}
-						y2={yScale(tick)}
-					/>
-					<line stroke="currentColor" x1={0} x2={-6} y1={yScale(tick)} y2={yScale(tick)} />
-				{/if}
-				<text
-					fill="currentColor"
-					text-anchor="end"
-					dominant-baseline="middle"
-					x={-9}
-					y={yScale(tick)}
-				>
-					{Math.round(tick)}
-				</text>
-			{/each}
-		</g>
-		<g
-			class="legend"
-			transform={`translate(${width / 2 - (paths.length * 100) / 2},${height + 30})`}
-		>
-			{#each paths as { label }, index (label)}
-				<g transform={`translate(${index * 100}, 0)`}>
-					<rect width="20" height="20" fill={colorByIndex(index)} />
-					<text x="25" y="15" font-size="1em">{label}</text>
+					{#each xScale.ticks() as tick}
+						<text fill="currentColor" text-anchor="middle" x={xScale(tick)} y={22}>
+							{d3.timeFormat('%d %b')(tick)}
+						</text>
+					{/each}
 				</g>
-			{/each}
-		</g>
 
-		{#each paths as { d, label }, index (label)}
-			<path fill="none" stroke={colorByIndex(index)} stroke-width="1.5" {d} />
-			{#each data as point, i}
-				<circle
-					cx={xScale(point.Date)}
-					cy={yScale(point.Value)}
-					r="5"
-					fill="#000"
-					tabindex="0"
-					role="button"
-					aria-label={`Value: ${point.Value}, Date: ${point.Date.toDateString()}`}
-					on:mouseover={(event) => onMouseEnter(event, point)}
-					on:mouseout={onMouseLeave}
-					on:focus={() => onFocus(point)}
-					on:blur={onMouseLeave}
-				/>
-			{/each}
-		{/each}
-	</svg>
-{/if}
-{#if hoverTooltip}
-	<div class="tooltip" style="left: {tooltipX + 10}px; top: {tooltipY}px;">
-		<strong>Total Errors:</strong>
-		{hoverTooltip.Value}<br />
-		<strong>Date:</strong>
-		{hoverTooltip.Date.toDateString()}<br />
-		<strong>Errors:</strong><br />
-		<pre>{@html hoverTooltip.Message}</pre>
+				<g transform="translate({marginLeft},0)">
+					{#each uniqueTicks(yScale.ticks(10).concat([0])) as tick}
+						{#if tick !== 0}
+							<line
+								stroke="currentColor"
+								stroke-opacity="0.1"
+								x1={0}
+								x2={width - marginLeft}
+								y1={yScale(tick)}
+								y2={yScale(tick)}
+							/>
+							<line stroke="currentColor" x1={0} x2={-6} y1={yScale(tick)} y2={yScale(tick)} />
+						{/if}
+						<text
+							fill="currentColor"
+							text-anchor="end"
+							dominant-baseline="middle"
+							x={-9}
+							y={yScale(tick)}
+						>
+							{Math.round(tick)}
+						</text>
+					{/each}
+				</g>
+				<g
+					class="legend"
+					transform={`translate(${width / 2 - (paths.length * 100) / 2},${height + 30})`}
+				>
+					{#each paths as { label }, index (label)}
+						<g transform={`translate(${index * 100}, 0)`}>
+							<rect width="20" height="20" fill={colorByIndex(index)} />
+							<text x="25" y="15" font-size="1em">{label}</text>
+						</g>
+					{/each}
+				</g>
+
+				{#each paths as { d, label }, index (label)}
+					<path fill="none" stroke={colorByIndex(index)} stroke-width="1.5" {d} />
+					{#each data as point, i}
+						<circle
+							cx={xScale(point.Date)}
+							cy={yScale(point.Value)}
+							r="5"
+							fill="#000"
+							tabindex="0"
+							role="button"
+							aria-label={`Value: ${point.Value}, Date: ${point.Date.toDateString()}`}
+							on:mouseover={(event) => onMouseEnter(event, point)}
+							on:mouseout={onMouseLeave}
+							on:focus={() => onFocus(point)}
+							on:blur={onMouseLeave}
+						/>
+					{/each}
+				{/each}
+			</svg>
+		{/if}
+		{#if hoverTooltip}
+			<div class="tooltip" style="left: {tooltipX + 10}px; top: {tooltipY}px;">
+				<strong>Total Errors:</strong>
+				{hoverTooltip.Value}<br />
+				<strong>Date:</strong>
+				{hoverTooltip.Date.toDateString()}<br />
+				<strong>Errors:</strong><br />
+				<pre>{@html hoverTooltip.Message}</pre>
+			</div>
+		{/if}
 	</div>
-{/if}
+	<div class="right-container">
+		<!-- <svg {width} {height}>
+			{#each pie as segment}
+				<path d={arc(segment)} />
+			{/each}
+		</svg> -->
+		<h2>Right Container</h2>
+	</div>
+</div>
 
 <style>
+	.flex-container {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		width: 100%;
+	}
+	.left-container {
+		flex: 1;
+		max-width: 50%;
+	}
+	.right-container {
+		display: flex;
+		flex: 1;
+		justify-content: center;
+		overflow: hidden;
+		max-width: 50%;
+	}
 	.legend text {
 		fill: currentColor;
 		font-size: 16px;
