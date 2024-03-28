@@ -2,8 +2,6 @@
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { beforeUpdate } from 'svelte';
 	import type { OutputController } from '../Infrastructure/OutputController';
-	import { onMount } from 'svelte';
-	import { spring, tweened } from 'svelte/motion';
 
 	interface IPieChartData {
 		Label: string;
@@ -23,7 +21,7 @@
 	export let controller: OutputController<IPieChart>;
 	export let items: IPieChartDisplayData[] = [];
 
-	let size = 200; //size for PieChart
+	let size = 200;
 	let totalValue = 0;
 
 	let component = new OutputComponent({
@@ -38,7 +36,7 @@
 					item.EndAngle = (2 * Math.PI * (accumulatedValue + item.Value)) / 100;
 					accumulatedValue += item.Value;
 					item.Color = controller.app.colorFromString(item.Label, {
-						format: 'cmyk',
+						format: 'rgb',
 						alpha: 1,
 						luminosity: 'bright'
 					});
@@ -76,7 +74,7 @@
 				{#each items as item (item.Label)}
 					<ol>
 						<span style="background: {item.Color};" />
-						{item.Label}: {item.Value}%
+						<strong>{item.Label}</strong>: {item.Value.toPrecision(2)}%
 					</ol>
 				{/each}
 			</ul>
@@ -87,7 +85,8 @@
 <style lang="scss">
 	.container {
 		display: flex;
-		justify-content: center;
+		flex: 1;
+		max-width: 50%;
 	}
 	.piechart,
 	.piechart-legend {
