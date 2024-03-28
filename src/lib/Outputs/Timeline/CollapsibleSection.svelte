@@ -4,58 +4,61 @@
 	export let status: string;
 	export let icon: string;
 	export let style: string;
+	export let isLast: boolean;
 
 	let expanded = false;
 	let currentDate = new Date(date);
 	let myDate =
 		currentDate.getFullYear() + '/' + (currentDate.getMonth() + 1) + '/' + currentDate.getDate();
 	let myTime = currentDate.getHours() + ':' + currentDate.getMinutes();
-	
 </script>
-<div class="outer-container"> 
-<div class="timeline-container">
-	<div class="status-date-time-container">
-		<div class="status">{status}</div>
-		<div class="date-time">{myDate} - {myTime}</div>
-	</div>
-	<div class="icon-container">
-    <div class="icon-bg">
-		  <i class={icon} {style} />
-    </div>  
-    <div class="vertical-line"/>
-	</div>
 
-	<div class="collapsible-container">
-		<div class="collapsible">
-			<button
-				aria-expanded={expanded}
-				class="speech-bubble {expanded ? 'rounded-bottom' : ''}"
-				on:click={() => (expanded = !expanded)}
-			>
-				<div>{headerText}</div>
-				{#if expanded}
-					<i class="fa-solid fa-caret-down" />
-				{:else}
-					<i class="fa-solid fa-caret-left" />
-				{/if}
-			</button>
-			<div hidden={!expanded}>
-				<slot />
+<div class="outer-container">
+	<div class="timeline-container">
+		<div class="status-date-time-container">
+			<div class="status" {style}>{status}</div>
+			<div class="date-time">{myDate} - {myTime}</div>
+		</div>
+		<div class="icon-container">
+			<div class="icon-bg">
+				<i class={icon} {style} />
+			</div>
+
+			<div class={isLast ? 'vertical-line-last' : 'vertical-line'} />
+		</div>
+
+		<div class="collapsible-container">
+			<div class="collapsible">
+				<button
+					aria-expanded={expanded}
+					class="speech-bubble {expanded ? 'rounded-bottom' : ''}"
+					on:click={() => (expanded = !expanded)}
+				>
+					<div>{headerText}</div>
+					{#if expanded}
+						<i class="fa-solid fa-caret-down" />
+					{:else}
+						<i class="fa-solid fa-caret-left" />
+					{/if}
+				</button>
+				<div hidden={!expanded}>
+					<slot />
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
-</div>
+
 <style>
-.outer-container{
-  display: flex;
-}
+	.outer-container {
+		display: flex;
+	}
 
 	.timeline-container {
 		display: flex;
 		gap: 20px;
 		align-items: flex-start;
-    flex-grow: 1;
+		flex-grow: 1;
 	}
 
 	.status-date-time-container {
@@ -67,7 +70,7 @@
 	}
 
 	.status {
-		font-size: x-small;
+		font-size: small;
 	}
 
 	.date-time {
@@ -77,7 +80,7 @@
 	.icon-container {
 		margin-top: 9px;
 		align-items: center;
-    height: 100%;
+		height: 100%;
 	}
 
 	.collapsible-container {
@@ -85,15 +88,20 @@
 		margin-bottom: 5px;
 	}
 
-  .icon-bg {
-    background-color: white;
-  }
-  
+	.icon-bg {
+		background-color: white;
+	}
+
 	.vertical-line {
 		border-left: 3px solid #cccccc;
 		margin-left: 50%;
-    /* transition: height 0.2s ease-in-out; */
-    height: 100%;
+		height: 100%;
+	}
+
+	.vertical-line-last {
+		border-left: 3px dashed #cccccc;
+		margin-left: 50%;
+		height: 50%;
 	}
 
 	.speech-bubble {

@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-		interface TimelineItem {
+	interface TimelineItem {
 		Label: string;
 		Date: DateTime;
 		Content: string;
@@ -22,7 +22,8 @@
 	import type DateTime from '../DateTime.svelte';
 	import ActionList, { ActionListController, type ActionListData } from '../ActionList.svelte';
 	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
-	
+	import { count } from 'd3';
+
 	export let controller: OutputController<Timeline>;
 
 	let component = new OutputComponent({
@@ -43,16 +44,23 @@
 	beforeUpdate(async () => await component.setup(controller));
 </script>
 
-{#each controller.value.Items as item}
-	<CollapsibleSection headerText={item.Label} date={item.Date} status={item.Status} icon={item.Icon} style={item.Style}>
+{#each controller.value.Items as item, index}
+	<CollapsibleSection
+		headerText={item.Label}
+		date={item.Date}
+		status={item.Status}
+		icon={item.Icon}
+		style={item.Style}
+		isLast={index == controller.value.Items.length - 1}
+	>
 		<div class="collapsible">
 			<div class="collapsible-content">
 				{@html item.Content}
 			</div>
-		{#if item.Actions}
-			<ActionList controller={buildControllers(item.Actions)} />
-		{/if}
-	</div>
+			{#if item.Actions}
+				<ActionList controller={buildControllers(item.Actions)} />
+			{/if}
+		</div>
 	</CollapsibleSection>
 {/each}
 
@@ -63,7 +71,7 @@
 		background-color: #f1f1f1;
 		border-radius: 0px 0px 5px 5px;
 	}
-	.collapsible-content{
+	.collapsible-content {
 		background-color: $app-soft-bg;
 		border-width: 0;
 		padding: 5px 15px;
