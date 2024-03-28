@@ -46,6 +46,7 @@ import * as NestedObject from '../Outputs/NestedObject.svelte';
 import * as TidyTree from '../Outputs/TidyTree.svelte';
 import * as LineChart from '../Outputs/LineChart.svelte';
 import * as BarChart from '../Outputs/BarChart.svelte';
+import * as Timeline from '../Outputs/Timeline/Timeline.svelte';
 
 //To be deactivated until complete validation
 import * as DynamicInput from '../Inputs/DynamicInput.svelte';
@@ -288,6 +289,7 @@ defaultControlRegister.registerOutputComponent('sequence', Sequence, { displayAs
 defaultControlRegister.registerOutputComponent('sla-timer', SlaTimer, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('slider', Slider);
 defaultControlRegister.registerOutputComponent('state-diagram', StateDiagram);
+defaultControlRegister.registerOutputComponent('timeline', Timeline);
 defaultControlRegister.registerOutputComponent('status', Status, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('tabs', Tabs, { alwaysHideLabel: true });
 defaultControlRegister.registerOutputComponent('tabstrip', Tabstrip, { alwaysHideLabel: true });
