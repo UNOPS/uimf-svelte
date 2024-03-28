@@ -16,7 +16,7 @@
 <div class="outer-container">
 	<div class="timeline-container">
 		<div class="status-date-time-container">
-			<div class="status" {style}>{status}</div>
+			<div class="status">{status}</div>
 			<div class="date-time">{myDate} - {myTime}</div>
 		</div>
 		<div class="icon-container">

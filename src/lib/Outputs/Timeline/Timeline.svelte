@@ -1,8 +1,14 @@
 <script lang="ts" context="module">
+	interface FormData {
+		Form: string;
+		InputFieldValues: any[];
+	}
+
 	interface TimelineItem {
 		Label: string;
 		Date: DateTime;
 		Content: string;
+		ContentForm: FormData;
 		Status: string;
 		Icon: string;
 		Style: string;
@@ -22,7 +28,8 @@
 	import type DateTime from '../DateTime.svelte';
 	import ActionList, { ActionListController, type ActionListData } from '../ActionList.svelte';
 	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
-	import { count } from 'd3';
+	import InlineForm from '../InlineForm.svelte';
+	import type { FormInstance } from '$lib/Infrastructure/FormController';
 
 	export let controller: OutputController<Timeline>;
 
@@ -41,28 +48,41 @@
 		}) as ActionListController;
 	}
 
+	function getController(data: FormData) {
+		
+		return new OutputController<FormData>({
+			metadata: {} as IFieldMetadata,
+			data: data,
+			form: controller.form!,
+			app: controller.app
+		}) ;
+	}
+	
 	beforeUpdate(async () => await component.setup(controller));
 </script>
 
-{#each controller.value.Items as item, index}
-	<CollapsibleSection
-		headerText={item.Label}
-		date={item.Date}
-		status={item.Status}
-		icon={item.Icon}
-		style={item.Style}
-		isLast={index == controller.value.Items.length - 1}
-	>
-		<div class="collapsible">
-			<div class="collapsible-content">
-				{@html item.Content}
+{#if controller.value != null}
+	{#each controller.value.Items as item, index}
+		<CollapsibleSection
+			headerText={item.Label}
+			date={item.Date}
+			status={item.Status}
+			icon={item.Icon}
+			style={item.Style}
+			isLast={index == controller.value?.Items?.length - 1}
+		>
+			<div class="collapsible">
+				<div class="collapsible-content">
+					{@html item.Content}
+					<InlineForm controller={getController(item.ContentForm)} />
+				</div>
+				{#if item.Actions}
+					<ActionList controller={buildControllers(item.Actions)} />
+				{/if}
 			</div>
-			{#if item.Actions}
-				<ActionList controller={buildControllers(item.Actions)} />
-			{/if}
-		</div>
-	</CollapsibleSection>
-{/each}
+		</CollapsibleSection>
+	{/each}
+{/if}
 
 <style lang="scss">
 	@import '../../scss/styles.variables.scss';
