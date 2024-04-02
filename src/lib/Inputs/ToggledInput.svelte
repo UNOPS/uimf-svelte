@@ -27,14 +27,14 @@
 				app: this.app,
 				defer: null,
 				form: this.form,
-				metadata: this.metadata.Primary
+				metadata: this.metadata.Component.Configuration.Primary
 			});
 
 			this.secondary = controlRegister.createInput({
 				app: this.app,
 				defer: null,
 				form: this.form,
-				metadata: this.metadata.Secondary
+				metadata: this.metadata.Component.Configuration.Secondary
 			});
 
 			this.current = this.primary.controller;
@@ -111,7 +111,7 @@
 		type="button"
 		class="btn btn-link"
 		on:click={() => (controller.current = controller.secondary.controller)}
-		>{controller.metadata.PrimaryPickerText}</button
+		>{controller.metadata.Component.Configuration.PrimaryPickerText}</button
 	>
 	<svelte:component
 		this={controller.primary.component}
@@ -122,7 +122,7 @@
 		type="button"
 		class="btn btn-link"
 		on:click={() => (controller.current = controller.primary.controller)}
-		>{controller.metadata.SecondaryPickerText}</button
+		>{controller.metadata.Component.Configuration.SecondaryPickerText}</button
 	>
 	<svelte:component
 		this={controller.secondary.component}
