@@ -66,4 +66,10 @@
 	input.form-control {
 		min-height: $app-input-min-height;
 	}
+
+	textarea {
+		min-height: 100px;
+		min-width: 100%;
+		max-width: 100%;
+	}
 </style>
