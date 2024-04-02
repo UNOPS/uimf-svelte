@@ -18,7 +18,6 @@
 	let xScale: { (arg0: string): any; (arg0: string): any; bandwidth: any };
 	let yScale: d3.ScaleLinear<number, number, never> | { (arg0: number): number; ticks: () => any };
 	let padding = { top: 20, right: 15, bottom: 20, left: 25 };
-	let innerWidth: number;
 	let barWidth: number;
 
 	let width = 500;
@@ -49,8 +48,6 @@
 		await component.setup(controller);
 	});
 </script>
-
-<h2>Annual Sales</h2>
 
 <div class="chart" bind:clientWidth={width} bind:clientHeight={height}>
 	<svg>
