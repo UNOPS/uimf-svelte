@@ -63,7 +63,6 @@
 </script>
 
 <input
-	class="consent-checkbox"
 	on:change={() => controller.setValue({ Consented: !controller.value?.Consented })}
 	required={controller.metadata.Required}
 	type="checkbox"
@@ -82,3 +81,11 @@
 		<i class="fa fa-external-link" />
 	</button>
 {/if}
+
+<style lang="scss">
+	input {
+		margin-right: 5px;
+		position: relative;
+		top: 2px;
+	}
+</style>

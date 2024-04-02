@@ -131,6 +131,12 @@
 		align-items: center;
 	}
 
+	.expandable-visible > i {
+		display: inline-block;
+		margin: 4px 0 0 4px;
+		opacity: 0.8;
+	}
+
 	.hide {
 		display: none;
 	}

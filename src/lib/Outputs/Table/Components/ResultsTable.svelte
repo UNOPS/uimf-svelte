@@ -317,6 +317,8 @@
 		}
 
 		thead {
+			background: #fafafa;
+
 			& > tr:last-child {
 				border-bottom-width: 3px;
 			}

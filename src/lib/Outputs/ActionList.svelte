@@ -81,9 +81,10 @@
 		margin-left: 0;
 		margin-right: 0;
 		min-height: 41px;
+		margin-bottom: 1px;
 	}
 
-	.action-list > span {
+	.action-list > div {
 		display: inline-block;
 		margin-right: 5px;
 	}
