@@ -2,6 +2,7 @@
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { beforeUpdate } from 'svelte';
 	import type { OutputController } from '../Infrastructure/OutputController';
+	import * as d3 from 'd3';
 
 	interface IPieChartData {
 		Label: string;
@@ -10,8 +11,6 @@
 
 	interface IPieChartDisplayData extends IPieChartData {
 		Color: string;
-		StartAngle: number;
-		EndAngle: number;
 	}
 
 	interface IPieChart {
@@ -21,26 +20,45 @@
 	export let controller: OutputController<IPieChart>;
 	let items: IPieChartDisplayData[] = [];
 
-	let size = 200;
-	let totalValue = 0;
+	let width = 500;
+	let height = 500;
+	let arcs: {
+		label: string;
+		d: string | null;
+		startAngle: number;
+		endAngle: number;
+		centroid: [number, number];
+	}[];
+	let colourScale: d3.ScaleOrdinal<string, unknown, never> | ((arg0: any) => any);
+	let pieArc = d3.arc();
+	let accumulatedAngle = 0;
+	let angle = Math.PI * 2;
+	let total: number;
 
 	let component = new OutputComponent({
 		refresh() {
 			if (controller.value.Data) {
 				items = controller.value.Data;
-				console.log(items);
-				let accumulatedValue = 0;
-				totalValue = items.reduce((total, item) => total + item.Value, 0);
-				items.forEach((item, i) => {
-					item.Value = (item.Value / totalValue) * 100;
-					item.StartAngle = (2 * Math.PI * accumulatedValue) / 100;
-					item.EndAngle = (2 * Math.PI * (accumulatedValue + item.Value)) / 100;
-					accumulatedValue += item.Value;
-					item.Color = controller.app.colorFromString(item.Label, {
-						format: 'rgb',
-						alpha: 1,
-						luminosity: 'bright'
-					});
+				total = items.reduce((total, s) => total + s.Value, 0);
+				colourScale = d3
+					.scaleOrdinal(d3.schemeCategory10)
+					.domain(items.map((d) => d.Label));
+
+				arcs = items.map((item) => {
+					const options = {
+						innerRadius: 0,
+						outerRadius: 35,
+						startAngle: accumulatedAngle,
+						endAngle: (accumulatedAngle += (angle * item.Value) / total)
+					};
+
+					return {
+						label: item.Label,
+						d: pieArc(options),
+						startAngle: options.startAngle,
+						endAngle: options.endAngle,
+						centroid: pieArc.centroid(options)
+					};
 				});
 			}
 			controller.value = controller.value;
@@ -49,74 +67,54 @@
 	beforeUpdate(async () => await component.setup(controller));
 </script>
 
-{#if items != null}
+{#if items.length > 0}
 	<div class="container">
-		<div class="piechart">
-			<svg width={size} height={size}>
-				{#if totalValue > 0}
-					{#each items as item (item.Label)}
-						{#if item.Value > 0}
-							<path
-								d="M{size / 2},{size / 2} L{size / 2 +
-									(size / 2) * Math.cos(item.StartAngle)} {size / 2 +
-									(size / 2) * Math.sin(item.StartAngle)} A{size / 2},{size / 2} 0 {item.Value > 50
-									? 1
-									: 0},1 {size / 2 + (size / 2) * Math.cos(item.EndAngle)} {size / 2 +
-									(size / 2) * Math.sin(item.EndAngle)} Z"
-								fill={item.Color}
-							/>
-						{/if}
-					{/each}
-				{:else}
-					<path
-						d="M{size / 2},{size / 2} L{size}, {size / 2} A{size / 2},{size / 2} 0 1,1 {size /
-							2},{size} Z"
-						fill="#ccc"
-					/>
-				{/if}
-			</svg>
+		<svg {width} {height} viewBox="0 0 100 100" style:max-width="100%" style:height="auto">
+			<g transform="translate(50,50)">
+				{#each arcs as arc}
+					<path d={arc.d} fill={colourScale(arc.label)} />
+				{/each}
+			</g>
+		</svg>
+		<div class="legend">
+			{#each arcs as arc}
+				<div class="legend-item">
+					<span class="color-box" style="background-color: {colourScale(arc.label)}" />
+					<strong>{(((arc.endAngle - arc.startAngle) / (2 * Math.PI)) * 100).toFixed(1)}%</strong>: {arc.label}
+				</div>
+			{/each}
 		</div>
-		{#if totalValue > 0}
-			<div class="piechart-legend">
-				<ul>
-					{#each items as item (item.Label)}
-						<li>
-							<span style="background: {item.Color};" />
-							<strong>{item.Label}</strong>: {item.Value.toFixed(1)}%
-						</li>
-					{/each}
-				</ul>
-			</div>
-		{:else}
-			<div class="piechart-legend">
-				<ul>
-					<li>
-						<span style="background: #ccc;" />
-						<strong>No Data Available</strong>
-					</li>
-				</ul>
-			</div>
-		{/if}
 	</div>
 {/if}
 
 <style lang="scss">
 	.container {
 		display: flex;
-		flex: 1;
-		justify-content: center;
 		align-items: center;
+		justify-content: center;
 	}
-	.piechart,
-	.piechart-legend {
-		display: flex;
-		justify-content: center;
-		align-items: center;
+	text {
+		font-weight: bold;
+		font-size: 3px;
+		text-anchor: middle;
+	}
+	path {
+		stroke: white;
+	}
+	.legend {
+		margin-left: 20px;
 	}
 
-	.piechart-legend > ul > ol > span {
+	.legend-item {
+		display: flex;
+		align-items: center;
+		margin-bottom: 5px;
+	}
+
+	.color-box {
+		width: 20px;
+		height: 20px;
 		display: inline-block;
-		width: 1em;
-		height: 1em;
+		margin-right: 10px;
 	}
 </style>
