@@ -149,121 +149,99 @@
 	});
 </script>
 
-<div class="flex-container">
-	<div class="left-container">
-		{#if xScale && yScale}
-			<svg
-				{width}
-				{height}
-				viewBox="0 0 {width} {height + 50}"
-				style:max-width="100%"
-				style:height="auto"
-			>
-				<g transform="translate(0,{height - marginBottom})">
-					<line stroke="currentColor" x1={marginLeft - 6} x2={width} />
+<div class="container">
+	{#if xScale && yScale}
+		<svg
+			{width}
+			{height}
+			viewBox="0 0 {width} {height + 50}"
+			style:max-width="100%"
+			style:height="auto"
+		>
+			<g transform="translate(0,{height - marginBottom})">
+				<line stroke="currentColor" x1={marginLeft - 6} x2={width} />
 
-					{#each xScale.ticks() as tick}
-						<text fill="currentColor" text-anchor="middle" x={xScale(tick)} y={22}>
-							{d3.timeFormat('%d %b')(tick)}
-						</text>
-					{/each}
-				</g>
-
-				<g transform="translate({marginLeft},0)">
-					{#each uniqueTicks(yScale.ticks(10).concat([0])) as tick}
-						{#if tick !== 0}
-							<line
-								stroke="currentColor"
-								stroke-opacity="0.1"
-								x1={0}
-								x2={width - marginLeft}
-								y1={yScale(tick)}
-								y2={yScale(tick)}
-							/>
-							<line stroke="currentColor" x1={0} x2={-6} y1={yScale(tick)} y2={yScale(tick)} />
-						{/if}
-						<text
-							fill="currentColor"
-							text-anchor="end"
-							dominant-baseline="middle"
-							x={-9}
-							y={yScale(tick)}
-						>
-							{Math.round(tick)}
-						</text>
-					{/each}
-				</g>
-				<g
-					class="legend"
-					transform={`translate(${width / 2 - (paths.length * 100) / 2},${height + 30})`}
-				>
-					{#each paths as { label }, index (label)}
-						<g transform={`translate(${index * 100}, 0)`}>
-							<rect width="20" height="20" fill={colorByIndex(index)} />
-							<text x="25" y="15" font-size="1em">{label}</text>
-						</g>
-					{/each}
-				</g>
-
-				{#each paths as { d, label }, index (label)}
-					<path fill="none" stroke={colorByIndex(index)} stroke-width="1.5" {d} />
-					{#each data as point, i}
-						<circle
-							cx={xScale(point.Date)}
-							cy={yScale(point.Value)}
-							r="5"
-							fill="#000"
-							tabindex="0"
-							role="button"
-							aria-label={`Value: ${point.Value}, Date: ${point.Date.toDateString()}`}
-							on:mouseover={(event) => onMouseEnter(event, point)}
-							on:mouseout={onMouseLeave}
-							on:focus={() => onFocus(point)}
-							on:blur={onMouseLeave}
-						/>
-					{/each}
+				{#each xScale.ticks() as tick}
+					<text fill="currentColor" text-anchor="middle" x={xScale(tick)} y={22}>
+						{d3.timeFormat('%d %b')(tick)}
+					</text>
 				{/each}
-			</svg>
-		{/if}
-		{#if hoverTooltip}
-			<div class="tooltip" style="left: {tooltipX + 10}px; top: {tooltipY}px;">
-				<strong>Total Errors:</strong>
-				{hoverTooltip.Value}<br />
-				<strong>Date:</strong>
-				{hoverTooltip.Date.toDateString()}<br />
-				<strong>Errors:</strong><br />
-				<pre>{@html hoverTooltip.Message}</pre>
-			</div>
-		{/if}
-	</div>
-	<div class="right-container">
-		<!-- <svg {width} {height}>
-			{#each pie as segment}
-				<path d={arc(segment)} />
+			</g>
+
+			<g transform="translate({marginLeft},0)">
+				{#each uniqueTicks(yScale.ticks(10).concat([0])) as tick}
+					{#if tick !== 0}
+						<line
+							stroke="currentColor"
+							stroke-opacity="0.1"
+							x1={0}
+							x2={width - marginLeft}
+							y1={yScale(tick)}
+							y2={yScale(tick)}
+						/>
+						<line stroke="currentColor" x1={0} x2={-6} y1={yScale(tick)} y2={yScale(tick)} />
+					{/if}
+					<text
+						fill="currentColor"
+						text-anchor="end"
+						dominant-baseline="middle"
+						x={-9}
+						y={yScale(tick)}
+					>
+						{Math.round(tick)}
+					</text>
+				{/each}
+			</g>
+			<g
+				class="legend"
+				transform={`translate(${width / 2 - (paths.length * 100) / 2},${height + 30})`}
+			>
+				{#each paths as { label }, index (label)}
+					<g transform={`translate(${index * 100}, 0)`}>
+						<rect width="20" height="20" fill={colorByIndex(index)} />
+						<text x="25" y="15" font-size="1em">{label}</text>
+					</g>
+				{/each}
+			</g>
+
+			{#each paths as { d, label }, index (label)}
+				<path fill="none" stroke={colorByIndex(index)} stroke-width="1.5" {d} />
+				{#each data as point, i}
+					<circle
+						cx={xScale(point.Date)}
+						cy={yScale(point.Value)}
+						r="5"
+						fill="#000"
+						tabindex="0"
+						role="button"
+						aria-label={`Value: ${point.Value}, Date: ${point.Date.toDateString()}`}
+						on:mouseover={(event) => onMouseEnter(event, point)}
+						on:mouseout={onMouseLeave}
+						on:focus={() => onFocus(point)}
+						on:blur={onMouseLeave}
+					/>
+				{/each}
 			{/each}
-		</svg> -->
-		<h2>Right Container</h2>
-	</div>
+		</svg>
+	{/if}
+	{#if hoverTooltip}
+		<div class="tooltip" style="left: {tooltipX + 10}px; top: {tooltipY}px;">
+			<strong>Total Errors:</strong>
+			{hoverTooltip.Value}<br />
+			<strong>Date:</strong>
+			{hoverTooltip.Date.toDateString()}<br />
+			<strong>Errors:</strong><br />
+			<pre>{@html hoverTooltip.Message}</pre>
+		</div>
+	{/if}
 </div>
 
 <style>
-	.flex-container {
+	.container {
 		display: flex;
-		flex-direction: row;
+		flex: 1;
 		justify-content: center;
 		align-items: center;
-		width: 100%;
-	}
-	.left-container {
-		flex: 1;
-		max-width: 50%;
-	}
-	.right-container {
-		display: flex;
-		flex: 1;
-		justify-content: center;
-		overflow: hidden;
-		max-width: 50%;
 	}
 	.legend text {
 		fill: currentColor;
