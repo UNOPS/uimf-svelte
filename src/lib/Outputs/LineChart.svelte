@@ -13,16 +13,6 @@
 	interface ILineChart {
 		Data: ILineChartData[];
 	}
-	// interface PieChartData {
-	// 	Label: string;
-	// 	Value: number;
-	// }
-	// interface IPieChartDisplayData extends PieChartData {
-	// 	Color: string;
-	// 	StartAngle: number;
-	// 	EndAngle: number;
-	// }
-
 	let xScale: any;
 	let yScale: any;
 	let width = 928;
@@ -37,15 +27,6 @@
 	let tooltipX: number = 0;
 	let tooltipY: number = 0;
 	let hoverTooltip: any = null;
-
-	//Variables for PieChart
-	// let pie: any;
-	// let arc: any;
-	// let pieData: IPieChartDisplayData[] = [];
-	// let categoryValueSum: [any, any][];
-	// let radius: number;
-	// let size = 200;
-	// let totalValue = 0;
 
 	export let controller: OutputController<ILineChart>;
 
@@ -83,30 +64,6 @@
 						label: category || 'Unknown'
 					};
 				});
-				// categoryValueSum = d3.rollups(
-				// 	data,
-				// 	(v) => d3.sum(v, (d) => d.Value),
-				// 	(d) => d.Category ?? 'Unknown'
-				// );
-
-				// pieData = categoryValueSum.map(([Label, Value], i) => ({
-				// 	Label,
-				// 	Value
-				// }));
-				// console.log(pieData);
-				// let accumulatedValue = 0;
-				// totalValue = pieData.reduce((total, item) => total + item.Value, 0);
-				// pieData.forEach((item, i) => {
-				// 	item.Value = (item.Value / totalValue) * 100;
-				// 	item.StartAngle = (2 * Math.PI * accumulatedValue) / 100;
-				// 	item.EndAngle = (2 * Math.PI * (accumulatedValue + item.Value)) / 100;
-				// 	accumulatedValue += item.Value;
-				// 	item.Color = controller.app.colorFromString(item.Label, {
-				// 		format: 'cmyk',
-				// 		alpha: 1,
-				// 		luminosity: 'bright'
-				// 	});
-				// });
 			}
 		}
 	});
