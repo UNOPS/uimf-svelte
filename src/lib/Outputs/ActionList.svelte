@@ -59,6 +59,11 @@
 		padding: 3px 0px 3px 5px;
 		margin: 0;
 		background-color: transparent;
+
+		// Set min-height to zero just to make sure we're not
+		// inheriting any value from the parent. We want the
+		// action list to be as short as possible within a <td>.
+		min-height: 0;
 	}
 
 	:global(.table > tbody > tr > td:has(> * > .action-list)) {
@@ -80,7 +85,6 @@
 		text-align: right;
 		margin-left: 0;
 		margin-right: 0;
-		min-height: 41px;
 		margin-bottom: 1px;
 	}
 
