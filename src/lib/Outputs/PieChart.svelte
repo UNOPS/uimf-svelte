@@ -37,12 +37,10 @@
 
 	let component = new OutputComponent({
 		refresh() {
-			if (controller.value.Data) {
+			if (controller.value?.Data != null) {
 				items = controller.value.Data;
 				total = items.reduce((total, s) => total + s.Value, 0);
-				colourScale = d3
-					.scaleOrdinal(d3.schemeCategory10)
-					.domain(items.map((d) => d.Label));
+				colourScale = d3.scaleOrdinal(d3.schemeCategory10).domain(items.map((d) => d.Label));
 
 				arcs = items.map((item) => {
 					const options = {
@@ -60,6 +58,8 @@
 						centroid: pieArc.centroid(options)
 					};
 				});
+			} else {
+				items = [];
 			}
 			controller.value = controller.value;
 		}
