@@ -13,6 +13,7 @@
 		ParentId: number | null;
 		Label: string;
 		Url: string | null;
+		CssClass: string | null;
 	}
 
 	export let controller: OutputController<ITree>;
@@ -27,6 +28,7 @@
 				});
 
 				if (chart != null) {
+					div.replaceChildren();
 					div.appendChild(chart);
 				}
 			}
@@ -113,6 +115,7 @@
 			.selectAll('a')
 			.data(rootPoints.descendants())
 			.join('a')
+			.attr('class', (d) => d.data.CssClass)
 			.attr('xlink:href', (d) => d.data.Url)
 			.attr('target', (d) => (d.data.Url != null ? '_self' : null))
 			.attr('transform', (d) => `translate(${d.y},${d.x})`);
@@ -150,16 +153,12 @@
 <div bind:this={div} />
 
 <style>
-	/* .node circle {
-		fill: #000000;
-		stroke-width: 1px;
-	}
-	.node text {
-		font: 12px sans-serif;
-		font-weight: bold;
-	} */
-
 	div :global(svg a) {
 		text-decoration: none;
+	}
+
+	div :global(.current > text) {
+		paint-order: stroke !important;
+		stroke: aquamarine !important;
 	}
 </style>
