@@ -84,11 +84,14 @@
 					target={controller.value.Target}
 					class={cssClass}
 					use:tooltip={controller.value.Tooltip}
-					>{#if controller.value.Icon}<i
-							class={controller.value.Icon}
-							aria-hidden="true"
-						/>{/if}{controller.value.Label}</a
 				>
+					{#if controller.value.Icon}
+						<i class={controller.value.Icon} aria-hidden="true" />
+					{/if}
+					{#if controller.value.Label != null}
+						{controller.value.Label}
+					{/if}
+				</a>
 			{/await}
 		{/if}
 	{:else if allowed}
@@ -206,7 +209,9 @@
 					class:icon-right-margin={(controller.value.Label?.length ?? 0) > 0}
 				/>
 			{/if}
-			{controller.value.Label}
+			{#if controller.value.Label != null}
+				{controller.value.Label}
+			{/if}
 		</button>
 	{/if}
 {/if}
