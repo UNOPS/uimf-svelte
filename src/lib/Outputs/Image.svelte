@@ -75,7 +75,7 @@
 			<div class="watermark">Deactivated</div>
 		{/if}
 
-		{#if controller.value.MenuActions != null}
+		{#if controller.value.DisplayOrder != null}
 			<div class="display-order">{controller.value.DisplayOrder}</div>
 		{/if}
 
