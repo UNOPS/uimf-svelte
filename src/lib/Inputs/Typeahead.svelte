@@ -3,6 +3,8 @@
 
 	export interface TypeaheadItem extends TypeaheadValue {
 		Label: string;
+		SearchText: string | null;
+		Description: string | null;
 	}
 
 	interface Configuration {
@@ -60,18 +62,19 @@
 	import { beforeUpdate } from 'svelte';
 	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
 
-	interface Option extends TypeaheadValue {
+	interface IOption extends TypeaheadValue {
 		Label: string;
 		Value: any;
 		RequiredPermission: string;
 		Group: string;
 		SearchText: string;
+		Description: string | null;
 	}
 
 	export let controller: Controller;
 
-	let inlineItems: Option[] | null = null;
-	let cachedOptions: Record<string, Promise<Option[]>> = {};
+	let inlineItems: IOption[] | null = null;
+	let cachedOptions: Record<string, Promise<IOption[]>> = {};
 	let defaultValue: TypeaheadValue | null;
 
 	let component = new InputComponent({
@@ -130,21 +133,21 @@
 		await component.setup(controller);
 	});
 
-	function augmentItems(items: TypeaheadItem[]): Option[] {
+	function augmentItems(items: TypeaheadItem[]): IOption[] {
 		if (items == null) {
 			return [];
 		}
 
 		return items.map((c) => {
-			return {
-				...c,
-				// Build "SearchText" field which will be used to find relevant matches.
-				SearchText: (c.Value + ' ' + c.Label).toLocaleLowerCase()
-			} as Option;
+			if (c.SearchText == null || c.SearchText.length == 0) {
+				c.SearchText = c.Label + ' ' + c.Value + ' ' + (c.Description ?? '');
+			}
+
+			return c as IOption;
 		});
 	}
 
-	async function loadOptionsAndFilter(query: string): Promise<Option[]> {
+	async function loadOptionsAndFilter(query: string): Promise<IOption[]> {
 		const queryById = typeof query !== 'string';
 
 		return loadOptions(query).then((options) => {
@@ -164,7 +167,7 @@
 		});
 	}
 
-	async function loadOptions(query: string | TypeaheadValue | null): Promise<Option[]> {
+	async function loadOptions(query: string | TypeaheadValue | null): Promise<IOption[]> {
 		if (inlineItems != null) {
 			return Promise.resolve(inlineItems);
 		}
@@ -215,7 +218,7 @@
 <div class="input-container">
 	<Select
 		value={controller.value}
-		label="Label"
+		label="SearchText"
 		itemId="Value"
 		required={controller.metadata.Required}
 		{groupBy}
@@ -230,7 +233,10 @@
 		loadOptions={loadOptionsAndFilter}
 	>
 		<div slot="item" let:item class={item.CssClass} class:item-slot={true}>
-			{@html item.Label}
+			<span>{@html item.Label}</span>
+			{#if item.Description?.length > 0}
+				<small>{@html item.Description}</small>
+			{/if}
 		</div>
 	</Select>
 </div>
@@ -287,19 +293,20 @@
 				opacity: 0.5;
 			}
 
-			& > small {
-				font-size: 0.8em;
-				display: block;
-				opacity: 0.5;
-				line-height: 1.2em;
-				padding: 8px 0 0 0;
-			}
-
 			& > span {
 				line-height: 1.8em;
 				padding: 0 0 5px 0;
 				margin: 0;
 				display: block;
+			}
+
+			& > small {
+				font-size: 0.8em;
+				display: block;
+				opacity: 0.5;
+				line-height: 1.2em;
+				padding: 4px 0 6px;
+				white-space: normal;
 			}
 		}
 
