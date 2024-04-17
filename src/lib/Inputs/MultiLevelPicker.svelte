@@ -29,17 +29,18 @@
 		Value: any | null;
 	}
 
-	interface Option {
+	interface IOption {
 		Value: any;
 		Label: string;
 		Description?: string;
 		HasChildren: boolean;
 		Selectable: boolean;
+		SearchText: string | null;
 	}
 
 	interface Response extends FormResponse {
-		Items: Option[];
-		Path: Option[] | null;
+		Items: IOption[];
+		Path: IOption[] | null;
 		IsFullSet: boolean;
 		ParentId: any | null;
 	}
@@ -55,17 +56,18 @@
 
 	export let controller: Controller;
 
-	const emptyOption: Option = {
+	const emptyOption: IOption = {
 		Label: '',
 		Value: null,
 		HasChildren: false,
-		Selectable: false
+		Selectable: false,
+		SearchText: ''
 	};
 
-	let options: Option[] = [];
+	let options: IOption[] = [];
 	let cachedOptions: Record<string, Promise<any>> = {};
-	let path: Option[] = [];
-	let selected: Option = emptyOption;
+	let path: IOption[] = [];
+	let selected: IOption = emptyOption;
 	let loading = true;
 	let listOpen: boolean = false;
 
@@ -115,7 +117,7 @@
 
 	beforeUpdate(async () => await component.setup(controller));
 
-	async function fetchPath(node: Value | null): Promise<Option[]> {
+	async function fetchPath(node: Value | null): Promise<IOption[]> {
 		if (node?.Value == null) {
 			return Promise.resolve([]);
 		}
@@ -134,7 +136,16 @@
 			.postForm<Response>(controller.metadata.Component.Configuration.Form, postData, null)
 			.then((t) => {
 				loading = false;
-				return t.Path ?? [];
+
+				var items = t.Path ?? [];
+
+				items.forEach((t) => {
+					if (t.SearchText == null || t.SearchText.length == 0) {
+						t.SearchText = t.Label + ' ' + (t.Description ?? '') + ' ' + t.Value.toString();
+					}
+				});
+
+				return items;
 			})
 			.catch(() => {
 				loading = false;
@@ -144,7 +155,7 @@
 		return await cachedOptions[cacheKey];
 	}
 
-	async function fetchPathItems(query?: string | null): Promise<Option[]> {
+	async function fetchPathItems(query?: string | null): Promise<IOption[]> {
 		let lastItemInPath = path?.length > 0 ? path[path.length - 1] : null;
 		let parentId = null;
 
@@ -230,7 +241,7 @@
 
 	<Select
 		value={selected}
-		label="Label"
+		label="SearchText"
 		itemId="Value"
 		{loading}
 		required={controller.metadata.Required}
