@@ -289,13 +289,15 @@
 		--multi-select-input-margin: 0 0;
 
 		.item-slot {
+			padding: 6px 0;
+
 			&.inactive {
 				opacity: 0.5;
 			}
 
 			& > span {
 				line-height: 1.8em;
-				padding: 0 0 5px 0;
+				padding: 0;
 				margin: 0;
 				display: block;
 			}
