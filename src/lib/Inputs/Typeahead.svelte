@@ -5,6 +5,8 @@
 		Label: string;
 		SearchText: string | null;
 		Description: string | null;
+		RequiredPermission: string | null;
+		Group: string | null;
 	}
 
 	interface Configuration {
@@ -143,6 +145,9 @@
 				c.SearchText = c.Label + ' ' + c.Value + ' ' + (c.Description ?? '');
 			}
 
+			// Always search in lowercase.
+			c.SearchText = c.SearchText.toLocaleLowerCase();
+
 			return c as IOption;
 		});
 	}
@@ -161,9 +166,7 @@
 
 			const queryInLowercase = query.toLocaleLowerCase();
 
-			return visibleOptions.filter((t: { SearchText: string | string[] }) =>
-				t.SearchText.includes(queryInLowercase)
-			);
+			return visibleOptions.filter((t) => t.SearchText.includes(queryInLowercase));
 		});
 	}
 

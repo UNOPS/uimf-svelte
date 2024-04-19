@@ -46,19 +46,11 @@
 	import { InputComponent } from '../Infrastructure/Component';
 	import type { TypeaheadItem, TypeaheadMetadata } from './Typeahead.svelte';
 
-	interface Option {
-		Label: string;
-		Value: any;
-		RequiredPermission: string;
-		Group: string;
-		SearchText: string;
-	}
-
 	export let controller: Controller;
 
-	let inlineItems: Option[] | null = null;
-	let cachedOptions: Record<string, Promise<Option[]>> = {};
-	let selected: Option[] = [];
+	let inlineItems: TypeaheadItem[] | null = null;
+	let cachedOptions: Record<string, Promise<TypeaheadItem[]>> = {};
+	let selected: TypeaheadItem[] = [];
 
 	let component = new InputComponent({
 		async init() {
@@ -98,17 +90,20 @@
 		await component.setup(controller);
 	});
 
-	function augmentItems(items: TypeaheadItem[]): Option[] {
+	function augmentItems(items: TypeaheadItem[]): TypeaheadItem[] {
 		if (items == null) {
 			return [];
 		}
 
 		return items.map((c) => {
-			return {
-				...c,
-				// Build "SearchText" field which will be used to find relevant matches.
-				SearchText: (c.Value + ' ' + c.Label).toLocaleLowerCase()
-			} as Option;
+			if (c.SearchText == null || c.SearchText.length == 0) {
+				c.SearchText = c.Label + ' ' + c.Value + ' ' + (c.Description ?? '');
+			}
+
+			// Always search in lowercase.
+			c.SearchText = c.SearchText.toLocaleLowerCase();
+
+			return c;
 		});
 	}
 
@@ -126,11 +121,11 @@
 
 			const queryInLowercase = query.toLocaleLowerCase();
 
-			return visibleOptions.filter((t) => t.SearchText.includes(queryInLowercase));
+			return visibleOptions.filter((t) => t.SearchText?.includes(queryInLowercase) == true);
 		});
 	}
 
-	async function loadOptions(query: MultiselectValue | string): Promise<Option[]> {
+	async function loadOptions(query: MultiselectValue | string): Promise<TypeaheadItem[]> {
 		if (inlineItems != null) {
 			return Promise.resolve(inlineItems);
 		}

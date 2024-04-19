@@ -143,6 +143,9 @@
 					if (t.SearchText == null || t.SearchText.length == 0) {
 						t.SearchText = t.Label + ' ' + (t.Description ?? '') + ' ' + t.Value.toString();
 					}
+
+					// Always search in lowercase.
+					t.SearchText = t.SearchText.toLocaleLowerCase();
 				});
 
 				return items;
