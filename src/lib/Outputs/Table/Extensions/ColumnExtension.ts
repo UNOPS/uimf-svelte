@@ -10,7 +10,7 @@ import TableRow from "../TableRow";
 import type { TableRowGroup } from "../TableRowGroup";
 import type { Controller as PaginatorController } from "../../../Inputs/Paginator.svelte";
 
-interface ColumnCustomProperty {
+interface IColumnCustomProperty {
     Color: string;
     CssClass: string;
     GroupLabel: string | null;
@@ -20,20 +20,20 @@ interface ColumnCustomProperty {
 }
 
 export class ColumnExtension extends TableExtension {
-    private columnWithConfig: TableHeadCell[] = [];
+    private columnsWithConfig: TableHeadCell[] = [];
     private columnsWithCssClass: { id: string, cssClass: string }[] = [];
 
     init(table: Table) {
-        this.columnWithConfig = [];
+        this.columnsWithConfig = [];
         table.colgroups = [];
         this.columnsWithCssClass = [];
     }
 
     async processHeadCell(table: Table, cell: TableHeadCell, rows: any[]): Promise<void> {
-        var config: ColumnCustomProperty = cell.metadata.CustomProperties?.column;
+        var config: IColumnCustomProperty = cell.metadata.CustomProperties?.column;
 
         if (config != null) {
-            this.columnWithConfig.push(cell);
+            this.columnsWithConfig.push(cell);
 
             if (config.CssClass != null) {
                 this.columnsWithCssClass.push({
@@ -120,7 +120,7 @@ export class ColumnExtension extends TableExtension {
     }
 
     processTable(table: Table) {
-        if (this.columnWithConfig.length > 0) {
+        if (this.columnsWithConfig.length > 0) {
             let thAboveCells: TableHeadCell[] = [];
             let previousThCell: TableHeadCell | null = null;
             let previousColgroup: Colgroup | null = null;
@@ -129,7 +129,7 @@ export class ColumnExtension extends TableExtension {
             let previousGroupIdentity: string | null = null;
 
             table.head.main.cells.forEach(headCell => {
-                let thisGroupConfig: ColumnCustomProperty = headCell.metadata.CustomProperties?.column;
+                let thisGroupConfig: IColumnCustomProperty = headCell.metadata.CustomProperties?.column;
                 let thisGroupLabel = thisGroupConfig?.GroupLabel;
 
                 let thisGroupIdentity =
