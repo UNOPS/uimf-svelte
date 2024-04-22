@@ -31,19 +31,10 @@
 		}
 
 		async setValueInternal(value: DropdownValue | null): Promise<void> {
-			const hasOriginalInputValues = (await this.form?.hasOriginalInputValues()) ?? true;
-
 			return this.ensureItemsAreLoaded().then((items) => {
 				if (value == null || value.Value == '' || value.Value == null) {
-					const effectiveValue =
-						this.metadata.Component.Configuration.DefaultValue != null &&
-						hasOriginalInputValues !== true
-							? items.find((i) => i.Value == this.metadata.Component.Configuration.DefaultValue) ??
-							  null
-							: null;
-
-					this.value = this.metadata.Required ? effectiveValue : effectiveValue ?? { Value: '' };
-					this.valueAsString = effectiveValue?.Value ?? null;
+					this.value = this.metadata.Required ? null : { Value: '' };
+					this.valueAsString = null;
 				} else {
 					this.value = items.find((t) => t.Value.toString() == value.Value.toString()) ?? null;
 					this.valueAsString = this.serialize(this.value);
@@ -116,11 +107,27 @@
 	export let controller: Controller;
 
 	let component = new InputComponent({
-		init() {
+		async init() {
 			controller.ensureItemsAreLoaded().then(function () {
 				controller.items = controller.items;
 				controller.ready?.resolve();
 			});
+
+			controller.ready?.resolve();
+
+			const hasOriginalInputValues = (await controller.form?.hasOriginalInputValues()) ?? false;
+
+			const hasValue = (controller.value?.Value?.length ?? 0) > 0;
+
+			if (
+				hasOriginalInputValues !== true &&
+				hasValue === false &&
+				controller.metadata.Component.Configuration.DefaultValue != null
+			) {
+				const defaultValueExpression = controller.metadata.Component.Configuration.DefaultValue;
+				const defaultValue = controller.app.getDefaultValue(defaultValueExpression);
+				await controller.setValue({ Value: defaultValue });
+			}
 		},
 		refresh() {
 			controller.valueAsString = controller.valueAsString;

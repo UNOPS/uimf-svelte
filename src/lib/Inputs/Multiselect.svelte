@@ -68,7 +68,7 @@
 				const defaultValue = controller.metadata.Component.Configuration.DefaultValue;
 
 				if (defaultValue != null) {
-					controller.setValue({ Items: defaultValue.split(',') });
+					controller.setValue(defaultValue);
 				}
 			}
 		},
