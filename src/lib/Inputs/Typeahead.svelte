@@ -23,16 +23,9 @@
 
 	export interface ITypeaheadMetadata extends IFieldMetadata<IConfiguration> {}
 
-	var initialized: boolean = false;
-
 	export class Controller extends InputController<TypeaheadValue, ITypeaheadMetadata> {
 		public getValue(): Promise<TypeaheadValue | null> {
 			var result = this.value?.Value != null ? this.value : null;
-
-			if (!initialized && this.metadata.Component.Configuration.DefaultValue != null) {
-				var index = this.app.getDefaultValue(this.metadata.Component.Configuration.DefaultValue);
-				return Promise.resolve({ Value: index });
-			}
 
 			return Promise.resolve(result);
 		}
@@ -85,10 +78,9 @@
 
 	let inlineItems: ITypeaheadItem[] | null = null;
 	let cachedOptions: Record<string, Promise<ITypeaheadItem[]>> = {};
-	let defaultValue: TypeaheadValue | null;
 
 	let component = new InputComponent({
-		init() {
+		async init() {
 			cachedOptions = {};
 
 			const source = controller.metadata.Component.Configuration.Items;
@@ -96,29 +88,25 @@
 
 			controller.ready?.resolve();
 
-			initialized = false;
+			const hasOriginalInputValues = (await controller.form?.hasOriginalInputValues()) ?? false;
 
-			if (controller.metadata.Component.Configuration.DefaultValue != null) {
-				var index = controller.app.getDefaultValue(
-					controller.metadata.Component.Configuration.DefaultValue
-				);
-				defaultValue = { Value: index };
+			if (
+				hasOriginalInputValues !== true &&
+				controller.value == null &&
+				controller.metadata.Component.Configuration.DefaultValue != null
+			) {
+				const defaultValueExpression = controller.metadata.Component.Configuration.DefaultValue;
+				const defaultValue = controller.app.getDefaultValue(defaultValueExpression);
+				await controller.setValue({ Value: defaultValue });
 			}
 		},
 		async refresh() {
-			const capturedValue = defaultValue ?? controller.value;
+			const capturedValue = controller.value;
 
 			if (capturedValue != null && controller.serialize(capturedValue) != null) {
 				let results = await loadOptions(capturedValue);
 
 				if (controller.value != capturedValue) {
-					if (!initialized && defaultValue != null) {
-						controller.setValue(defaultValue);
-						defaultValue = null;
-						initialized = true;
-					} else {
-						controller.value = results[0];
-					}
 					// The value might have changed once the promise
 					// has been resolved. In this case we do nothing, because
 					// it would have been taken care of by another invocation.
