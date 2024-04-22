@@ -1,31 +1,31 @@
 <script context="module" lang="ts">
 	import { InputController } from '../Infrastructure/InputController';
 
-	export interface TypeaheadItem extends TypeaheadValue {
+	export interface ITypeaheadItem extends TypeaheadValue {
 		Label: string;
-		SearchText: string | null;
-		Description: string | null;
-		RequiredPermission: string | null;
-		Group: string | null;
+		SearchText?: string | null;
+		Description?: string | null;
+		RequiredPermission?: string | null;
+		Group?: string | null;
 	}
 
-	interface Configuration {
+	interface IConfiguration {
 		Source?: string | null;
 		Parameters?: Array<{
 			SourceType: string;
 			Parameter: string;
 			Source: string;
 		}> | null;
-		Items?: Array<TypeaheadItem>;
+		Items?: Array<ITypeaheadItem>;
 		DefaultValue?: string | null;
 		SelectAll?: boolean;
 	}
 
-	export interface TypeaheadMetadata extends IFieldMetadata<Configuration> {}
+	export interface ITypeaheadMetadata extends IFieldMetadata<IConfiguration> {}
 
 	var initialized: boolean = false;
 
-	export class Controller extends InputController<TypeaheadValue, TypeaheadMetadata> {
+	export class Controller extends InputController<TypeaheadValue, ITypeaheadMetadata> {
 		public getValue(): Promise<TypeaheadValue | null> {
 			var result = this.value?.Value != null ? this.value : null;
 
@@ -56,6 +56,23 @@
 
 		public Value: any;
 	}
+
+	export function augmentItems(items: ITypeaheadItem[]): ITypeaheadItem[] {
+		if (items == null) {
+			return [];
+		}
+
+		return items.map((c) => {
+			if (c.SearchText == null || c.SearchText.length == 0) {
+				c.SearchText = c.Label + ' ' + c.Value + ' ' + (c.Description ?? '');
+			}
+
+			// Always search in lowercase.
+			c.SearchText = c.SearchText.toLocaleLowerCase();
+
+			return c as ITypeaheadItem;
+		});
+	}
 </script>
 
 <script lang="ts">
@@ -64,19 +81,10 @@
 	import { beforeUpdate } from 'svelte';
 	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
 
-	interface IOption extends TypeaheadValue {
-		Label: string;
-		Value: any;
-		RequiredPermission: string;
-		Group: string;
-		SearchText: string;
-		Description: string | null;
-	}
-
 	export let controller: Controller;
 
-	let inlineItems: IOption[] | null = null;
-	let cachedOptions: Record<string, Promise<IOption[]>> = {};
+	let inlineItems: ITypeaheadItem[] | null = null;
+	let cachedOptions: Record<string, Promise<ITypeaheadItem[]>> = {};
 	let defaultValue: TypeaheadValue | null;
 
 	let component = new InputComponent({
@@ -135,24 +143,7 @@
 		await component.setup(controller);
 	});
 
-	function augmentItems(items: TypeaheadItem[]): IOption[] {
-		if (items == null) {
-			return [];
-		}
-
-		return items.map((c) => {
-			if (c.SearchText == null || c.SearchText.length == 0) {
-				c.SearchText = c.Label + ' ' + c.Value + ' ' + (c.Description ?? '');
-			}
-
-			// Always search in lowercase.
-			c.SearchText = c.SearchText.toLocaleLowerCase();
-
-			return c as IOption;
-		});
-	}
-
-	async function loadOptionsAndFilter(query: string): Promise<IOption[]> {
+	async function loadOptionsAndFilter(query: string): Promise<ITypeaheadItem[]> {
 		const queryById = typeof query !== 'string';
 
 		return loadOptions(query).then((options) => {
@@ -166,11 +157,11 @@
 
 			const queryInLowercase = query.toLocaleLowerCase();
 
-			return visibleOptions.filter((t) => t.SearchText.includes(queryInLowercase));
+			return visibleOptions.filter((t) => t.SearchText?.includes(queryInLowercase) == true);
 		});
 	}
 
-	async function loadOptions(query: string | TypeaheadValue | null): Promise<IOption[]> {
+	async function loadOptions(query: string | TypeaheadValue | null): Promise<ITypeaheadItem[]> {
 		if (inlineItems != null) {
 			return Promise.resolve(inlineItems);
 		}
@@ -239,6 +230,11 @@
 			<span>{@html item.Label}</span>
 			{#if item.Description?.length > 0}
 				<small>{@html item.Description}</small>
+			{/if}
+		</div>
+		<div slot="selection" let:selection>
+			{#if selection != null}
+				<span>{@html selection.Label}</span>
 			{/if}
 		</div>
 	</Select>

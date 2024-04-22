@@ -29,13 +29,9 @@
 		Value: any | null;
 	}
 
-	interface IOption {
-		Value: any;
-		Label: string;
-		Description?: string;
+	interface IOption extends ITypeaheadItem {
 		HasChildren: boolean;
 		Selectable: boolean;
-		SearchText: string | null;
 	}
 
 	interface Response extends FormResponse {
@@ -53,6 +49,7 @@
 	import { InputComponent } from '../Infrastructure/Component';
 	import type { FormResponse } from '../Infrastructure/UimfApp';
 	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
+	import { augmentItems, type ITypeaheadItem } from './Typeahead.svelte';
 
 	export let controller: Controller;
 
@@ -134,21 +131,9 @@
 
 		cachedOptions[cacheKey] = controller.app
 			.postForm<Response>(controller.metadata.Component.Configuration.Form, postData, null)
-			.then((t) => {
+			.then((t: any) => {
 				loading = false;
-
-				var items = t.Path ?? [];
-
-				items.forEach((t) => {
-					if (t.SearchText == null || t.SearchText.length == 0) {
-						t.SearchText = t.Label + ' ' + (t.Description ?? '') + ' ' + t.Value.toString();
-					}
-
-					// Always search in lowercase.
-					t.SearchText = t.SearchText.toLocaleLowerCase();
-				});
-
-				return items;
+				return augmentItems(t.Items);
 			})
 			.catch(() => {
 				loading = false;
@@ -184,9 +169,9 @@
 
 		cachedOptions[cacheKey] = controller.app
 			.postForm<Response>(controller.metadata.Component.Configuration.Form, postData, null)
-			.then((t) => {
+			.then((t: any) => {
 				loading = false;
-				return t.Items ?? [];
+				return augmentItems(t.Items);
 			})
 			.catch(() => {
 				loading = false;
@@ -265,6 +250,11 @@
 			<span>{@html item.Label}</span>
 			{#if item.Description?.length > 0}
 				<small>{@html item.Description}</small>
+			{/if}
+		</div>
+		<div slot="selection" let:selection>
+			{#if selection != null}
+				<span>{@html selection.Label}</span>
 			{/if}
 		</div>
 	</Select>

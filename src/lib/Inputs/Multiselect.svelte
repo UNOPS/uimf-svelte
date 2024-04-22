@@ -5,7 +5,7 @@
 		Items: any[];
 	}
 
-	export class Controller extends InputController<MultiselectValue, TypeaheadMetadata> {
+	export class Controller extends InputController<MultiselectValue, ITypeaheadMetadata> {
 		public deserialize(value: string | null): Promise<MultiselectValue | null> {
 			const parsedValue = value != null ? value.split(',') : null;
 			const result: MultiselectValue | null = parsedValue != null ? { Items: parsedValue } : null;
@@ -44,13 +44,13 @@
 	import { beforeUpdate } from 'svelte';
 	import Select from 'svelte-select';
 	import { InputComponent } from '../Infrastructure/Component';
-	import type { TypeaheadItem, TypeaheadMetadata } from './Typeahead.svelte';
+	import { augmentItems, type ITypeaheadItem, type ITypeaheadMetadata } from './Typeahead.svelte';
 
 	export let controller: Controller;
 
-	let inlineItems: TypeaheadItem[] | null = null;
-	let cachedOptions: Record<string, Promise<TypeaheadItem[]>> = {};
-	let selected: TypeaheadItem[] = [];
+	let inlineItems: ITypeaheadItem[] | null = null;
+	let cachedOptions: Record<string, Promise<ITypeaheadItem[]>> = {};
+	let selected: ITypeaheadItem[] = [];
 
 	let component = new InputComponent({
 		async init() {
@@ -90,23 +90,6 @@
 		await component.setup(controller);
 	});
 
-	function augmentItems(items: TypeaheadItem[]): TypeaheadItem[] {
-		if (items == null) {
-			return [];
-		}
-
-		return items.map((c) => {
-			if (c.SearchText == null || c.SearchText.length == 0) {
-				c.SearchText = c.Label + ' ' + c.Value + ' ' + (c.Description ?? '');
-			}
-
-			// Always search in lowercase.
-			c.SearchText = c.SearchText.toLocaleLowerCase();
-
-			return c;
-		});
-	}
-
 	async function loadOptionsAndFilter(query: MultiselectValue | string): Promise<any> {
 		const queryById = typeof query !== 'string';
 
@@ -125,7 +108,7 @@
 		});
 	}
 
-	async function loadOptions(query: MultiselectValue | string): Promise<TypeaheadItem[]> {
+	async function loadOptions(query: MultiselectValue | string): Promise<ITypeaheadItem[]> {
 		if (inlineItems != null) {
 			return Promise.resolve(inlineItems);
 		}
@@ -191,7 +174,7 @@
 <div class="input-container">
 	<Select
 		value={selected}
-		label="Label"
+		label="SearchText"
 		itemId="Value"
 		required={controller.metadata.Required}
 		{groupBy}
@@ -209,6 +192,11 @@
 			<span>{@html item.Label}</span>
 			{#if item.Description?.length > 0}
 				<small>{@html item.Description}</small>
+			{/if}
+		</div>
+		<div slot="selection" let:selection>
+			{#if selection != null}
+				<span>{@html selection.Label}</span>
 			{/if}
 		</div>
 	</Select>
