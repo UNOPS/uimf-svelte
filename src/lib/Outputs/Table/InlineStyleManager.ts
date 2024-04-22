@@ -1,4 +1,3 @@
-
 export class InlineStyleManager {
     private _styleObject: { [unknown: string]: string; } = {};
     private _style: string | null = null;

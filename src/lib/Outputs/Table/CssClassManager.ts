@@ -1,4 +1,3 @@
-
 export class CssClassManager {
     private _cssClassObject: { [unknown: string]: boolean; } = {};
     private _cssClass: string | null = null;
