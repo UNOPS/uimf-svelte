@@ -60,6 +60,14 @@
 			const items = controller.metadata.Component.Configuration.Items;
 			inlineItems = Array.isArray(items) ? augmentItems(items) : null;
 
+			if (controller.value == null) {
+				const defaultValue = controller.metadata.Component.Configuration.DefaultValue;
+
+				if (defaultValue != null) {
+					controller.setValue({ Items: defaultValue.split(',') });
+				}
+			}
+
 			controller.ready?.resolve();
 		},
 		async refresh() {
