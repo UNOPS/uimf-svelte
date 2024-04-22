@@ -30,12 +30,14 @@
 			return Promise.resolve(this.value);
 		}
 
-		setValueInternal(value: DropdownValue | null): Promise<void> {
+		async setValueInternal(value: DropdownValue | null): Promise<void> {
+			const hasOriginalInputValues = (await this.form?.hasOriginalInputValues()) ?? true;
+
 			return this.ensureItemsAreLoaded().then((items) => {
 				if (value == null || value.Value == '' || value.Value == null) {
 					const effectiveValue =
 						this.metadata.Component.Configuration.DefaultValue != null &&
-						this.form?.hasOriginalInputValues() !== true
+						hasOriginalInputValues !== true
 							? items.find((i) => i.Value == this.metadata.Component.Configuration.DefaultValue) ??
 							  null
 							: null;

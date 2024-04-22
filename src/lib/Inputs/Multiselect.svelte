@@ -60,15 +60,17 @@
 			const items = controller.metadata.Component.Configuration.Items;
 			inlineItems = Array.isArray(items) ? augmentItems(items) : null;
 
-			if (controller.value == null) {
+			controller.ready?.resolve();
+
+			const hasOriginalInputValues = (await controller.form?.hasOriginalInputValues()) ?? false;
+
+			if (controller.value == null && hasOriginalInputValues !== true) {
 				const defaultValue = controller.metadata.Component.Configuration.DefaultValue;
 
 				if (defaultValue != null) {
 					controller.setValue({ Items: defaultValue.split(',') });
 				}
 			}
-
-			controller.ready?.resolve();
 		},
 		async refresh() {
 			var capturedValue = controller?.value;

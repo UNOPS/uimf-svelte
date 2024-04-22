@@ -23,7 +23,7 @@ export interface FormInstance {
     inputs: { [key: string]: InputController<any> };
     originalInputValues: { [key: string]: any };
     app: IUimfApp;
-    hasOriginalInputValues: () => boolean;
+    hasOriginalInputValues: () => Promise<boolean>;
     currentUrl: string;
     useUrl: boolean;
     setInputFieldValues(formlink: FormLink): Promise<any>;
