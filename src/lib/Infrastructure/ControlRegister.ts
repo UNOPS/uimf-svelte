@@ -47,6 +47,7 @@ import * as TidyTree from '../Outputs/TidyTree.svelte';
 import * as LineChart from '../Outputs/LineChart.svelte';
 import * as BarChart from '../Outputs/BarChart.svelte';
 import * as Timeline from '../Outputs/Timeline/Timeline.svelte';
+import * as ConversationTimeline from '../Outputs/ConversationTimeline/ConversationTimeline.svelte';
 
 //To be deactivated until complete validation
 import * as DynamicInput from '../Inputs/DynamicInput.svelte';
@@ -290,6 +291,7 @@ defaultControlRegister.registerOutputComponent('sla-timer', SlaTimer, { displayA
 defaultControlRegister.registerOutputComponent('slider', Slider);
 defaultControlRegister.registerOutputComponent('state-diagram', StateDiagram);
 defaultControlRegister.registerOutputComponent('timeline', Timeline);
+defaultControlRegister.registerOutputComponent('conversation-timeline', ConversationTimeline);
 defaultControlRegister.registerOutputComponent('status', Status, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('tabs', Tabs, { alwaysHideLabel: true });
 defaultControlRegister.registerOutputComponent('tabstrip', Tabstrip, { alwaysHideLabel: true });
