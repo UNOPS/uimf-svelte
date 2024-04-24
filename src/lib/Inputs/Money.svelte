@@ -11,15 +11,7 @@
 		Currency?: number | null;
 	}
 
-	interface ICustomProperty {
-		Min: number;
-		Max: number;
-		Precision: number;
-	}
-
-	interface IMetadata extends IFieldMetadata {
-		CustomProperties?: ICustomProperty | null;
-	}
+	interface IMetadata extends IFieldMetadata<IConfiguration> {}
 
 	export class Controller extends InputController<IMoney, IMetadata> {
 		public model: IModel = {};
@@ -60,6 +52,12 @@
 			return null;
 		}
 	}
+
+	export interface IConfiguration {
+		Max: number;
+		Min: number;
+		Precision: number;
+	}
 </script>
 
 <script lang="ts">
@@ -92,9 +90,9 @@
 
 			currencies = (await cache.get()) ?? [];
 
-			min = controller.metadata.CustomProperties?.Min ?? Number.MIN_VALUE;
-			max = controller.metadata.CustomProperties?.Max ?? Number.MAX_VALUE;
-			precision = controller.metadata.CustomProperties?.Precision ?? 2;
+			min = controller.metadata.Component.Configuration?.Min ?? Number.MIN_VALUE;
+			max = controller.metadata.Component.Configuration?.Max ?? Number.MAX_VALUE;
+			precision = controller.metadata.Component.Configuration?.Precision ?? 2;
 			step = 1 / Math.pow(10, precision);
 		},
 		refresh() {
