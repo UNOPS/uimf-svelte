@@ -262,6 +262,10 @@
 		.item-slot {
 			padding: 6px 0;
 
+			:global(& > .inactive) {
+				opacity: 0.5;
+			}
+
 			& > span {
 				line-height: 1.8em;
 				padding: 0;
