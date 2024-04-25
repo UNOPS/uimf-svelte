@@ -321,7 +321,7 @@
 		.item-slot {
 			padding: 6px 0;
 
-			:global(& > .inactive) {
+			&:global(.inactive) {
 				opacity: 0.5;
 			}
 
