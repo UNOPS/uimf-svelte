@@ -1,12 +1,33 @@
 <script lang="ts">
+	import { OutputController } from '../../Infrastructure/OutputController';
+	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { Controller, FormLinkData } from '../FormLink.svelte';
+	import FormLink from '../FormLink.svelte';
+	import type DateTime from '../DateTime.svelte';
+
 	export let headerText: string;
 	export let headerContent: string;
 	export let date: string;
-	export let isRead: boolean;
 	export let isExternal: boolean;
 	export let icon: string;
 	export let color: string;
 	export let isLast: boolean;
+	export let action: FormLinkData | null;
+	export let controller: OutputController<Timeline>;
+
+	interface TimelineItem {
+		Label: string;
+		Date: DateTime;
+		Content: string;
+		IsExternal: boolean;
+		Icon: string;
+		Color: string;
+		Action: FormLink | null;
+	}
+
+	interface Timeline {
+		Items: TimelineItem[];
+	}
 
 	let expanded = false;
 	let currentDate = new Date(date);
@@ -16,6 +37,15 @@
 
 	function ellipse(text: string) {
 		return text.replace(/<[^>]*>?/gm, '').substring(0, 30) + '...';
+	}
+
+	function buildControllers(data: FormLinkData | null) {
+		return new OutputController<FormLinkData>({
+			metadata: {} as IFieldMetadata,
+			data: data,
+			form: controller.form!,
+			app: controller.app
+		}) as Controller;
 	}
 </script>
 
@@ -44,12 +74,8 @@
 				>
 					<div class="header-container">
 						{#if isExternal}
-							{#if isRead}
-								<i class="fa-solid fa-envelope-open-text fa-xl" />
-							{:else}
-								<i class="fa-solid fa-envelope fa-xl" />
-							{/if}{/if}
-
+							<FormLink controller={buildControllers(action)} />
+						{/if}
 						<div class="header-text">{headerText}</div>
 						{#if !expanded}<div class="shorten-text">{@html ellipse(headerContent)}</div>{/if}
 					</div>
@@ -71,6 +97,13 @@
 	$primary-color: #cccccc;
 	$secondary-color: #f3f3f3;
 	$tertiary-color: #cccccc;
+
+	:global(.as-link) {
+		background: transparent;
+		border: none;
+		color: white;
+		padding: 0px;
+	}
 
 	.header-container {
 		display: flex;

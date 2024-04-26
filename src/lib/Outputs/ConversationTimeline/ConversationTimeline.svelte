@@ -8,11 +8,10 @@
 		Label: string;
 		Date: DateTime;
 		Content: string;
-		IsRead: boolean;
 		IsExternal: boolean;
 		Icon: string;
 		Color: string;
-		Actions: ActionListData | null;
+		Action: FormLinkData | null;
 	}
 
 	interface Timeline {
@@ -22,12 +21,11 @@
 
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
-	import { OutputController } from '../../Infrastructure/OutputController';
+	import type { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import CollapsibleSection from './ConversationCollapsibleSection.svelte';
 	import type DateTime from '../DateTime.svelte';
-	import ActionList, { ActionListController, type ActionListData } from '../ActionList.svelte';
-	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { FormLinkData } from '../FormLink.svelte';
 
 	export let controller: OutputController<Timeline>;
 
@@ -36,15 +34,6 @@
 			controller.value = controller.value;
 		}
 	});
-
-	function buildControllers(data: ActionListData) {
-		return new OutputController<ActionListData>({
-			metadata: {} as IFieldMetadata,
-			data: data,
-			form: controller.form!,
-			app: controller.app
-		}) as ActionListController;
-	}
 
 	beforeUpdate(async () => await component.setup(controller));
 
@@ -76,10 +65,11 @@
 {#if controller.value != null}
 	{#each controller.value.Items as item, index}
 		<CollapsibleSection
+			{controller}
+			action={item.Action}
 			headerContent={item.Content}
 			headerText={item.Label}
 			date={item.Date}
-			isRead={item.IsRead}
 			isExternal={item.IsExternal}
 			icon={item.Icon}
 			color={item.Color}
@@ -89,9 +79,6 @@
 				<div class="collapsible-content">
 					{@html RemoveWidthStyling(item.Content)}
 				</div>
-				{#if item.Actions}
-					<ActionList controller={buildControllers(item.Actions)} />
-				{/if}
 			</div>
 		</CollapsibleSection>
 	{/each}
