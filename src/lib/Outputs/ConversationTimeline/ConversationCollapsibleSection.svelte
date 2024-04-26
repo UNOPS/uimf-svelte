@@ -76,14 +76,20 @@
 						{#if isExternal}
 							<FormLink controller={buildControllers(action)} />
 						{/if}
+		
 						<div class="header-text">{headerText}</div>
-						{#if !expanded}<div class="shorten-text">{@html ellipse(headerContent)}</div>{/if}
+		
+						{#if !expanded}
+							<div class="shorten-text">{@html ellipse(headerContent)}</div>
+						{/if}
 					</div>
+		
 					{#if expanded}
 						<i class="fa-solid fa-caret-down" />
 					{:else}
 						<i class="fa-solid fa-caret-left" />
 					{/if}
+					
 				</button>
 				<div hidden={!expanded}>
 					<slot />

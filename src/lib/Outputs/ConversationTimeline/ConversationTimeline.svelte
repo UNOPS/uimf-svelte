@@ -11,6 +11,7 @@
 		IsExternal: boolean;
 		Icon: string;
 		Color: string;
+		Recipients: string;
 		Action: FormLinkData | null;
 	}
 
@@ -77,6 +78,14 @@
 		>
 			<div class="collapsible" style:background-color={AddOpacity(item.Color)}>
 				<div class="collapsible-content">
+					
+					{#if item.Recipients}
+						<div class="recipient">
+							External recipients: {item.Recipients}
+						</div>
+						<hr>
+					{/if}
+
 					{@html RemoveWidthStyling(item.Content)}
 				</div>
 			</div>
@@ -96,5 +105,10 @@
 		padding: 15px;
 		text-align: left;
 		font-size: medium;
+	}
+
+	.recipient {
+		font-size: small;
+		font-style: italic;
 	}
 </style>
