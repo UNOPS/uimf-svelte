@@ -77,7 +77,7 @@ import * as EditableValue from '../Outputs/EditableValue.svelte';
 import * as Flexbox from '../Outputs/Flexbox.svelte';
 
 interface InputFieldControllerConstructor {
-	new (options: CreateInputOptions): InputController<any>;
+	new(options: CreateInputOptions): InputController<any>;
 }
 
 interface InputRegistration {
@@ -195,11 +195,11 @@ export class ControlRegister {
 			component:
 				renderTarget != null
 					? new registration.component({
-							target: renderTarget,
-							props: {
-								controller: controller
-							}
-					  })
+						target: renderTarget,
+						props: {
+							controller: controller
+						}
+					})
 					: registration.component
 		};
 	}
@@ -219,11 +219,11 @@ export class ControlRegister {
 			component:
 				renderTarget != null
 					? new registration.component({
-							target: renderTarget,
-							props: {
-								controller: controller
-							}
-					  })
+						target: renderTarget,
+						props: {
+							controller: controller
+						}
+					})
 					: registration.component
 		};
 	}
@@ -272,7 +272,7 @@ defaultControlRegister.registerOutputComponent('editable-value', EditableValue, 
 	displayAsBlock: false
 });
 defaultControlRegister.registerOutputComponent('formlink', FormLink, { displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('flexbox', Flexbox, { alwaysHideLabel: true });
+defaultControlRegister.registerOutputComponent('flexbox', Flexbox, { alwaysHideLabel: false });
 defaultControlRegister.registerOutputComponent('grid', Grid, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('icon', Icon, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('image', OutputImage, { displayAsBlock: false });
