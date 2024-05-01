@@ -60,6 +60,11 @@
 			callback();
 		}
 	}
+
+	function base64ToBytes(base64) {
+		const binString = atob(base64);
+		return Uint8Array.from(binString, (m) => m.codePointAt(0));
+	}
 </script>
 
 {#if controller.value != null}
@@ -102,6 +107,26 @@
 			use:tooltip={controller.value.Tooltip}
 			on:click={() => {
 				switch (controller.value.Action) {
+					case 'download': {
+						return controller.app
+							.postForm(controller.value.Form, controller.value.InputFieldValues, {
+								skipClientFunctions: true
+							})
+							.then(function (response) {
+								const file = response.FileData;
+
+								// The actual download
+								const blob = new Blob([base64ToBytes(file.Data)], { type: file.ContentType });
+								const link = document.createElement('a');
+								link.href = window.URL.createObjectURL(blob);
+								link.download = file.Filename;
+
+								document.body.appendChild(link);
+								link.click();
+								document.body.removeChild(link);
+							});
+					}
+
 					case 'excel-export':
 						{
 							let urlQuery = encodeURIComponent(
@@ -168,9 +193,11 @@
 									skipClientFunctions: true
 								})
 								.then(function (response) {
-									controller.app.runResponseHandler(response);
-									controller.app.runClientFunctions(response);
-									controller.form?.submit(false);
+									if (response != null) {
+										controller.app.runResponseHandler(response);
+										controller.app.runClientFunctions(response);
+										controller.form?.submit(false);
+									}
 								});
 						});
 
