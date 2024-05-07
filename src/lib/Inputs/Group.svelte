@@ -1,29 +1,40 @@
 <script lang="ts" context="module">
 	import { InputController } from '../Infrastructure/InputController';
 
-	interface IGroup {
+	interface IGroups {
 		Items: Record<string, IItem[]>;
 	}
+
 	interface IItem {
 		Label: string;
 		Link: any;
 		Value: any;
 	}
 
-	export class Controller extends InputController<IGroup> {
-		public getValue(): Promise<IGroup | null> {
+	interface IGroup {
+		Index: number;
+		Name: string;
+		Items: IItem[];
+	}
+
+	export class Controller extends InputController<IGroups> {
+		public getValue(): Promise<IGroups | null> {
 			return Promise.resolve(this.value);
 		}
-		public deserialize(value: string | null): Promise<IGroup | null> {
+
+		public deserialize(value: string | null): Promise<IGroups | null> {
 			if (value == null) {
 				return Promise.resolve(null);
 			}
+
 			return Promise.resolve(JSON.parse(value));
 		}
-		public serialize(value: IGroup | null): string | null {
+
+		public serialize(value: IGroups | null): string | null {
 			if (value == null) {
 				return null;
 			}
+
 			return JSON.stringify(value);
 		}
 	}
@@ -34,212 +45,183 @@
 	import { InputComponent } from '../Infrastructure/Component';
 
 	export let controller: Controller;
-	let groupNames: string[];
+
+	let groups: IGroup[] = [];
 
 	let component = new InputComponent({
 		init() {
 			controller.ready?.resolve();
 		},
 		refresh() {
-			if (controller.value?.Items != null) {
-				groupNames = Object.keys(controller.value?.Items);
-			} else {
-				groupNames = [];
-			}
+			console.log(controller.value);
 
-			controller.value = controller.value;
+			if (controller.value?.Items != null) {
+				groups = Object.entries(controller.value.Items).map(([name, items], index) => ({
+					Index: index,
+					Name: name,
+					Items: items
+				}));
+			} else {
+				groups = [];
+			}
 		}
 	});
+
 	beforeUpdate(async () => await component.setup(controller));
 
 	function move(item: IItem, currentGroupIndex: number, targetGroupIndex: number): void {
-		let currentGroup = controller.value?.Items[groupNames[currentGroupIndex]];
-		let targetGroup = controller.value?.Items[groupNames[targetGroupIndex]];
+		let currentGroup = groups[currentGroupIndex];
+		let targetGroup = groups[targetGroupIndex];
 
 		if (currentGroup) {
-			if (currentGroup.indexOf(item) !== -1) {
-				currentGroup.splice(currentGroup.indexOf(item), 1);
+			if (currentGroup.Items.indexOf(item) !== -1) {
+				currentGroup.Items.splice(currentGroup.Items.indexOf(item), 1);
 			}
 		}
+
 		if (targetGroup) {
-			targetGroup.push(item);
+			targetGroup.Items.push(item);
 		}
-		controller.value = controller.value;
-	}
-	function moveAll(currentGroupIndex: number, targetGroupIndex: number): void {
-		const currentGroup = controller.value?.Items[groupNames[currentGroupIndex]];
-		const targetGroup = controller.value?.Items[groupNames[targetGroupIndex]];
 
-		if (currentGroup) {
-			const currentGroupArray = controller.value?.Items[groupNames[currentGroupIndex]];
-			if (currentGroupArray) {
-				currentGroup.forEach((i) => {
-					targetGroup?.push(i);
-				});
-				currentGroupArray.splice(0, currentGroupArray.length);
-			}
-		}
-		controller.value = controller.value;
+		groups = groups;
 	}
-	function linkClick(item: IItem) {
-		window.location.href = item.Link;
+
+	function moveAll(currentGroupIndex: number, targetGroupIndex: number): void {
+		const currentGroup = groups[currentGroupIndex];
+		const targetGroup = groups[targetGroupIndex];
+
+		currentGroup.Items.forEach((i) => {
+			targetGroup.Items.push(i);
+		});
+
+		currentGroup.Items.splice(0, currentGroup.Items.length);
+
+		groups = groups;
 	}
 </script>
 
 {#if controller.value != null}
-	<div class="form-input-groups">
-		{#each Object.entries(controller.value.Items) as item, index}
-			{#if item[index] === 'Not Assigned'}
+	<div class="groups">
+		{#each groups as group}
+			<div class="group">
 				<div>
-					<div>
-						<span>
-							<h6>Not Assigned</h6>
-						</span>
-						<span>
-							<button
-								type="button"
-								class="btn"
-								on:click={() => moveAll(item.indexOf(item[index]), item.indexOf(item[index + 1]))}
-							>
-								<i class="fa fa-solid fa-arrow-right" />
-							</button>
-						</span>
-					</div>
+					{#if group.Index > 0}
+						<button
+							type="button"
+							class="btn"
+							on:click={() => moveAll(group.Index, group.Index - 1)}
+						>
+							<i class="fa fa-solid fa-arrow-left" />
+						</button>
+					{/if}
 
-					<ul>
-						{#each item[1] as i}
-							<li>
-								<div>
-									{i.Label}
-									<button type="button" class="btn" on:click={() => linkClick(i)}>
-										<i class="fa fa-external-link-alt fa-1x" />
-									</button>
-								</div>
-								<div class="buttons">
-									<button
-										type="button"
-										class="btn"
-										on:click={() =>
-											move(i, item.indexOf(item[index]), item.indexOf(item[index + 1]))}
-									>
-										<i class="fa fa-solid fa-arrow-right" />
-									</button>
-								</div>
-							</li>
-						{/each}
-					</ul>
-				</div>
-			{/if}
-			{#if item[index] != 'Not Assigned'}
-				<div>
-					<div>
-						<span>
-							<button
-								type="button"
-								class="btn"
-								on:click={() => moveAll(item.indexOf(item[index]), item.indexOf(item[index - 1]))}
-							>
-								<i class="fa fa-solid fa-arrow-left" />
-							</button>
-						</span>
-						<span>
-							<h6>Assigned</h6>
-						</span>
-					</div>
+					<h6>{group.Name}</h6>
 
-					<ul>
-						{#each item[1] as i}
-							<li>
-								<div>
-									<button
-										type="button"
-										class="btn"
-										on:click={() =>
-											move(i, item.indexOf(item[index]), item.indexOf(item[index - 1]))}
-									>
-										<i class="fa fa-solid fa-arrow-left" />
-									</button>
-									{i.Label}
-									<button type="button" class="btn" on:click={() => linkClick(i)}>
-										<i class="fa fa-external-link-alt fa-1x" />
-									</button>
-								</div>
-							</li>
-						{/each}
-					</ul>
+					{#if group.Index < groups.length - 1}
+						<button
+							type="button"
+							class="btn"
+							on:click={() => moveAll(group.Index, group.Index + 1)}
+						>
+							<i class="fa fa-solid fa-arrow-right" />
+						</button>
+					{/if}
 				</div>
-			{/if}
+
+				<ul>
+					{#each group.Items as item}
+						<li>
+							{#if group.Index > 0}
+								<button
+									type="button"
+									class="btn"
+									on:click={() => move(item, group.Index, group.Index - 1)}
+								>
+									<i class="fa fa-solid fa-arrow-left" />
+								</button>
+							{/if}
+
+							<div>
+								{item.Label}
+								<a href={item.Link}><i class="fa fa-external-link-alt fa-1x" /></a>
+							</div>
+
+							{#if group.Index < groups.length - 1}
+								<button
+									type="button"
+									class="btn"
+									on:click={() => move(item, group.Index, group.Index + 1)}
+								>
+									<i class="fa fa-solid fa-arrow-right" />
+								</button>
+							{/if}
+						</li>
+					{/each}
+				</ul>
+			</div>
 		{/each}
 	</div>
 {/if}
 
 <style lang="scss">
-	.form-input-groups {
+	.groups {
 		display: flex;
 		justify-content: space-between;
 	}
 
-	.form-input-groups > div {
+	.group {
 		border: 1px solid #bfc6ce;
 		border-width: 1px 1px 1px 0;
-		align-items: center;
+		flex-grow: 1;
+
+		&:first-child {
+			border-left-width: 1px;
+		}
+
+		& > div {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			background: #2d3c4b;
+			color: #fff;
+			font-weight: bold;
+			padding: 5px 10px;
+
+			& > h6 {
+				flex-grow: 1;
+				text-align: center;
+			}
+		}
 	}
 
-	.form-input-groups > div:first-child {
-		border-width: 1px;
-	}
-	.form-input-groups > div > div > span {
-		display: grid;
-		align-content: center;
-		background: #2d3c4b;
-		color: #fff;
-		font-weight: bold;
-		padding: 0px 10px 0px 0px;
-	}
-	.form-input-groups > div > div > span > h6 {
-		padding: 10px;
-		display: flex;
-		justify-content: space-between;
-	}
-
-	.form-input-groups > div > ul {
+	ul {
 		height: 300px;
 		list-style-type: none;
-		padding-left: 10px;
 		overflow-y: auto;
+		padding: 0;
+		margin: 0;
+
+		& > li {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			border-spacing: 2px;
+			border-bottom: 1px solid #eee;
+			padding: 5px 10px;
+
+			&:hover {
+				background: #f0f2f6;
+			}
+
+			& > div {
+				flex-grow: 1;
+				text-align: center;
+			}
+		}
 	}
 
-	.form-input-groups > div > ul > li {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		border-spacing: 2px;
-		border-bottom: 1px solid #eee;
-	}
-
-	.form-input-groups > div > ul > li:hover {
-		background: #f0f2f6;
-	}
-
-	.form-input-groups > div > ul > li > .item-label {
-		flex-grow: 10;
-	}
-
-	.last-group .fa-arrow-right {
-		display: none !important;
-	}
-
-	.first-group .fa-arrow-left {
-		display: none !important;
-	}
-
-	.form-input-groups .fa {
-		cursor: pointer;
-		padding: 10px;
-	}
-
-	.form-input-groups a.fa {
-		padding: 0 5px !important;
+	a {
+		padding: 0 5px;
 		text-decoration: none;
 	}
 </style>
