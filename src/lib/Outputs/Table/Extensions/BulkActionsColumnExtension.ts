@@ -17,7 +17,7 @@ export class BulkAction extends FormLinkMetadata {
         let selectedCount = this.InputFieldValues.ItemIds.Items.length;
 
         if (selectedCount > 0) {
-            this.Label = `${this._originalLabel} (${selectedCount})`;
+            this.Label = `${this._originalLabel ?? ''} (${selectedCount})`.trim();
         } else {
             this.disabled = true;
         }
