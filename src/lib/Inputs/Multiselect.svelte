@@ -188,6 +188,12 @@
 		itemId="Value"
 		required={controller.metadata.Required}
 		{groupBy}
+		createGroupHeaderItem={(group) => ({
+			value: group,
+			// Because `label="SearchText"` but we are actually using `item.Label`
+			// we need to manually set each group item to have `Label` property.
+			Label: group
+		})}
 		on:input={handleSelect}
 		on:clear={() => {
 			controller?.setValue(null);
