@@ -45,16 +45,6 @@
 	let component = new InputComponent({
 		async init() {
 			controller.ready?.resolve();
-
-			const hasOriginalInputValues = (await controller.form?.hasOriginalInputValues()) ?? false;
-
-			if (
-				controller.value == null &&
-				controller.metadata.Component.Configuration.DefaultValue != null &&
-				hasOriginalInputValues !== true
-			) {
-				controller.setValue(controller.metadata.Component.Configuration.DefaultValue);
-			}
 		},
 		refresh() {
 			controller.value = controller.value;

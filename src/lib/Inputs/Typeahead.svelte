@@ -87,18 +87,6 @@
 			inlineItems = Array.isArray(source) ? augmentItems(source) : null;
 
 			controller.ready?.resolve();
-
-			const hasOriginalInputValues = (await controller.form?.hasOriginalInputValues()) ?? false;
-
-			if (
-				hasOriginalInputValues !== true &&
-				controller.value == null &&
-				controller.metadata.Component.Configuration.DefaultValue != null
-			) {
-				const defaultValueExpression = controller.metadata.Component.Configuration.DefaultValue;
-				const defaultValue = controller.app.getDefaultValue(defaultValueExpression);
-				await controller.setValue({ Value: defaultValue });
-			}
 		},
 		async refresh() {
 			const capturedValue = controller.value;

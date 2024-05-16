@@ -114,20 +114,6 @@
 			});
 
 			controller.ready?.resolve();
-
-			const hasOriginalInputValues = (await controller.form?.hasOriginalInputValues()) ?? false;
-
-			const hasValue = (controller.value?.Value?.length ?? 0) > 0;
-
-			if (
-				hasOriginalInputValues !== true &&
-				hasValue === false &&
-				controller.metadata.Component.Configuration.DefaultValue != null
-			) {
-				const defaultValueExpression = controller.metadata.Component.Configuration.DefaultValue;
-				const defaultValue = controller.app.getDefaultValue(defaultValueExpression);
-				await controller.setValue({ Value: defaultValue });
-			}
 		},
 		refresh() {
 			controller.valueAsString = controller.valueAsString;
