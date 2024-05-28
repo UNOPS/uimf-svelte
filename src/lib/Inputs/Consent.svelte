@@ -5,11 +5,15 @@
 		Consented: boolean;
 	}
 
-	export interface ConsentMetadata extends IFieldMetadata {
-		Explanation: string;
+	export interface ConsentConfiguration {
+		Explanation: string | null;
+		Label: string | null;
 	}
 
-	export class Controller extends InputController<ConsentData, ConsentMetadata> {
+	export class Controller extends InputController<
+		ConsentData,
+		IFieldMetadata<ConsentConfiguration>
+	> {
 		public getValue(): Promise<ConsentData | null> {
 			return Promise.resolve(this.value);
 		}
@@ -27,18 +31,20 @@
 		}
 
 		public open(): void {
-			this.app.openHtmlModal({
-				templateUrl: this.metadata.Explanation,
-				controller: [
-					'$scope',
-					'$uibModalInstance',
-					function ($scope: any, $uibModalInstance: any) {
-						$scope.close = function () {
-							$uibModalInstance.dismiss('cancel');
-						};
-					}
-				]
-			});
+			if (this.metadata.Component.Configuration.Explanation) {
+				this.app.openHtmlModal({
+					templateUrl: this.metadata.Component.Configuration.Explanation,
+					controller: [
+						'$scope',
+						'$uibModalInstance',
+						function ($scope: any, $uibModalInstance: any) {
+							$scope.close = function () {
+								$uibModalInstance.dismiss('cancel');
+							};
+						}
+					]
+				});
+			}
 		}
 	}
 </script>
@@ -62,15 +68,18 @@
 	beforeUpdate(async () => await component.setup(controller));
 </script>
 
-<input
-	on:change={() => controller.setValue({ Consented: !controller.value?.Consented })}
-	required={controller.metadata.Required}
-	type="checkbox"
-/>
+<label>
+	<input
+		on:change={() => controller.setValue({ Consented: !controller.value?.Consented })}
+		required={controller.metadata.Required}
+		type="checkbox"
+	/>
+	{#if controller.metadata.Component?.Configuration?.Label != null}
+		{@html controller.metadata.Component.Configuration.Label}
+	{/if}
+</label>
 
-<span>{@html controller.metadata.Label}</span>
-
-{#if controller.metadata.Explanation}
+{#if controller.metadata.Component?.Configuration?.Explanation != null}
 	<button
 		type="button"
 		on:click={() => {
