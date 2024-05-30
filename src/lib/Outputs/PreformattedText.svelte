@@ -10,11 +10,23 @@
 	export let controller: OutputController<TextAreaData>;
 
 	let textarea: HTMLTextAreaElement;
-    let height = 100;
+	let heightInEm = 5;
+
+	const minVisibleLines = 3;
+	const maxVisibleLines = 30;
 
 	let component = new OutputComponent({
 		refresh() {
 			controller.value = controller.value;
+
+			let lines = controller.value?.Text?.split('\n').length || 1;
+
+			// Show a reasonable number of lines before introducing a scrollbar.
+			let linesToShow = Math.max(Math.min(lines, maxVisibleLines), minVisibleLines);
+
+			// One line is 1.2em. This math is not perfect, but it should give
+			// us a reasonable approximation and result.
+			heightInEm = linesToShow * 1.2;
 		}
 	});
 
@@ -31,54 +43,58 @@
 		}
 	};
 
-	const handleCopyKeydown = (event: { key: string; }) => {
+	const handleCopyKeydown = (event: { key: string }) => {
 		if (event.key === 'Enter') {
 			copy();
 		}
 	};
-
-    onMount(() => {
-        height = Math.min(textarea.scrollHeight || 100, 500);
-    })
 </script>
 
-<div class="div">
-	<i class="fa fa-copy hand-cursor" on:click={copy} on:keydown={handleCopyKeydown} tabindex="0" role="button" aria-label="Copy to clipboard" />
+<div class="wrapper">
+	<div>
+		<i
+			class="fa fa-copy hand-cursor"
+			on:click={copy}
+			on:keydown={handleCopyKeydown}
+			tabindex="0"
+			role="button"
+			aria-label="Copy to clipboard"
+		/>
+	</div>
+
+	<textarea style:height={heightInEm + 'em'} bind:this={textarea} readonly
+		>{controller.value?.Text}</textarea
+	>
 </div>
-<textarea
-    class="text-area"
-	style={`height: ${height}px;`}
-	bind:this={textarea}
-	readonly>{controller.value?.Text}</textarea
->
 
 <style lang="scss">
-	.text-area {
-		background-color: #f5f5f5;
+	.wrapper {
+		clear: both;
 		border: 1px solid #ccc;
 		border-radius: 0 0 2px 2px;
-		border-top: 0;
-		color: #333;
-		display: block;
-		font-size: 13px;
-		line-height: 1.42857143;
-		margin: 0 0 10px;
-		max-width: 100%;
-		min-height: 150px;
-		min-width: 100%;
-		outline: none;
-		padding: 9.5px;
-		word-break: break-all;
-		word-wrap: break-word;
+
+		& > div {
+			background: #ececec;
+			padding: 10px 20px;
+			text-align: right;
+		}
 	}
 
-	.div {
-		background: #ececec;
-		border: 1px solid #e9e9e9;
-		border-radius: 2px;
-		font-size: 1.5em;
-		margin-bottom: -5px;
-		padding: 3px 20px 8px;
-		text-align: right;
+	textarea {
+		background-color: #f5f5f5;
+		border: none;
+		border-top: 1px solid #ccc;
+		color: #333;
+		font-family: monospace;
+		margin: 0 0 10px;
+		max-width: 100%;
+		min-width: 100%;
+		min-height: 30px;
+		outline: none;
+		word-break: break-all;
+		word-wrap: break-word;
+		margin: 0;
+		padding: 10px 15px;
+		line-height: 1.2em;
 	}
 </style>

@@ -299,7 +299,7 @@ defaultControlRegister.registerOutputComponent('tag', Tag, { displayAsBlock: fal
 defaultControlRegister.registerOutputComponent('text', OutputText, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('tree-view-selector', TreeViewSelector);
 defaultControlRegister.registerOutputComponent('html', Html, { displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('preformatted-text', PreformattedText);
+defaultControlRegister.registerOutputComponent('preformatted-text', PreformattedText, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('link', Link, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('table', Table, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('inline-form', InlineForm, { displayAsBlock: true });
