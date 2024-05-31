@@ -133,7 +133,7 @@
 			.postForm<Response>(controller.metadata.Component.Configuration.Form, postData, null)
 			.then((t: any) => {
 				loading = false;
-				return augmentItems(t.Items);
+				return augmentItems(t.Path || []);
 			})
 			.catch(() => {
 				loading = false;
