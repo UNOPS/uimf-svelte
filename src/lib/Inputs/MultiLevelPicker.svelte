@@ -351,7 +351,7 @@
 			border: none;
 			background: transparent;
 			padding: 0px 10px;
-			font-size: var(--bs-body-font-size);
+			font-size: var(--font-size);
 		}
 
 		& > i {
