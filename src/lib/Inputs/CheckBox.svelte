@@ -54,27 +54,33 @@
 	beforeUpdate(async () => await component.setup(controller));
 </script>
 
-{#if controller.metadata.Required}
-	<input
-		class="form-check-input"
-		type="checkbox"
-		bind:checked={controller.value}
-		on:change={() => controller.setValue(controller.value)}
-	/>
-{:else}
-	<select
-		class="form-control"
-		bind:value={controller.value}
-		on:change={() => controller.setValue(controller.value)}
-	>
-		<option />
-		<option value={true}>Yes</option>
-		<option value={false}>No</option>
-	</select>
-{/if}
+<div>
+	{#if controller.metadata.Required}
+		<input
+			class="form-check-input"
+			type="checkbox"
+			bind:checked={controller.value}
+			on:change={() => controller.setValue(controller.value)}
+		/>
+	{:else}
+		<select
+			class="form-control"
+			bind:value={controller.value}
+			on:change={() => controller.setValue(controller.value)}
+		>
+			<option />
+			<option value={true}>Yes</option>
+			<option value={false}>No</option>
+		</select>
+	{/if}
+</div>
 
 <style lang="scss">
 	@import '../scss/styles.variables.scss';
+
+	div {
+		min-height: $app-input-min-height;
+	}
 
 	.form-check-input {
 		margin: 9px 0 0 0;
