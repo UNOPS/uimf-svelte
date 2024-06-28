@@ -34,7 +34,7 @@
 		});
 	};
 
-	const makeDateTimeController = () => {
+	const makeDateTimeController = (value: EventDescriptionData) => {
 		return new DateTimeController({
 			metadata: {
 				Id: '',
@@ -45,11 +45,11 @@
 				Component: {
 					Type: 'datetime',
 					Configuration: {
-						HideTime: controller.value?.HideTime ?? false
+						HideTime: value?.HideTime ?? false
 					}
 				}
 			},
-			data: controller.value.Date,
+			data: value.Date,
 			form: controller.form!,
 			app: controller.app
 		});
@@ -57,7 +57,7 @@
 </script>
 
 {#if controller.value != null}
-	<DateTime controller={makeDateTimeController()} />
+	<DateTime controller={makeDateTimeController(controller.value)} />
 
 	{#if controller.value.Event != null && controller.value.DisplayFormat === 'DateEventUser'}
 		<span>
