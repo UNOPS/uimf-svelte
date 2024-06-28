@@ -365,9 +365,16 @@
 			}
 		}
 
-		tbody > tr.first-row-in-split-by-group > td {
-			border-top-width: 10px !important;
-			border-top-color: #ebebeb !important;
+		tbody > tr.first-row-in-split-by-group {
+			&.default > td {
+				border-top-width: 10px !important;
+				border-top-color: #ebebeb !important;
+			}
+
+			&.thin > td {
+				border-top-width: 2px !important;
+				border-top-color: #efefef !important;
+			}
 		}
 
 		td.col-min-width {

@@ -10,6 +10,7 @@ interface RowCustomProperty {
     GroupBy: string;
     GroupByHeader: string;
     SplitBy: string;
+    SplitByStyle: string | null;
 }
 
 export class RowExtension extends TableExtension {
@@ -40,6 +41,7 @@ export class RowExtension extends TableExtension {
      */
     private splitBy: string | null = null;
 
+    private splitByStyle: string | null = null;
     private firstRow: TableRowGroup<TableBodyCell> | null = null;
     private firstRowProcessed: boolean = false;
     private groupCount: number = 0;
@@ -51,6 +53,7 @@ export class RowExtension extends TableExtension {
         this.firstRowProcessed = false;
         this.color = null;
         this.splitBy = null;
+        this.splitByStyle = null;
         this.rowsProcessed = 0;
     }
 
@@ -102,7 +105,8 @@ export class RowExtension extends TableExtension {
             const currentSplit = JSON.stringify(row.data[this.splitBy]);
 
             if (this.rowsProcessed != 0 && currentSplit != this.previousSplit) {
-                row.main.cssClassManager.addClass('first-row-in-split-by-group');
+                const splitByStyle = this.splitByStyle ?? 'default';
+                row.main.cssClassManager.addClass('first-row-in-split-by-group ' + splitByStyle);
             }
 
             this.previousSplit = currentSplit;
@@ -133,6 +137,7 @@ export class RowExtension extends TableExtension {
 
         this.color = rowMetadata.Color;
         this.splitBy = rowMetadata.SplitBy;
+        this.splitByStyle = rowMetadata.SplitByStyle;
 
         return Promise.resolve();
     }
