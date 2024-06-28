@@ -11,7 +11,7 @@
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
-	import type { IComponent, IFieldMetadata } from '../Infrastructure/uimf';
+	import type { IFieldMetadata } from '../Infrastructure/uimf';
 
 	export let controller: DateTimeController;
 	let options: Intl.DateTimeFormatOptions | null = null;
