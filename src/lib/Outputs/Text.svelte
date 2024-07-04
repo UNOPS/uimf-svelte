@@ -20,7 +20,7 @@
 		<div class="label">{controller.metadata.Label} :</div>
 	{/if}
 
-	<span class={controller.metadata.CustomProperties?.cssClass}>{controller.value}</span>
+	<span class={controller.metadata.CustomProperties?.cssClass}>{@html controller.value}</span>
 {/if}
 
 <style>
