@@ -371,6 +371,7 @@
 		--inner-border-color: rgba(0, 0, 0, 0.03);
 		--outer-border-color: #ebebeb;
 		--group-border-color: #d6d6d645;
+		min-width: min-content;
 
 		thead {
 			& > tr:last-child {
@@ -427,11 +428,10 @@
 			padding-left: 8px;
 			padding-right: 8px;
 		}
-
-		td.min-width-200 {
-			min-width: 200px;
-		}
 	}
+
+
+.table-data > tbody > tr > 
 
 	.has-dropdowns {
 		// Add padding to account for typeahead, dropdown or any other input
@@ -442,5 +442,10 @@
 	.col-action {
 		width: 1px;
 		text-align: center;
+	}
+
+	.min-width-400{
+		min-width: 400px;
+		display: flex;
 	}
 </style>
