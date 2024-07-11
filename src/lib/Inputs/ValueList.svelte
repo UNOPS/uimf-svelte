@@ -118,6 +118,14 @@
 		Fields: IField[];
 		CanRemove?: boolean;
 		CanAdd?: boolean;
+
+		/**
+		 * The name of the field inside response that contains the default row value.
+		 * If null the newly created rows will be initialized without any of its
+		 * fields pre-set.
+		 */
+		DefaultRowValue?: string;
+
 		Row: { GroupBy?: string };
 
 		/**
@@ -182,7 +190,14 @@
 			throw 'Cannot add row to a `null` table.';
 		}
 
-		table.addRow();
+		let defaultRowValue = {};
+		const config = controller.metadata.Component.Configuration;
+
+		if (config.DefaultRowValue != null && controller.form?.response != null) {
+			defaultRowValue = controller.form.response[config.DefaultRowValue]?.value ?? {};
+		}
+
+		table.addRow(defaultRowValue);
 		table.body = table.body;
 
 		// Let's wait for the DOM to update.
@@ -430,10 +445,7 @@
 		}
 	}
 
-
-.table-data > tbody > tr > 
-
-	.has-dropdowns {
+	.table-data > tbody > tr > .has-dropdowns {
 		// Add padding to account for typeahead, dropdown or any other input
 		// that can grow vertically.
 		padding-bottom: 18rem;
@@ -444,7 +456,7 @@
 		text-align: center;
 	}
 
-	.min-width-400{
+	.min-width-400 {
 		min-width: 400px;
 		display: flex;
 	}
