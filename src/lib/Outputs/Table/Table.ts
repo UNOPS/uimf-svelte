@@ -133,24 +133,7 @@ export class Table extends EventSource {
         const promises = [];
 
         for (let item of items) {
-            var row = this.addRow(item);
-
-            for (let cell of row.main.cells) {
-                if (cell.isInput) {
-                    const controller = cell.controller as InputController<any>;
-                    const promise = controller.setValue(item[cell.controller.metadata.Id]);
-                    promises.push(promise);
-                } else {
-                    const controller = cell.controller as OutputController<any>;
-                    controller.setValue(item[cell.controller.metadata.Id]);
-                }
-            }
-
-            for (let hiddenInput of row.hiddenInputs) {
-                const controller = hiddenInput as InputController<any>;
-                const promise = controller.setValue(item[hiddenInput.metadata.Id]);
-                promises.push(promise);
-            }
+            promises.push(this.addRow(item));
         }
 
         this.extensions.forEach(c => {
@@ -190,11 +173,13 @@ export class Table extends EventSource {
     }
 
     /**
-     * Appends a new row to the table with null data.
+     * Appends a new row to the table with the given data.
      */
-    addRow(data: any = {}): TableRowGroup<TableBodyCell> {
+    async addRow(data: any = {}): Promise<TableRowGroup<TableBodyCell>> {
         var cells = this.head.main.cells.map((c) => new TableBodyCell(this.parent, data, this.column(c.metadata.Id)));
         var row = new TableRowGroup<TableBodyCell>(this.body.length, cells, data);
+
+        const promises = [];
 
         for (let cell of cells) {
             if (cell.isInput) {
@@ -204,6 +189,11 @@ export class Table extends EventSource {
                         await onChange(row, cell.controller as InputController<any>);
                     });
                 }
+
+                const promise = cell.controller.setValue(data[cell.controller.metadata.Id]);
+                promises.push(promise);
+            } else {
+                cell.controller.setValue(data[cell.controller.metadata.Id]);
             }
         }
 
@@ -216,10 +206,15 @@ export class Table extends EventSource {
             }).controller;
 
             row.hiddenInputs.push(controller as InputController<any>);
+
+            const promise = controller.setValue(data[controller.metadata.Id]);
+            promises.push(promise);
         }
 
         this.extensions.forEach(c => c.processBodyRow(this, row));
         this.body.push(row);
+
+        await Promise.all(promises);
 
         return row;
     }
