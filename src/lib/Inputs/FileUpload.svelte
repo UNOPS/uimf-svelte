@@ -4,6 +4,7 @@
 	interface Configuration {
 		AcceptedFileTypes: string;
 		NeedFileName: boolean;
+		CssClass?: string;
 	}
 
 	export interface FileData {
@@ -116,27 +117,29 @@
 />
 
 {#await controller.getValue() then value}
-	{#if value != null && value.dataUrl != null && value.type != null}
-		{#if value.type.includes('image')}
-			<img class="my-image" src={value.dataUrl} alt="" />
-		{:else}
-			<div class="card">
-				<i class="file-icon fa fa-file fa-4x" />
-				<div class="card-body">
-					<p class="card-text">Type: {value.type.split('/')[1]}</p>
+	{#if !controller.metadata.Component.Configuration.CssClass?.includes('compact')}
+		{#if value != null && value.dataUrl != null && value.type != null}
+			{#if value.type.includes('image')}
+				<img class="my-image" src={value.dataUrl} alt="" />
+			{:else}
+				<div class="card">
+					<i class="file-icon fa fa-file fa-4x" />
+					<div class="card-body">
+						<p class="card-text">Type: {value.type.split('/')[1]}</p>
+					</div>
 				</div>
+			{/if}
+			<div class="buttons">
+				<button
+					type="button"
+					class="btn btn-danger remove-button"
+					on:click={() => {
+						fileInput.value = '';
+						controller.setValue(null);
+					}}>Remove</button
+				>
 			</div>
 		{/if}
-		<div class="buttons">
-			<button
-				type="button"
-				class="btn btn-danger remove-button"
-				on:click={() => {
-					fileInput.value = '';
-					controller.setValue(null);
-				}}>Remove</button
-			>
-		</div>
 	{/if}
 {/await}
 
