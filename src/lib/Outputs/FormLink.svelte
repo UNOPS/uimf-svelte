@@ -171,7 +171,7 @@
 										});
 									}
 								})
-								.then(function () {
+								.then(async function () {
 									if (controller.form != null && location.href === originalUrl) {
 										// If parent form is a "record", meaning that initially it's called with
 										// "operation=get" and the subsequent calls are done with "operation=post".
@@ -180,7 +180,7 @@
 											controller.form.inputs['Operation']
 										) {
 											// Mimic the initial "get" call, so that we reload the parent form.
-											controller.form.inputs['Operation'].value = null;
+											await controller.form.inputs['Operation'].setValue(null);
 											controller.form.submit(true);
 										} else {
 											// For regular "non-record" forms we just re-submit the form normally.
