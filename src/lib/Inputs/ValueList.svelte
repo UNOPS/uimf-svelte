@@ -454,7 +454,6 @@
 
 		td.min-width-400 {
 			min-width: 400px;
-			display: flex;
 		}
 	}
 
