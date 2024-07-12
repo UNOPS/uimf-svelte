@@ -4,6 +4,7 @@ import { Table, TableBodyCell, TableHeadCell, TableRowGroup } from "..";
 import { TableExtension } from "../TableExtension";
 import TableRow from "../TableRow";
 import type { IField } from "../IColumn";
+import { Color } from "../../../Utilities/Color";
 
 interface RowCustomProperty {
     Color: string;
@@ -46,6 +47,11 @@ export class RowExtension extends TableExtension {
     private firstRowProcessed: boolean = false;
     private groupCount: number = 0;
 
+    /**
+     * List of actual group rows that were created.
+     */
+    private groupRows: TableRow<TableBodyCell>[] = [];
+
     init() {
         this.groupCount = 0;
         this.previousGroup = null;
@@ -55,6 +61,7 @@ export class RowExtension extends TableExtension {
         this.splitBy = null;
         this.splitByStyle = null;
         this.rowsProcessed = 0;
+        this.groupRows = [];
     }
 
     processTable(table: Table): void {
@@ -66,6 +73,25 @@ export class RowExtension extends TableExtension {
 
             const groupRow = new TableRow<TableBodyCell>([groupCell]);
             this.firstRow.above.push(groupRow);
+        }
+
+        if (this.groupRows.length > 0) {
+            const headerBgAsString = table.head.main.cells[0].styleManager.styleObject.background;
+
+            if (headerBgAsString != null) {
+                const headerBg = Color.parse(headerBgAsString);
+
+                if (headerBg != null) {
+                    // Make the header background color darker and less transparent.
+                    // This way the group row stands out and clearly separates the groups.
+                    headerBg.alpha *= 2;
+                    const groupRowBg = headerBg.adjustBrightness(0.3).toString();
+
+                    for (const groupRow of this.groupRows) {
+                        groupRow.styleManager.add('background', groupRowBg);
+                    }
+                }
+            }
         }
     }
 
@@ -81,6 +107,10 @@ export class RowExtension extends TableExtension {
                 if (this.firstRow != null || currentGroup !== "null") {
                     const groupRow = new TableRow<TableBodyCell>([groupCell]);
                     row.above.push(groupRow);
+
+                    // Store the group row in private array, so that we
+                    // can manipulate them later in an easy way.
+                    this.groupRows.push(groupRow);
 
                     if (this.firstRow == null) {
                         this.firstRowProcessed = true;
