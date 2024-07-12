@@ -447,9 +447,18 @@
 			padding-left: 8px;
 			padding-right: 8px;
 		}
+
+		td.min-width-200 {
+			min-width: 200px;
+		}
+
+		td.min-width-400 {
+			min-width: 400px;
+			display: flex;
+		}
 	}
 
-	.table-data > tbody > tr > .has-dropdowns {
+	.has-dropdowns {
 		// Add padding to account for typeahead, dropdown or any other input
 		// that can grow vertically.
 		padding-bottom: 18rem;
@@ -458,11 +467,6 @@
 	.col-action {
 		width: 1px;
 		text-align: center;
-	}
-
-	.min-width-400 {
-		min-width: 400px;
-		display: flex;
 	}
 
 	button.btn {
