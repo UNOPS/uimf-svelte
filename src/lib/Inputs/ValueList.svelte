@@ -84,6 +84,7 @@
 				parent: this,
 				columns: this.metadata.Component.Configuration.Fields,
 				extensions: [
+					new ExpandableExtension(),
 					new DocumentationExtension(),
 					new ColumnExtension(),
 					new RowExtension(),
@@ -150,6 +151,7 @@
 	import { ActionListColumnExtension } from '../Outputs/Table/Extensions/ActionListColumnExtension';
 	import type { IField } from '../Outputs/Table/IColumn';
 	import { ValueListExtension } from '../Outputs/Table/Extensions/ValueListExtension';
+	import { ExpandableExtension } from '../Outputs/Table/Extensions/ExpandableExtension';
 
 	export let controller: Controller;
 
@@ -337,22 +339,24 @@
 									use:tooltip={'Remove row'}
 									on:click|preventDefault={() => (rowGroup.deleted = true)}
 								>
-									<i class="fa fa-times" />
+									<i class="fa fa-trash" />
 								</button>
 							</td>
 						{/if}
 					</tr>
 
 					{#each rowGroup.below as footer}
-						{#if footer.append}
-							<tr class:d-none={!footer.visible} class:fotter={true} class={footer.cssClass}>
-								{#each footer.cells as cell, index}
-									<td colspan={cell.colspan} class={cell.cssClass}>
-										<Output controller={cell.controller} hideLabel={true} />
-									</td>
-								{/each}
-							</tr>
-						{/if}
+						<!-- {#if footer.visible} 
+						 {console.log("value list re-rendered")}  -->
+						<!-- <tr class:d-none={!footer.visible} class:fotter={true} class={footer.cssClass}> -->
+						<tr class:fotter={true} class={footer.cssClass}>
+							{#each footer.cells as cell, index}
+								<td colspan={cell.colspan} class={cell.cssClass}>
+									<Output controller={cell.controller} hideLabel={true} />
+								</td>
+							{/each}
+						</tr>
+						<!-- {/if} -->
 					{/each}
 				{/each}
 			</tbody>
@@ -367,7 +371,7 @@
 								use:tooltip={'Add row'}
 								on:click|preventDefault={addNewRow}
 							>
-								<i class="fa fa-plus" />
+								<i class="fa fa-circle-plus" />
 							</button>
 						</td>
 					</tr>
@@ -406,8 +410,8 @@
 
 		tbody {
 			& > tr > td {
-				vertical-align: middle;
-				padding: 14px 8px;
+				vertical-align: top;
+				padding: 10px 10px;
 			}
 
 			& > tr > td:has(input) {
@@ -459,5 +463,17 @@
 	.min-width-400 {
 		min-width: 400px;
 		display: flex;
+	}
+
+	button.btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1.1em;
+		color: #218fcf;
+		padding: 5px 15px;
+		background: #ffffff;
+		border: none;
+		cursor: pointer;
 	}
 </style>
