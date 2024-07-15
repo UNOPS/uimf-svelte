@@ -121,4 +121,18 @@
 			content: ', ';
 		}
 	}
+
+	.space-separated-list {
+		& > div {
+			display: inline;
+		}
+
+		& > div:last-child::after {
+			content: none;
+		}
+
+		& > div::after {
+			content: ' ';
+		}
+	}
 </style>
