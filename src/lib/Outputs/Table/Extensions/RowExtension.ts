@@ -12,6 +12,7 @@ interface RowCustomProperty {
     GroupByHeader: string;
     SplitBy: string;
     SplitByStyle: string | null;
+    RowCssClass: string | null;
 }
 
 export class RowExtension extends TableExtension {
@@ -42,6 +43,11 @@ export class RowExtension extends TableExtension {
      */
     private splitBy: string | null = null;
 
+    /**
+     * Field holding the CSS class to apply to its row.
+     */
+    private rowCssClass: string | null = null;
+
     private splitByStyle: string | null = null;
     private firstRow: TableRowGroup<TableBodyCell> | null = null;
     private firstRowProcessed: boolean = false;
@@ -62,6 +68,7 @@ export class RowExtension extends TableExtension {
         this.splitByStyle = null;
         this.rowsProcessed = 0;
         this.groupRows = [];
+        this.rowCssClass = null;
     }
 
     processTable(table: Table): void {
@@ -142,6 +149,14 @@ export class RowExtension extends TableExtension {
             this.previousSplit = currentSplit;
         }
 
+        if (this.rowCssClass != null) {
+            const rowCssClass = row.data[this.rowCssClass];
+
+            if (rowCssClass != null) {
+                row.main.cssClassManager.addClass(rowCssClass);
+            }
+        }
+
         this.rowsProcessed += 1;
     }
 
@@ -168,6 +183,7 @@ export class RowExtension extends TableExtension {
         this.color = rowMetadata.Color;
         this.splitBy = rowMetadata.SplitBy;
         this.splitByStyle = rowMetadata.SplitByStyle;
+        this.rowCssClass = rowMetadata.RowCssClass;
 
         return Promise.resolve();
     }

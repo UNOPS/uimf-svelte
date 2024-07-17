@@ -351,6 +351,14 @@
 			border-color: var(--inner-border-color);
 		}
 
+		tbody > tr {
+			&.selected > td {
+				border-bottom: 2px solid #d6ddfd;
+				border-top: 2px solid #d6ddfd;
+				background: aliceblue;
+			}
+		}
+
 		tbody > tr:hover {
 			background-color: var(--bs-tertiary-bg);
 		}
