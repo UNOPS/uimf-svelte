@@ -18,6 +18,7 @@
 		Filename?: string;
 		CssClass?: string;
 		Tooltip?: string;
+		RenderTargets?: { [key: string]: string };
 	}
 
 	export class Controller extends OutputController<FormLinkData> {}
@@ -198,9 +199,25 @@
 								})
 								.then(function (response) {
 									if (response != null) {
+										const renderTarget = controller.value.RenderTargets;
+
+										if (controller.form != null && renderTarget != null) {
+											for (const [sourceField, targetField] of Object.entries(renderTarget)) {
+												const newValue = response[sourceField];
+												const output = controller.form.response[targetField];
+
+												if (output != null && output.setValue != null) {
+													output.setValue(newValue);
+												}
+											}
+										}
+
 										controller.app.runResponseHandler(response);
 										controller.app.runClientFunctions(response);
-										controller.form?.submit(false);
+
+										if (renderTarget == null) {
+											controller.form?.submit(false);
+										}
 									}
 								});
 						});
