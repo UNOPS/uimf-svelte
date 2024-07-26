@@ -1,4 +1,5 @@
 import type { InputController } from "./InputController";
+import { OutputController } from "./OutputController";
 import type IUimfApp from "./UimfApp";
 import type { IFieldMetadata, FormLink } from "./uimf";
 
@@ -17,9 +18,9 @@ export interface FormInstance {
     load(postOnLoad: boolean): Promise<any>;
     on(event: string, callback: (args: any) => void): any;
     destroy(): any;
-    fire(event: string, args: { postOnLoad: any; }): any;
+    fire(event: string, args?: { postOnLoad: any; }): any;
     metadata: FormMetadata;
-    response: { [key: string]: any };
+    response: { [key: string]: OutputController<any> };
     inputs: { [key: string]: InputController<any> };
     originalInputValues: { [key: string]: any };
     app: IUimfApp;
