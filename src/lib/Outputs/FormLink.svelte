@@ -19,6 +19,7 @@
 		CssClass?: string;
 		Tooltip?: string;
 		RenderTargets?: { [key: string]: string };
+		ForwardedInputValues?: { [key: string]: string };
 	}
 
 	export class Controller extends OutputController<FormLinkData> {}
@@ -192,9 +193,22 @@
 						});
 						break;
 					case 'run':
-						confirmAndRun(() => {
+						confirmAndRun(async () => {
+							const forwardedInputValues = controller.value.ForwardedInputValues;
+
+							const inputFieldValues = controller.value.InputFieldValues || {};
+
+							if (controller.form != null && forwardedInputValues != null) {
+								const parentFormValues = await controller.form.getInputFieldValues();
+
+								for (const [targetField, sourceField] of Object.entries(forwardedInputValues)) {
+									const forwardedValue = await parentFormValues[sourceField];
+									inputFieldValues[targetField] = forwardedValue;
+								}
+							}
+
 							return controller.app
-								.postForm(controller.value.Form, controller.value.InputFieldValues, {
+								.postForm(controller.value.Form, inputFieldValues, {
 									skipClientFunctions: true
 								})
 								.then(function (response) {
