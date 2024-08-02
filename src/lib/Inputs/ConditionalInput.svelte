@@ -8,6 +8,7 @@
 	}
 
 	interface Configuration {
+		CssClass: string;
 		Options: Option[];
 		Views: NestedComponentMetadata[];
 		ConditionIsReadonly?: boolean;
@@ -149,7 +150,7 @@
 	}
 </script>
 
-<div>
+<div class={controller.metadata.Component.Configuration?.CssClass}>
 	{#if controller.metadata.Component.Configuration.ConditionIsReadonly !== true}
 		{#each controller.metadata.Component.Configuration.Options as option}
 			{@const selected = controller.condition === option.Value}
