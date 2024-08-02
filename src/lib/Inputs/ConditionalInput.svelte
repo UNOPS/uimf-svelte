@@ -97,8 +97,9 @@
 			return JSON.stringify(value);
 		}
 
-		public changeCondition(newCondition: string) {
-			this.condition = newCondition;
+		public changeCondition(newCondition: string, value: ConditionalInput | null) {
+
+			this.condition = newCondition;;
 
 			const matchingView = this.views.find((t) => t.showIf === this.condition);
 
@@ -107,6 +108,16 @@
 			}
 
 			this.view = matchingView.controller;
+
+			if (value?.Value == null || value.Value.Condition == null) {
+				this.condition = null;
+				this.view = null;
+				return;
+			}
+
+			const matchingViewValue = value.Value[matchingView.controller.metadata.Id];
+
+ 			matchingView.controller.setValue(matchingViewValue?.Value);
 		}
 	}
 </script>
@@ -133,7 +144,7 @@
 	});
 
 	function changeCondition(newCondition: any) {
-		controller.changeCondition(newCondition);
+		controller.changeCondition(newCondition, controller.value)
 		controller = controller;
 	}
 </script>
