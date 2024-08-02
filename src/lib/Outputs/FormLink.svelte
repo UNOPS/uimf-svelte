@@ -18,7 +18,8 @@
 		Filename?: string;
 		CssClass?: string;
 		Tooltip?: string;
-		RenderTargets?: { [key: string]: string };
+		RenderInputTargets?: { [key: string]: string };
+		RenderOutputTargets?: { [key: string]: string };
 		ForwardedInputValues?: { [key: string]: string };
 	}
 
@@ -213,23 +214,39 @@
 								})
 								.then(function (response) {
 									if (response != null) {
-										const renderTarget = controller.value.RenderTargets;
+										const renderOutputTarget = controller.value.RenderOutputTargets;
+										const renderInputTarget = controller.value.RenderInputTargets;
 
-										if (controller.form != null && renderTarget != null) {
-											for (const [sourceField, targetField] of Object.entries(renderTarget)) {
-												const newValue = response[sourceField];
-												const output = controller.form.response[targetField];
+										if (controller.form != null) {
+											if (renderOutputTarget != null)
+												for (const [sourceField, targetField] of Object.entries(
+													renderOutputTarget
+												)) {
+													const newValue = response[sourceField];
 
-												if (output != null && output.setValue != null) {
-													output.setValue(newValue);
+													const output = controller.form.response[targetField];
+													if (output != null && output.setValue != null) {
+														output.setValue(newValue);
+													}
 												}
-											}
+
+											if (renderInputTarget != null)
+												for (const [sourceField, targetField] of Object.entries(
+													renderInputTarget
+												)) {
+													const newValue = response[sourceField];
+
+													const input = controller.form.inputs[targetField];
+													if (input != null && input.setValue != null) {
+														input.setValue(newValue);
+													}
+												}
 										}
 
 										controller.app.runResponseHandler(response);
 										controller.app.runClientFunctions(response);
 
-										if (renderTarget == null) {
+										if (renderInputTarget == null && renderOutputTarget == null) {
 											controller.form?.submit(false);
 										}
 									}
