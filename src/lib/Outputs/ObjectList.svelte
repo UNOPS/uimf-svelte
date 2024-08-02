@@ -100,6 +100,12 @@
 		margin-left: 1.3em;
 	}
 
+	.line-separated-list > div {
+		display: list-item;
+		list-style-type: none;
+		margin-left: 0em;
+	}
+
 	.label {
 		font-weight: bold;
 		font-size: medium;
