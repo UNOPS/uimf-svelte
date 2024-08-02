@@ -84,7 +84,11 @@
 		protected setValueInternal(value: ViewData | null): Promise<void> {
 			let promises = [];
 
-			this.value = value ?? { Value: {} };
+			if (value?.Value?.Value) {
+				this.value = value.Value;
+			} else {
+				this.value = value ?? { Value: {} };
+			}
 
 			for (const view of this.views) {
 				promises.push(view.controller.setValue(this.value.Value[view.metadata.Id] ?? null));
