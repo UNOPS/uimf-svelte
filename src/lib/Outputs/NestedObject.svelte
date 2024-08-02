@@ -6,6 +6,8 @@
 	import Output from '../Output.svelte';
 
 	interface Configuration {
+		CssClass: string;
+		CssClassEach: string;
 		Properties: IFieldMetadata[];
 	}
 
@@ -33,6 +35,10 @@
 	beforeUpdate(async () => await component.setup(controller));
 </script>
 
-{#each fields as field}
-	<Output controller={field} />
-{/each}
+<div class={controller.metadata.Component.Configuration?.CssClass}>
+	{#each fields as field}
+		<div class={controller.metadata.Component.Configuration?.CssClassEach}>
+			<Output controller={field} />
+		</div>
+	{/each}
+</div>
