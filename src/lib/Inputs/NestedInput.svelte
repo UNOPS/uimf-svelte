@@ -7,6 +7,8 @@
 	}
 
 	export interface NestedComponentMetadata {
+		CssClassEach: string;
+		CssClass: string;
 		Properties: IFieldMetadata[];
 	}
 
@@ -18,7 +20,7 @@
 			metadata: IFieldMetadata;
 			controller: InputController<any>;
 		}>;
-
+	
 		constructor(options: CreateInputOptions<IFieldMetadata<NestedComponentMetadata>>) {
 			super(options);
 
@@ -124,14 +126,28 @@
 	});
 </script>
 
-{#each controller.views as view}
-	<div>
-		<Input controller={view.controller} />
-	</div>
-{/each}
+<div class={controller.metadata.Component.Configuration?.CssClass}>
+	{#each controller.views as view}
+		<div class={controller.metadata.Component.Configuration?.CssClassEach}>
+			<Input controller={view.controller} />
+		</div>
+	{/each}
+</div>
 
 <style>
 	div {
 		margin-bottom: 20px;
+	}
+
+	.column-200 {
+		width: 200px;
+	}
+
+	.column-300 {
+		width: 300px;
+	}
+
+	.column-700 {
+		width: 700px;
 	}
 </style>
