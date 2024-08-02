@@ -57,10 +57,10 @@
 		<strong>null metadata</strong>
 	{:else}
 		<div class="row mb-3">
-			<label class="col-sm-2 col-form-label" use:tooltip={documentation}
+			<label class="{controller.metadata.CustomProperties?.cssClassLabel ?? 'col-sm-2'}  col-form-label" use:tooltip={documentation}
 				>{controller.metadata.Label}:</label
 			>
-			<div class={`${contentCssClass || defaultCssClass} col-sm-10`} use:tooltip={contentTooltip}>
+			<div class="{`${contentCssClass || defaultCssClass}`} {controller.metadata.CustomProperties?.cssClassLabel ?? 'col-sm-10'}" use:tooltip={contentTooltip}>
 				<svelte:component this={component} {controller} />
 			</div>
 		</div>
@@ -79,6 +79,10 @@
 
 	.col-sm-10 {
 		padding-top: calc(0.375rem + 1px);
+	}
+
+	.long-label{
+		padding: 0px;
 	}
 
 	.block {
