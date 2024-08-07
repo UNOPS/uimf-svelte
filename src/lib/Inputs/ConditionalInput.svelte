@@ -87,7 +87,7 @@
 
 			const matchingViewValue = value.Value[matchingView.controller.metadata.Id];
 
-			return matchingView.controller.setValue(matchingViewValue?.Value);
+			return matchingView.controller.setValue(matchingViewValue);
 		}
 
 		public deserialize(value: string | null): Promise<ConditionalInput | null> {
@@ -97,29 +97,6 @@
 		public serialize(value: ConditionalInput | null): string | null {
 			return JSON.stringify(value);
 		}
-
-		public changeCondition(newCondition: string, value: ConditionalInput | null) {
-
-			this.condition = newCondition;;
-
-			const matchingView = this.views.find((t) => t.showIf === this.condition);
-
-			if (matchingView == null) {
-				throw `Cannot find view for condition '${this.condition}'.`;
-			}
-
-			this.view = matchingView.controller;
-
-			if (value?.Value == null || value.Value.Condition == null) {
-				this.condition = null;
-				this.view = null;
-				return;
-			}
-
-			const matchingViewValue = value.Value[matchingView.controller.metadata.Id];
-
- 			matchingView.controller.setValue(matchingViewValue?.Value);
-		}
 	}
 </script>
 
@@ -127,9 +104,10 @@
 	import { beforeUpdate } from 'svelte';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
 	import { InputComponent } from '../Infrastructure/Component';
-	import type IUimfApp from '$lib/Infrastructure/UimfApp';
+	import uuid from '../Infrastructure/uuid';
 
 	export let controller: Controller;
+	let uniqueId: string = uuid();
 
 	let component = new InputComponent({
 		init() {
@@ -144,8 +122,17 @@
 		await component.setup(controller);
 	});
 
-	function changeCondition(newCondition: any) {
-		controller.changeCondition(newCondition, controller.value)
+	function changeCondition(newCondition: string) {
+		const newValue = JSON.parse(JSON.stringify(controller.value)) ?? {};
+
+		if (newValue.Value == null) {
+			newValue.Value = {};
+		}
+
+		newValue.Value.Condition = newCondition;
+
+		controller.setValueInternal(newValue);
+
 		controller = controller;
 	}
 </script>
@@ -161,6 +148,7 @@
 					data-value={option.Value}
 					on:change={() => changeCondition(option.Value)}
 					required={true}
+					name={uniqueId}
 				/>
 				<span>{option.Label}</span>
 			</label>
