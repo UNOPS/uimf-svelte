@@ -321,7 +321,6 @@
 							<td colspan={cell.colspan} class={cell.cssClass}>
 								{#if !cell.hidden}
 									{#if cell.isInput}
-										<pre>...{JSON.stringify(cell.controller.value)}...</pre>
 										<Input controller={getControllerOrException(rowGroup, cell)} hideLabel={true} />
 									{:else}
 										<Output
