@@ -346,9 +346,6 @@
 					</tr>
 
 					{#each rowGroup.below as footer}
-						<!-- {#if footer.visible} 
-						 {console.log("value list re-rendered")}  -->
-						<!-- <tr class:d-none={!footer.visible} class:fotter={true} class={footer.cssClass}> -->
 						<tr class:fotter={true} class={footer.cssClass}>
 							{#each footer.cells as cell, index}
 								<td colspan={cell.colspan} class={cell.cssClass}>
@@ -356,7 +353,6 @@
 								</td>
 							{/each}
 						</tr>
-						<!-- {/if} -->
 					{/each}
 				{/each}
 			</tbody>
