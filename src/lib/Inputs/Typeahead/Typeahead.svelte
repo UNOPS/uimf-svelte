@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-	import { InputController } from '../Infrastructure/InputController';
+	import { InputController } from '../../Infrastructure/InputController';
 
 	export interface ITypeaheadItem extends TypeaheadValue {
 		Label: string;
@@ -23,7 +23,7 @@
 
 	export interface ITypeaheadMetadata extends IFieldMetadata<IConfiguration> {}
 
-	export class Controller extends InputController<TypeaheadValue, ITypeaheadMetadata> {
+	export class Controller extends InputController<ITypeaheadValue, ITypeaheadMetadata> {
 		public getValue(): Promise<TypeaheadValue | null> {
 			var result = this.value?.Value != null ? this.value : null;
 
@@ -70,21 +70,22 @@
 
 <script lang="ts">
 	import Select from 'svelte-select';
-	import { InputComponent } from '../Infrastructure/Component';
+	import { InputComponent } from '../../Infrastructure/Component';
 	import { beforeUpdate } from 'svelte';
-	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata } from '../../Infrastructure/uimf';
+	import { TypeaheadSourceManager } from './Domain/TypeaheadSourceManager';
+	import { ITypeaheadValue } from './Domain/ITypeaheadValue';
 
 	export let controller: Controller;
 
-	let inlineItems: ITypeaheadItem[] | null = null;
-	let cachedOptions: Record<string, Promise<ITypeaheadItem[]>> = {};
+	let source: TypeaheadSourceManager;
 
 	let component = new InputComponent({
 		async init() {
-			cachedOptions = {};
-
-			const source = controller.metadata.Component.Configuration.Items;
-			inlineItems = Array.isArray(source) ? augmentItems(source) : null;
+			source = new TypeaheadSourceManager(
+				controller.metadata.Component.Configuration,
+				controller.form!
+			);
 
 			controller.ready?.resolve();
 		},
@@ -92,7 +93,7 @@
 			const capturedValue = controller.value;
 
 			if (capturedValue != null && controller.serialize(capturedValue) != null) {
-				let results = await loadOptions(capturedValue);
+				let results = await source.getOptionsAndFilter(capturedValue);
 
 				if (controller.value != capturedValue) {
 					// The value might have changed once the promise
@@ -120,66 +121,11 @@
 	});
 
 	async function loadOptionsAndFilter(query: string): Promise<ITypeaheadItem[]> {
-		const queryById = typeof query !== 'string';
-
-		return loadOptions(query).then((options) => {
-			const visibleOptions = options.filter((t) =>
-				controller.app.hasPermission(t.RequiredPermission)
-			);
-
-			if (queryById) {
-				return visibleOptions;
-			}
-
-			const queryInLowercase = query.toLocaleLowerCase();
-
-			return visibleOptions.filter((t) => t.SearchText?.includes(queryInLowercase) == true);
-		});
-	}
-
-	async function loadOptions(query: string | TypeaheadValue | null): Promise<ITypeaheadItem[]> {
-		if (inlineItems != null) {
-			return Promise.resolve(inlineItems);
+		if (source == null) {
+			return [];
 		}
 
-		let cacheKey = typeof query === 'object' && query != null ? query.Value : query;
-
-		if (cachedOptions[cacheKey] != null) {
-			return cachedOptions[cacheKey];
-		}
-
-		type PostData =
-			| { Ids: { Items: any[] }; [unknown: string]: any }
-			| { Query: string | null; [unknown: string]: any };
-
-		let postData: PostData =
-			typeof query === 'object' && query !== null
-				? { Ids: { Items: [query.Value] } }
-				: { Query: query };
-
-		const parameters = controller.metadata.Component.Configuration.Parameters ?? [];
-
-		let promises = parameters.map((p) => {
-			switch (p.SourceType) {
-				case 'response':
-					postData[p.Parameter] = controller?.form?.response[p.Source]?.value;
-					return Promise.resolve();
-				case 'request':
-					return controller?.form?.inputs[p.Source]
-						.getValue()
-						.then((value: any) => (postData[p.Parameter] = value));
-			}
-		});
-
-		await Promise.all(promises);
-
-		let response = controller.app
-			.postForm(controller.metadata.Component.Configuration.Source!, postData, null)
-			.then((t: any) => {
-				return augmentItems(t.Items);
-			});
-
-		return await response;
+		return source.getOptionsAndFilter(query);
 	}
 
 	const groupBy = (item: any) => item.Group;
@@ -223,7 +169,7 @@
 </div>
 
 <style lang="scss">
-	@import '../scss/styles.variables.scss';
+	@import '../../scss/styles.variables.scss';
 
 	.input-container {
 		width: 100%;

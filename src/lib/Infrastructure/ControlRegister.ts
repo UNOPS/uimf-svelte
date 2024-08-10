@@ -51,7 +51,7 @@ import * as ConversationTimeline from '../Outputs/ConversationTimeline/Conversat
 
 //To be deactivated until complete validation
 import * as DynamicInput from '../Inputs/DynamicInput.svelte';
-import * as Typeahead from '../Inputs/Typeahead.svelte';
+import * as Typeahead from '../Inputs/Typeahead/Typeahead.svelte';
 import * as Table from '../Outputs/Table.svelte';
 import * as ObjectList from '../Outputs/ObjectList.svelte';
 import * as FormLink from '../Outputs/FormLink.svelte';

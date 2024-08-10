@@ -44,21 +44,32 @@
 	import { beforeUpdate } from 'svelte';
 	import Select from 'svelte-select';
 	import { InputComponent } from '../Infrastructure/Component';
-	import { augmentItems, type ITypeaheadItem, type ITypeaheadMetadata } from './Typeahead.svelte';
+	import {
+		augmentItems,
+		type ITypeaheadItem,
+		type ITypeaheadMetadata
+	} from './Typeahead/Typeahead.svelte';
+	import { TypeaheadSourceManager } from './Typeahead/Domain/TypeaheadSourceManager';
+	import { IOption } from './Typeahead/Domain';
 
 	export let controller: Controller;
 
-	let inlineItems: ITypeaheadItem[] | null = null;
+	let source: TypeaheadSourceManager;
+	let inlineItems: IOption[] | null = null;
 	let cachedOptions: Record<string, Promise<ITypeaheadItem[]>> = {};
 	let selected: ITypeaheadItem[] = [];
 
 	let component = new InputComponent({
 		async init() {
-			cachedOptions = {};
+			source = new TypeaheadSourceManager(
+				controller.metadata.Component.Configuration,
+				controller.form!
+			);
+
 			selected = [];
 
 			const items = controller.metadata.Component.Configuration.Items;
-			inlineItems = Array.isArray(items) ? augmentItems(items) : null;
+			inlineItems = Array.isArray(items) ? TypeaheadSourceManager.augmentItems(items) : null;
 
 			controller.ready?.resolve();
 		},
@@ -66,7 +77,7 @@
 			var capturedValue = controller?.value;
 
 			if (capturedValue != null && controller.serialize(capturedValue)) {
-				let results = await loadOptions(capturedValue);
+				let results = await source.getOptionsAndFilter(capturedValue);
 
 				if (controller.value != capturedValue) {
 					// The value might have changed once the promise
@@ -91,70 +102,11 @@
 	});
 
 	async function loadOptionsAndFilter(query: MultiselectValue | string): Promise<any> {
-		const queryById = typeof query !== 'string';
-
-		return loadOptions(query).then((options) => {
-			const visibleOptions = options.filter((t) =>
-				controller.app.hasPermission(t.RequiredPermission)
-			);
-
-			if (queryById) {
-				return visibleOptions;
-			}
-
-			const queryInLowercase = query.toLocaleLowerCase();
-
-			return visibleOptions.filter((t) => t.SearchText?.includes(queryInLowercase) == true);
-		});
-	}
-
-	async function loadOptions(query: MultiselectValue | string): Promise<ITypeaheadItem[]> {
-		if (inlineItems != null) {
-			return Promise.resolve(inlineItems);
+		if (source == null) {
+			return [];
 		}
 
-		if (typeof query === 'string') {
-			if (cachedOptions[query] != null) {
-				return cachedOptions[query];
-			}
-		}
-
-		type PostData =
-			| { Ids: { Items: any[] }; [unknown: string]: any }
-			| { Query: string | null; [unknown: string]: any };
-
-		var postData: PostData =
-			typeof query === 'string'
-				? { Query: query }
-				: { Ids: { Items: query.Items?.length > 0 ? query.Items : [] } };
-
-		const parameters = controller.metadata.Component.Configuration.Parameters ?? [];
-
-		let promises = parameters.map((p) => {
-			switch (p.SourceType) {
-				case 'response':
-					postData[p.Parameter] = controller?.form?.response[p.Source]?.value;
-					return Promise.resolve();
-				case 'request':
-					return controller?.form?.inputs[p.Source]
-						.getValue()
-						.then((value: any) => (postData[p.Parameter] = value));
-			}
-		});
-
-		await Promise.all(promises);
-
-		let response = controller.app
-			.postForm(controller.metadata.Component.Configuration.Source!, postData, null)
-			.then((t: any) => {
-				return augmentItems(t.Items);
-			});
-
-		if (typeof query === 'string') {
-			cachedOptions[query] = response;
-		}
-
-		return await response;
+		return source.getOptionsAndFilter(query);
 	}
 
 	async function handleSelect(event: Event & { detail: any[] }) {

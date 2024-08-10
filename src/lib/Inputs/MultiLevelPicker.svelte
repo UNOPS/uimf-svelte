@@ -49,7 +49,7 @@
 	import { InputComponent } from '../Infrastructure/Component';
 	import type { FormResponse } from '../Infrastructure/UimfApp';
 	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
-	import { augmentItems, type ITypeaheadItem } from './Typeahead.svelte';
+	import { augmentItems, type ITypeaheadItem } from './Typeahead/Typeahead.svelte';
 
 	export let controller: Controller;
 
