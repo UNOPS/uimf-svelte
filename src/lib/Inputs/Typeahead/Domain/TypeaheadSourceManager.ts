@@ -163,7 +163,7 @@ export class TypeaheadSourceManager {
             let promises = this.#config.Parameters.map((p) => {
                 switch (p.SourceType) {
                     case 'response':
-                        postData[p.Parameter] = this.#form.response[p.Source];
+                        postData[p.Parameter] = this.#form.response[p.Source]?.value;
                         return Promise.resolve();
                     case 'request':
                         return this.#form.inputs[p.Source]
