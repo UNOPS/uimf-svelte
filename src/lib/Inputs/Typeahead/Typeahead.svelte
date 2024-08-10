@@ -1,14 +1,6 @@
 <script context="module" lang="ts">
 	import { InputController } from '../../Infrastructure/InputController';
 
-	export interface ITypeaheadItem extends TypeaheadValue {
-		Label: string;
-		SearchText?: string | null;
-		Description?: string | null;
-		RequiredPermission?: string | null;
-		Group?: string | null;
-	}
-
 	interface IConfiguration {
 		Source?: string | null;
 		Parameters?: Array<{
@@ -16,7 +8,7 @@
 			Parameter: string;
 			Source: string;
 		}> | null;
-		Items?: Array<ITypeaheadItem>;
+		Items?: Array<IOption>;
 		DefaultValue?: string | null;
 		SelectAll?: boolean;
 	}
@@ -24,33 +16,28 @@
 	export interface ITypeaheadMetadata extends IFieldMetadata<IConfiguration> {}
 
 	export class Controller extends InputController<ITypeaheadValue, ITypeaheadMetadata> {
-		public getValue(): Promise<TypeaheadValue | null> {
+		public getValue(): Promise<ITypeaheadValue | null> {
 			var result = this.value?.Value != null ? this.value : null;
 
 			return Promise.resolve(result);
 		}
 
-		public deserialize(value: string | null): Promise<TypeaheadValue | null> {
-			var result = value == null || value === '' ? null : new TypeaheadValue(value);
+		public deserialize(value: string | null): Promise<ITypeaheadValue | null> {
+			var result = value == null || value === '' ? null : { Value: value };
 
 			return Promise.resolve(result);
 		}
 
-		public serialize(value: TypeaheadValue | null): string | null {
+		public serialize(value: ITypeaheadValue | null): string | null {
 			return value?.Value != null ? value.Value : null;
 		}
-	}
 
-	// tslint:disable-next-line:max-classes-per-file
-	class TypeaheadValue {
-		constructor(value?: any) {
-			this.Value = value;
+		protected override setValueInternal(value: ITypeaheadValue | null): Promise<void> {
+			return Promise.resolve();
 		}
-
-		public Value: any;
 	}
 
-	export function augmentItems(items: ITypeaheadItem[]): ITypeaheadItem[] {
+	export function augmentItems(items: IOption[]): IOption[] {
 		if (items == null) {
 			return [];
 		}
@@ -63,7 +50,7 @@
 			// Always search in lowercase.
 			c.SearchText = c.SearchText.toLocaleLowerCase();
 
-			return c as ITypeaheadItem;
+			return c as IOption;
 		});
 	}
 </script>
@@ -75,6 +62,7 @@
 	import type { IFieldMetadata } from '../../Infrastructure/uimf';
 	import { TypeaheadSourceManager } from './Domain/TypeaheadSourceManager';
 	import { ITypeaheadValue } from './Domain/ITypeaheadValue';
+	import { IOption } from './Domain';
 
 	export let controller: Controller;
 
@@ -93,7 +81,7 @@
 			const capturedValue = controller.value;
 
 			if (capturedValue != null && controller.serialize(capturedValue) != null) {
-				let results = await source.getOptionsAndFilter(capturedValue);
+				let result = await getAugmentedOption(capturedValue);
 
 				if (controller.value != capturedValue) {
 					// The value might have changed once the promise
@@ -102,14 +90,7 @@
 					return;
 				}
 
-				controller.value =
-					results != null && results.length > 0
-						? results.find((t) => t.Value == controller?.value?.Value) ?? null
-						: null;
-
-				if (controller.value == null) {
-					throw `Cannot find option for "${controller.metadata.Id}".`;
-				}
+				controller.value = result;
 			} else {
 				controller.value = null;
 			}
@@ -120,7 +101,22 @@
 		await component.setup(controller);
 	});
 
-	async function loadOptionsAndFilter(query: string): Promise<ITypeaheadItem[]> {
+	async function getAugmentedOption(value: ITypeaheadValue): Promise<IOption> {
+		let options = await source.getOptionsAndFilter(value);
+
+		const option =
+			options != null && options.length > 0
+				? options.find((t) => t.Value == value?.Value) ?? null
+				: null;
+
+		if (option == null) {
+			throw `Cannot find option for "${controller.metadata.Id}".`;
+		}
+
+		return option;
+	}
+
+	async function loadOptionsAndFilter(query: string): Promise<IOption[]> {
 		if (source == null) {
 			return [];
 		}
@@ -145,6 +141,14 @@
 			Label: group
 		})}
 		on:input={async (e) => {
+			if (e.detail?.Value == controller.value?.Value) {
+				// Nothing changed. Do nothing. This is important to make sure
+				// we don't accidentally set change augmented value for a non-augmented
+				// one (which can happen if the typeahead is part of a value list and
+				// the row above is removed).
+				return;
+			}
+
 			await controller.setValue(e.detail);
 		}}
 		on:clear={async () => {

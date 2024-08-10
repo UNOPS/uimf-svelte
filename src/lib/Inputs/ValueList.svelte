@@ -321,6 +321,7 @@
 							<td colspan={cell.colspan} class={cell.cssClass}>
 								{#if !cell.hidden}
 									{#if cell.isInput}
+										<pre>...{JSON.stringify(cell.controller.value)}...</pre>
 										<Input controller={getControllerOrException(rowGroup, cell)} hideLabel={true} />
 									{:else}
 										<Output
@@ -337,7 +338,10 @@
 									class="btn btn-outline-light"
 									type="button"
 									use:tooltip={'Remove row'}
-									on:click|preventDefault={() => (rowGroup.deleted = true)}
+									on:click|preventDefault={() => {
+										rowGroup.deleted = true;
+										table = table;
+									}}
 								>
 									<i class="fa fa-trash" />
 								</button>

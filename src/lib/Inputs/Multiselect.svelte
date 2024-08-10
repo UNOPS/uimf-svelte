@@ -44,20 +44,14 @@
 	import { beforeUpdate } from 'svelte';
 	import Select from 'svelte-select';
 	import { InputComponent } from '../Infrastructure/Component';
-	import {
-		augmentItems,
-		type ITypeaheadItem,
-		type ITypeaheadMetadata
-	} from './Typeahead/Typeahead.svelte';
+	import { type ITypeaheadMetadata } from './Typeahead/Typeahead.svelte';
 	import { TypeaheadSourceManager } from './Typeahead/Domain/TypeaheadSourceManager';
 	import { IOption } from './Typeahead/Domain';
 
 	export let controller: Controller;
 
 	let source: TypeaheadSourceManager;
-	let inlineItems: IOption[] | null = null;
-	let cachedOptions: Record<string, Promise<ITypeaheadItem[]>> = {};
-	let selected: ITypeaheadItem[] = [];
+	let selected: IOption[] = [];
 
 	let component = new InputComponent({
 		async init() {
@@ -67,9 +61,6 @@
 			);
 
 			selected = [];
-
-			const items = controller.metadata.Component.Configuration.Items;
-			inlineItems = Array.isArray(items) ? TypeaheadSourceManager.augmentItems(items) : null;
 
 			controller.ready?.resolve();
 		},
