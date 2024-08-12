@@ -36,6 +36,10 @@
 <style lang="scss">
 	@import '../scss/styles.variables.scss';
 
+	span {
+		text-wrap: nowrap;
+	}
+
 	i {
 		padding-left: 0;
 		margin-left: 0;
