@@ -95,12 +95,14 @@ export class TypeaheadSourceManager {
         }
 
         if (query != null) {
-            // Retrieve all data without filtering by `query`.
+            // Retrieve all data without filtering by `query`. It is assumed
+            // that the endpoint should query entire dataset if the query is null.
             const allData = await this.#getOptions(null);
 
             // If the result includes entire dataset then don't make 
             // query-specific requests and just return this dataset.
-            if (allData.TotalItemCount === allData.Items.length) {
+            if (allData.TotalItemCount > 0 &&
+                allData.TotalItemCount === allData.Items.length) {
                 return allData;
             }
         }
@@ -145,6 +147,7 @@ export class TypeaheadSourceManager {
     }
 
     async #makeHttpRequest(query: ITypeaheadValue | IMultiselectValue | string | null): Promise<IResponse> {
+        console.log('makeHttpRequest', query);
         var postData: { [key: string]: any } = {};
 
         if (query != null) {
