@@ -349,7 +349,7 @@
 					</tr>
 
 					{#each rowGroup.below as footer}
-						<tr class:fotter={true} class={footer.cssClass}>
+						<tr class:footer={true} class={footer.cssClass}>
 							{#each footer.cells as cell, index}
 								<td colspan={cell.colspan} class={cell.cssClass}>
 									<Output controller={cell.controller} hideLabel={true} />
