@@ -68,7 +68,7 @@
 			var capturedValue = controller?.value;
 
 			if (capturedValue != null && controller.serialize(capturedValue)) {
-				let results = await source.getOptionsAndFilter(capturedValue);
+				let results = await getAugmentedOption(capturedValue);
 
 				if (controller.value != capturedValue) {
 					// The value might have changed once the promise
@@ -77,16 +77,21 @@
 					return;
 				}
 
-				selected =
-					results?.length > 0
-						? controller.value.Items.map((t) => results.find((c) => c.Value == t)!)
-						: [];
+				selected = results;
 			} else {
 				selected = [];
 				controller.value = null;
 			}
 		}
 	});
+
+	async function getAugmentedOption(capturedValue: MultiselectValue): Promise<IOption[]> {
+		let results = await source.getOptionsAndFilter(capturedValue);
+
+		return results?.length > 0
+			? capturedValue.Items.map((t) => results.find((c) => c.Value == t)!)
+			: [];
+	}
 
 	beforeUpdate(async () => {
 		await component.setup(controller);

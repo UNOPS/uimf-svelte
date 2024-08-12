@@ -12,6 +12,7 @@ export class TypeaheadSourceManager {
     static #requestPromises: Record<string, Promise<any>> = {};
     #config: ITypeaheadConfig;
     #inlineItems: IOption[] | null;
+    #cachedItems: IOption[] = [];
     #form: FormInstance;
 
     constructor(config: ITypeaheadConfig, form: FormInstance) {
@@ -86,6 +87,15 @@ export class TypeaheadSourceManager {
         });
     }
 
+    static #isMultiselectValue(object: any): object is IMultiselectValue {
+        return object != null && object.hasOwnProperty('Items');
+    }
+
+    static #isTypeaheadValue(object: any): object is ITypeaheadValue {
+        return object != null && object.hasOwnProperty('Value');
+    }
+
+
     async #getOptions(query: ITypeaheadValue | IMultiselectValue | string | null): Promise<IResponse> {
         if (this.#inlineItems != null) {
             return Promise.resolve({
@@ -94,7 +104,13 @@ export class TypeaheadSourceManager {
             });
         }
 
-        if (query != null) {
+        let effectiveQuery = query;
+
+        if (effectiveQuery === '') {
+            effectiveQuery = null;
+        }
+
+        if (effectiveQuery != null) {
             // Retrieve all data without filtering by `query`. It is assumed
             // that the endpoint should query entire dataset if the query is null.
             const allData = await this.#getOptions(null);
@@ -107,7 +123,7 @@ export class TypeaheadSourceManager {
             }
         }
 
-        const key = await this.#generateKey(query);
+        const key = await this.#generateKey(effectiveQuery);
         const cachedData = this.#getFromCache(key);
 
         if (cachedData) {
@@ -115,15 +131,66 @@ export class TypeaheadSourceManager {
         }
 
         if (!TypeaheadSourceManager.#requestPromises[key]) {
-            TypeaheadSourceManager.#requestPromises[key] = this.#makeHttpRequest(query)
+            const cachedItems: IOption[] = [];
+
+            if (TypeaheadSourceManager.#isMultiselectValue(query)) {
+                effectiveQuery = { Items: [] };
+
+                for (const item of query.Items) {
+                    const cachedItem = this.#getCachedItem(item);
+
+                    if (cachedItem) {
+                        cachedItems.push(cachedItem);
+                    }
+                    else {
+                        effectiveQuery.Items.push(item);
+                    }
+                }
+
+                if (effectiveQuery.Items.length === 0) {
+                    return {
+                        Items: cachedItems,
+                        TotalItemCount: cachedItems.length
+                    }
+                }
+            } else if (TypeaheadSourceManager.#isTypeaheadValue(query)) {
+                const cachedItem = this.#getCachedItem(query.Value);
+
+                if (cachedItem) {
+                    return {
+                        Items: [cachedItem],
+                        TotalItemCount: 1
+                    }
+                }
+            }
+
+            TypeaheadSourceManager.#requestPromises[key] = this.#makeHttpRequest(effectiveQuery)
                 .then(data => {
                     this.#storeInCache(key, data);
                     delete TypeaheadSourceManager.#requestPromises[key];
+
+                    for (const item of data.Items) {
+                        this.#cachedItems.push(item);
+                    }
+
+                    for (const cachedItem of cachedItems) {
+                        data.Items.push(cachedItem);
+                        data.TotalItemCount += 1;
+                    }
+
                     return data;
                 });
         }
 
         return TypeaheadSourceManager.#requestPromises[key];
+    }
+
+    #getCachedItem(value: any): IOption | null {
+        const match = this.#cachedItems.find((t) => {
+            return t.Value.toString() == value.toString();
+        });
+
+        return match ?? null;
     }
 
     #getFromCache(key: string): IResponse | null {
@@ -147,7 +214,6 @@ export class TypeaheadSourceManager {
     }
 
     async #makeHttpRequest(query: ITypeaheadValue | IMultiselectValue | string | null): Promise<IResponse> {
-        console.log('makeHttpRequest', query);
         var postData: { [key: string]: any } = {};
 
         if (query != null) {
@@ -177,6 +243,8 @@ export class TypeaheadSourceManager {
 
             await Promise.all(promises);
         }
+
+        console.log('makeHttpRequest', this.#config.Source, query, postData);
 
         return (this.#form.app
             .postForm(this.#config.Source!, postData, null)
