@@ -246,5 +246,9 @@
 		& > :global(.svelte-select.focused) {
 			box-shadow: 0 0 0 var(--bs-focus-ring-width) var(--bs-focus-ring-color);
 		}
+
+		& > :global(.svelte-select > .svelte-select-list:not(:has(*))) {
+			--list-border: none;
+		}
 	}
 </style>
