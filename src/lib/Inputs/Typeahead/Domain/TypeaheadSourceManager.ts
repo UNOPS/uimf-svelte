@@ -244,8 +244,6 @@ export class TypeaheadSourceManager {
             await Promise.all(promises);
         }
 
-        console.log('makeHttpRequest', this.#config.Source, query, postData);
-
         return (this.#form.app
             .postForm(this.#config.Source!, postData, null)
             .then((t: any) => {
