@@ -69,6 +69,10 @@
 {/if}
 
 <style lang="scss">
+	span {
+		text-wrap: nowrap;
+	}
+
 	span > span {
 		font-size: 0.9em;
 		opacity: 0.5;
