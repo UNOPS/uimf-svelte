@@ -127,8 +127,8 @@
 	const component = new InputComponent({
 		init() {
 			const config: NumberRangeCustomProperty = controller.metadata.CustomProperties?.number;
-			
-            step = config?.Step ?? 1;
+
+			step = config?.Step ?? 1;
 			min = config?.MinValue ?? -Number.MAX_VALUE;
 			max = config?.MaxValue ?? Number.MAX_VALUE;
 
@@ -181,5 +181,6 @@
 
 	input.form-control {
 		min-height: $app-input-min-height;
+		font-size: inherit;
 	}
 </style>

@@ -64,7 +64,7 @@
 		/>
 	{:else}
 		<select
-			class="form-control"
+			class="form-select"
 			bind:value={controller.value}
 			on:change={() => controller.setValue(controller.value)}
 		>
@@ -78,7 +78,8 @@
 <style lang="scss">
 	@import '../scss/styles.variables.scss';
 
-	div {
+	div,
+	.form-select {
 		min-height: $app-input-min-height;
 	}
 

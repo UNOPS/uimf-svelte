@@ -115,7 +115,7 @@
 	/>
 
 	<select
-		class="form-control"
+		class="form-select"
 		bind:value={controller.model.Currency}
 		required={controller.metadata.Required}
 	>
@@ -129,8 +129,10 @@
 <style lang="scss">
 	@import '../scss/styles.variables.scss';
 
-	input.form-control {
+	.form-control,
+	.form-select {
 		min-height: $app-input-min-height;
+		font-size: inherit;
 	}
 
 	.wrapper {

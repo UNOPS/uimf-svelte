@@ -65,11 +65,13 @@
 
 	input.form-control {
 		min-height: $app-input-min-height;
+		font-size: inherit;
 	}
 
 	textarea {
 		min-height: 100px;
 		min-width: 100%;
 		max-width: 100%;
+		font-size: inherit;
 	}
 </style>
