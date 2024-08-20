@@ -272,7 +272,7 @@ defaultControlRegister.registerOutputComponent('editable-value', EditableValue, 
 	displayAsBlock: false
 });
 defaultControlRegister.registerOutputComponent('formlink', FormLink, { displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('flexbox', Flexbox, { alwaysHideLabel: false });
+defaultControlRegister.registerOutputComponent('flexbox', Flexbox, { alwaysHideLabel: false, displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('grid', Grid, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('icon', Icon, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('image', OutputImage, { displayAsBlock: false });
