@@ -19,6 +19,7 @@
 	interface Tabstrip {
 		CurrentTab: string;
 		TabGroups: TabGroup[];
+		CssClass: string;
 	}
 
 	export let controller: OutputController<Tabstrip>;
@@ -40,7 +41,7 @@
 
 {#if tabGroups.length > 0}
 	<div class="tabstrip">
-		<ul class="nav nav-tabs">
+		<ul class={controller.value.CssClass ?? 'nav nav-tabs'}>
 			{#each tabGroups as group, groupIndex}
 				{#each group.Tabs as tab, tabIndex}
 					{#if groupIndex > 0 && tabIndex == 0}
