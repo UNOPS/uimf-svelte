@@ -14,9 +14,9 @@
 	// Field constants.
 	let component: ConstructorOfATypedSvelteComponent;
 	let documentation: any;
-	let defaultCssClass: string;
 	let hideIfNull: boolean;
 	let thisHideLabel: boolean;
+	let horizontalLayout: boolean = true;
 
 	const componentController = new OutputComponent({
 		refresh() {
@@ -36,7 +36,17 @@
 
 			hideIfNull = controller.metadata.CustomProperties?.hideIfNull != null;
 
-			defaultCssClass = componentRegistration.config.displayAsBlock ? 'block' : 'inline';
+			horizontalLayout =
+				controller.metadata.Layout === 'default'
+					? // If the layout is default, we use the component's config.
+					  componentRegistration.config.displayAsBlock === false
+					: // Otherwise, we use the layout specified for this particular field.
+					  controller.metadata.Layout != 'vertical';
+
+			// Always use column layout if the label is hidden. This makes
+			// the content span the full width of the container.
+			horizontalLayout = horizontalLayout && !thisHideLabel;
+
 			documentation = controller.metadata.CustomProperties?.documentation;
 
 			controller = controller;
@@ -49,18 +59,22 @@
 </script>
 
 {#if controller.value != null || !hideIfNull}
-	{#if thisHideLabel}
-		<div class={contentCssClass || defaultCssClass} use:tooltip={contentTooltip}>
-			<svelte:component this={component} {controller} />
-		</div>
-	{:else if controller.metadata == null}
+	{#if controller.metadata == null}
 		<strong>null metadata</strong>
 	{:else}
-		<div class="row mb-3">
-			<label class="{controller.metadata.CustomProperties?.cssClassLabel ?? 'col-sm-2'}  col-form-label" use:tooltip={documentation}
-				>{controller.metadata.Label}:</label
+		<div class:wrapper={true} class={horizontalLayout ? 'row' : 'column'}>
+			{#if !thisHideLabel}
+				<label
+					class={controller.metadata.CustomProperties?.cssClassLabel ?? ''}
+					class:col-sm-2={horizontalLayout}
+					use:tooltip={documentation}>{controller.metadata.Label}:</label
+				>
+			{/if}
+			<div
+				class="{contentCssClass ?? ''} {controller.metadata.CustomProperties?.cssClassLabel ?? ''}"
+				class:col-sm-10={horizontalLayout}
+				use:tooltip={contentTooltip}
 			>
-			<div class="{`${contentCssClass || defaultCssClass}`} {controller.metadata.CustomProperties?.cssClassLabel ?? 'col-sm-10'}" use:tooltip={contentTooltip}>
 				<svelte:component this={component} {controller} />
 			</div>
 		</div>
@@ -68,34 +82,40 @@
 {/if}
 
 <style lang="scss">
-	.row {
-		margin-left: 0 !important;
-		margin-right: 0 !important;
+	.wrapper {
+		--padding-left: 15px;
+
+		& > label {
+			padding-left: var(--padding-left);
+		}
+
+		&.row {
+			margin-left: 0 !important;
+			margin-right: 0 !important;
+
+			& > div {
+				display: inline;
+			}
+		}
+
+		&.column {
+			flex-direction: column;
+			margin-bottom: 25px;
+
+			& > div {
+				display: block;
+				padding-left: var(--padding-left);
+			}
+		}
 	}
 
-	.col-form-label {
-		padding-left: 15px !important;
-	}
-
-	.col-sm-10 {
-		padding-top: calc(0.375rem + 1px);
-	}
-
-	.long-label{
+	.long-label {
 		padding: 0px;
-	}
-
-	.block {
-		display: block;
-	}
-
-	.inline {
-		display: inline;
 	}
 
 	:global(.output-section-heading) {
 		font-size: 1.5em;
-		margin: 20px 2px 10px;
+		margin: 20px 0 10px;
 		display: block;
 		background: #8d93a2;
 		color: white;
