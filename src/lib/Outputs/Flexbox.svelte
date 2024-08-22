@@ -12,6 +12,7 @@
 		CssClass?: string;
 		ItemPadding?: string;
 		JustifyContent?: string;
+		Direction?: string;
 	}
 
 	interface FlexboxItem {
@@ -78,13 +79,13 @@
 		style:gap={controller.metadata.Component.Configuration.Gap}
 		style:flex-wrap={controller.metadata.Component.Configuration.Wrap}
 		style:justify-content={controller.metadata.Component.Configuration.JustifyContent}
+		style:flex-direction={controller.metadata.Component.Configuration.Direction}
 	>
 		{#each fields as field}
 			<div
 				class={field.controller.metadata.CustomProperties?.Flexbox?.CssClass}
 				style:flex-basis={field.controller.metadata.CustomProperties?.Flexbox?.FlexBasis}
 				style:flex-grow={field.controller.metadata.CustomProperties?.Flexbox?.FlexGrow}
-				style:padding={controller.metadata.CustomProperties?.ItemPadding}
 			>
 				{#if field.controller.metadata.Label?.length > 0}
 					<h3>{field.controller.metadata.Label}</h3>
