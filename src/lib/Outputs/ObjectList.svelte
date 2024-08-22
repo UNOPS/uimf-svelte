@@ -61,8 +61,7 @@
 						Hidden: false,
 						Id: Date.now().toString(),
 						Label: '',
-						OrderIndex: 0,
-						Required: false
+						OrderIndex: 0
 					},
 					data: item,
 					form: controller.form!,

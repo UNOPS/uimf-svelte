@@ -9,9 +9,16 @@ export interface OutputOptions {
     tooltip: string;
 }
 
+export interface IOutputFieldMetadata<TConfiguration = any> extends IFieldMetadata<TConfiguration> {
+    Layout?: 'vertical' | 'horizontal' | 'default' | undefined | null;
+}
+
+export interface IInputFieldMetadata<TConfiguration = any> extends IFieldMetadata<TConfiguration> {
+    Required: boolean;
+}
+
 export interface IFieldMetadata<TConfiguration = any> {
     Id: string;
-    Required: boolean;
     Hidden: boolean;
     CustomProperties?: any | null;
     Label: string;

@@ -2,10 +2,10 @@ import EventSource from "./EventSource";
 import type { FormInstance } from "./FormController";
 import type { IFormComponent } from "./IFormComponent";
 import type IUimfApp from "./UimfApp";
-import type { IFieldMetadata } from "./uimf";
+import type { IOutputFieldMetadata } from "./uimf";
 import uuid from "./uuid";
 
-export interface CreateOutputOptions<TMetadata extends IFieldMetadata = IFieldMetadata> {
+export interface CreateOutputOptions<TMetadata extends IOutputFieldMetadata = IOutputFieldMetadata> {
     metadata: TMetadata;
     data: any;
     form: FormInstance | null;
@@ -16,7 +16,7 @@ export interface CreateOutputOptions<TMetadata extends IFieldMetadata = IFieldMe
  * Controller for an output field. Each output field in a form will have `OutputController assigned to it
  * so that output fields can be managed via a consistent API.
  */
-export class OutputController<TValue, TMetadata extends IFieldMetadata = IFieldMetadata>
+export class OutputController<TValue, TMetadata extends IOutputFieldMetadata = IOutputFieldMetadata>
     extends EventSource
     implements IFormComponent {
     /**
