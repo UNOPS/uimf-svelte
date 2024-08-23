@@ -42,7 +42,7 @@ import * as Html from '../Outputs/Html.svelte';
 import * as DateTimeOutput from '../Outputs/DateTime.svelte';
 import * as EventDescription from '../Outputs/EventDescription.svelte';
 import * as Status from '../Outputs/Status.svelte';
-import * as NestedObject from '../Outputs/NestedObject.svelte';
+import * as ComplexOutput from '../Outputs/ComplexOutput.svelte';
 import * as TidyTree from '../Outputs/TidyTree.svelte';
 import * as LineChart from '../Outputs/LineChart.svelte';
 import * as BarChart from '../Outputs/BarChart.svelte';
@@ -322,7 +322,7 @@ defaultControlRegister.registerOutputComponent('expandable', Expandable, { displ
 defaultControlRegister.registerOutputComponent('object-list', ObjectList, {
 	displayAsBlock: false
 });
-defaultControlRegister.registerOutputComponent('nested-object', NestedObject, {
+defaultControlRegister.registerOutputComponent('complex-output', ComplexOutput, {
 	displayAsBlock: true
 });
 defaultControlRegister.registerOutputComponent('tuple', Tuple, { displayAsBlock: false });
