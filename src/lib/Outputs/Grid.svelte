@@ -41,10 +41,12 @@
 			(a, b) => a.OrderIndex - b.OrderIndex
 		).map((property) => {
 			const field = controlRegister.createOutput({
-				metadata: property,
-				app: controller.app,
-				form: controller.form,
-				data: null
+				props: {
+					metadata: property,
+					app: controller.app,
+					form: controller.form,
+					data: null
+				}
 			});
 
 			if (controller.value?.Value != null) {

@@ -6,6 +6,16 @@ import type { IOutputFieldMetadata } from "./uimf";
 import uuid from "./uuid";
 
 export interface CreateOutputOptions<TMetadata extends IOutputFieldMetadata = IOutputFieldMetadata> {
+    props: OutputComponentProps<TMetadata>;
+    wrap?: {
+        hideLabel: boolean;
+        contentTooltip: string | null;
+        contentCssClass: string | null;
+        nolayout?: boolean;
+    }
+}
+
+export interface OutputComponentProps<TMetadata extends IOutputFieldMetadata = IOutputFieldMetadata> {
     metadata: TMetadata;
     data: any;
     form: FormInstance | null;
@@ -35,7 +45,7 @@ export class OutputController<TValue, TMetadata extends IOutputFieldMetadata = I
      */
     public readonly app: IUimfApp;
 
-    constructor(options: CreateOutputOptions<TMetadata>) {
+    constructor(options: OutputComponentProps<TMetadata>) {
         super();
         this.metadata = options.metadata as TMetadata;
         this.value = options.data;

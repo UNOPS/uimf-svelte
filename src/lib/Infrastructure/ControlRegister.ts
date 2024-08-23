@@ -75,6 +75,7 @@ import * as ShipmentSize from '../Outputs/ShipmentSize.svelte';
 import * as Boolean from '../Outputs/Boolean.svelte';
 import * as EditableValue from '../Outputs/EditableValue.svelte';
 import * as Flexbox from '../Outputs/Flexbox.svelte';
+import * as OutputWrapper from '../Output.svelte';
 
 interface InputFieldControllerConstructor {
 	new(options: CreateInputOptions): InputController<any>;
@@ -205,26 +206,36 @@ export class ControlRegister {
 	}
 
 	createOutput(options: CreateOutputOptions, renderTarget?: HTMLElement): CreateOutputResult {
-		const registration = this.outputs[options.metadata.Component.Type];
+		const registration = this.outputs[options.props.metadata.Component.Type];
 
 		if (registration == null) {
-			throw `Cannot find output component '${options.metadata.Component.Type}'.`;
+			throw `Cannot find output component '${options.props.metadata.Component.Type}'.`;
 		}
 
-		const controller = new OutputController<any>(options);
+		const controller = new OutputController<any>(options.props);
+
+		let component: any = registration.component;
+
+		if (options.wrap != null) {
+			component = OutputWrapper.default;
+		}
 
 		return {
 			target: renderTarget,
 			controller: controller,
 			component:
 				renderTarget != null
-					? new registration.component({
+					? new component({
 						target: renderTarget,
 						props: {
-							controller: controller
+							controller: controller,
+							hideLabel: options.wrap?.hideLabel,
+							contentTooltip: options.wrap?.contentTooltip,
+							contentCssClass: options.wrap?.contentCssClass,
+							nolayout: options.wrap?.nolayout
 						}
 					})
-					: registration.component
+					: component
 		};
 	}
 }
