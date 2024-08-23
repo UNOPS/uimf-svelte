@@ -29,14 +29,14 @@
 		Value: any | null;
 	}
 
-	interface IOption extends ITypeaheadItem {
+	interface IMyOption extends IOption {
 		HasChildren: boolean;
 		Selectable: boolean;
 	}
 
 	interface Response extends FormResponse {
-		Items: IOption[];
-		Path: IOption[] | null;
+		Items: IMyOption[];
+		Path: IMyOption[] | null;
 		IsFullSet: boolean;
 		ParentId: any | null;
 	}
@@ -48,12 +48,13 @@
 	import { InputController } from '../Infrastructure/InputController';
 	import { InputComponent } from '../Infrastructure/Component';
 	import type { FormResponse } from '../Infrastructure/UimfApp';
-	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
-	import { augmentItems, type ITypeaheadItem } from './Typeahead/Typeahead.svelte';
+	import type { IInputFieldMetadata } from '$lib/Infrastructure/uimf';
+	import { augmentItems } from './Typeahead/Typeahead.svelte';
+	import { IOption } from './Typeahead/Domain';
 
 	export let controller: Controller;
 
-	const emptyOption: IOption = {
+	const emptyOption: IMyOption = {
 		Label: '',
 		Value: null,
 		HasChildren: false,
@@ -61,10 +62,10 @@
 		SearchText: ''
 	};
 
-	let options: IOption[] = [];
+	let options: IMyOption[] = [];
 	let cachedOptions: Record<string, Promise<any>> = {};
-	let path: IOption[] = [];
-	let selected: IOption = emptyOption;
+	let path: IMyOption[] = [];
+	let selected: IMyOption = emptyOption;
 	let loading = true;
 	let listOpen: boolean = false;
 
@@ -114,7 +115,7 @@
 
 	beforeUpdate(async () => await component.setup(controller));
 
-	async function fetchPath(node: Value | null): Promise<IOption[]> {
+	async function fetchPath(node: Value | null): Promise<IMyOption[]> {
 		if (node?.Value == null) {
 			return Promise.resolve([]);
 		}
@@ -143,7 +144,7 @@
 		return await cachedOptions[cacheKey];
 	}
 
-	async function fetchPathItems(query?: string | null): Promise<IOption[]> {
+	async function fetchPathItems(query?: string | null): Promise<IMyOption[]> {
 		let lastItemInPath = path?.length > 0 ? path[path.length - 1] : null;
 		let parentId = null;
 
