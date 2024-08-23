@@ -310,7 +310,7 @@
 						<tr class:group-header={true} class={header.cssClass}>
 							{#each header.cells as cell}
 								<td colspan={cell.colspan} class={cell.cssClass}>
-									<Output controller={cell.controller} hideLabel={true} />
+									<Output controller={cell.controller} nolayout={true} />
 								</td>
 							{/each}
 						</tr>
@@ -323,10 +323,7 @@
 									{#if cell.isInput}
 										<Input controller={getControllerOrException(rowGroup, cell)} hideLabel={true} />
 									{:else}
-										<Output
-											controller={getControllerOrException(rowGroup, cell)}
-											hideLabel={true}
-										/>
+										<Output controller={getControllerOrException(rowGroup, cell)} nolayout={true} />
 									{/if}
 								{/if}
 							</td>
@@ -352,7 +349,7 @@
 						<tr class:footer={true} class={footer.cssClass}>
 							{#each footer.cells as cell, index}
 								<td colspan={cell.colspan} class={cell.cssClass}>
-									<Output controller={cell.controller} hideLabel={true} />
+									<Output controller={cell.controller} nolayout={true} />
 								</td>
 							{/each}
 						</tr>

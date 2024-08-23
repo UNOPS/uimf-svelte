@@ -220,7 +220,7 @@
 						<tr class:group-header={true} class={header.cssClass} style={header.style}>
 							{#each header.cells as cell}
 								<td colspan={cell.colspan + (index === 0 ? extraColspan : 0)} class={cell.cssClass}>
-									<Output controller={cell.controller} hideLabel={true} />
+									<Output controller={cell.controller} nolayout={true} />
 								</td>
 							{/each}
 						</tr>
@@ -244,7 +244,7 @@
 						{/if}
 						{#each rowGroup.main.cells as cell}
 							<td colspan={cell.colspan} class={cell.cssClass} bind:this={cell.element}>
-								<Output controller={cell.controller} hideLabel={true} />
+								<Output controller={cell.controller} nolayout={true} />
 							</td>
 						{/each}
 					</tr>
@@ -262,7 +262,7 @@
 										colspan={cell.colspan + (index === 0 ? extraColspan : 0)}
 										class={cell.cssClass}
 									>
-										<Output controller={cell.controller} hideLabel={true} />
+										<Output controller={cell.controller} nolayout={true} />
 									</td>
 								{/each}
 							</tr>

@@ -50,7 +50,7 @@
 
 <div class={controller.metadata.CustomProperties?.cssClass} class:tuple={true}>
 	{#each controller.metadata.Component.Configuration.ItemTypes as item, idx}
-		<Output controller={getController(item, idx + 1)} hideLabel={true} />
+		<Output controller={getController(item, idx + 1)} nolayout={true} />
 	{/each}
 </div>
 

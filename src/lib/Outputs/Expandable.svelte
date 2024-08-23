@@ -97,7 +97,7 @@
 
 {#if visible != null}
 	<div class="expandable-visible">
-		<Output controller={visible} hideLabel={true} />
+		<Output controller={visible} nolayout={true} />
 
 		{#if hidden != null}
 			<button
@@ -119,7 +119,7 @@
 	{#if showHidden || shown}
 		{#if shown}
 			<div class:hide={!showHidden} class="expandable-hidden">
-				<Output controller={hidden} hideLabel={true} />
+				<Output controller={hidden} nolayout={true} />
 			</div>
 		{/if}
 	{/if}
