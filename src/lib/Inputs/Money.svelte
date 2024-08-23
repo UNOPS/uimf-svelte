@@ -11,7 +11,7 @@
 		Currency?: number | null;
 	}
 
-	interface IMetadata extends IFieldMetadata<IConfiguration> {}
+	interface IMetadata extends IInputFieldMetadata<IConfiguration> {}
 
 	export class Controller extends InputController<IMoney, IMetadata> {
 		public model: IModel = {};
@@ -63,7 +63,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../Infrastructure/Component';
-	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata, IInputFieldMetadata } from '$lib/Infrastructure/uimf';
 	import { SessionStorageVariable } from '../Infrastructure/SessionStorageVariable';
 
 	export let controller: Controller;

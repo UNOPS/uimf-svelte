@@ -13,7 +13,7 @@
 		Value: any;
 	}
 
-	export interface RadioMetadata extends IFieldMetadata<Configuration> {}
+	export interface RadioMetadata extends IInputFieldMetadata<Configuration> {}
 
 	export class Radio {
 		Value!: any;
@@ -70,7 +70,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../Infrastructure/Component';
-	import type { IFieldMetadata } from '../Infrastructure/uimf';
+	import type { IFieldMetadata, IInputFieldMetadata } from '../Infrastructure/uimf';
 	import uuid from '../Infrastructure/uuid';
 
 	export let controller: Controller;

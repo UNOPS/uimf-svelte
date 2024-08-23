@@ -5,7 +5,7 @@
 		DefaultValue: boolean | null;
 	}
 
-	export class Controller extends InputController<boolean, IFieldMetadata<Configuration>> {
+	export class Controller extends InputController<boolean, IInputFieldMetadata<Configuration>> {
 		public getValue(): Promise<boolean | null> {
 			var result = this.deserialize(this.value?.toString() ?? null);
 			return Promise.resolve(result);
@@ -38,7 +38,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../Infrastructure/Component';
-	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata, IInputFieldMetadata } from '$lib/Infrastructure/uimf';
 
 	export let controller: Controller;
 

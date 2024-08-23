@@ -4,7 +4,7 @@
 		Paginator: string;
 	}
 
-	export interface TableMetadata<T = TableConfiguration> extends IFieldMetadata<T> {
+	export interface TableMetadata<T = TableConfiguration> extends IOutputFieldMetadata<T> {
 		CustomProperties: {
 			showExportButton: boolean;
 			CssClass: string;
@@ -36,7 +36,7 @@
 	import { tooltip } from '../../../Components/Tooltip.svelte';
 	import Output from '../../../Output.svelte';
 	import type { TableExtension } from '../TableExtension';
-	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata, IOutputFieldMetadata } from '$lib/Infrastructure/uimf';
 	import { DocumentationExtension } from '../Extensions/DocumentationExtension';
 	import type { IField } from '../IColumn';
 

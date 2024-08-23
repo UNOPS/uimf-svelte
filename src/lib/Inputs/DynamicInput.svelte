@@ -1,19 +1,19 @@
 <script lang="ts" context="module">
 	import { InputController, type CreateInputOptions } from '../Infrastructure/InputController';
-	import type { IComponent, IFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { IComponent, IInputFieldMetadata } from '$lib/Infrastructure/uimf';
 
 	export interface ViewData {
 		Metadata: IComponent;
 		Value: any;
 	}
 
-	export class Controller extends InputController<ViewData, IFieldMetadata> {
+	export class Controller extends InputController<ViewData, IInputFieldMetadata> {
 		public view: {
 			metadata: IComponent;
 			controller: InputController<any>;
 		} | null = null;
 
-		constructor(options: CreateInputOptions<IFieldMetadata>) {
+		constructor(options: CreateInputOptions<IInputFieldMetadata>) {
 			super(options);
 		}
 

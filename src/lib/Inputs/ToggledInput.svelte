@@ -8,7 +8,7 @@
 		};
 	}
 
-	interface IMetadata extends IFieldMetadata {
+	interface IMetadata extends IInputFieldMetadata {
 		Primary: IFieldMetadata;
 		Secondary: IFieldMetadata;
 		PrimaryPickerText: string;
@@ -86,7 +86,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../Infrastructure/Component';
-	import type { IFieldMetadata } from '../Infrastructure/uimf';
+	import type { IFieldMetadata, IInputFieldMetadata } from '../Infrastructure/uimf';
 	import {
 		defaultControlRegister as controlRegister,
 		type CreateInputResult

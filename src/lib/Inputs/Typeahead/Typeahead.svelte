@@ -13,7 +13,7 @@
 		SelectAll?: boolean;
 	}
 
-	export interface ITypeaheadMetadata extends IFieldMetadata<IConfiguration> {}
+	export interface ITypeaheadMetadata extends IInputFieldMetadata<IConfiguration> {}
 
 	export class Controller extends InputController<ITypeaheadValue, ITypeaheadMetadata> {
 		public getValue(): Promise<ITypeaheadValue | null> {
@@ -59,7 +59,7 @@
 	import Select from 'svelte-select';
 	import { InputComponent } from '../../Infrastructure/Component';
 	import { beforeUpdate } from 'svelte';
-	import type { IFieldMetadata } from '../../Infrastructure/uimf';
+	import type { IInputFieldMetadata } from '../../Infrastructure/uimf';
 	import { TypeaheadSourceManager } from './Domain/TypeaheadSourceManager';
 	import { ITypeaheadValue } from './Domain/ITypeaheadValue';
 	import { IOption } from './Domain';

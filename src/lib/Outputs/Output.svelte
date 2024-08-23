@@ -53,7 +53,6 @@
 					Id: Date.now().toString(),
 					Label: '',
 					OrderIndex: 0,
-					Required: false,
 					Component: component
 				},
 				data: null,

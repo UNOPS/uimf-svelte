@@ -31,10 +31,6 @@ export interface IComponent<T = any | null | undefined> {
     Configuration: T;
 }
 
-export interface NestedComponentMetadata extends IFieldMetadata {
-    Properties: IFieldMetadata[]
-}
-
 export interface InputField {
     Required: boolean;
     CustomProperties: null | any;

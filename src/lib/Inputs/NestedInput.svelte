@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
 	import { InputController, type CreateInputOptions } from '../Infrastructure/InputController';
-	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { IInputFieldMetadata } from '$lib/Infrastructure/uimf';
 
 	export interface ViewData {
 		Value: { [key: string]: any };
@@ -9,19 +9,19 @@
 	export interface NestedComponentMetadata {
 		CssClassEach: string;
 		CssClass: string;
-		Properties: IFieldMetadata[];
+		Properties: IInputFieldMetadata[];
 	}
 
 	export class Controller extends InputController<
 		ViewData,
-		IFieldMetadata<NestedComponentMetadata>
+		IInputFieldMetadata<NestedComponentMetadata>
 	> {
 		declare views: Array<{
-			metadata: IFieldMetadata;
+			metadata: IInputFieldMetadata;
 			controller: InputController<any>;
 		}>;
-	
-		constructor(options: CreateInputOptions<IFieldMetadata<NestedComponentMetadata>>) {
+
+		constructor(options: CreateInputOptions<IInputFieldMetadata<NestedComponentMetadata>>) {
 			super(options);
 
 			this.views = [];

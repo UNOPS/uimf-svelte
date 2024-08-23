@@ -1,6 +1,9 @@
 <script lang="ts" context="module">
 	import { InputController } from '../Infrastructure/InputController';
-	export class Controller extends InputController<number, IFieldMetadata<NumberConfiguration>> {
+	export class Controller extends InputController<
+		number,
+		IInputFieldMetadata<NumberConfiguration>
+	> {
 		public getValue(): Promise<number | null> {
 			return Promise.resolve(this.value);
 		}
@@ -30,7 +33,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../Infrastructure/Component';
-	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata, IInputFieldMetadata } from '$lib/Infrastructure/uimf';
 
 	export let controller: Controller;
 

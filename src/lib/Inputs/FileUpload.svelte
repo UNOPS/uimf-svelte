@@ -14,7 +14,7 @@
 		type: string | null;
 	}
 
-	export class Controller extends InputController<FileData, IFieldMetadata<Configuration>> {
+	export class Controller extends InputController<FileData, IInputFieldMetadata<Configuration>> {
 		public getValue(): Promise<FileData | null> {
 			if (this.value?.dataUrl == null || this.value.dataUrl.length === 0) {
 				return Promise.resolve(null);
@@ -76,7 +76,7 @@
 
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
-	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata, IInputFieldMetadata } from '$lib/Infrastructure/uimf';
 	import { InputComponent } from '../Infrastructure/Component';
 
 	export let controller: Controller;

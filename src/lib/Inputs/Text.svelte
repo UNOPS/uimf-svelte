@@ -7,7 +7,7 @@
 		Multiline: boolean;
 	}
 
-	export class Controller extends InputController<string, IFieldMetadata<Configuration>> {
+	export class Controller extends InputController<string, IInputFieldMetadata<Configuration>> {
 		public getValue(): Promise<string | null> {
 			return Promise.resolve(this.value != null && this.value.length > 0 ? this.value : null);
 		}
@@ -23,7 +23,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../Infrastructure/Component';
-	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { IInputFieldMetadata } from '$lib/Infrastructure/uimf';
 
 	export let controller: Controller;
 

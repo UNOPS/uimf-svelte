@@ -8,7 +8,7 @@
 		}> | null;
 	}
 
-	export class Controller extends InputController<Value, IFieldMetadata<Configuration>> {
+	export class Controller extends InputController<Value, IInputFieldMetadata<Configuration>> {
 		public deserialize(value: string): Promise<Value | null> {
 			var result = value == null || value === '' ? null : { Value: value };
 			return Promise.resolve(result);
