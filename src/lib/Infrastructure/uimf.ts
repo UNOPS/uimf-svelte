@@ -11,6 +11,7 @@ export interface OutputOptions {
 
 export interface IOutputFieldMetadata<TConfiguration = any> extends IFieldMetadata<TConfiguration> {
     Layout?: 'vertical' | 'horizontal' | 'default' | undefined | null;
+    CssClass?: string | null;
 }
 
 export interface IInputFieldMetadata<TConfiguration = any> extends IFieldMetadata<TConfiguration> {

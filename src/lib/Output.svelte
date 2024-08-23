@@ -10,6 +10,7 @@
 	export let hideLabel: boolean = false;
 	export let contentTooltip: string | null = null;
 	export let contentCssClass: string | null = null;
+	export let nolayout: boolean = false;
 
 	// Field constants.
 	let component: ConstructorOfATypedSvelteComponent;
@@ -43,10 +44,6 @@
 					: // Otherwise, we use the layout specified for this particular field.
 					  controller.metadata.Layout != 'vertical';
 
-			// Always use column layout if the label is hidden. This makes
-			// the content span the full width of the container.
-			horizontalLayout = horizontalLayout && !thisHideLabel;
-
 			documentation = controller.metadata.CustomProperties?.documentation;
 
 			controller = controller;
@@ -61,8 +58,15 @@
 {#if controller.value != null || !hideIfNull}
 	{#if controller.metadata == null}
 		<strong>null metadata</strong>
+	{:else if nolayout}
+		<svelte:component this={component} {controller} />
 	{:else}
-		<div class:wrapper={true} class={horizontalLayout ? 'row' : 'column'}>
+		<div
+			class:wrapper={true}
+			class:row={horizontalLayout}
+			class:column={!horizontalLayout}
+			class={controller.metadata.CssClass}
+		>
 			{#if !thisHideLabel}
 				<label
 					class={controller.metadata.CustomProperties?.cssClassLabel ?? ''}
@@ -72,7 +76,8 @@
 			{/if}
 			<div
 				class="{contentCssClass ?? ''} {controller.metadata.CustomProperties?.cssClassLabel ?? ''}"
-				class:col-sm-10={horizontalLayout}
+				class:col-sm-10={horizontalLayout && !thisHideLabel}
+				class:col-sm-12={horizontalLayout && thisHideLabel}
 				use:tooltip={contentTooltip}
 			>
 				<svelte:component this={component} {controller} />
@@ -83,28 +88,44 @@
 
 <style lang="scss">
 	.wrapper {
-		--padding-left: 15px;
+		--horizontal-padding: 25px;
+		--vertical-padding: 15px;
 
-		& > label {
-			padding-left: var(--padding-left);
-		}
+		padding-left: var(--horizontal-padding);
+		padding-right: var(--horizontal-padding);
 
 		&.row {
-			margin-left: 0 !important;
-			margin-right: 0 !important;
-
-			& > div {
-				display: inline;
-			}
+			padding-bottom: var(--vertical-padding);
 		}
 
 		&.column {
 			flex-direction: column;
-			margin-bottom: 25px;
+			padding-bottom: 25px;
+		}
+
+		&.section {
+			border-color: #ebeef0;
+			border-style: solid;
+			border-width: 10px 0;
+
+			padding-left: 0;
+			padding-right: 0;
+			padding-top: var(--vertical-padding);
+			padding-bottom: var(--vertical-padding);
+
+			& > label {
+				display: block;
+				background-color: #f9f9f9;
+				font-size: 1.4em;
+
+				margin-top: calc(var(--vertical-padding) * -1);
+				margin-bottom: var(--vertical-padding);
+
+				padding: 5px var(--horizontal-padding);
+			}
 
 			& > div {
-				display: block;
-				padding-left: var(--padding-left);
+				padding: 0 var(--horizontal-padding);
 			}
 		}
 	}
