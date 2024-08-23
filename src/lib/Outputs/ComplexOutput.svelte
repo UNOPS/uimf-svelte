@@ -35,10 +35,20 @@
 	beforeUpdate(async () => await component.setup(controller));
 </script>
 
-<div class={controller.metadata.Component.Configuration?.CssClass}>
+<div class={controller.metadata.Component.Configuration?.CssClass} class:wrapper={true}>
 	{#each fields as field}
 		<div class={controller.metadata.Component.Configuration?.CssClassEach}>
 			<Output controller={field} />
 		</div>
 	{/each}
 </div>
+
+<style lang="scss">
+	.wrapper {
+		// Offset the padding applied by the output component.
+		// This way each level of nested output components
+		// won't be adding extra padding.
+		margin-left: -15px;
+		margin-right: -15px;
+	}
+</style>

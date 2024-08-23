@@ -32,12 +32,24 @@
 	beforeUpdate(async () => await component.setup(controller));
 </script>
 
-<div bind:this={container} />
+<div bind:this={container} class="inline-form" />
 
 <style lang="scss">
 	@import '../scss/styles.variables.scss';
 
 	:global(.section.output-inline-form) {
 		padding: 0;
+	}
+
+	div {
+		// Negate the padding applied by the nested form.
+		// This way each level of nesting won't be adding
+		// extra padding.
+		margin-left: -25px;
+		margin-right: -25px;
+
+		& :global(.uimf-form.no-visible-inputs > .uimf-output) {
+			padding-top: 0;
+		}
 	}
 </style>

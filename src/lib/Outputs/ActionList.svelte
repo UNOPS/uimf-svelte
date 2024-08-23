@@ -55,7 +55,7 @@
 <style lang="scss">
 	@import '../scss/styles.variables.scss';
 
-	:global(td > *) > .action-list {
+	:global(td) > .action-list {
 		padding: 3px 0px 3px 5px;
 		margin: 0;
 		background-color: transparent;
@@ -64,9 +64,15 @@
 		// inheriting any value from the parent. We want the
 		// action list to be as short as possible within a <td>.
 		min-height: 0;
+
+		& > :global(div > .btn) {
+			padding-top: 5px;
+			padding-bottom: 5px;
+			font-size: 0.9em;
+		}
 	}
 
-	:global(.table > tbody > tr > td:has(> * > .action-list)) {
+	:global(.table > tbody > tr > td:has(.action-list)) {
 		padding: 0px;
 		width: 1px;
 		white-space: nowrap;
