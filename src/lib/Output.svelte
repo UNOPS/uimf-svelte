@@ -38,7 +38,7 @@
 			hideIfNull = controller.metadata.CustomProperties?.hideIfNull != null;
 
 			horizontalLayout =
-				controller.metadata.Layout === 'default'
+				controller.metadata.Layout === 'default' || controller.metadata.Layout == null
 					? // If the layout is default, we use the component's config.
 					  componentRegistration.config.displayAsBlock === false
 					: // Otherwise, we use the layout specified for this particular field.
