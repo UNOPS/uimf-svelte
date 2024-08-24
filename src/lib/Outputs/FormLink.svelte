@@ -345,6 +345,19 @@
 		}
 	}
 
+	:global(td):has(> .btn) {
+		padding: 3px !important;
+
+		// Make the column as narrow as possible.
+		width: 1px;
+
+		> .btn {
+			padding-top: 5px;
+			padding-bottom: 5px;
+			font-size: 0.9em;
+		}
+	}
+
 	i.icon-right-margin {
 		margin: 0 5px 0 0;
 	}
