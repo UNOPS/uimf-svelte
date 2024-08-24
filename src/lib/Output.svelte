@@ -71,7 +71,7 @@
 				<label
 					class={controller.metadata.CustomProperties?.cssClassLabel ?? ''}
 					class:col-sm-2={horizontalLayout}
-					use:tooltip={documentation}>{controller.metadata.Label}:</label
+					use:tooltip={documentation}>{controller.metadata.Label}</label
 				>
 			{/if}
 			<div
@@ -96,6 +96,10 @@
 
 		&.row {
 			padding-bottom: var(--vertical-padding);
+
+			& > label::after {
+				content: ':';
+			}
 		}
 
 		&.column {
