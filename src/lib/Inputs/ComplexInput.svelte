@@ -2,9 +2,7 @@
 	import { InputController, type CreateInputOptions } from '../Infrastructure/InputController';
 	import type { IInputFieldMetadata } from '$lib/Infrastructure/uimf';
 
-	export interface ViewData {
-		Value: { [key: string]: any };
-	}
+	export type ViewData = { [key: string]: any };
 
 	export interface NestedComponentMetadata {
 		CssClassEach: string;
@@ -89,7 +87,7 @@
 			this.value = value ?? { Value: {} };
 
 			for (const view of this.views) {
-				promises.push(view.controller.setValue(this.value.Value[view.metadata.Id] ?? null));
+				promises.push(view.controller.setValue(this.value[view.metadata.Id] ?? null));
 			}
 
 			return Promise.all(promises).then(() => {
