@@ -79,7 +79,7 @@
 							EventHandlers: [],
 							Id: 'Checkbox',
 							Label: 'Checkbox',
-							Type: 'nested-input',
+							Type: 'complex-input',
 							Hidden: false,
 							OrderIndex: 0
 						},
@@ -94,7 +94,7 @@
 							EventHandlers: [],
 							Id: 'Dropdown',
 							Label: 'Dropdown',
-							Type: 'nested-input',
+							Type: 'complex-input',
 							Hidden: false,
 							OrderIndex: 0
 						},
@@ -128,7 +128,7 @@
 							EventHandlers: [],
 							Id: 'TextareaField',
 							Label: 'TextareaField',
-							Type: 'nested-input',
+							Type: 'complex-input',
 							Hidden: false,
 							OrderIndex: 0
 						},
@@ -162,7 +162,7 @@
 							EventHandlers: [],
 							Id: 'TextField',
 							Label: 'TextField',
-							Type: 'nested-input',
+							Type: 'complex-input',
 							Hidden: false,
 							OrderIndex: 0
 						},
@@ -196,7 +196,7 @@
 							EventHandlers: [],
 							Id: 'NumberField',
 							Label: 'NumberField',
-							Type: 'nested-input',
+							Type: 'complex-input',
 							Hidden: false,
 							OrderIndex: 0
 						}

@@ -212,7 +212,7 @@ const testData = [
     //                 CustomProperties: { showIfConditionIs: { SelectedValue: 1 } },
     //                 Id: "NotReadonly",
     //                 Label: "NotReadonly",
-    //                 Type: "nested-input",
+    //                 Type: "complex-input",
     //                 Properties: []
     //             },
     //             {
@@ -220,7 +220,7 @@ const testData = [
     //                 CustomProperties: { showIfConditionIs: { SelectedValue: 0 } },
     //                 Id: "Readonly",
     //                 Label: "Readonly",
-    //                 Type: "nested-input",
+    //                 Type: "complex-input",
     //                 Properties: [
     //                     {
     //                         Required: true,
@@ -259,7 +259,7 @@ const testData = [
     // },
     {
         metadata: {
-            Type: "nested-input",
+            Type: "complex-input",
             Properties: [
                 {
                     Required: true,
@@ -272,7 +272,7 @@ const testData = [
     },
     {
         metadata: {
-            Type: "nested-input",
+            Type: "complex-input",
             Properties: [
                 {
                     Required: true,
@@ -293,7 +293,7 @@ const testData = [
     },
     {
         metadata: {
-            Type: "nested-input",
+            Type: "complex-input",
             Properties: [
                 {
                     Type: "boolean",
@@ -318,7 +318,7 @@ const testData = [
     },
     {
         metadata: {
-            Type: "nested-input",
+            Type: "complex-input",
             Properties: [
                 {
                     Required: true,
@@ -338,7 +338,7 @@ const testData = [
     },
     {
         metadata: {
-            Type: "nested-input",
+            Type: "complex-input",
             Properties: [
                 {
                     Required: true,
@@ -349,7 +349,7 @@ const testData = [
                     Id: "TextBox"
                 },
                 {
-                    Type: "nested-input",
+                    Type: "complex-input",
                     Id: "AnotherNestedInput",
                     Properties: [
                         {

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import NestedInput from '$lib/Inputs/NestedInput.svelte';
+	import NestedInput from '$lib/Inputs/ComplexInput.svelte';
 	import { onMount } from 'svelte';
 
 	let nestedInput: NestedInput;
@@ -13,7 +13,7 @@
 					Required: false,
 					Hidden: false,
 					CustomProperties: null,
-					Type: 'nested-input',
+					Type: 'complex-input',
 					Properties: [
 						{
 							Id: 'Text-a',
