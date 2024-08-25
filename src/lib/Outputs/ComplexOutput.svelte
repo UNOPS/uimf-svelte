@@ -24,7 +24,7 @@
 				.map((property) => {
 					return new OutputController<any>({
 						metadata: property,
-						data: controller.value?.Value == null ? null : controller.value?.Value[property.Id],
+						data: controller.value == null ? null : controller.value[property.Id],
 						form: controller.form,
 						app: controller.app
 					});
