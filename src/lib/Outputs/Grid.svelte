@@ -33,7 +33,7 @@
 	beforeUpdate(async () => await component.setup(controller));
 
 	function getComponentControllers(): OutputField[] {
-		if (controller.value?.Value == null) {
+		if (controller.value == null) {
 			return [];
 		}
 
@@ -49,8 +49,8 @@
 				}
 			});
 
-			if (controller.value?.Value != null) {
-				field.controller.setValue(controller.value?.Value[property.Id]);
+			if (controller.value != null) {
+				field.controller.setValue(controller.value[property.Id]);
 			}
 
 			return field;
