@@ -49,7 +49,7 @@
 	beforeUpdate(async () => await component.setup(controller));
 
 	function getComponentControllers(): FlexboxItem[] {
-		if (controller.value?.Value == null) {
+		if (controller.value == null) {
 			return [];
 		}
 
@@ -65,8 +65,8 @@
 				}
 			});
 
-			if (controller.value?.Value != null) {
-				field.controller.setValue(controller.value?.Value[item.Id]);
+			if (controller.value != null) {
+				field.controller.setValue(controller.value[item.Id]);
 			}
 
 			return field;
