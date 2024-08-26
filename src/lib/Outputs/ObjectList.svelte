@@ -140,4 +140,20 @@
 			content: ' ';
 		}
 	}
+
+	.section-separated-list {
+		& > div {
+			display: block;
+			padding: 0px 0px;
+			border-width: 1px;
+			border-color: #d2d2d2;
+			border-style: solid;
+			margin: 0 0 25px 0;
+			border-radius: 1px;
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+	}
 </style>

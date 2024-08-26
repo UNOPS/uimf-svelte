@@ -139,12 +139,18 @@
 	}
 
 	:global(.output-section-heading) {
+		// font-size: 1.5em;
+		// margin: 20px 0 10px;
+		// display: block;
+		// background: #8d93a2;
+		// color: white;
+		// padding: 5px 15px;
+
 		font-size: 1.5em;
-		margin: 20px 0 10px;
+		margin: 0 0px 25px !important;
 		display: block;
-		background: #8d93a2;
-		color: white;
-		padding: 5px 15px;
+		background: #f4f5f7;
+		padding: 10px 0px !important;
 
 		& > a {
 			color: white;

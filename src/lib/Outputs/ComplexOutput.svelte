@@ -44,7 +44,7 @@
 </div>
 
 <style lang="scss">
-	.wrapper {
+	:global(.wrapper > div) > .wrapper {
 		// Offset the padding applied by the output component.
 		// This way each level of nested output components
 		// won't be adding extra padding.
