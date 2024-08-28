@@ -73,10 +73,7 @@
 </script>
 
 {#if nestedItems?.length > 0}
-	<div
-		class={controller.metadata.Component.Configuration?.CssClass ??
-			controller.metadata.CustomProperties?.cssClass}
-	>
+	<div class={controller.metadata.Component.Configuration?.CssClass}>
 		{#each nestedItems as item}
 			<div>
 				<svelte:component this={item.component} controller={item.controller} />
