@@ -2,13 +2,15 @@
 	import { beforeUpdate } from 'svelte';
 	import type { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
+	import { tooltip } from '../Components/Tooltip.svelte';
 
 	interface Tab {
+		Tooltip: string | null;
 		Form: string;
 		InputFieldValues: any;
 		Label: string;
-		Style: string;
 		RequiredPermission: string | null;
+		CssClass?: string | null;
 	}
 
 	interface TabGroup {
@@ -50,9 +52,13 @@
 						</li>
 					{/if}
 					{#if controller.app.hasPermission(tab.RequiredPermission)}
-						<li class="nav-item" class:active={tab.Form === controller.value.CurrentTab}>
+						<li
+							class:nav-item={true}
+							class:active={tab.Form === controller.value.CurrentTab}
+							class={tab.CssClass}
+						>
 							{#await controller.app.makeUrl(tab) then url}
-								<a href={url}>{tab.Label}</a>
+								<a href={url} use:tooltip={tab.Tooltip}>{tab.Label}</a>
 							{/await}
 						</li>
 					{/if}
@@ -74,7 +80,11 @@
 		text-decoration: none;
 	}
 
-	.nav-tabs > li.active > a {
+	// We implement duplicate class `current` to allow server side to
+	// indicate which tab is current by applying this style. This is useful
+	// in cases where `Tabstrip.CurrentTab` cannot be set for some reason.
+	.nav-tabs > li.active > a,
+	.nav-tabs > li.current > a {
 		text-decoration: underline;
 	}
 
