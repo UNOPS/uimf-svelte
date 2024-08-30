@@ -54,27 +54,29 @@
 					Hidden: false,
 					Id: Date.now().toString(),
 					Label: '',
-					OrderIndex: 0,
-					Required: false
+					OrderIndex: 0
 				},
 				data: controller.value.Visible,
 				form: controller.form!,
 				app: controller.app
 			});
 
-			hidden = new OutputController<any>({
-				metadata: {
-					Component: controller.metadata.Component.Configuration.Hidden,
-					Hidden: false,
-					Id: Date.now().toString(),
-					Label: '',
-					OrderIndex: 0,
-					Required: false
-				},
-				data: controller.value.Hidden,
-				form: controller.form!,
-				app: controller.app
-			});
+			if (controller.value.Hidden != null) {
+				hidden = new OutputController<any>({
+					metadata: {
+						Component: controller.metadata.Component.Configuration.Hidden,
+						Hidden: false,
+						Id: Date.now().toString(),
+						Label: '',
+						OrderIndex: 0
+					},
+					data: controller.value.Hidden,
+					form: controller.form!,
+					app: controller.app
+				});
+			} else {
+				hidden = null;
+			}
 		}
 	});
 
@@ -127,7 +129,7 @@
 
 <style lang="scss">
 	.expandable-visible {
-		display: flex;
+		display: inline-flex;
 		align-items: center;
 	}
 
