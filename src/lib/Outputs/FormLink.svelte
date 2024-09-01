@@ -10,9 +10,6 @@
 		RequiredPermission?: string;
 		Form: string;
 		Field?: string;
-		Resolve?: any;
-		StateParams?: any;
-		TemplateUrl?: string;
 		Controller?: any;
 		DocumentType?: string;
 		Filename?: string;
@@ -21,6 +18,13 @@
 		RenderInputTargets?: { [key: string]: string };
 		RenderOutputTargets?: { [key: string]: string };
 		ForwardedInputValues?: { [key: string]: string };
+
+		// Html modal options.
+		StateParams?: any;
+		TemplateUrl?: string;
+		Resolve?: any;
+		Size?: string;
+		WindowClass?: string;
 	}
 
 	export class Controller extends OutputController<FormLinkData> {}
@@ -271,7 +275,9 @@
 								.openHtmlModal({
 									templateUrl: controller.value.TemplateUrl,
 									controller: controller.value.Controller,
-									data: resolve
+									data: resolve,
+									size: controller.value.Size,
+									windowClass: controller.value.WindowClass
 								})
 								.then(function () {
 									controller.form?.submit(true);

@@ -44,6 +44,8 @@ interface IHtmlModalOptions {
     templateUrl: string;
     controller?: any;
     data?: any;
+    size?: string;
+    windowClass?: string;
 }
 
 interface ColorOptions {
