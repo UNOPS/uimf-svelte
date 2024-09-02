@@ -7,7 +7,9 @@
 
 	interface IItem {
 		Label: string;
-		Link: any;
+		Link: {
+			Url: string;
+		};
 		Value: any;
 	}
 
@@ -53,8 +55,6 @@
 			controller.ready?.resolve();
 		},
 		refresh() {
-			console.log(controller.value);
-
 			if (controller.value?.Items != null) {
 				groups = Object.entries(controller.value.Items).map(([name, items], index) => ({
 					Index: index,
@@ -143,7 +143,7 @@
 
 							<div>
 								{item.Label}
-								<a href={item.Link}><i class="fa fa-external-link-alt fa-1x" /></a>
+								<a href={item.Link.Url}><i class="fa fa-external-link-alt fa-1x" /></a>
 							</div>
 
 							{#if group.Index < groups.length - 1}
@@ -190,6 +190,12 @@
 			& > h6 {
 				flex-grow: 1;
 				text-align: center;
+				color: #fff;
+				margin: 0;
+			}
+
+			& > button {
+				color: #fff;
 			}
 		}
 	}
@@ -208,6 +214,7 @@
 			border-spacing: 2px;
 			border-bottom: 1px solid #eee;
 			padding: 5px 10px;
+			margin: 0;
 
 			&:hover {
 				background: #f0f2f6;
@@ -223,5 +230,12 @@
 	a {
 		padding: 0 5px;
 		text-decoration: none;
+	}
+
+	button.btn {
+		padding: 5px;
+		border: none;
+		background: transparent;
+		color: #888;
 	}
 </style>
