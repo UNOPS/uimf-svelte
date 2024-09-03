@@ -86,7 +86,7 @@
 					<i
 						class={controller.value.Icon}
 						aria-hidden="true"
-						class:icon-right-margin={(controller.value.Label?.length ?? 0) > 0}
+						class:margin-right={(controller.value.Label?.length ?? 0) > 0}
 					/>
 				{/if}
 				{#if controller.value.Label != null}
@@ -295,7 +295,7 @@
 				<i
 					class={controller.value.Icon}
 					aria-hidden="true"
-					class:icon-right-margin={(controller.value.Label?.length ?? 0) > 0}
+					class:margin-right={(controller.value.Label?.length ?? 0) > 0}
 				/>
 			{/if}
 			{#if controller.value.Label != null}
@@ -364,7 +364,7 @@
 		}
 	}
 
-	i.icon-right-margin {
+	i.margin-right {
 		margin: 0 5px 0 0;
 	}
 </style>
