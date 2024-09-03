@@ -61,16 +61,14 @@
 					return null;
 				}
 
-				return { Value: effectiveValue };
+				return effectiveValue;
 			});
 		}
 
 		public deserialize(value: string | null): Promise<ViewData | null> {
-			const innerValue = value != null && value.trim().length > 0 ? JSON.parse(value) : null;
+			const parsed = value != null && value.trim().length > 0 ? JSON.parse(value) : null;
 
-			const outerValue = innerValue == null ? null : { Value: innerValue };
-
-			return Promise.resolve(outerValue);
+			return Promise.resolve(parsed);
 		}
 
 		public serialize(value: ViewData | null): string | null {
@@ -84,7 +82,7 @@
 		protected setValueInternal(value: ViewData | null): Promise<void> {
 			let promises = [];
 
-			this.value = value ?? { Value: {} };
+			this.value = value ?? {};
 
 			for (const view of this.views) {
 				promises.push(view.controller.setValue(this.value[view.metadata.Id] ?? null));
