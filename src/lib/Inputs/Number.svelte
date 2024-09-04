@@ -33,7 +33,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../Infrastructure/Component';
-	import type { IFieldMetadata, IInputFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { IInputFieldMetadata } from '$lib/Infrastructure/uimf';
 
 	export let controller: Controller;
 
