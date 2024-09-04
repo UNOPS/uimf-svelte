@@ -80,6 +80,15 @@
 		}
 
 		private createTable(): Table {
+			if (this.metadata.Component.Configuration.Row != null) {
+				// ValueList stores row metadata in component configuration,
+				// but `RowExtension` (which processes it) expects this metadata
+				// to be in `CustomProperties.row`. So we move it. A bit ugly,
+				// but no harm done.
+				this.metadata.CustomProperties = this.metadata.CustomProperties ?? {};
+				this.metadata.CustomProperties.row = this.metadata.Component.Configuration.Row;
+			}
+
 			return new Table({
 				parent: this,
 				columns: this.metadata.Component.Configuration.Fields,
