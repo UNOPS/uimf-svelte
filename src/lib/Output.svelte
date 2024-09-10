@@ -8,7 +8,6 @@
 
 	export let controller: OutputController<any>;
 	export let hideLabel: boolean = false;
-	export let contentCssClass: string | null = null;
 	export let nolayout: boolean = false;
 
 	// Field constants.
@@ -74,7 +73,6 @@
 				>
 			{/if}
 			<div
-				class="{contentCssClass ?? ''} {controller.metadata.CustomProperties?.cssClassLabel ?? ''}"
 				class:col-sm-10={horizontalLayout && !thisHideLabel}
 				class:col-sm-12={horizontalLayout && thisHideLabel}
 			>
