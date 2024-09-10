@@ -8,7 +8,6 @@
 
 	export let controller: OutputController<any>;
 	export let hideLabel: boolean = false;
-	export let contentTooltip: string | null = null;
 	export let contentCssClass: string | null = null;
 	export let nolayout: boolean = false;
 
@@ -78,7 +77,6 @@
 				class="{contentCssClass ?? ''} {controller.metadata.CustomProperties?.cssClassLabel ?? ''}"
 				class:col-sm-10={horizontalLayout && !thisHideLabel}
 				class:col-sm-12={horizontalLayout && thisHideLabel}
-				use:tooltip={contentTooltip}
 			>
 				<svelte:component this={component} {controller} />
 			</div>
