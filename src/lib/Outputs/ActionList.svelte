@@ -7,7 +7,7 @@
 	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
 
 	export interface ActionListData {
-		Actions: any[];
+		Actions: FormLinkData[];
 	}
 	export class ActionListController extends OutputController<ActionListData> {}
 </script>
