@@ -1,12 +1,12 @@
 import type { InputController } from "./InputController";
 import { OutputController } from "./OutputController";
 import type IUimfApp from "./UimfApp";
-import type { IFieldMetadata, FormLink } from "./uimf";
+import type { IFieldMetadata, FormLink, IInputFieldMetadata, IOutputFieldMetadata } from "./uimf";
 
 interface FormMetadata extends IFieldMetadata {
-    InputFields: IFieldMetadata[];
+    InputFields: IInputFieldMetadata[];
     PostOnLoad: any;
-    OutputFields: IFieldMetadata[];
+    OutputFields: IOutputFieldMetadata[];
     CloseOnPostIfModal: boolean;
     PostOnLoadValidation: boolean;
 }
@@ -29,4 +29,5 @@ export interface FormInstance {
     setInputFieldValues(formlink: FormLink): Promise<any>;
     getInputFieldValues(): Promise<{ [key: string]: any; }>;
     parentForm: FormInstance | null;
+    cancel: () => void | null;
 }

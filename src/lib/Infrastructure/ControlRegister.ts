@@ -48,8 +48,6 @@ import * as LineChart from '../Outputs/LineChart.svelte';
 import * as BarChart from '../Outputs/BarChart.svelte';
 import * as Timeline from '../Outputs/Timeline/Timeline.svelte';
 import * as ConversationTimeline from '../Outputs/ConversationTimeline/ConversationTimeline.svelte';
-
-//To be deactivated until complete validation
 import * as DynamicInput from '../Inputs/DynamicInput.svelte';
 import * as Typeahead from '../Inputs/Typeahead/Typeahead.svelte';
 import * as Table from '../Outputs/Table.svelte';
@@ -73,8 +71,10 @@ import * as Output from '../Outputs/Output.svelte';
 import * as SlaTimer from '../Outputs/SlaTimer.svelte';
 import * as ShipmentSize from '../Outputs/ShipmentSize.svelte';
 import * as Boolean from '../Outputs/Boolean.svelte';
+import * as Breadcrumbs from '../Outputs/Breadcrumbs.svelte';
 import * as EditableValue from '../Outputs/EditableValue.svelte';
 import * as Flexbox from '../Outputs/Flexbox.svelte';
+import * as FormInputsPlaceholder from '../Outputs/FormInputsPlaceholder.svelte';
 import * as OutputWrapper from '../Output.svelte';
 
 interface InputFieldControllerConstructor {
@@ -230,8 +230,6 @@ export class ControlRegister {
 						props: {
 							controller: controller,
 							hideLabel: options.wrap?.hideLabel,
-							contentTooltip: options.wrap?.contentTooltip,
-							contentCssClass: options.wrap?.contentCssClass,
 							nolayout: options.wrap?.nolayout
 						}
 					})
@@ -276,6 +274,7 @@ defaultControlRegister.registerOutputComponent('action-list', ActionList, {
 });
 defaultControlRegister.registerOutputComponent('alert', Alert, { alwaysHideLabel: true });
 defaultControlRegister.registerOutputComponent('boolean', Boolean, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('breadcrumbs', Breadcrumbs, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('datetime', DateTimeOutput, {
 	displayAsBlock: false
 });
@@ -284,6 +283,7 @@ defaultControlRegister.registerOutputComponent('editable-value', EditableValue, 
 });
 defaultControlRegister.registerOutputComponent('formlink', FormLink, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('flexbox', Flexbox, { alwaysHideLabel: false, displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('form-inputs-placeholder', FormInputsPlaceholder, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('grid', Grid, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('icon', Icon, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('image', OutputImage, { displayAsBlock: false });

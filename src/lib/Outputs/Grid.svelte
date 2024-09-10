@@ -3,7 +3,8 @@
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
-	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata } from '../Infrastructure/uimf';
+	import Output from '../Output.svelte';
 
 	interface OutputField {
 		component: any;
@@ -69,10 +70,7 @@
 	>
 		{#each fields as field}
 			<div style:grid-area={field.controller.metadata.CustomProperties?.gridArea}>
-				{#if field.controller.metadata.Label != null}
-					<h3>{field.controller.metadata.Label}</h3>
-				{/if}
-				<svelte:component this={field.component} controller={field.controller} />
+				<Output controller={field.controller} />
 			</div>
 		{/each}
 	</div>
