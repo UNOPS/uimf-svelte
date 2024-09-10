@@ -8,8 +8,6 @@
 
 	export let controller: InputController<any>;
 	export let hideLabel: boolean = false;
-	export let contentTooltip: string | null = null;
-	export let contentCssClass: string | null = null;
 
 	// Field constants.
 	let component: ConstructorOfATypedSvelteComponent;
@@ -56,14 +54,14 @@
 
 {#if controller.value != null || !hideIfNull}
 	{#if thisHideLabel}
-		<div class={contentCssClass || defaultCssClass} use:tooltip={contentTooltip}>
+		<div class={defaultCssClass}>
 			<svelte:component this={component} {controller} {required} />
 		</div>
 	{:else if controller.metadata == null}
 		<strong>null metadata</strong>
 	{:else}
 		<label class="form-label" use:tooltip={documentation}>{controller.metadata.Label}:</label>
-		<div class={contentCssClass || defaultCssClass} use:tooltip={contentTooltip}>
+		<div class={defaultCssClass}>
 			<svelte:component this={component} {controller} {required} />
 		</div>
 	{/if}
