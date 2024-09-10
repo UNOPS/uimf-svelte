@@ -9,8 +9,6 @@ export interface CreateOutputOptions<TMetadata extends IOutputFieldMetadata = IO
     props: OutputComponentProps<TMetadata>;
     wrap?: {
         hideLabel: boolean;
-        contentTooltip: string | null;
-        contentCssClass: string | null;
         nolayout?: boolean;
     }
 }
