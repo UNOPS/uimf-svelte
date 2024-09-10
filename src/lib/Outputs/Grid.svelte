@@ -13,8 +13,9 @@
 	interface Configuration {
 		Properties: IFieldMetadata[];
 		Areas: string;
-		Rows: string;
-		Columns: string;
+		Rows: string | null;
+		Columns: string | null;
+		Gap: string | null;
 	}
 
 	class GridController extends OutputController<any, IFieldMetadata<Configuration>> {}
@@ -64,6 +65,7 @@
 		style:grid-template-areas={controller.metadata.Component.Configuration.Areas}
 		style:grid-template-rows={controller.metadata.Component.Configuration.Rows}
 		style:grid-template-columns={controller.metadata.Component.Configuration.Columns}
+		style:grid-gap={controller.metadata.Component.Configuration.Gap}
 	>
 		{#each fields as field}
 			<div style:grid-area={field.controller.metadata.CustomProperties?.gridArea}>
@@ -79,7 +81,7 @@
 <style lang="scss">
 	.layout {
 		display: grid;
-		grid-gap: 10px;
+		grid-gap: 0px;
 
 		& > div {
 			& > h3 {
