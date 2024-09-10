@@ -4,7 +4,6 @@
 	import { OutputComponent } from '../Infrastructure/Component';
 
 	export let controller: OutputController<string>;
-	export let showLabel: boolean = false;
 
 	let component = new OutputComponent({
 		refresh() {
@@ -16,10 +15,6 @@
 </script>
 
 {#if controller.value != null}
-	{#if showLabel}
-		<div class="label">{controller.metadata.Label} :</div>
-	{/if}
-
 	<span class={controller.metadata.CustomProperties?.cssClass}>{controller.value}</span>
 {/if}
 
