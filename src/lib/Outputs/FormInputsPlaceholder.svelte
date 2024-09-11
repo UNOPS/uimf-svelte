@@ -5,10 +5,15 @@
 	import { InputController } from '../Infrastructure/InputController';
 	import Input from '../Input.svelte';
 	import { defaultControlRegister } from '../Infrastructure/ControlRegister';
+	import { IOutputFieldMetadata } from '../Infrastructure/uimf';
 
-	interface IInputsPlaceholderData {}
+	interface IData {}
 
-	export let controller: OutputController<IInputsPlaceholderData>;
+	interface IConfiguration {
+		CssClass: string | null;
+	}
+
+	export let controller: OutputController<IData, IOutputFieldMetadata<IConfiguration>>;
 
 	let visibleInputs: InputController<any>[] = [];
 
@@ -67,11 +72,11 @@
 	}
 </script>
 
-{#if controller.form?.metadata.PostOnLoad || controller.form?.hasVisibleInputs}
+{#if controller.form != null && (!controller.form.metadata.PostOnLoad || visibleInputs?.length > 0)}
 	<form
 		name={controller.form?.metadata.Id}
 		on:submit|preventDefault={submitForm}
-		class={controller.metadata.CssClass}
+		class={controller.metadata.Component.Configuration.CssClass}
 	>
 		<div class="inputs">
 			{#each visibleInputs as input}
@@ -86,7 +91,7 @@
 				{controller.form.metadata.CustomProperties.SubmitButtonLabel || 'Submit'}
 			</button>
 
-			{#if controller.form?.cancel != null}
+			{#if controller.form.cancel != null}
 				<button class="btn btn-default" type="button" on:click={controller.form.cancel}
 					>Cancel</button
 				>
