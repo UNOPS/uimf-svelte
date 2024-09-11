@@ -160,4 +160,9 @@
 			color: white;
 		}
 	}
+
+	:global(.custom-layout .wrapper.section) {
+		margin-left: -10px;
+		margin-right: -10px;
+	}
 </style>
