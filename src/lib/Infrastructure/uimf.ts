@@ -10,7 +10,7 @@ export interface OutputOptions {
 }
 
 export interface IOutputFieldMetadata<TConfiguration = any> extends IFieldMetadata<TConfiguration> {
-    Layout?: 'vertical' | 'horizontal' | 'default' | undefined | null;
+    Layout?: 'vertical' | 'horizontal' | 'default' | 'none' | undefined | null;
     CssClass?: string | null;
 }
 

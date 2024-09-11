@@ -44,6 +44,8 @@
 
 			documentation = controller.metadata.CustomProperties?.documentation;
 
+			nolayout = nolayout || controller.metadata.Layout === 'none';
+
 			controller = controller;
 		}
 	});
@@ -57,7 +59,13 @@
 	{#if controller.metadata == null}
 		<strong>null metadata</strong>
 	{:else if nolayout}
-		<svelte:component this={component} {controller} />
+		{#if controller.metadata.CssClass != null}
+			<div class={controller.metadata.CssClass}>
+				<svelte:component this={component} {controller} />
+			</div>
+		{:else}
+			<svelte:component this={component} {controller} />
+		{/if}
 	{:else}
 		<div
 			class:wrapper={true}
