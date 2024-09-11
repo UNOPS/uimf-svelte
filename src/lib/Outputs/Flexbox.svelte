@@ -4,6 +4,7 @@
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
 	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
+	import Output from '../Output.svelte';
 
 	interface Configuration {
 		Fields: FlexboxItemMetadata[];
@@ -89,10 +90,7 @@
 				style:flex-basis={field.controller.metadata.CustomProperties?.Flexbox?.FlexBasis}
 				style:flex-grow={field.controller.metadata.CustomProperties?.Flexbox?.FlexGrow}
 			>
-				{#if field.controller.metadata.Label?.length > 0}
-					<h3>{field.controller.metadata.Label}</h3>
-				{/if}
-				<svelte:component this={field.component} controller={field.controller} />
+				<Output controller={field.controller} />
 			</div>
 		{/each}
 	</div>
