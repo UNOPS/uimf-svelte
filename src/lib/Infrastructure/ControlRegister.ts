@@ -52,7 +52,6 @@ import * as DynamicInput from '../Inputs/DynamicInput.svelte';
 import * as Typeahead from '../Inputs/Typeahead/Typeahead.svelte';
 import * as Table from '../Outputs/Table.svelte';
 import * as ObjectList from '../Outputs/ObjectList.svelte';
-import * as FormLink from '../Outputs/FormLink.svelte';
 import * as ActionList from '../Outputs/ActionList.svelte';
 import * as MultiSelect from '../Inputs/Multiselect.svelte';
 import * as Alert from '../Outputs/Alert.svelte';
@@ -75,6 +74,9 @@ import * as Breadcrumbs from '../Outputs/Breadcrumbs.svelte';
 import * as EditableValue from '../Outputs/EditableValue.svelte';
 import * as Flexbox from '../Outputs/Flexbox.svelte';
 import * as FormInputsPlaceholder from '../Outputs/FormInputsPlaceholder.svelte';
+import * as FormLink from '../Outputs/FormLink.svelte';
+import * as FormTitle from '../Outputs/FormTitle.svelte';
+
 import * as OutputWrapper from '../Output.svelte';
 
 interface InputFieldControllerConstructor {
@@ -281,9 +283,10 @@ defaultControlRegister.registerOutputComponent('datetime', DateTimeOutput, {
 defaultControlRegister.registerOutputComponent('editable-value', EditableValue, {
 	displayAsBlock: false
 });
-defaultControlRegister.registerOutputComponent('formlink', FormLink, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('flexbox', Flexbox, { alwaysHideLabel: false, displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('form-inputs-placeholder', FormInputsPlaceholder, { displayAsBlock: true });
+defaultControlRegister.registerOutputComponent('formlink', FormLink, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('form-title', FormTitle, { alwaysHideLabel: true, displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('grid', Grid, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('icon', Icon, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('image', OutputImage, { displayAsBlock: false });
