@@ -74,7 +74,7 @@ import * as Breadcrumbs from '../Outputs/Breadcrumbs.svelte';
 import * as EditableValue from '../Outputs/EditableValue.svelte';
 import * as Flexbox from '../Outputs/Flexbox.svelte';
 import * as FormDocumentation from '../Outputs/FormDocumentation.svelte';
-import * as FormInputsPlaceholder from '../Outputs/FormInputsPlaceholder.svelte';
+import * as FormInputs from '../Outputs/FormInputs.svelte';
 import * as FormLink from '../Outputs/FormLink.svelte';
 import * as FormTitle from '../Outputs/FormTitle.svelte';
 
@@ -286,7 +286,7 @@ defaultControlRegister.registerOutputComponent('editable-value', EditableValue, 
 });
 defaultControlRegister.registerOutputComponent('flexbox', Flexbox, { alwaysHideLabel: false, displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('form-documentation', FormDocumentation, { alwaysHideLabel: true, displayAsBlock: true });
-defaultControlRegister.registerOutputComponent('form-inputs-placeholder', FormInputsPlaceholder, { displayAsBlock: true });
+defaultControlRegister.registerOutputComponent('form-inputs', FormInputs, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('formlink', FormLink, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('form-title', FormTitle, { alwaysHideLabel: true, displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('grid', Grid, { displayAsBlock: true });
