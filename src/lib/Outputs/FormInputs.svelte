@@ -38,9 +38,6 @@
 					// Originally the input is a legacy (AngularJS) controller.
 					// So we remap it to a proper Svelte controller.
 					controller.form!.inputs[inputMetadata.Id] = ctrl;
-
-					// Temporary measure to make things work in the legacy code.
-					ctrl.init = ctrl.setValue;
 				}
 			});
 
@@ -109,5 +106,6 @@
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
 		grid-gap: 10px;
+		margin-bottom: 20px;
 	}
 </style>

@@ -7,6 +7,10 @@
 		Value: string | null;
 	}
 
+	interface IConfiguration {
+		CssClass: string | null;
+	}
+
 	export let controller: OutputController<IData>;
 
 	let title: string | null = null;
@@ -21,19 +25,15 @@
 </script>
 
 {#if title != null && title.length > 0}
-	<div class="wrapper">
-		<div class="inner">
+	<div class={controller.metadata.Component.Configuration?.CssClass}>
+		<div class="form-doc">
 			{@html title}
 		</div>
 	</div>
 {/if}
 
 <style lang="scss">
-	.wrapper {
-		padding: 15px 15px;
-	}
-
-	.inner {
+	.form-doc {
 		background: #e2f6ff;
 		border: 1px solid #cbe1e8;
 		border-radius: 2px;
@@ -41,7 +41,7 @@
 		padding: 15px;
 	}
 
-	:global(.wrapper.inner > p:last-child) {
+	:global(.form-doc > p:last-child) {
 		margin-bottom: 0;
 	}
 </style>
