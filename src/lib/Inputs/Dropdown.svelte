@@ -101,7 +101,7 @@
 
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
-	import type { IFieldMetadata, IInputFieldMetadata } from '../Infrastructure/uimf';
+	import type { IInputFieldMetadata } from '../Infrastructure/uimf';
 	import { InputComponent } from '../Infrastructure/Component';
 
 	export let controller: Controller;
