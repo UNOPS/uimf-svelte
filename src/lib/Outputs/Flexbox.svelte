@@ -50,10 +50,6 @@
 	beforeUpdate(async () => await component.setup(controller));
 
 	function getComponentControllers(): FlexboxItem[] {
-		if (controller.value == null) {
-			return [];
-		}
-
 		return controller.metadata.Component.Configuration.Fields.sort(
 			(a, b) => a.OrderIndex - b.OrderIndex
 		).map((item) => {
