@@ -1,4 +1,4 @@
-import type { CreateInputOptions, InputController } from '$lib/Infrastructure/InputController';
+import { CreateInputOptions, InputController } from '../Infrastructure/InputController';
 import { OutputController, type CreateOutputOptions } from './OutputController';
 
 // Inputs.
@@ -135,6 +135,11 @@ export interface CreateOutputResult {
 	component: any;
 }
 
+export interface AttachControllerOptions {
+	controller: InputController<any> | OutputController<any>;
+	element: HTMLElement;
+}
+
 /**
  * Keeps track of all UIMF svelte components. This class can be considered as
  * a dependency injection container.
@@ -238,6 +243,25 @@ export class ControlRegister {
 					})
 					: component
 		};
+	}
+
+	attachControllerToElement(options: AttachControllerOptions) {
+		let isInput = options.controller instanceof InputController;
+
+		const registration = isInput
+			? this.inputs[options.controller.metadata.Component.Type]
+			: this.outputs[options.controller.metadata.Component.Type];
+
+		if (registration == null) {
+			throw `Cannot find ${isInput ? "input" : "output"} component '${options.controller.metadata.Component.Type}'.`;
+		}
+
+		return new registration.component({
+			target: options.element,
+			props: {
+				controller: options.controller
+			}
+		});
 	}
 }
 
