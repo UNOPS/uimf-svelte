@@ -29,9 +29,6 @@
 	export let controller: Controller;
 
 	let component = new InputComponent({
-		init() {
-			controller.ready?.resolve();
-		},
 		refresh() {
 			controller.value = controller.value;
 		}

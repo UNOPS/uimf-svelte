@@ -38,14 +38,11 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../Infrastructure/Component';
-	import type { IFieldMetadata, IInputFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { IInputFieldMetadata } from '$lib/Infrastructure/uimf';
 
 	export let controller: Controller;
 
 	let component = new InputComponent({
-		async init() {
-			controller.ready?.resolve();
-		},
 		refresh() {
 			controller.value = controller.value;
 		}

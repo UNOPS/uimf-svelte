@@ -25,14 +25,12 @@
 
 			this.primary = controlRegister.createInput({
 				app: this.app,
-				defer: null,
 				form: this.form,
 				metadata: this.metadata.Component.Configuration.Primary
 			});
 
 			this.secondary = controlRegister.createInput({
 				app: this.app,
-				defer: null,
 				form: this.form,
 				metadata: this.metadata.Component.Configuration.Secondary
 			});
@@ -95,9 +93,6 @@
 	export let controller: Controller;
 
 	let component = new InputComponent({
-		init() {
-			controller.ready?.resolve();
-		},
 		refresh() {
 			controller.value = controller.value;
 		}

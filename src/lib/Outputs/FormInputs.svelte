@@ -29,8 +29,7 @@
 					const ctrl = defaultControlRegister.createInput({
 						metadata: inputMetadata,
 						app: controller.app,
-						form: controller.form,
-						defer: input.loadDefer
+						form: controller.form
 					}).controller;
 
 					await ctrl.setValue(input.value);

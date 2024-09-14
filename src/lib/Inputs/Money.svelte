@@ -76,8 +76,6 @@
 
 	let component = new InputComponent({
 		async init() {
-			controller.ready?.resolve();
-
 			const cache = new SessionStorageVariable<[]>('uimf/inputs/money', async () => {
 				var response: any = await controller.app.postForm(
 					'currency-picker',

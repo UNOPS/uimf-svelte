@@ -131,8 +131,6 @@
 			step = config?.Step ?? 1;
 			min = config?.MinValue ?? -Number.MAX_VALUE;
 			max = config?.MaxValue ?? Number.MAX_VALUE;
-
-			controller.ready?.resolve();
 		},
 		refresh() {
 			controller.minValue = controller.minValue;

@@ -39,8 +39,6 @@
 			documentation = controller.metadata.CustomProperties?.documentation;
 
 			required = controller.metadata.Required;
-
-			controller.ready?.resolve();
 		},
 		refresh() {
 			controller.value = controller.value;

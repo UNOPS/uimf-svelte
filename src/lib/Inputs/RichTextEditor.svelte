@@ -53,7 +53,6 @@
 
 	let component = new InputComponent({
 		init() {
-			controller.ready?.resolve();
 			controller.setCallback((content: string | null) => {
 				if (content) {
 					html = content;

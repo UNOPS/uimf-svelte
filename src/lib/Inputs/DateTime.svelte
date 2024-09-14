@@ -112,8 +112,6 @@
 
 	let component = new InputComponent({
 		init() {
-			controller.ready?.resolve();
-
 			defaultValue = Controller.parseDefaultValue(
 				controller.metadata.Component?.Configuration?.DefaultValue
 			);

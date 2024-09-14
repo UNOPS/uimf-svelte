@@ -51,9 +51,6 @@
 	let groups: IGroup[] = [];
 
 	let component = new InputComponent({
-		init() {
-			controller.ready?.resolve();
-		},
 		refresh() {
 			if (controller.value?.Items != null) {
 				groups = Object.entries(controller.value.Items).map(([name, items], index) => ({

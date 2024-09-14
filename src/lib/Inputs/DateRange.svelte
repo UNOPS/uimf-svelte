@@ -107,9 +107,6 @@
 	export let controller: Controller;
 
 	let component = new InputComponent({
-		init() {
-			controller.ready?.resolve();
-		},
 		refresh() {
 			controller.valuesAsString = controller.valuesAsString;
 		}

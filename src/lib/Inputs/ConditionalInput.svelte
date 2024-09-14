@@ -64,7 +64,6 @@
 					controller: new controllerClass({
 						metadata: view,
 						form: this.form,
-						defer: null,
 						app: this.app
 					})
 				});
@@ -113,9 +112,6 @@
 	let uniqueId: string = uuid();
 
 	let component = new InputComponent({
-		init() {
-			controller.ready?.resolve();
-		},
 		refresh() {
 			controller = controller;
 		}

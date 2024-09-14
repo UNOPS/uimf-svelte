@@ -70,7 +70,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../Infrastructure/Component';
-	import type { IFieldMetadata, IInputFieldMetadata } from '../Infrastructure/uimf';
+	import type { IInputFieldMetadata } from '../Infrastructure/uimf';
 	import uuid from '../Infrastructure/uuid';
 
 	export let controller: Controller;
@@ -82,7 +82,7 @@
 	let component = new InputComponent({
 		init() {
 			controller.onChange = onChange;
-			controller.ready?.resolve();
+
 			withIcons =
 				controller.metadata.Component.Configuration.Options.find((t) => t.Icon != null) != null;
 		},

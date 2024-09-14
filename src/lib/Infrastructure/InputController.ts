@@ -12,7 +12,6 @@ export interface Deferrer {
 
 export interface CreateInputOptions<TMetadata extends IInputFieldMetadata = IInputFieldMetadata> {
     metadata: TMetadata;
-    defer: Deferrer | null;
     form: FormInstance | null;
     app: IUimfApp;
 }
@@ -48,17 +47,10 @@ export abstract class InputController<TValue, TMetadata extends IInputFieldMetad
      */
     public readonly app: IUimfApp;
 
-    /**
-     * Should be resolved by the component itself once it has been fully loaded
-     * and is ready to be used.
-     */
-    public readonly ready: Deferrer | null;
-
     constructor(options: CreateInputOptions<TMetadata>) {
         super();
         this.metadata = options.metadata;
         this.form = options.form;
-        this.ready = options.defer;
         this.app = options.app;
         this.value = null;
     }

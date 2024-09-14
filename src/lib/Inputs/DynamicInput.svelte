@@ -60,7 +60,6 @@
 							Required: false
 						},
 						form: this.form,
-						defer: null,
 						app: this.app
 					})
 				};
@@ -83,9 +82,6 @@
 	export let controller: Controller;
 
 	let component = new InputComponent({
-		init() {
-			controller.ready?.resolve();
-		},
 		refresh() {
 			controller.view = controller.view;
 		}

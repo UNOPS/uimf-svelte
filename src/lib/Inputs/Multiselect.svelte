@@ -61,8 +61,6 @@
 			);
 
 			selected = [];
-
-			controller.ready?.resolve();
 		},
 		async refresh() {
 			var capturedValue = controller?.value;

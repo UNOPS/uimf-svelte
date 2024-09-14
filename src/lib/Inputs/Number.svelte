@@ -53,8 +53,6 @@
 			multiplier = Math.pow(10, precision);
 			min = controller.metadata.Component.Configuration?.MinValue;
 			max = controller.metadata.Component.Configuration?.MaxValue;
-
-			controller.ready?.resolve();
 		},
 		refresh() {
 			controller.value = controller.value;

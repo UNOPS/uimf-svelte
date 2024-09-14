@@ -1,6 +1,6 @@
 import type { InputController } from "../../../Infrastructure/InputController";
 import { defaultControlRegister as controlRegister } from "../../../Infrastructure/ControlRegister";
-import type { IFieldMetadata, IInputFieldMetadata } from "../../../Infrastructure/uimf";
+import type { IInputFieldMetadata } from "../../../Infrastructure/uimf";
 import type { Table } from "../Table";
 import type { TableBodyCell } from "../TableBodyCell";
 import { TableExtension } from "../TableExtension";
@@ -52,7 +52,6 @@ export class ValueListExtension extends TableExtension {
                 if (bulkInputMetadata != null) {
                     const bulkInput = controlRegister.createInput({
                         app: table.parent.app,
-                        defer: null,
                         form: table.parent.form,
                         metadata: bulkInputMetadata
                     });

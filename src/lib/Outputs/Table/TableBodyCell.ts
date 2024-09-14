@@ -1,3 +1,4 @@
+import { IInputFieldMetadata } from '../../Infrastructure/uimf';
 import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
 import type { IFormComponent } from '../../Infrastructure/IFormComponent';
 import type { InputController } from '../../Infrastructure/InputController';
@@ -24,8 +25,7 @@ export class TableBodyCell {
             this.controller = controlRegister.createInput({
                 app: parent.app,
                 form: parent.form,
-                metadata: field.Metadata,
-                defer: null
+                metadata: field.Metadata as IInputFieldMetadata
             }).controller;
         }
         else {

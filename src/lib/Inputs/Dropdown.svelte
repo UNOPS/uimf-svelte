@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-	import { InputController } from '../Infrastructure/InputController';
+	import { CreateInputOptions, InputController } from '../Infrastructure/InputController';
 
 	interface DropdownValue {
 		Value: string;
@@ -110,10 +110,7 @@
 		async init() {
 			controller.ensureItemsAreLoaded().then(function () {
 				controller.items = controller.items;
-				controller.ready?.resolve();
 			});
-
-			controller.ready?.resolve();
 		},
 		refresh() {
 			controller.valueAsString = controller.valueAsString;

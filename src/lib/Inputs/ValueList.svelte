@@ -182,8 +182,6 @@
 
 				return t;
 			}).sort((a, b) => a.Metadata.OrderIndex - b.Metadata.OrderIndex);
-
-			controller.ready?.resolve();
 		},
 		async refresh() {
 			table = controller.table;

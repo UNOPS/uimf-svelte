@@ -6,12 +6,12 @@ import type { Colgroup } from "./Colgroup";
 import EventSource from '../../Infrastructure/EventSource';
 import type { IFormComponent } from '../../Infrastructure/IFormComponent';
 import type { IField } from "./IColumn";
-import type { InputController } from "$lib/Infrastructure/InputController";
-import type { OutputController } from "$lib/Infrastructure/OutputController";
+import type { InputController } from "../../Infrastructure/InputController";
+import type { OutputController } from "../../Infrastructure/OutputController";
 import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
 import type { TableMetadata } from "./Components/ResultsTable.svelte";
 import type { ValueListConfiguration } from "../../Inputs/ValueList.svelte";
-import type { IFieldMetadata } from "$lib/Infrastructure/uimf";
+import type { IFieldMetadata, IInputFieldMetadata } from "../../Infrastructure/uimf";
 
 export interface ITableOption {
     parent: IFormComponent<TableMetadata | IFieldMetadata<ValueListConfiguration>>;
@@ -201,8 +201,7 @@ export class Table extends EventSource {
             const controller = controlRegister.createInput({
                 app: this.parent.app,
                 form: this.parent.form,
-                metadata: hiddenInput.Metadata,
-                defer: null
+                metadata: hiddenInput.Metadata as IInputFieldMetadata
             }).controller;
 
             row.hiddenInputs.push(controller as InputController<any>);

@@ -108,8 +108,6 @@
 			if (controller.value != null && selected == null) {
 				throw `Cannot find option for "${controller.metadata.Id}".`;
 			}
-
-			controller.ready?.resolve();
 		}
 	});
 

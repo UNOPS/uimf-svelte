@@ -74,8 +74,6 @@
 				controller.metadata.Component.Configuration,
 				controller.form!
 			);
-
-			controller.ready?.resolve();
 		},
 		async refresh() {
 			const capturedValue = controller.value;
