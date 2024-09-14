@@ -35,10 +35,6 @@
 	beforeUpdate(async () => await component.setup(controller));
 
 	function getComponentControllers(): OutputField[] {
-		if (controller.value == null) {
-			return [];
-		}
-
 		return controller.metadata.Component.Configuration.Properties.sort(
 			(a, b) => a.OrderIndex - b.OrderIndex
 		).map((property) => {
