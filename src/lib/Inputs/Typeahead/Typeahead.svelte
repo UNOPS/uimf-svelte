@@ -76,12 +76,12 @@
 			);
 		},
 		async refresh() {
-			const capturedValue = controller.value;
+			const capturedValue = controller?.value;
 
-			if (capturedValue != null && controller.serialize(capturedValue) != null) {
+			if (capturedValue != null) {
 				let result = await getAugmentedOption(capturedValue);
 
-				if (controller.value != capturedValue) {
+				if (controller.value?.Value != capturedValue.Value) {
 					// The value might have changed once the promise
 					// has been resolved. In this case we do nothing, because
 					// it would have been taken care of by another invocation.
