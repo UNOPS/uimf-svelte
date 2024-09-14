@@ -12,8 +12,18 @@
 			return Promise.resolve(result);
 		}
 
-		public serialize(value: MultiselectValue): string | null {
-			const items = value?.Items?.filter((t) => t !== null && t !== undefined) || [];
+		public serialize(value: MultiselectValue | null): string | null {
+			// Get items, but remove nulls and undefined values.
+			let items = value?.Items?.filter((t) => t != null) || [];
+
+			// Remove duplicates.
+			items = [...new Set(items)];
+
+			// Sort results for consistent serialization
+			// output regardless of the item order.
+			items.sort((a, b) => {
+				return a.toString().localeCompare(b.toString());
+			});
 
 			if (items.length === 0) {
 				return null;
@@ -63,12 +73,15 @@
 			selected = [];
 		},
 		async refresh() {
-			var capturedValue = controller?.value;
+			const capturedValue = controller?.value;
+			const capturedValueSerialized = controller.serialize(capturedValue);
 
-			if (capturedValue != null && controller.serialize(capturedValue)) {
+			if (capturedValue != null && capturedValueSerialized != null) {
 				let results = await getAugmentedOption(capturedValue);
 
-				if (controller.value != capturedValue) {
+				const currentValueSerialized = controller.serialize(controller.value);
+
+				if (currentValueSerialized != capturedValueSerialized) {
 					// The value might have changed once the promise
 					// has been resolved. In this case we do nothing, because
 					// it would have been taken care of by another invocation.
