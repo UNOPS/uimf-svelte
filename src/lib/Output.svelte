@@ -162,7 +162,7 @@
 	}
 
 	:global(.custom-layout .wrapper.section) {
-		margin-left: -10px;
-		margin-right: -10px;
+		margin-left: -15px;
+		margin-right: -15px;
 	}
 </style>
