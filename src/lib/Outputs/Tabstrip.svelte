@@ -6,6 +6,7 @@
 	import { IOutputFieldMetadata } from '../Infrastructure/uimf';
 
 	interface Tab {
+		CssClass: string | null | undefined;
 		Tooltip: string | null;
 		Form: string;
 		InputFieldValues: any;
@@ -56,7 +57,11 @@
 						</li>
 					{/if}
 					{#if controller.app.hasPermission(tab.RequiredPermission)}
-						<li class:nav-item={true} class:active={tab.Form === controller.value.CurrentTab}>
+						<li
+							class:nav-item={true}
+							class:active={tab.Form === controller.value.CurrentTab}
+							class={tab.CssClass}
+						>
 							{#await controller.app.makeUrl(tab) then url}
 								<a href={url} use:tooltip={tab.Tooltip}>{tab.Label}</a>
 							{/await}
