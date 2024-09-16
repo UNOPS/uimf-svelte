@@ -107,4 +107,8 @@
 		grid-gap: 10px;
 		margin-bottom: 20px;
 	}
+
+	form.vertical > .inputs {
+		grid-template-columns: 1fr;
+	}
 </style>
