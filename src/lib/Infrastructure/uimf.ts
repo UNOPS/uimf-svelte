@@ -34,6 +34,7 @@ export interface IFieldMetadata<TConfiguration = any> {
     Label: string;
     OrderIndex: number;
     Component: IComponent<TConfiguration>;
+    DefaultValue?: string | null;
 }
 
 export interface IComponent<T = any | null | undefined> {

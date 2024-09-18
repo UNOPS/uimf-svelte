@@ -1,11 +1,15 @@
 <script lang="ts" context="module">
 	import { InputController } from '../Infrastructure/InputController';
 
-	interface DateMetadata extends IInputFieldMetadata {
+	interface DateMetadata extends IInputFieldMetadata<IConfiguration> {
 		CustomProperties: {
 			[propertyName: string]: any;
-			DefaultValue: string | null;
 		};
+	}
+
+	interface IConfiguration {
+		MinDateValue?: string | null;
+		MaxDateValue?: string | null;
 	}
 
 	export class Controller extends InputController<Date, DateMetadata> {
@@ -49,7 +53,7 @@
 			);
 		}
 
-		ToValidDateString(date: string | null): string | null {
+		ToValidDateString(date: Date | string | null): string | null {
 			if (date == null) {
 				return null;
 			}
@@ -78,17 +82,34 @@
 			return new Date(serialized);
 		}
 
-		public static parseDefaultValue(value: string | null): Date | null {
-			if (value == null) {
+		public static parseDefaultValue(
+			value: string | null | undefined,
+			form: FormInstance | null | undefined
+		): Date | null {
+			if (value == null || value === '') {
 				return null;
 			}
 
-			if (value == 'new Date()') {
-				return new Date();
+			// If value is an offset in days like `now+1` or `now-1`.
+			if (value.indexOf('now+') == 0 || value.indexOf('now-') == 0) {
+				const offset = value.length > 3 ? value.substring(4) : '0';
+
+				const offsetAsDays = parseInt(offset);
+
+				let result = new Date();
+				result.setDate(result.getDate() + offsetAsDays);
+				return result;
 			}
 
-			var asInt = Date.parse(value);
-			return new Date(asInt);
+			// If value is a date string in the format like `yyyy-MM-dd`
+			if (value.indexOf('-') != -1) {
+				var asInt = Date.parse(value);
+				return new Date(asInt);
+			}
+
+			// If value is name of the response field.
+			var date = form?.response[value]?.value;
+			return date;
 		}
 	}
 </script>
@@ -96,16 +117,14 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../Infrastructure/Component';
-	import type { IFieldMetadata, IInputFieldMetadata } from '../Infrastructure/uimf';
+	import type { IInputFieldMetadata } from '../Infrastructure/uimf';
 	import { tooltip } from '../Components/Tooltip.svelte';
+	import { FormInstance } from '../Infrastructure/FormController';
 
 	export let controller: Controller;
 
 	let initialised = false;
 	let defaultValue: Date | null;
-
-	let minDate: string | null;
-	let maxDate: string | null;
 
 	let minDateString: string | null;
 	let maxDateString: string | null;
@@ -113,7 +132,8 @@
 	let component = new InputComponent({
 		init() {
 			defaultValue = Controller.parseDefaultValue(
-				controller.metadata.Component?.Configuration?.DefaultValue
+				controller.metadata.DefaultValue,
+				controller.form
 			);
 		},
 		refresh() {
@@ -122,11 +142,10 @@
 				initialised = true;
 			}
 
-			const minDateField = controller.metadata.Component?.Configuration?.MinDateValue;
-			const maxDateField = controller.metadata.Component?.Configuration?.MaxDateValue;
+			const config = controller.metadata.Component?.Configuration;
 
-			minDate = minDateField != null ? controller.form?.response[minDateField]?.value : null;
-			maxDate = maxDateField != null ? controller.form?.response[maxDateField]?.value : null;
+			let minDate = Controller.parseDefaultValue(config?.MinDateValue, controller.form);
+			let maxDate = Controller.parseDefaultValue(config?.MaxDateValue, controller.form);
 
 			minDateString = controller.ToValidDateString(minDate);
 			maxDateString = controller.ToValidDateString(maxDate);
