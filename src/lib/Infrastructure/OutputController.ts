@@ -8,7 +8,6 @@ import uuid from "./uuid";
 export interface CreateOutputOptions<TMetadata extends IOutputFieldMetadata = IOutputFieldMetadata> {
     props: OutputComponentProps<TMetadata>;
     wrap?: {
-        hideLabel: boolean;
         nolayout?: boolean;
     }
 }

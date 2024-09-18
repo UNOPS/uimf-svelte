@@ -237,7 +237,6 @@ export class ControlRegister {
 						target: renderTarget,
 						props: {
 							controller: controller,
-							hideLabel: options.wrap?.hideLabel,
 							nolayout: options.wrap?.nolayout
 						}
 					})

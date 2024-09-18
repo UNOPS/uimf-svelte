@@ -7,7 +7,6 @@
 	import { defaultControlRegister as controlRegister } from './Infrastructure/ControlRegister';
 
 	export let controller: OutputController<any>;
-	export let hideLabel: boolean = false;
 	export let nolayout: boolean = false;
 
 	// Field constants.
@@ -28,7 +27,6 @@
 			component = componentRegistration.component;
 
 			thisHideLabel =
-				hideLabel ||
 				componentRegistration.config.alwaysHideLabel ||
 				controller.metadata.Label === null ||
 				controller.metadata.Label === '';

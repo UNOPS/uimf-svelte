@@ -328,7 +328,7 @@
 							<td colspan={cell.colspan} class={cell.cssClass}>
 								{#if !cell.hidden}
 									{#if cell.isInput}
-										<Input controller={getControllerOrException(rowGroup, cell)} hideLabel={true} />
+										<Input controller={getControllerOrException(rowGroup, cell)} nolayout={true} />
 									{:else}
 										<Output controller={getControllerOrException(rowGroup, cell)} nolayout={true} />
 									{/if}

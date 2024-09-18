@@ -94,7 +94,7 @@
 
 {#if controller.view?.controller != null}
 	<div>
-		<Input controller={controller.view.controller} hideLabel={true} />
+		<Input controller={controller.view.controller} nolayout={true} />
 	</div>
 {/if}
 
