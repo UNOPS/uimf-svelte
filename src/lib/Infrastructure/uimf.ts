@@ -9,12 +9,21 @@ export interface OutputOptions {
     tooltip: string;
 }
 
+export enum FieldLayout {
+    Vertical = 'vertical',
+    Horizontal = 'horizontal',
+    Default = 'default',
+    None = 'none'
+}
+
 export interface IOutputFieldMetadata<TConfiguration = any> extends IFieldMetadata<TConfiguration> {
-    Layout?: 'vertical' | 'horizontal' | 'default' | 'none' | undefined | null;
+    Layout?: FieldLayout | null;
     CssClass?: string | null;
 }
 
 export interface IInputFieldMetadata<TConfiguration = any> extends IFieldMetadata<TConfiguration> {
+    CssClass?: string | null;
+    Layout?: FieldLayout | null;
     Required: boolean;
 }
 
