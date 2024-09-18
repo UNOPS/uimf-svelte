@@ -5,6 +5,7 @@
 	import { OutputComponent } from './Infrastructure/Component';
 	import { tooltip } from './Components/Tooltip.svelte';
 	import { defaultControlRegister as controlRegister } from './Infrastructure/ControlRegister';
+	import { FieldLayout } from './Infrastructure/uimf';
 
 	export let controller: OutputController<any>;
 	export let nolayout: boolean = false;
@@ -34,15 +35,15 @@
 			hideIfNull = controller.metadata.CustomProperties?.hideIfNull != null;
 
 			horizontalLayout =
-				controller.metadata.Layout === 'default' || controller.metadata.Layout == null
+				controller.metadata.Layout === FieldLayout.Default || controller.metadata.Layout == null
 					? // If the layout is default, we use the component's config.
 					  componentRegistration.config.displayAsBlock === false
 					: // Otherwise, we use the layout specified for this particular field.
-					  controller.metadata.Layout != 'vertical';
+					  controller.metadata.Layout != FieldLayout.Vertical;
 
 			documentation = controller.metadata.CustomProperties?.documentation;
 
-			nolayout = nolayout || controller.metadata.Layout === 'none';
+			nolayout = nolayout || controller.metadata.Layout === FieldLayout.None;
 
 			controller = controller;
 		}

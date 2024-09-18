@@ -10,10 +10,10 @@ export interface OutputOptions {
 }
 
 export enum FieldLayout {
-    Vertical = 'vertical',
-    Horizontal = 'horizontal',
-    Default = 'default',
-    None = 'none'
+    Default = 0,
+    Horizontal = 10,
+    Vertical = 20,
+    None = 30
 }
 
 export interface IOutputFieldMetadata<TConfiguration = any> extends IFieldMetadata<TConfiguration> {
