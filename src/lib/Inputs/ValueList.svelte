@@ -482,4 +482,12 @@
 		border: none;
 		cursor: pointer;
 	}
+
+	i.fa.fa-circle-plus {
+    	font-size: 18px;
+	}
+
+	i.fa.fa-trash {
+		font-size: 18px;
+	}
 </style>
