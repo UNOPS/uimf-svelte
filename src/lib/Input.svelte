@@ -72,11 +72,22 @@
 			<svelte:component this={component} {controller} {required} />
 		{/if}
 	{:else}
-		<div class={controller.metadata.CssClass}>
+		<div
+			class={controller.metadata.CssClass}
+			class:row={layout == FieldLayout.Horizontal}
+			class:column={layout == FieldLayout.Vertical}
+		>
 			{#if !thisHideLabel}
-				<label class="form-label" use:tooltip={documentation}>{controller.metadata.Label}:</label>
+				<label
+					class="form-label"
+					class:col-sm-4={layout == FieldLayout.Horizontal}
+					use:tooltip={documentation}>{controller.metadata.Label}:</label
+				>
 			{/if}
-			<div class={layout == FieldLayout.Horizontal ? 'inline' : 'block'}>
+			<div
+				class:col-sm-8={layout == FieldLayout.Horizontal && !thisHideLabel}
+				class:col-sm-12={layout == FieldLayout.Horizontal && thisHideLabel}
+			>
 				<svelte:component this={component} {controller} {required} />
 			</div>
 		</div>
@@ -84,11 +95,4 @@
 {/if}
 
 <style lang="scss">
-	.block {
-		display: block;
-	}
-
-	.inline {
-		display: inline;
-	}
 </style>
