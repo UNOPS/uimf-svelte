@@ -5,6 +5,7 @@
 		MinLength?: number;
 		MaxLength?: number;
 		Multiline: boolean;
+		PlaceHolder: string;
 	}
 
 	export class Controller extends InputController<string, IInputFieldMetadata<Configuration>> {
@@ -43,6 +44,7 @@
 		required={controller.metadata.Required}
 		minlength={controller.metadata.Component.Configuration?.MinLength}
 		maxlength={controller.metadata.Component.Configuration?.MaxLength}
+		placeholder={controller.metadata.Component.Configuration?.PlaceHolder}
 	/>
 {:else}
 	<input
@@ -53,6 +55,7 @@
 		required={controller.metadata.Required}
 		minlength={controller.metadata.Component.Configuration?.MinLength}
 		maxlength={controller.metadata.Component.Configuration?.MaxLength}
+		placeholder={controller.metadata.Component.Configuration?.PlaceHolder}
 		type="text"
 	/>
 {/if}
