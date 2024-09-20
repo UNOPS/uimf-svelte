@@ -2,7 +2,8 @@
 	export interface ExpandableConfiguration {
 		Visible: IComponent;
 		Hidden: IComponent;
-		CssClass1: string;
+		CssClassExpander: string;
+		StyleExpanded: string;
 	}
 
 	export interface ExpandableData {
@@ -99,7 +100,7 @@
 </script>
 
 {#if visible != null}
-	<div class="expandable-visible {controller.metadata.Component.Configuration?.CssClass1}">
+	<div class="expandable-visible {controller.metadata.Component.Configuration?.CssClassExpander}">
 		<Output controller={visible} nolayout={true} />
 
 		{#if hidden != null}
@@ -121,7 +122,11 @@
 {#if hidden != null}
 	{#if showHidden || shown}
 		{#if shown}
-			<div class:hide={!showHidden} class="expandable-hidden">
+			<div
+				class:hide={!showHidden}
+				class="expandable-hidden"
+				style={controller.metadata.Component.Configuration?.StyleExpanded}
+			>
 				<Output controller={hidden} nolayout={true} />
 			</div>
 		{/if}
