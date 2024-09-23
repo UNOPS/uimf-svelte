@@ -26,7 +26,9 @@
 			Flexbox?: {
 				FlexBasis?: string;
 				FlexGrow?: string;
+				FlexShrink?: string;
 				CssClass?: string;
+				MinWidth?: string;
 			};
 		};
 	}
@@ -85,6 +87,8 @@
 				class={field.controller.metadata.CustomProperties?.Flexbox?.CssClass}
 				style:flex-basis={field.controller.metadata.CustomProperties?.Flexbox?.FlexBasis}
 				style:flex-grow={field.controller.metadata.CustomProperties?.Flexbox?.FlexGrow}
+				style:flex-shrink={field.controller.metadata.CustomProperties?.Flexbox?.FlexShrink}
+				style:min-width={field.controller.metadata.CustomProperties?.Flexbox?.MinWidth}
 			>
 				<Output controller={field.controller} />
 			</div>
