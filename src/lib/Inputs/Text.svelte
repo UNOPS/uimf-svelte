@@ -40,6 +40,7 @@
 {#if controller.metadata.Component.Configuration?.Multiline === true}
 	<textarea
 		class="form-control"
+		rows="4"
 		bind:value={controller.value}
 		required={controller.metadata.Required}
 		minlength={controller.metadata.Component.Configuration?.MinLength}
