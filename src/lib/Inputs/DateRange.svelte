@@ -171,4 +171,8 @@
 		margin-top: 3px;
 		color: green;
 	}
+
+	input::-webkit-calendar-picker-indicator {
+		display: block;
+	}
 </style>

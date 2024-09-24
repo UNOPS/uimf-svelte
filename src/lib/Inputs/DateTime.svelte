@@ -194,4 +194,8 @@
 	input.form-control {
 		min-height: $app-input-min-height;
 	}
+
+	input::-webkit-calendar-picker-indicator {
+		display: block;
+	}
 </style>
