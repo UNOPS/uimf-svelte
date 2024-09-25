@@ -60,7 +60,8 @@
 				},
 				data: controller.value.Visible,
 				form: controller.form!,
-				app: controller.app
+				app: controller.app,
+				parent: controller
 			});
 
 			if (controller.value.Hidden != null) {
@@ -74,7 +75,8 @@
 					},
 					data: controller.value.Hidden,
 					form: controller.form!,
-					app: controller.app
+					app: controller.app,
+					parent: controller
 				});
 			} else {
 				hidden = null;

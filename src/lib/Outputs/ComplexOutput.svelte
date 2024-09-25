@@ -26,7 +26,8 @@
 						metadata: property,
 						data: controller.value == null ? null : controller.value[property.Id],
 						form: controller.form,
-						app: controller.app
+						app: controller.app,
+						parent: controller
 					});
 				});
 		}

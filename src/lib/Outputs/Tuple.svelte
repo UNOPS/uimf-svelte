@@ -43,7 +43,8 @@
 			},
 			data: value,
 			form: controller.form,
-			app: controller.app
+			app: controller.app,
+			parent: controller
 		});
 	};
 </script>

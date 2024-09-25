@@ -60,7 +60,8 @@
 					metadata: item,
 					app: controller.app,
 					form: controller.form,
-					data: null
+					data: null,
+					parent: controller
 				}
 			});
 

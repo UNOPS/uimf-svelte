@@ -42,7 +42,8 @@
 					metadata: controller.metadata,
 					data: null,
 					form: controller.form!,
-					app: controller.app
+					app: controller.app,
+					parent: controller
 				});
 
 				childController.setValue(result);

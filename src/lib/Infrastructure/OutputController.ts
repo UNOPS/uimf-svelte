@@ -13,6 +13,7 @@ export interface CreateOutputOptions<TMetadata extends IOutputFieldMetadata = IO
 }
 
 export interface OutputComponentProps<TMetadata extends IOutputFieldMetadata = IOutputFieldMetadata> {
+    parent: OutputController<any, any> | null;
     metadata: TMetadata;
     data: any;
     form: FormInstance | null;
@@ -42,12 +43,15 @@ export class OutputController<TValue, TMetadata extends IOutputFieldMetadata = I
      */
     public readonly app: IUimfApp;
 
+    public readonly parent: OutputController<any, any> | null = null;
+
     constructor(options: OutputComponentProps<TMetadata>) {
         super();
         this.metadata = options.metadata as TMetadata;
         this.value = options.data;
         this.app = options.app;
         this.form = options.form;
+        this.parent = options.parent;
     }
 
     public metadata: TMetadata;

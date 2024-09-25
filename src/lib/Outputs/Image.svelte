@@ -42,7 +42,8 @@
 			metadata: {} as IFieldMetadata,
 			data: data,
 			form: controller.form!,
-			app: controller.app
+			app: controller.app,
+			parent: controller
 		}) as ActionListController;
 	}
 

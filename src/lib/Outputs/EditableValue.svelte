@@ -55,12 +55,12 @@
 					Hidden: false,
 					Id: Date.now().toString(),
 					Label: '',
-					OrderIndex: 0,
-					Required: false
+					OrderIndex: 0
 				},
 				data: value,
 				form: controller.form,
-				app: controller.app
+				app: controller.app,
+				parent: controller
 			})
 		};
 	}

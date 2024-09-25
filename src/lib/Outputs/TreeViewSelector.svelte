@@ -27,7 +27,8 @@
 			app: controller.app,
 			data: value,
 			form: controller.form,
-			metadata: controller.metadata
+			metadata: controller.metadata,
+			parent: controller
 		});
 	}
 </script>
@@ -93,7 +94,7 @@
 		transition: transform 200ms;
 		color: $primary;
 		opacity: 0.6;
-		
+
 		&.down {
 			transform: rotate(90deg);
 		}

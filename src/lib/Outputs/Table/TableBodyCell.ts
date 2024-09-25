@@ -34,7 +34,8 @@ export class TableBodyCell {
                     metadata: field.Metadata,
                     data: data[field.Metadata.Id],
                     form: parent.form!,
-                    app: parent.app
+                    app: parent.app,
+                    parent: null
                 }
             );
         }

@@ -47,8 +47,7 @@ export class ExpandableExtension extends TableExtension {
                     Id: 'Hidden',
                     Label: '',
                     OrderIndex: 0,
-                    Hidden: false,
-                    Required: false
+                    Hidden: false
                 },
                 IsInput: false,
                 Hidden: false

@@ -65,7 +65,8 @@
 					},
 					data: item,
 					form: controller.form!,
-					app: controller.app
+					app: controller.app,
+					parent: controller
 				})
 			};
 		});

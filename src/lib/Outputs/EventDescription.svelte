@@ -30,7 +30,8 @@
 			metadata: {} as IFieldMetadata,
 			data: value,
 			form: controller.form!,
-			app: controller.app
+			app: controller.app,
+			parent: controller
 		});
 	};
 
@@ -38,7 +39,6 @@
 		return new DateTimeController({
 			metadata: {
 				Id: '',
-				Required: false,
 				Hidden: false,
 				Label: '',
 				OrderIndex: 0,
@@ -51,7 +51,8 @@
 			},
 			data: value.Date,
 			form: controller.form!,
-			app: controller.app
+			app: controller.app,
+			parent: controller
 		});
 	};
 </script>

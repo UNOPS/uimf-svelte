@@ -44,7 +44,8 @@
 			metadata: {} as IFieldMetadata,
 			data: data,
 			form: controller.form!,
-			app: controller.app
+			app: controller.app,
+			parent: controller
 		}) as Controller;
 	}
 </script>
@@ -76,20 +77,19 @@
 						{#if isExternal}
 							<FormLink controller={buildControllers(action)} />
 						{/if}
-		
+
 						<div class="header-text">{headerText}</div>
-		
+
 						{#if !expanded}
 							<div class="shorten-text">{@html ellipse(headerContent)}</div>
 						{/if}
 					</div>
-		
+
 					{#if expanded}
 						<i class="fa-solid fa-caret-down" />
 					{:else}
 						<i class="fa-solid fa-caret-left" />
 					{/if}
-					
 				</button>
 				<div hidden={!expanded}>
 					<slot />

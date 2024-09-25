@@ -105,9 +105,23 @@
 			metadata: {} as IFieldMetadata,
 			data: formlink,
 			form: controller.form,
-			app: controller.app
+			app: controller.app,
+			parent: controller
 		}) as FormLinkController;
 	};
+
+	function getExportField() {
+		let path: string | null = null;
+
+		let me: OutputController<any> | null = controller;
+
+		while (me != null) {
+			path = me.metadata.Id + (path != null ? '.' + path : '');
+			me = me.parent;
+		}
+
+		return path;
+	}
 </script>
 
 {#if table?.body == null || table.body.length === 0}
@@ -127,7 +141,7 @@
 							Action: 'excel-export',
 							InputFieldValues: inputFieldValues,
 							Form: controller.form.metadata.Id,
-							Field: controller.metadata.Id,
+							Field: getExportField(),
 							Icon: 'fas fa-download'
 						})}
 					/>
