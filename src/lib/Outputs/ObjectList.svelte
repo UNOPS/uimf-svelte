@@ -97,6 +97,13 @@
 		margin-left: 1.3em;
 	}
 
+	.extra-space-separator > div {
+		display: list-item;
+		list-style-type: none;
+		margin-left: 0em;
+		padding-bottom: 1em;
+	}
+
 	.line-separated-list > div {
 		display: list-item;
 		list-style-type: none;
