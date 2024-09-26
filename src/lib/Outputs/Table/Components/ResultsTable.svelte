@@ -110,7 +110,7 @@
 		}) as FormLinkController;
 	};
 
-	function getExportField() {
+	function getExportField(): string | null {
 		let path: string | null = null;
 
 		let me: OutputController<any> | null = controller;

@@ -9,7 +9,7 @@
 		Action?: any;
 		RequiredPermission?: string;
 		Form: string;
-		Field?: string;
+		Field?: string | null;
 		Controller?: any;
 		DocumentType?: string;
 		Filename?: string;
