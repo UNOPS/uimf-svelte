@@ -107,6 +107,8 @@
 				return new Date(asInt);
 			}
 
+			console.log('here');
+
 			// If value is name of the response field.
 			var date = form?.response[value]?.value;
 			return date;
@@ -142,19 +144,27 @@
 				initialised = true;
 			}
 
-			const config = controller.metadata.Component?.Configuration;
-
-			let minDate = Controller.parseDefaultValue(config?.MinDateValue, controller.form);
-			let maxDate = Controller.parseDefaultValue(config?.MaxDateValue, controller.form);
-
-			minDateString = controller.ToValidDateString(minDate);
-			maxDateString = controller.ToValidDateString(maxDate);
+			setMinMax();
 
 			controller.valueAsString = controller.valueAsString;
+
+			controller.form?.on('form:responseHandled', () => {
+				setMinMax();
+			});
 		}
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
+
+	function setMinMax() {
+		const config = controller.metadata.Component?.Configuration;
+
+		let minDate = Controller.parseDefaultValue(config?.MinDateValue, controller.form);
+		let maxDate = Controller.parseDefaultValue(config?.MaxDateValue, controller.form);
+
+		minDateString = controller.ToValidDateString(minDate);
+		maxDateString = controller.ToValidDateString(maxDate);
+	}
 
 	function getTooltipMessage(minDateString: string | null, maxDateString: string | null): string {
 		var message = 'Pick a date';
