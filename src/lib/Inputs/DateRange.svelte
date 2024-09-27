@@ -53,7 +53,7 @@
 
 		serializeDate(value: Date): string {
 			return (
-				value.getFullYear() +
+				value.getFullYear().toString().padStart(4, '0') +
 				'-' +
 				(value.getMonth() + 1).toString().padStart(2, '0') +
 				'-' +

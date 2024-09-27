@@ -72,7 +72,7 @@
 			}
 
 			let serialized =
-				date.getFullYear() +
+				date.getFullYear().toString().padStart(4, '0') +
 				'-' +
 				(date.getMonth() + 1).toString().padStart(2, '0') +
 				'-' +
@@ -106,8 +106,6 @@
 				var asInt = Date.parse(value);
 				return new Date(asInt);
 			}
-
-			console.log('here');
 
 			// If value is name of the response field.
 			var date = form?.response[value]?.value;
