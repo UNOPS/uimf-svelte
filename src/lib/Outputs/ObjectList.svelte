@@ -104,6 +104,15 @@
 		padding-bottom: 1em;
 	}
 
+	.bg-gray-box > div {
+		background-color: #f4f4f4;
+		padding: 0.5em;
+		margin:1em;
+		border-color: #d2d2d2;
+		border-style: solid;
+		border-width: 1px;
+	}
+
 	.line-separated-list > div {
 		display: list-item;
 		list-style-type: none;
