@@ -164,18 +164,19 @@
 		maxDateString = controller.ToValidDateString(maxDate);
 	}
 
-	function getTooltipMessage(minDateString: string | null, maxDateString: string | null): string {
-		var message = 'Pick a date';
-
+	function getTooltipMessage(
+		minDateString: string | null,
+		maxDateString: string | null
+	): string | null {
 		if (minDateString != null && maxDateString == null) {
-			message += ` after ${minDateString}`;
+			return `Pick any date starting from ${minDateString}`;
 		} else if (minDateString == null && maxDateString != null) {
-			message += ` before ${maxDateString}`;
+			return `Pick any date up to ${maxDateString}`;
 		} else if (minDateString != null && maxDateString != null) {
-			message += ` between ${minDateString} and ${maxDateString}`;
+			return `Pick a date between ${minDateString} and ${maxDateString}`;
 		}
 
-		return message;
+		return null;
 	}
 </script>
 
