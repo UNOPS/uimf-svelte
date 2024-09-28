@@ -36,7 +36,7 @@
 	beforeUpdate(async () => await component.setup(controller));
 </script>
 
-<div class={controller.metadata.Component.Configuration?.CssClass} class:wrapper={true}>
+<div class={controller.metadata.Component.Configuration?.CssClass} class:complex-output={true}>
 	{#each fields as field}
 		<div class={controller.metadata.Component.Configuration?.CssClassEach}>
 			<Output controller={field} />
@@ -45,7 +45,7 @@
 </div>
 
 <style lang="scss">
-	:global(.wrapper > div) > .wrapper {
+	:global(.output > div) > .complex-output {
 		// Offset the padding applied by the output component.
 		// This way each level of nested output components
 		// won't be adding extra padding.

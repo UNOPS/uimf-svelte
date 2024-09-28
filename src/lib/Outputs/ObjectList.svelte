@@ -107,7 +107,7 @@
 	.bg-gray-box > div {
 		background-color: #f4f4f4;
 		padding: 0.5em;
-		margin:1em;
+		margin: 1em;
 		border-color: #d2d2d2;
 		border-style: solid;
 		border-width: 1px;
@@ -167,6 +167,20 @@
 
 			&:last-child {
 				margin-bottom: 0;
+			}
+		}
+	}
+
+	.line-separated-list {
+		& > div {
+			display: block;
+			border-bottom: 1px #d2d2d2 solid;
+			margin: 0 0 25px 0;
+			border-radius: 1px;
+
+			&:last-child {
+				margin-bottom: 0;
+				border-bottom: none;
 			}
 		}
 	}

@@ -67,7 +67,7 @@
 		{/if}
 	{:else}
 		<div
-			class:wrapper={true}
+			class:output={true}
 			class:row={horizontalLayout}
 			class:column={!horizontalLayout}
 			class={controller.metadata.CssClass}
@@ -90,7 +90,7 @@
 {/if}
 
 <style lang="scss">
-	.wrapper {
+	.output {
 		--horizontal-padding: 25px;
 		--vertical-padding: 15px;
 
@@ -142,13 +142,6 @@
 	}
 
 	:global(.output-section-heading) {
-		// font-size: 1.5em;
-		// margin: 20px 0 10px;
-		// display: block;
-		// background: #8d93a2;
-		// color: white;
-		// padding: 5px 15px;
-
 		font-size: 1.5em;
 		margin: 0 0px 25px !important;
 		display: block;
@@ -160,7 +153,7 @@
 		}
 	}
 
-	:global(.custom-layout .wrapper.section) {
+	:global(.custom-layout .output.section) {
 		margin-left: -15px;
 		margin-right: -15px;
 	}
