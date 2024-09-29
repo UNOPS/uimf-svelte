@@ -69,6 +69,8 @@ export class RowExtension extends TableExtension {
         this.rowsProcessed = 0;
         this.groupRows = [];
         this.rowCssClass = null;
+        this.groupBy = null;
+        this.groupByHeader = null;
     }
 
     processTable(table: Table): void {
@@ -161,12 +163,6 @@ export class RowExtension extends TableExtension {
     }
 
     processHeadCell(table: Table, cell: TableHeadCell): Promise<void> {
-        // We only support one group by column,
-        // so if it's already set, we can skip the rest.
-        if (this.groupBy != null) {
-            return Promise.resolve();
-        }
-
         const rowMetadata: RowCustomProperty = table.parent.metadata.CustomProperties?.row || {};
 
         if (rowMetadata.GroupBy != null) {
@@ -176,7 +172,12 @@ export class RowExtension extends TableExtension {
 
                 this.groupBy = cell.metadata;
 
-                this.groupByHeader = table.fieldOrNull(rowMetadata.GroupByHeader ?? this.groupBy.Id);
+                this.groupByHeader = table.field(rowMetadata.GroupByHeader ?? this.groupBy.Id);
+            }
+
+            if (cell.metadata.Id === rowMetadata.GroupByHeader) {
+                // Hide the column, because instead we will render "group row".
+                cell.hidden = true;
             }
         }
 
