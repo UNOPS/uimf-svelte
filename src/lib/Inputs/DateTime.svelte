@@ -90,6 +90,10 @@
 				return null;
 			}
 
+			if (value === 'now') {
+				return new Date();
+			}
+
 			// If value is an offset in days like `now+1` or `now-1`.
 			if (value.indexOf('now+') == 0 || value.indexOf('now-') == 0) {
 				const offset = value.length > 3 ? value.substring(4) : '0';
