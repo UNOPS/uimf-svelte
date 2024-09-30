@@ -168,6 +168,7 @@
 	let metadata: IFieldMetadata<ValueListConfiguration> | null = null;
 	let hasDropdowns: boolean = false;
 	let table: Table | null = null;
+	let extraColSpan: number = 0;
 
 	const component = new InputComponent({
 		init() {
@@ -182,6 +183,8 @@
 
 				return t;
 			}).sort((a, b) => a.Metadata.OrderIndex - b.Metadata.OrderIndex);
+
+			extraColSpan = metadata.Component.Configuration.CanRemove ? 1 : 0;
 		},
 		async refresh() {
 			table = controller.table;
@@ -225,6 +228,12 @@
 		column: TableBodyCell
 	): T {
 		return controller.table?.controller(row, column.controller.metadata.Id) as T;
+	}
+
+	function asOutputController(
+		controller: InputController<any> | OutputController<any>
+	): OutputController<any> {
+		return controller as OutputController<any>;
 	}
 </script>
 
@@ -317,7 +326,7 @@
 						<tr class:group-header={true} class={header.cssClass}>
 							{#each header.cells as cell}
 								<td colspan={cell.colspan} class={cell.cssClass}>
-									<Output controller={cell.controller} nolayout={true} />
+									<Output controller={asOutputController(cell.controller)} nolayout={true} />
 								</td>
 							{/each}
 						</tr>
@@ -325,7 +334,7 @@
 
 					<tr class="main">
 						{#each rowGroup.main.cells as cell}
-							<td colspan={cell.colspan} class={cell.cssClass}>
+							<td colspan={cell.colspan + extraColSpan} class={cell.cssClass}>
 								{#if !cell.hidden}
 									{#if cell.isInput}
 										<Input controller={getControllerOrException(rowGroup, cell)} nolayout={true} />
@@ -356,7 +365,7 @@
 						<tr class:footer={true} class={footer.cssClass}>
 							{#each footer.cells as cell, index}
 								<td colspan={cell.colspan} class={cell.cssClass}>
-									<Output controller={cell.controller} nolayout={true} />
+									<Output controller={asOutputController(cell.controller)} nolayout={true} />
 								</td>
 							{/each}
 						</tr>
@@ -366,7 +375,7 @@
 			{#if metadata.Component.Configuration.CanAdd}
 				<tfoot>
 					<tr>
-						<td colspan={columns.length - 1} />
+						<td colspan={columns.length - 1 + extraColSpan} />
 						<td class="col-action">
 							<button
 								class="btn btn-outline-primary"
@@ -484,7 +493,7 @@
 	}
 
 	i.fa.fa-circle-plus {
-    	font-size: 18px;
+		font-size: 18px;
 	}
 
 	i.fa.fa-trash {
