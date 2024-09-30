@@ -13,7 +13,6 @@
 	// Field constants.
 	let component: ConstructorOfATypedSvelteComponent;
 	let documentation: string | null = null;
-	let hideIfNull: boolean;
 	let thisHideLabel: boolean;
 	let required: boolean;
 	let layout: FieldLayout;
@@ -30,8 +29,6 @@
 				componentRegistration.config.alwaysHideLabel ||
 				controller.metadata.Label === null ||
 				controller.metadata.Label === '';
-
-			hideIfNull = controller.metadata.CustomProperties?.hideIfNull != null;
 
 			component = componentRegistration.component;
 			documentation = controller.metadata.CustomProperties?.documentation;
@@ -60,38 +57,36 @@
 	});
 </script>
 
-{#if controller.value != null || !hideIfNull}
-	{#if controller.metadata == null}
-		<strong>null metadata</strong>
-	{:else if layout === FieldLayout.None}
-		{#if controller.metadata.CssClass != null}
-			<div class={controller.metadata.CssClass}>
-				<svelte:component this={component} {controller} {required} />
-			</div>
-		{:else}
+{#if controller.metadata == null}
+	<strong>null metadata</strong>
+{:else if layout === FieldLayout.None}
+	{#if controller.metadata.CssClass != null}
+		<div class={controller.metadata.CssClass}>
 			<svelte:component this={component} {controller} {required} />
-		{/if}
-	{:else}
-		<div
-			class={controller.metadata.CssClass}
-			class:row={layout == FieldLayout.Horizontal}
-			class:column={layout == FieldLayout.Vertical}
-		>
-			{#if !thisHideLabel}
-				<label
-					class="form-label"
-					class:col-sm-4={layout == FieldLayout.Horizontal}
-					use:tooltip={documentation}>{controller.metadata.Label}:</label
-				>
-			{/if}
-			<div
-				class:col-sm-8={layout == FieldLayout.Horizontal && !thisHideLabel}
-				class:col-sm-12={layout == FieldLayout.Horizontal && thisHideLabel}
-			>
-				<svelte:component this={component} {controller} {required} />
-			</div>
 		</div>
+	{:else}
+		<svelte:component this={component} {controller} {required} />
 	{/if}
+{:else}
+	<div
+		class={controller.metadata.CssClass}
+		class:row={layout == FieldLayout.Horizontal}
+		class:column={layout == FieldLayout.Vertical}
+	>
+		{#if !thisHideLabel}
+			<label
+				class="form-label"
+				class:col-sm-4={layout == FieldLayout.Horizontal}
+				use:tooltip={documentation}>{controller.metadata.Label}:</label
+			>
+		{/if}
+		<div
+			class:col-sm-8={layout == FieldLayout.Horizontal && !thisHideLabel}
+			class:col-sm-12={layout == FieldLayout.Horizontal && thisHideLabel}
+		>
+			<svelte:component this={component} {controller} {required} />
+		</div>
+	</div>
 {/if}
 
 <style lang="scss">
