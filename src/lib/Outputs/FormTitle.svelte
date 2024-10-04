@@ -23,12 +23,29 @@
 			title = titleInResponse != null ? titleInResponse : controller.form?.metadata?.Label ?? null;
 
 			if (controller.form?.useUrl === true) {
-				document.title = title ?? document.title;
+				document.title = getTextFromHtml(title ?? document.title);
 			}
 		}
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
+
+	function replaceNewlines(node: HTMLElement) {
+		if (node.nodeType === Node.ELEMENT_NODE && node.tagName === 'BR') {
+			const spaceNode = document.createTextNode(' ');
+			node.parentNode?.replaceChild(spaceNode, node);
+		} else if (node.nodeType === Node.ELEMENT_NODE) {
+			node.childNodes.forEach((t) => replaceNewlines(t as HTMLElement));
+		}
+	}
+
+	function getTextFromHtml(htmlString: string): string {
+		const element = document.createElement('div');
+		element.innerHTML = htmlString;
+		element.childNodes.forEach((t) => replaceNewlines(t as HTMLElement));
+
+		return element.innerText;
+	}
 </script>
 
 {#if title != null && title.length > 0}
