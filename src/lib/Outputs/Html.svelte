@@ -18,17 +18,30 @@
 </script>
 
 {#if controller.value?.Value != null}
-	<span class={controller.metadata.CustomProperties?.cssClass}>{@html controller.value.Value}</span>
+	<div class={controller.metadata.CustomProperties?.cssClass}>{@html controller.value.Value}</div>
 {/if}
 
 <style lang="scss">
-	span.code-panel {
+	div {
 		display: block;
-		padding: 20px 15px;
-		clear: both;
-		background: #f5f5f5;
-		border-radius: 3px;
-		border: 1px solid #e9e9e9;
+
+		&.code-panel {
+			display: block;
+			padding: 20px 15px;
+			clear: both;
+			background: #f5f5f5;
+			border-radius: 3px;
+			border: 1px solid #e9e9e9;
+		}
+
+		:global(p) {
+			font-size: initial;
+			line-height: initial;
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
 	}
 
 	.img-sm img {

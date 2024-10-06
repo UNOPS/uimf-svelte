@@ -363,6 +363,7 @@
 		tbody > tr > td,
 		thead > tr > th {
 			border-color: var(--inner-border-color);
+			line-height: initial;
 		}
 
 		tbody > tr {
