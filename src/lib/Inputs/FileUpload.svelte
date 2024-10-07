@@ -9,7 +9,6 @@
 
 	export interface FileData {
 		dataUrl: string | null;
-		name: string | null;
 		fileName: string | null;
 		type: string | null;
 	}
@@ -38,39 +37,6 @@
 
 			return JSON.stringify(value);
 		}
-
-		public setFile(uploadedFile: File | null): Promise<void> {
-			if (uploadedFile == null) {
-				return Promise.resolve();
-			}
-
-			return this.toBase64(uploadedFile).then((base64Url) => {
-				return this.setValue({
-					...this.value,
-					fileName: uploadedFile.name,
-					type: uploadedFile.type,
-					dataUrl: base64Url as string
-				} as FileData);
-			});
-		}
-
-		public setName(str: string): Promise<void> {
-			return this.setValue({
-				dataUrl: this.value?.dataUrl,
-				fileName: this.value?.fileName,
-				type: this.value?.type,
-				name: str
-			} as FileData);
-		}
-
-		toBase64(file: File) {
-			return new Promise((resolve, reject) => {
-				const reader = new FileReader();
-				reader.readAsDataURL(file);
-				reader.onload = () => resolve(reader.result);
-				reader.onerror = (error) => reject(error);
-			});
-		}
 	}
 </script>
 
@@ -78,100 +44,98 @@
 	import { beforeUpdate } from 'svelte';
 	import type { IInputFieldMetadata } from '$lib/Infrastructure/uimf';
 	import { InputComponent } from '../Infrastructure/Component';
+	import { tooltip } from '../Components/Tooltip.svelte';
 
 	export let controller: Controller;
 
 	let component = new InputComponent({
 		refresh() {
 			controller.value = controller.value;
+
+			if (controller.value == null) {
+				fileInput.value = '';
+			}
 		}
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
 
 	let fileInput: HTMLInputElement;
+
+	function setFile(uploadedFile: File | null): Promise<void> {
+		if (uploadedFile == null) {
+			return controller.setValue(null);
+		}
+
+		return toBase64(uploadedFile).then((base64Url) => {
+			return controller.setValue({
+				...controller.value,
+				fileName: uploadedFile.name,
+				type: uploadedFile.type,
+				dataUrl: base64Url as string
+			} as FileData);
+		});
+	}
+
+	function toBase64(file: File) {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = () => resolve(reader.result);
+			reader.onerror = (error) => reject(error);
+		});
+	}
 </script>
 
-{#if controller.metadata.Component.Configuration.NeedFileName}
-	<label for="file-name">File name:</label>
+<div class:file-upload={true} class={controller.metadata.Component.Configuration.CssClass}>
 	<input
-		type="text"
-		name="file-name"
-		class="form-control file-name"
-		on:change={async (e) => await controller.setName(e?.currentTarget?.value)}
-		autocomplete="off"
-		required={controller.metadata.Required}
+		bind:this={fileInput}
+		accept={controller.metadata.Component.Configuration.AcceptedFileTypes}
+		class="form-control file-input"
+		required={controller.metadata.Required && !controller.metadata.Hidden}
+		type="file"
+		on:change={async (e) => await setFile((e.currentTarget.files ?? [])[0])}
 	/>
-{/if}
 
-<input
-	bind:this={fileInput}
-	accept={controller.metadata.Component.Configuration.AcceptedFileTypes}
-	class="form-control file-input"
-	required={controller.metadata.Required && !controller.metadata.Hidden}
-	type="file"
-	on:change={async (e) => await controller.setFile((e.currentTarget.files ?? [])[0])}
-/>
-
-{#await controller.getValue() then value}
-	{#if !controller.metadata.Component.Configuration.CssClass?.includes('compact')}
+	{#await controller.getValue() then value}
 		{#if value != null && value.dataUrl != null && value.type != null}
-			{#if value.type.includes('image')}
-				<img class="my-image" src={value.dataUrl} alt="" />
-			{:else}
-				<div class="card">
-					<i class="file-icon fa fa-file fa-4x" />
-					<div class="card-body">
-						<p class="card-text">Type: {value.type.split('/')[1]}</p>
-					</div>
-				</div>
-			{/if}
-			<div class="buttons">
-				<button
-					type="button"
-					class="btn btn-danger remove-button"
-					on:click={() => {
-						fileInput.value = '';
-						controller.setValue(null);
-					}}>Remove</button
-				>
-			</div>
+			<button
+				type="button"
+				use:tooltip={'Remove'}
+				on:click={() => {
+					fileInput.value = '';
+					controller.setValue(null);
+				}}><i class="fa fa-trash" /></button
+			>
 		{/if}
-	{/if}
-{/await}
+	{/await}
+</div>
 
 <style lang="scss">
 	@import '../scss/styles.variables.scss';
 
-	.buttons {
-		width: 100%;
-	}
+	.file-upload {
+		display: flex;
+		align-items: stretch;
+		justify-content: space-between;
+		border: 1px solid $border-color;
 
-	.card {
-		width: 10rem;
-	}
+		& > input {
+			flex-grow: 1;
+			border: none;
+			font-size: initial;
+			line-height: initial;
+			outline: none;
+		}
 
-	.my-image {
-		padding-top: 1%;
-		width: 30%;
-		height: auto;
-		max-width: 100%;
-	}
-
-	.file-name {
-		width: 30%;
-	}
-
-	.file-input {
-		margin-top: 10px;
-	}
-
-	.file-icon {
-		text-align: center;
-		padding: 5px;
-	}
-
-	.remove-button {
-		margin-top: 5px;
+		& > button {
+			flex-grow: 0;
+			border-color: $border-color;
+			border-style: solid;
+			border-width: 0 0 0 1px;
+			background: transparent;
+			padding: 0 15px;
+			background-color: #f8f9fa;
+		}
 	}
 </style>
