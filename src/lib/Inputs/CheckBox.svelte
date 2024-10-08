@@ -54,7 +54,7 @@
 <div>
 	{#if controller.metadata.Required}
 		<input
-			class="form-check-input"
+			class="form-check-input border border-dark-subtle"
 			type="checkbox"
 			bind:checked={controller.value}
 			on:change={() => controller.setValue(controller.value)}
