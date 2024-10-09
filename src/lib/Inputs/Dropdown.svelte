@@ -71,6 +71,9 @@
 
 			const promises = parameters.map(async (item) => {
 				switch (item.SourceType) {
+					case 'constant':
+						formData[item.Parameter] = item.Source;
+						return Promise.resolve();
 					case 'response':
 						formData[item.Parameter] = this.form?.response[item.Source].value;
 						return Promise.resolve();
