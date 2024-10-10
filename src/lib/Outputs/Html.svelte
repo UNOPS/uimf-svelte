@@ -42,6 +42,14 @@
 				margin-bottom: 0;
 			}
 		}
+
+		:global(ul:last-child) {
+			margin-bottom: 0;
+		}
+
+		:global(li:last-child) {
+			margin-bottom: 0;
+		}
 	}
 
 	.img-sm img {
