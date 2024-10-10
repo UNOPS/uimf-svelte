@@ -53,7 +53,7 @@
 		'success': $success,
 		'failure': $danger,
 		'ongoing': #a3ceff,
-		'completed': $light,
+		'completed': #909090,
 		'pending': $warning
 	);
 
