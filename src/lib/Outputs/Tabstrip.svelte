@@ -8,6 +8,7 @@
 	interface Tab {
 		CssClass: string | null | undefined;
 		Tooltip: string | null;
+		Icon: string | null;
 		Form: string;
 		InputFieldValues: any;
 		Label: string;
@@ -63,7 +64,12 @@
 							class={tab.CssClass}
 						>
 							{#await controller.app.makeUrl(tab) then url}
-								<a href={url} use:tooltip={tab.Tooltip}>{tab.Label}</a>
+								<a href={url} use:tooltip={tab.Tooltip}>
+									{#if tab.Icon}
+										<i class={tab.Icon} />
+									{/if}
+									{tab.Label}</a
+								>
 							{/await}
 						</li>
 					{/if}
