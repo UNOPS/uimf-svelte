@@ -87,8 +87,8 @@
 		cursor: pointer;
 		background-color: #fff;
 		border: 1px solid #ddd;
-		border-bottom-color: transparent;
 		text-decoration: none;
+		box-shadow: inset 0px -12px 10px -15px #CCC;
 	}
 
 	.nav-pills {
@@ -115,7 +115,9 @@
 	// in cases where `Tabstrip.CurrentTab` cannot be set for some reason.
 	.nav-tabs > li.active > a,
 	.nav-tabs > li.current > a {
-		text-decoration: underline;
+		text-shadow: 0px 1px #3c719b;
+		border-bottom-color: transparent;
+		box-shadow: none;
 	}
 
 	.separator {
