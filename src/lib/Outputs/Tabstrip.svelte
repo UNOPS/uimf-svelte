@@ -115,7 +115,7 @@
 	// in cases where `Tabstrip.CurrentTab` cannot be set for some reason.
 	.nav-tabs > li.active > a,
 	.nav-tabs > li.current > a {
-		text-shadow: 0px 1px #3c719b;
+		text-shadow: 1px 0px #e5e5e5;
 		border-bottom-color: transparent;
 		box-shadow: none;
 	}
