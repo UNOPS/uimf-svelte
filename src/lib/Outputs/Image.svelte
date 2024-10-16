@@ -9,6 +9,8 @@
 		IsActivated: boolean | null;
 		MenuActions: ActionListData | null;
 		DisplayOrder: number | null;
+		FitContainer: boolean | null;
+		CssClass: string | null;
 	}
 </script>
 
@@ -51,11 +53,11 @@
 </script>
 
 {#if controller.value != null}
-	<div class="image-container">
+	<div class="image-container" class:fit-container={controller.value.FitContainer}>
 		{#if controller.value.Url != null}
 			<a href={controller.value.Url}>
 				<img
-					class="output-image"
+					class="output-image {controller.value.CssClass}"
 					style:width={controller.value.Width}
 					style:height={height ?? controller.value.Height}
 					src={controller.value.Source}
@@ -64,7 +66,7 @@
 			</a>
 		{:else}
 			<img
-				class="output-image"
+				class="output-image {controller.value.CssClass}"
 				style:width={controller.value.Width}
 				style:height={height ?? controller.value.Height}
 				src={controller.value.Source}
@@ -174,6 +176,10 @@
 	.image-container {
 		position: relative;
 		display: inline-block;
+	}
+
+	.fit-container {
+		width: 100%;
 	}
 
 	.output-image {
