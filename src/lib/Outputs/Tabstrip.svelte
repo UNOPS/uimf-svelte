@@ -88,7 +88,7 @@
 		background-color: #fff;
 		border: 1px solid #ddd;
 		text-decoration: none;
-		box-shadow: inset 0px -12px 10px -15px #CCC;
+		box-shadow: inset 0px -12px 10px -15px #ccc;
 	}
 
 	.nav-pills {
@@ -115,7 +115,7 @@
 	// in cases where `Tabstrip.CurrentTab` cannot be set for some reason.
 	.nav-tabs > li.active > a,
 	.nav-tabs > li.current > a {
-		text-shadow: 1px 0px #e5e5e5;
+		font-weight: bold;
 		border-bottom-color: transparent;
 		box-shadow: none;
 	}
