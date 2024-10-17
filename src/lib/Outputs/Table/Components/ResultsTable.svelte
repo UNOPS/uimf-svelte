@@ -148,9 +148,11 @@
 
 				{#if controller.value?.Actions?.length > 0 || canExport}
 					<div class="regular-actions">
-						{#each controller.value.Actions as action}
-							<FormLink controller={makeFormLinkController(action)} />
-						{/each}
+						{#if controller.value?.Actions?.length > 0}
+							{#each controller.value.Actions as action}
+								<FormLink controller={makeFormLinkController(action)} />
+							{/each}
+						{/if}
 
 						{#if canExport && controller.form != null}
 							<FormLink
