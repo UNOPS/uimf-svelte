@@ -1,12 +1,12 @@
 <script context="module" lang="ts">
 	export interface TableConfiguration {
+		CanExport: boolean;
 		Columns: IFieldMetadata[];
 		Paginator: string;
 	}
 
 	export interface TableMetadata<T = TableConfiguration> extends IOutputFieldMetadata<T> {
 		CustomProperties: {
-			showExportButton: boolean;
 			CssClass: string;
 			tableConfig: any;
 			row: any;
@@ -36,9 +36,10 @@
 	import { tooltip } from '../../../Components/Tooltip.svelte';
 	import Output from '../../../Output.svelte';
 	import type { TableExtension } from '../TableExtension';
-	import type { IFieldMetadata, IOutputFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata, IOutputFieldMetadata } from '../../../Infrastructure/uimf';
 	import { DocumentationExtension } from '../Extensions/DocumentationExtension';
 	import type { IField } from '../IColumn';
+	import { InputController } from '../../../Infrastructure/InputController';
 
 	export let controller: OutputController<any, TableMetadata>;
 	export let type: string;
@@ -48,6 +49,7 @@
 	let bulkActionExtension: BulkActionsColumnExtension = new BulkActionsColumnExtension();
 	let extraColspan: number = 0;
 	let inputFieldValues: { [key: string]: any } | undefined;
+	let canExport: boolean = false;
 
 	const component = new OutputComponent({
 		async refresh() {
@@ -91,6 +93,8 @@
 			table.on('table:data:updated', (e) => {
 				table = table;
 			});
+
+			canExport = controller.metadata.Component.Configuration.CanExport;
 		}
 	});
 
@@ -122,19 +126,23 @@
 
 		return path;
 	}
+
+	function getAsOutput(ctrl: OutputController<any> | InputController<any>): OutputController<any> {
+		return ctrl as OutputController<any>;
+	}
 </script>
 
 {#if table?.body == null || table.body.length === 0}
 	<em>{controller?.metadata?.CustomProperties?.tableConfig?.NoDataLabel ?? 'No data found.'}</em>
 {:else}
 	<div class={(controller?.metadata?.CustomProperties?.CssClass ?? '') + ' table-responsive'}>
-		{#if bulkActionExtension.actions.length > 0 || controller.metadata.CustomProperties?.showExportButton}
+		{#if bulkActionExtension.actions.length > 0 || canExport}
 			<div class="btn-bar">
 				{#each bulkActionExtension.actions as action}
 					<FormLink controller={makeFormLinkController(action)} disabled={action.disabled} />
 				{/each}
 
-				{#if controller.metadata.CustomProperties?.showExportButton && controller.form != null}
+				{#if canExport && controller.form != null}
 					<FormLink
 						controller={makeFormLinkController({
 							Label: '',
@@ -234,7 +242,7 @@
 						<tr class:group-header={true} class={header.cssClass} style={header.style}>
 							{#each header.cells as cell}
 								<td colspan={cell.colspan + (index === 0 ? extraColspan : 0)} class={cell.cssClass}>
-									<Output controller={cell.controller} nolayout={true} />
+									<Output controller={getAsOutput(cell.controller)} nolayout={true} />
 								</td>
 							{/each}
 						</tr>
@@ -258,7 +266,7 @@
 						{/if}
 						{#each rowGroup.main.cells as cell}
 							<td colspan={cell.colspan} class={cell.cssClass} bind:this={cell.element}>
-								<Output controller={cell.controller} nolayout={true} />
+								<Output controller={getAsOutput(cell.controller)} nolayout={true} />
 							</td>
 						{/each}
 					</tr>
@@ -276,7 +284,7 @@
 										colspan={cell.colspan + (index === 0 ? extraColspan : 0)}
 										class={cell.cssClass}
 									>
-										<Output controller={cell.controller} nolayout={true} />
+										<Output controller={getAsOutput(cell.controller)} nolayout={true} />
 									</td>
 								{/each}
 							</tr>
