@@ -37,11 +37,13 @@
 	beforeUpdate(async () => await component.setup(controller));
 </script>
 
-<div class="actions">
-	{#each controller.value.Actions as action}
-		<div><FormLink controller={makeController(action)} /></div>
-	{/each}
-</div>
+{#if controller.value?.Actions?.length > 0}
+	<div class="actions">
+		{#each controller.value.Actions as action}
+			<div><FormLink controller={makeController(action)} /></div>
+		{/each}
+	</div>
+{/if}
 
 <ResultsTable {controller} type="paginated-data" />
 
