@@ -136,23 +136,35 @@
 	<em>{controller?.metadata?.CustomProperties?.tableConfig?.NoDataLabel ?? 'No data found.'}</em>
 {:else}
 	<div class={(controller?.metadata?.CustomProperties?.CssClass ?? '') + ' table-responsive'}>
-		{#if bulkActionExtension.actions.length > 0 || canExport}
+		{#if controller.value?.Actions?.length > 0 || canExport || bulkActionExtension.actions.length > 0}
 			<div class="btn-bar">
-				{#each bulkActionExtension.actions as action}
-					<FormLink controller={makeFormLinkController(action)} disabled={action.disabled} />
-				{/each}
+				{#if bulkActionExtension.actions.length > 0}
+					<div class="bulk-actions">
+						{#each bulkActionExtension.actions as action}
+							<FormLink controller={makeFormLinkController(action)} disabled={action.disabled} />
+						{/each}
+					</div>
+				{/if}
 
-				{#if canExport && controller.form != null}
-					<FormLink
-						controller={makeFormLinkController({
-							Label: '',
-							Action: 'excel-export',
-							InputFieldValues: inputFieldValues,
-							Form: controller.form.metadata.Id,
-							Field: getExportField(),
-							Icon: 'fas fa-download'
-						})}
-					/>
+				{#if controller.value?.Actions?.length > 0 || canExport}
+					<div class="regular-actions">
+						{#each controller.value.Actions as action}
+							<FormLink controller={makeFormLinkController(action)} />
+						{/each}
+
+						{#if canExport && controller.form != null}
+							<FormLink
+								controller={makeFormLinkController({
+									Label: '',
+									Action: 'excel-export',
+									InputFieldValues: inputFieldValues,
+									Form: controller.form.metadata.Id,
+									Field: getExportField(),
+									Icon: 'fas fa-download'
+								})}
+							/>
+						{/if}
+					</div>
 				{/if}
 			</div>
 		{/if}
@@ -320,13 +332,26 @@
 		border-radius: 4px 4px 0px 4px;
 
 		& > .btn-bar {
-			text-align: right;
-			padding: 5px 2px;
+			display: flex;
+			padding: 5px;
 			border-bottom: 1px solid var(--inner-border-color);
 			background-color: shade-color($app-soft-bg, 1%);
 
-			& > :global(button) {
-				margin-right: 5px;
+			& > .regular-actions {
+				flex-grow: 1;
+				text-align: right;
+				background-color: $app-soft-bg;
+				padding-left: 15px;
+			}
+
+			& > .bulk-actions {
+				flex-grow: 1;
+				text-align: left;
+				background-color: $app-soft-bg;
+			}
+
+			& > div > :global(button) {
+				margin: 2px 3px;
 			}
 		}
 
