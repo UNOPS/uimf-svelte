@@ -50,7 +50,7 @@ export class BulkActionsColumnExtension extends TableExtension {
     init(table: Table) {
         const metadata = table.parent.metadata as TableMetadata;
 
-        this.bulkActionProperty = metadata.CustomProperties?.bulkActions;
+        this.bulkActionProperty = metadata.Component.Configuration.BulkActions;
         this.actions = [];
         this.table = table;
     }

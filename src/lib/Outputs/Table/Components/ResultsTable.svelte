@@ -3,6 +3,7 @@
 		CanExport: boolean;
 		Columns: IFieldMetadata[];
 		Paginator: string;
+		BulkActions: string | null;
 	}
 
 	export interface TableMetadata<T = TableConfiguration> extends IOutputFieldMetadata<T> {
@@ -10,7 +11,6 @@
 			CssClass: string;
 			tableConfig: any;
 			row: any;
-			bulkActions?: string;
 			Customizations: {
 				Paginator: string;
 			};
