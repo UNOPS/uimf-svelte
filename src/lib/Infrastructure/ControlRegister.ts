@@ -58,7 +58,6 @@ import * as Alert from '../Outputs/Alert.svelte';
 import * as Expandable from '../Outputs/Expandable.svelte';
 import * as Icon from '../Outputs/Icon.svelte';
 import * as Tag from '../Outputs/Tag.svelte';
-import * as Tuple from '../Outputs/Tuple.svelte';
 import * as Link from '../Outputs/Link.svelte';
 import * as Tabstrip from '../Outputs/Tabstrip.svelte';
 import * as InlineForm from '../Outputs/InlineForm.svelte';
@@ -354,7 +353,6 @@ defaultControlRegister.registerOutputComponent('object-list', ObjectList, {
 defaultControlRegister.registerOutputComponent('complex-output', ComplexOutput, {
 	displayAsBlock: true
 });
-defaultControlRegister.registerOutputComponent('tuple', Tuple, { displayAsBlock: false });
 
 // App-specific components.
 defaultControlRegister.registerOutputComponent('event-description', EventDescription, {

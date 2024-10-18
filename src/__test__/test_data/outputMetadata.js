@@ -279,33 +279,9 @@ const testData = [
             }]
     },
     {
-        metadata: {
-            Type: "tuple",
-            CustomProperties: {
-                ItemTypes:[
-                    {
-                        Type: "text",
-                    },
-                    {
-                        Type: "number",
-                    }
-                ]
-            }
-        },
-        values: [
-            {
-                'm_Item1': null,
-                'm_Item2': null
-            },
-            {
-                'm_Item1': "aaa",
-                'm_Item2': 12345
-            }]
-    },
-    {
         metadata: { Type: "tree-view-selector" },
-        values: 
-             [
+        values:
+            [
                 {
                     Url: "#/form/public-products?Category=catalog-1258",
                     Id: 1258,
