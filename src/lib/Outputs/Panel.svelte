@@ -81,7 +81,7 @@
 		border-color: $app-soft-bg;
 		border-style: solid;
 		border-width: 0 0 10px;
-		padding: 10px;
+		padding: 0 10px 10px;
 	}
 
 	.panel-header {
