@@ -77,6 +77,7 @@ import * as FormDocumentation from '../Outputs/FormDocumentation.svelte';
 import * as FormInputs from '../Outputs/FormInputs.svelte';
 import * as FormLink from '../Outputs/FormLink.svelte';
 import * as FormTitle from '../Outputs/FormTitle.svelte';
+import * as Panel from '../Outputs/Panel.svelte';
 
 import * as OutputWrapper from '../Output.svelte';
 
@@ -367,3 +368,4 @@ defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize, {
 	displayAsBlock: false
 });
 defaultControlRegister.registerOutputComponent('bar-chart', BarChart, { displayAsBlock: true });
+defaultControlRegister.registerOutputComponent('panel', Panel, { alwaysHideLabel: true });
