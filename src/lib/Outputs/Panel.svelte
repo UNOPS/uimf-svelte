@@ -54,16 +54,17 @@
 	<div class={controller.metadata.Component.Configuration?.CssClass}>
 		<div class="panel-section">
 			<div class="panel-header">
-				
 				<div class="panel-label">{controller.value.Label}</div>
 
-				{#if controller.value.Actions?.length > 0}
-					{#each controller.value.Actions as action}
-						<FormLink controller={makeFormLinkController(action)} />
-					{/each}
-				{/if}
-
+				<div class="panel-actions">
+					{#if controller.value.Actions?.length > 0}
+						{#each controller.value.Actions as action}
+							<FormLink controller={makeFormLinkController(action)} />
+						{/each}
+					{/if}
+				</div>
 			</div>
+
 			{#each fields as field}
 				<div class={controller.metadata.Component.Configuration?.CssClassEach}>
 					<Output controller={field} />
@@ -75,11 +76,12 @@
 
 <style lang="scss">
 	@import '../scss/styles.variables.scss';
+
 	.panel-section {
 		border-color: $app-soft-bg;
 		border-style: solid;
 		border-width: 0 0 10px;
-		padding: 10px
+		padding: 10px;
 	}
 
 	.panel-header {
@@ -93,5 +95,15 @@
 
 	.panel-label {
 		font-size: 1.2em;
+	}
+
+	.panel-actions {
+		display: flex;
+		gap: 10px;
+		justify-content: flex-end;
+	}
+
+	.panel-actions form {
+		display: inline-block;
 	}
 </style>
