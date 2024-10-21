@@ -39,9 +39,9 @@ $app-soft-bg: #f9f9f9;
 // ---------------------------------------------------------- //
 $theme-colors: map-remove($theme-colors, "light", "dark", "secondary");
 
-$theme-colors: map-merge($theme-colors, (
-  "inactive": $gray-600
-));
+$theme-colors: map-merge($theme-colors,
+    ("inactive": $gray-600,
+      "soft": $app-soft-bg ));
 
 
 // ---------------------------------------------------------- //
