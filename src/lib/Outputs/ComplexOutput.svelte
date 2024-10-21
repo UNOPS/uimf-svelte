@@ -7,7 +7,6 @@
 
 	interface Configuration {
 		CssClass: string;
-		CssClassEach: string;
 		Properties: IFieldMetadata[];
 	}
 
@@ -38,9 +37,7 @@
 
 <div class={controller.metadata.Component.Configuration?.CssClass} class:complex-output={true}>
 	{#each fields as field}
-		<div class={controller.metadata.Component.Configuration?.CssClassEach}>
-			<Output controller={field} />
-		</div>
+		<Output controller={field} />
 	{/each}
 </div>
 

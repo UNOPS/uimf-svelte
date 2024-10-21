@@ -1,21 +1,19 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
-    import Output from '../Output.svelte';
-    import FormLink from './FormLink.svelte';
+	import Output from '../Output.svelte';
+	import FormLink from './FormLink.svelte';
 
-    import { OutputController } from '../Infrastructure/OutputController';
-    import { OutputComponent } from '../Infrastructure/Component';
-    import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
-    import type { Controller as FormLinkController, FormLinkData } from './FormLink.svelte';
+	import { OutputController } from '../Infrastructure/OutputController';
+	import { OutputComponent } from '../Infrastructure/Component';
+	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { Controller as FormLinkController, FormLinkData } from './FormLink.svelte';
 
-
-	interface Configuration {
+	interface IConfiguration {
 		CssClass: string;
-		CssClassEach: string;
 		Properties: IFieldMetadata[];
 	}
 
-	class Controller extends OutputController<any, IFieldMetadata<Configuration>> {}
+	class Controller extends OutputController<any, IFieldMetadata<IConfiguration>> {}
 
 	export let controller: Controller;
 
@@ -66,9 +64,7 @@
 			</div>
 
 			{#each fields as field}
-				<div class={controller.metadata.Component.Configuration?.CssClassEach}>
-					<Output controller={field} />
-				</div>
+				<Output controller={field} />
 			{/each}
 		</div>
 	</div>
