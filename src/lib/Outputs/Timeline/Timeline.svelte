@@ -29,7 +29,6 @@
 	import ActionList, { ActionListController, type ActionListData } from '../ActionList.svelte';
 	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
 	import InlineForm from '../InlineForm.svelte';
-	import type { FormInstance } from '$lib/Infrastructure/FormController';
 
 	export let controller: OutputController<Timeline>;
 
@@ -44,20 +43,21 @@
 			metadata: {} as IFieldMetadata,
 			data: data,
 			form: controller.form!,
-			app: controller.app
+			app: controller.app,
+			parent: controller
 		}) as ActionListController;
 	}
 
 	function getController(data: FormData) {
-		
 		return new OutputController<FormData>({
 			metadata: {} as IFieldMetadata,
 			data: data,
 			form: controller.form!,
-			app: controller.app
-		}) ;
+			app: controller.app,
+			parent: controller
+		});
 	}
-	
+
 	beforeUpdate(async () => await component.setup(controller));
 </script>
 
