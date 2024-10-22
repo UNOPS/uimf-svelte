@@ -14,6 +14,7 @@
 		ItemPadding?: string;
 		JustifyContent?: string;
 		Direction?: string;
+		AlignItems?: string;
 	}
 
 	interface FlexboxItem {
@@ -82,6 +83,7 @@
 		style:flex-wrap={controller.metadata.Component.Configuration.Wrap}
 		style:justify-content={controller.metadata.Component.Configuration.JustifyContent}
 		style:flex-direction={controller.metadata.Component.Configuration.Direction}
+		style:align-items={controller.metadata.Component.Configuration.AlignItems}
 	>
 		{#each fields as field}
 			<div
