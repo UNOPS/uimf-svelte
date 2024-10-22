@@ -16,6 +16,7 @@
 	let hideIfNull: boolean;
 	let thisHideLabel: boolean;
 	let horizontalLayout: boolean = true;
+	let layout: FieldLayout = FieldLayout.Default;
 
 	const componentController = new OutputComponent({
 		refresh() {
@@ -43,7 +44,14 @@
 
 			documentation = controller.metadata.CustomProperties?.documentation;
 
-			nolayout = nolayout || controller.metadata.Layout === FieldLayout.None;
+			layout = nolayout ? FieldLayout.None : controller.metadata.Layout ?? FieldLayout.Default;
+
+			if (layout === FieldLayout.Default) {
+				layout =
+					componentRegistration.config.displayAsBlock === false
+						? FieldLayout.Vertical
+						: FieldLayout.Horizontal;
+			}
 
 			controller = controller;
 		}
@@ -57,7 +65,7 @@
 {#if controller.value != null || !hideIfNull}
 	{#if controller.metadata == null}
 		<strong>null metadata</strong>
-	{:else if nolayout}
+	{:else if layout === FieldLayout.None}
 		{#if controller.metadata.CssClass != null}
 			<div class={controller.metadata.CssClass}>
 				<svelte:component this={component} {controller} />
@@ -65,7 +73,16 @@
 		{:else}
 			<svelte:component this={component} {controller} />
 		{/if}
-	{:else}
+	{:else if layout === FieldLayout.Unstyled}
+		<div class={controller.metadata.CssClass}>
+			{#if !thisHideLabel}
+				<label use:tooltip={documentation}>{controller.metadata.Label}</label>
+			{/if}
+			<div>
+				<svelte:component this={component} {controller} />
+			</div>
+		</div>
+	{:else if layout === FieldLayout.Horizontal || layout == FieldLayout.Vertical}
 		<div
 			class:output={true}
 			class:row={horizontalLayout}
@@ -115,6 +132,7 @@
 			border-style: solid;
 			border-width: 10px 0;
 
+			margin: 0;
 			padding-left: 0;
 			padding-right: 0;
 			padding-top: var(--vertical-padding);

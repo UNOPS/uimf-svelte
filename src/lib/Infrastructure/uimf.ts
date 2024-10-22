@@ -13,7 +13,8 @@ export enum FieldLayout {
     Default = 0,
     Horizontal = 10,
     Vertical = 20,
-    None = 30
+    Unstyled = 30,
+    None = 40
 }
 
 export interface IOutputFieldMetadata<TConfiguration = any> extends IFieldMetadata<TConfiguration> {
