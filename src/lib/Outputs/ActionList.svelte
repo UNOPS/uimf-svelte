@@ -4,17 +4,25 @@
 	import { OutputComponent } from '../Infrastructure/Component';
 	import FormLink, { type FormLinkData } from './FormLink.svelte';
 
-	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata, IOutputFieldMetadata } from '$lib/Infrastructure/uimf';
 
 	export interface ActionListData {
 		Actions: FormLinkData[];
 	}
-	export class ActionListController extends OutputController<ActionListData> {}
+
+	interface IConfiguration {
+		CssClass?: string | null;
+	}
+
+	export class ActionListController extends OutputController<
+		ActionListData,
+		IOutputFieldMetadata<IConfiguration>
+	> {}
 </script>
 
 <script lang="ts">
 	import type { Controller } from '../Outputs/FormLink.svelte';
-	export let controller: OutputController<ActionListData>;
+	export let controller: ActionListController;
 
 	let component = new OutputComponent({
 		refresh() {
@@ -46,7 +54,7 @@
 </script>
 
 {#if controller.value?.Actions.length > 0}
-	<div class="action-list">
+	<div class:action-list={true} class={controller.metadata.Component?.Configuration?.CssClass}>
 		{#each controller.value.Actions as action}
 			<div><FormLink controller={makeController(action)} /></div>
 		{/each}
