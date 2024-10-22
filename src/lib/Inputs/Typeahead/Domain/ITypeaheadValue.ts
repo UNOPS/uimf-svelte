@@ -1,4 +1,3 @@
-
 export interface ITypeaheadValue {
     Value: any;
 }

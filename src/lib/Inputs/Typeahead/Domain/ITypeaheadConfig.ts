@@ -1,4 +1,4 @@
-import type { ITypeaheadItem } from "./ITypeaheadItem";
+import { IOption } from ".";
 
 export interface ITypeaheadConfig {
     DefaultValue?: string | null;
@@ -8,5 +8,5 @@ export interface ITypeaheadConfig {
         Parameter: string;
         Source: string;
     }> | null;
-    Items?: Array<ITypeaheadItem>;
+    Items?: Array<IOption>;
 }

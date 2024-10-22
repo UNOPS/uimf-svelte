@@ -69,7 +69,7 @@ export class TypeaheadSourceManager {
         return `${cachePrefix}-${cacheKey}`;
     }
 
-    async getOptionsAndFilter(query: ITypeaheadValue | IMultiselectValue | string): Promise<IOption[]> {
+    async getOptionsAndFilter(query: ITypeaheadValue | IMultiselectValue | string | null): Promise<IOption[]> {
         return this.#getOptions(query).then(data => {
             const visibleOptions = data.Items.filter((t) =>
                 this.#form.app.hasPermission(t.RequiredPermission)

@@ -1,14 +1,7 @@
 <script context="module" lang="ts">
 	import { InputController } from '../../Infrastructure/InputController';
 
-	interface IConfiguration {
-		Source?: string | null;
-		Parameters?: Array<{
-			SourceType: string;
-			Parameter: string;
-			Source: string;
-		}> | null;
-		Items?: Array<IOption>;
+	interface IConfiguration extends ITypeaheadConfig {
 		DefaultValue?: string | null;
 		SelectAll?: boolean;
 	}
@@ -62,7 +55,7 @@
 	import type { IInputFieldMetadata } from '../../Infrastructure/uimf';
 	import { TypeaheadSourceManager } from './Domain/TypeaheadSourceManager';
 	import { ITypeaheadValue } from './Domain/ITypeaheadValue';
-	import { IOption } from './Domain';
+	import { IOption, ITypeaheadConfig } from './Domain';
 
 	export let controller: Controller;
 
