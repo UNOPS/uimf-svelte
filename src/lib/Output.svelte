@@ -130,9 +130,10 @@
 		&.section {
 			border-color: #ebeef0;
 			border-style: solid;
-			border-width: 10px 0;
+			border-width: 20px 0 0 0;
 
-			margin: 0;
+			margin: 0 -15px;
+
 			padding-left: 0;
 			padding-right: 0;
 			padding-top: var(--vertical-padding);

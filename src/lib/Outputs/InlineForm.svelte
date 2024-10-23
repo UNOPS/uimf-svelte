@@ -42,12 +42,6 @@
 	}
 
 	div {
-		// Negate the padding applied by the nested form.
-		// This way each level of nesting won't be adding
-		// extra padding.
-		margin-left: -25px;
-		margin-right: -25px;
-
 		& :global(.uimf-form.no-visible-inputs > .uimf-output) {
 			padding-top: 0;
 		}
