@@ -124,4 +124,24 @@
 	.height700 {
 		height: 750px;
 	}
+
+	/* Every flexbox item will be styled as a panel */
+	.panels {
+		gap: 20px;
+		flex-wrap: wrap;
+
+		& > div {
+			border: 1px solid var(--bs-border-color);
+			padding: 0;
+			background: white;
+
+			& > :global(div > label) {
+				font-size: 1.8rem;
+				display: block;
+				background: var(--bs-soft);
+				padding: 5px 25px;
+				margin: 0 0 15px 0;
+			}
+		}
+	}
 </style>
