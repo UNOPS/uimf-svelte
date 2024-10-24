@@ -142,7 +142,7 @@
 			& > label {
 				display: block;
 				background-color: #f9f9f9;
-				font-size: 1.4em;
+				font-size: 1.8rem;
 
 				margin-top: calc(var(--vertical-padding) * -1);
 				margin-bottom: var(--vertical-padding);
