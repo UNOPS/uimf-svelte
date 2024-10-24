@@ -308,31 +308,6 @@
 <style lang="scss">
 	@import '../scss/styles.variables.scss';
 
-	.btn-primary {
-		color: white;
-	}
-
-	.btn-primary:hover {
-		color: white;
-	}
-
-	.btn-link {
-		margin: 0;
-		padding: 0;
-		border: none;
-		color: $link-color;
-	}
-
-	.btn-default {
-		background-color: #fafafa;
-		border-color: $app-btn-border-color;
-		color: $link-color;
-
-		&:focus-visible {
-			border-color: $app-btn-border-color;
-		}
-	}
-
 	.btn {
 		border-radius: 0;
 		font-size: 1em;
@@ -348,6 +323,31 @@
 
 		&:hover {
 			border-color: $app-btn-border-color;
+		}
+
+		&.btn-primary {
+			color: white;
+
+			&:hover {
+				color: white;
+			}
+		}
+
+		&.btn-link {
+			margin: 0;
+			padding: 0;
+			border-width: 0;
+			color: $link-color;
+		}
+
+		&.btn-default {
+			background-color: #fafafa;
+			border-color: $app-btn-border-color;
+			color: $link-color;
+
+			&:focus-visible {
+				border-color: $app-btn-border-color;
+			}
 		}
 	}
 
