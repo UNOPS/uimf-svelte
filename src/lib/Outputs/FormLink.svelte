@@ -333,13 +333,6 @@
 			}
 		}
 
-		&.btn-link {
-			margin: 0;
-			padding: 0;
-			border-width: 0;
-			color: $link-color;
-		}
-
 		&.btn-default {
 			background-color: #fafafa;
 			border-color: $app-btn-border-color;
@@ -348,6 +341,21 @@
 			&:focus-visible {
 				border-color: $app-btn-border-color;
 			}
+		}
+	}
+
+	// Handle "btn-link" with and without the "btn" class the same way.
+	.btn.btn-link,
+	.btn-link {
+		margin: 0;
+		padding: 0;
+		border-width: 0;
+		color: $link-color;
+		text-align: left;
+
+		&:hover {
+			color: $link-hover-color;
+			text-decoration: underline;
 		}
 	}
 
