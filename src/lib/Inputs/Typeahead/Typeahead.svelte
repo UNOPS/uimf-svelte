@@ -124,6 +124,10 @@
 		label="SearchText"
 		itemId="Value"
 		required={controller.metadata.Required}
+		floatingConfig={{
+			// Use fixed strategy to avoid the dropdown being clipped by the parent container.
+			strategy: 'fixed'
+		}}
 		{groupBy}
 		createGroupHeaderItem={(group) => ({
 			value: group,

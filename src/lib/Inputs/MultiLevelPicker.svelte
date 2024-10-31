@@ -232,6 +232,10 @@
 		itemId="Value"
 		{loading}
 		required={controller.metadata.Required}
+		floatingConfig={{
+			// Use fixed strategy to avoid the dropdown being clipped by the parent container.
+			strategy: 'fixed'
+		}}
 		{listOpen}
 		on:select={(e) => controller.setValue(e.detail)}
 		on:clear={(e) => {
