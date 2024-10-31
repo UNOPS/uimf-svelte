@@ -33,13 +33,9 @@
 			component = componentRegistration.component;
 			documentation = controller.metadata.CustomProperties?.documentation;
 
-			// Prop "nolayout" takes precedence over the layout specified in the metadata.
-			layout =
-				nolayout || controller.metadata.Layout === FieldLayout.None
-					? FieldLayout.None
-					: controller.metadata.Layout ?? FieldLayout.Default;
+			layout = nolayout ? FieldLayout.None : controller.metadata.Layout ?? FieldLayout.Default;
 
-			if (layout == FieldLayout.Default) {
+			if (layout === FieldLayout.Default) {
 				layout = componentRegistration.config.displayAsBlock
 					? FieldLayout.Vertical
 					: FieldLayout.Horizontal;
@@ -67,7 +63,16 @@
 	{:else}
 		<svelte:component this={component} {controller} {required} />
 	{/if}
-{:else}
+{:else if layout === FieldLayout.Unstyled}
+	<div class={controller.metadata.CssClass}>
+		{#if !thisHideLabel}
+			<label use:tooltip={documentation}>{controller.metadata.Label}</label>
+		{/if}
+		<div>
+			<svelte:component this={component} {controller} />
+		</div>
+	</div>
+{:else if layout === FieldLayout.Horizontal || layout == FieldLayout.Vertical}
 	<div
 		class={controller.metadata.CssClass}
 		class:row={layout == FieldLayout.Horizontal}
@@ -90,4 +95,34 @@
 {/if}
 
 <style lang="scss">
+	.section {
+		--horizontal-padding: 25px;
+		--vertical-padding: 15px;
+
+		border-color: #ebeef0;
+		border-style: solid;
+		border-width: 20px 0 0 0;
+
+		margin: 0 -15px;
+
+		padding-left: 0;
+		padding-right: 0;
+		padding-top: var(--vertical-padding);
+		padding-bottom: var(--vertical-padding);
+
+		& > label {
+			display: block;
+			background-color: #f9f9f9;
+			font-size: 1.8rem;
+
+			margin-top: calc(var(--vertical-padding) * -1);
+			margin-bottom: var(--vertical-padding);
+
+			padding: 5px var(--horizontal-padding);
+		}
+
+		& > div {
+			padding: 0 var(--horizontal-padding);
+		}
+	}
 </style>
