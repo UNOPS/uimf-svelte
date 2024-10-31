@@ -166,7 +166,6 @@
 
 	let columns: IField[] = [];
 	let metadata: IFieldMetadata<ValueListConfiguration> | null = null;
-	let hasDropdowns: boolean = false;
 	let table: Table | null = null;
 	let extraColSpan: number = 0;
 
@@ -174,13 +173,7 @@
 		init() {
 			metadata = controller.metadata;
 
-			hasDropdowns = false;
-
 			columns = controller.metadata.Component.Configuration.Fields.map((t) => {
-				hasDropdowns ||= ['typeahead', 'multiselect', 'dropdown'].includes(
-					t.Metadata.Component.Type
-				);
-
 				return t;
 			}).sort((a, b) => a.Metadata.OrderIndex - b.Metadata.OrderIndex);
 
@@ -238,7 +231,7 @@
 </script>
 
 {#if metadata != null && table != null && (table.body.length > 0 || metadata.Component.Configuration.CanRemove || metadata.Component.Configuration.CanAdd)}
-	<div class="table-responsive" class:has-dropdowns={hasDropdowns}>
+	<div class="table-responsive">
 		<table class="table table-borderless table-sm">
 			{#if table.colgroups?.length > 0}
 				{#each table.colgroups as colgroup}
@@ -467,12 +460,6 @@
 		td.min-width-400 {
 			min-width: 400px;
 		}
-	}
-
-	.has-dropdowns {
-		// Add padding to account for typeahead, dropdown or any other input
-		// that can grow vertically.
-		padding-bottom: 18rem;
 	}
 
 	.col-action {
