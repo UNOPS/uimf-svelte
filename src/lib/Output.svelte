@@ -47,10 +47,9 @@
 			layout = nolayout ? FieldLayout.None : controller.metadata.Layout ?? FieldLayout.Default;
 
 			if (layout === FieldLayout.Default) {
-				layout =
-					componentRegistration.config.displayAsBlock === false
-						? FieldLayout.Vertical
-						: FieldLayout.Horizontal;
+				layout = componentRegistration.config.displayAsBlock
+					? FieldLayout.Vertical
+					: FieldLayout.Horizontal;
 			}
 
 			controller = controller;
