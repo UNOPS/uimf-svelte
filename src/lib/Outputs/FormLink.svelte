@@ -344,18 +344,21 @@
 		}
 	}
 
-	// Handle "btn-link" with and without the "btn" class the same way.
-	.btn.btn-link,
+	// Handle ".btn-link" is not the same as ".btn.btn-link".
 	.btn-link {
-		margin: 0;
-		padding: 0;
+		margin: 0 !important;
+		padding: 0 !important;
 		border-width: 0;
 		color: $link-color;
 		text-align: left;
+		background-color: transparent;
+		text-decoration: none;
+		text-decoration: underline;
 
 		&:hover {
 			color: $link-hover-color;
 			text-decoration: underline;
+			background-color: transparent;
 		}
 	}
 
