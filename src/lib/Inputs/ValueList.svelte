@@ -164,7 +164,6 @@
 
 	export let controller: Controller;
 
-	let columns: IField[] = [];
 	let metadata: IFieldMetadata<ValueListConfiguration> | null = null;
 	let table: Table | null = null;
 	let extraColSpan: number = 0;
@@ -172,10 +171,6 @@
 	const component = new InputComponent({
 		init() {
 			metadata = controller.metadata;
-
-			columns = controller.metadata.Component.Configuration.Fields.map((t) => {
-				return t;
-			}).sort((a, b) => a.Metadata.OrderIndex - b.Metadata.OrderIndex);
 
 			extraColSpan = metadata.Component.Configuration.CanRemove ? 1 : 0;
 		},
@@ -368,7 +363,7 @@
 			{#if metadata.Component.Configuration.CanAdd}
 				<tfoot>
 					<tr>
-						<td colspan={columns.length - 1 + extraColSpan} />
+						<td colspan={table.head.main.cells.length} />
 						<td class="col-action">
 							<button
 								class="btn btn-outline-primary"
