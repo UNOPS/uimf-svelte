@@ -1,5 +1,6 @@
 <script context="module" lang="ts">
 	export interface TableConfiguration {
+		NoDataLabel?: string;
 		CanExport: boolean;
 		Columns: IFieldMetadata[];
 		Paginator: string;
@@ -132,39 +133,27 @@
 	}
 </script>
 
-{#if table?.body == null || table.body.length === 0}
-	{#if controller.value?.Actions?.length > 0}
-		<div class="table-responsive">
-			<div class="btn-bar">
-				<div class="regular-actions">
-					{#each controller.value.Actions as action}
-						<FormLink controller={makeFormLinkController(action)} />
-					{/each}
-				</div>
-			</div>
-		</div>
-	{/if}
+{#if table != null}
+	{@const bulkActions = bulkActionExtension.actions ?? []}
+	{@const regularActions = controller.value?.Actions ?? []}
+	{@const canExport = controller.metadata.Component.Configuration?.CanExport ?? false}
 
-	<em>{controller?.metadata?.CustomProperties?.tableConfig?.NoDataLabel ?? 'No data found.'}</em>
-{:else}
-	<div class={(controller?.metadata?.CustomProperties?.CssClass ?? '') + ' table-responsive'}>
-		{#if controller.value?.Actions?.length > 0 || canExport || bulkActionExtension.actions.length > 0}
+	<div class="table-responsive">
+		{#if bulkActions.length > 0 || regularActions.length > 0 || canExport}
 			<div class="btn-bar">
-				{#if bulkActionExtension.actions.length > 0}
+				{#if bulkActions.length > 0}
 					<div class="bulk-actions">
-						{#each bulkActionExtension.actions as action}
+						{#each bulkActions as action}
 							<FormLink controller={makeFormLinkController(action)} disabled={action.disabled} />
 						{/each}
 					</div>
 				{/if}
 
-				{#if controller.value?.Actions?.length > 0 || canExport}
+				{#if regularActions.length > 0 || canExport}
 					<div class="regular-actions">
-						{#if controller.value?.Actions?.length > 0}
-							{#each controller.value.Actions as action}
-								<FormLink controller={makeFormLinkController(action)} />
-							{/each}
-						{/if}
+						{#each regularActions as action}
+							<FormLink controller={makeFormLinkController(action)} />
+						{/each}
 
 						{#if canExport && controller.form != null}
 							<FormLink
@@ -263,49 +252,19 @@
 				{/each}
 			</thead>
 			<tbody>
-				{#each table.body as rowGroup}
-					{#each rowGroup.above as header, index}
-						<tr class:group-header={true} class={header.cssClass} style={header.style}>
-							{#each header.cells as cell}
-								<td colspan={cell.colspan + (index === 0 ? extraColspan : 0)} class={cell.cssClass}>
-									<Output controller={getAsOutput(cell.controller)} nolayout={true} />
-								</td>
-							{/each}
-						</tr>
-					{/each}
-
-					<tr class={rowGroup.main.cssClass} style={rowGroup.main.style}>
-						{#if bulkActionExtension.actions.length > 0}
-							<td>
-								<input
-									type="checkbox"
-									bind:checked={rowGroup.selected}
-									on:change={() => {
-										bulkActionExtension.refresh();
-										if (table != null) {
-											table.body = table.body;
-										}
-										bulkActionExtension.actions = bulkActionExtension.actions;
-									}}
-								/>
-							</td>
-						{/if}
-						{#each rowGroup.main.cells as cell}
-							<td colspan={cell.colspan} class={cell.cssClass} bind:this={cell.element}>
-								<Output controller={getAsOutput(cell.controller)} nolayout={true} />
-							</td>
-						{/each}
+				{#if table.body == null || table.body.length === 0}
+					<tr>
+						<td colspan={table.head.main.cells.length + extraColspan}>
+							<em>
+								{controller.metadata.Component.Configuration?.NoDataLabel ?? 'No data found.'}
+							</em>
+						</td>
 					</tr>
-
-					{#each rowGroup.below as footer}
-						{#if footer.append}
-							<tr
-								class:d-none={!footer.visible}
-								class:fotter={true}
-								class={footer.cssClass}
-								style={footer.style}
-							>
-								{#each footer.cells as cell, index}
+				{:else}
+					{#each table.body as rowGroup}
+						{#each rowGroup.above as header, index}
+							<tr class:group-header={true} class={header.cssClass} style={header.style}>
+								{#each header.cells as cell}
 									<td
 										colspan={cell.colspan + (index === 0 ? extraColspan : 0)}
 										class={cell.cssClass}
@@ -314,9 +273,52 @@
 									</td>
 								{/each}
 							</tr>
-						{/if}
+						{/each}
+
+						<tr class={rowGroup.main.cssClass} style={rowGroup.main.style}>
+							{#if bulkActionExtension.actions.length > 0}
+								<td>
+									<input
+										type="checkbox"
+										bind:checked={rowGroup.selected}
+										on:change={() => {
+											bulkActionExtension.refresh();
+											if (table != null) {
+												table.body = table.body;
+											}
+											bulkActionExtension.actions = bulkActionExtension.actions;
+										}}
+									/>
+								</td>
+							{/if}
+							{#each rowGroup.main.cells as cell}
+								<td colspan={cell.colspan} class={cell.cssClass} bind:this={cell.element}>
+									<Output controller={getAsOutput(cell.controller)} nolayout={true} />
+								</td>
+							{/each}
+						</tr>
+
+						{#each rowGroup.below as footer}
+							{#if footer.append}
+								<tr
+									class:d-none={!footer.visible}
+									class:fotter={true}
+									class={footer.cssClass}
+									style={footer.style}
+								>
+									{#each footer.cells as cell, index}
+										<td
+											colspan={cell.colspan + (index === 0 ? extraColspan : 0)}
+											class={cell.cssClass}
+										>
+											<Output controller={getAsOutput(cell.controller)} nolayout={true} />
+										</td>
+									{/each}
+								</tr>
+							{/if}
+						{/each}
 					{/each}
-				{/each}
+				{/if}
 			</tbody>
 		</table>
 	</div>
