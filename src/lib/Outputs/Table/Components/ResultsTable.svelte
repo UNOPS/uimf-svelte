@@ -133,6 +133,18 @@
 </script>
 
 {#if table?.body == null || table.body.length === 0}
+	{#if controller.value?.Actions?.length > 0}
+		<div class="table-responsive">
+			<div class="btn-bar">
+				<div class="regular-actions">
+					{#each controller.value.Actions as action}
+						<FormLink controller={makeFormLinkController(action)} />
+					{/each}
+				</div>
+			</div>
+		</div>
+	{/if}
+
 	<em>{controller?.metadata?.CustomProperties?.tableConfig?.NoDataLabel ?? 'No data found.'}</em>
 {:else}
 	<div class={(controller?.metadata?.CustomProperties?.CssClass ?? '') + ' table-responsive'}>
