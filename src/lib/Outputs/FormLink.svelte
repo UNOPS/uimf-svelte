@@ -378,4 +378,10 @@
 	i.margin-right {
 		margin: 0 5px 0 0;
 	}
+
+	.no-decoration {
+		background: none;
+		text-decoration: none;
+		border: none;
+	}
 </style>
