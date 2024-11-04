@@ -31,20 +31,11 @@ export class TypeaheadSourceManager {
     async #generateKey(query: ITypeaheadValue | IMultiselectValue | string | null): Promise<string> {
         let cachePrefix = `${this.#config.Source}`;
 
-        if (this.#config.Parameters != null) {
-            let promises = this.#config.Parameters.map((p) => {
-                switch (p.SourceType) {
-                    case 'response':
-                        cachePrefix += `-${p.Parameter}=${this.#form.response[p.Source]}`;
-                        return Promise.resolve();
-                    case 'request':
-                        return this.#form.inputs[p.Source]
-                            .getValue()
-                            .then((value) => (cachePrefix += `-${p.Parameter}=${value}`));
-                }
-            });
+        let parameters = await this.#getConfigs();
 
-            await Promise.all(promises);
+        for (const key in parameters) {
+            const valueAsString = JSON.stringify(parameters[key]);
+            cachePrefix += `-${key}=${valueAsString}`;
         }
 
         if (query == null) {
@@ -228,6 +219,25 @@ export class TypeaheadSourceManager {
             }
         }
 
+        let params = await this.#getConfigs();
+
+        for (const key in params) {
+            postData[key] = params[key];
+        }
+
+        return (this.#form.app
+            .postForm(this.#config.Source!, postData, null)
+            .then((t: any) => {
+                return {
+                    Items: TypeaheadSourceManager.augmentItems(t.Items),
+                    TotalItemCount: t.TotalItemCount
+                };
+            }));
+    }
+
+    async #getConfigs(): Promise<{ [key: string]: any }> {
+        let postData: { [key: string]: any } = {};
+
         if (this.#config.Parameters != null) {
             let promises = this.#config.Parameters.map((p) => {
                 switch (p.SourceType) {
@@ -247,14 +257,7 @@ export class TypeaheadSourceManager {
             await Promise.all(promises);
         }
 
-        return (this.#form.app
-            .postForm(this.#config.Source!, postData, null)
-            .then((t: any) => {
-                return {
-                    Items: TypeaheadSourceManager.augmentItems(t.Items),
-                    TotalItemCount: t.TotalItemCount
-                };
-            }));
+        return postData;
     }
 
     static augmentItems(items: any[]): IOption[] {
