@@ -38,7 +38,7 @@
 		}
 
 		public serialize(value: IValue | null): string | null {
-			return value != null && value.Value !== '' ? value.Value : null;
+			return value != null && value.Value !== '' ? value.Value.toString() : null;
 		}
 	}
 </script>
@@ -68,7 +68,6 @@
 		},
 		async refresh() {
 			items = await source.getOptionsAndFilter(null);
-
 			controller.valueAsString = controller.valueAsString;
 		}
 	});
@@ -87,7 +86,7 @@
 >
 	<option value="" />
 	{#each items as item}
-		<option value={item.Value}>{item.Label}</option>
+		<option value={item.Value.toString()}>{item.Label}</option>
 	{/each}
 </select>
 
