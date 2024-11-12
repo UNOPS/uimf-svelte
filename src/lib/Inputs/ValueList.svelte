@@ -414,7 +414,7 @@
 				padding: 10px 10px;
 			}
 
-			& > tr > td:has(input) {
+			& > tr > td:has(input, select) {
 				padding: 4px 8px;
 			}
 
