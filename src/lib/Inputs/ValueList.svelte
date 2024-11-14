@@ -125,6 +125,8 @@
 	}
 
 	export interface ValueListConfiguration {
+		AddRowLabel?: string;
+		RemoveRowLabel?: string;
 		Fields: IField[];
 		CanRemove?: boolean;
 		CanAdd?: boolean;
@@ -144,6 +146,16 @@
 		 * collection of inputs/outputs.
 		 */
 		IsPrimitive: boolean;
+
+		/*
+		 * The layout of the value list.
+		 */
+		Layout: ValueListLayout;
+	}
+
+	export enum ValueListLayout {
+		Table = 10,
+		List = 20
 	}
 </script>
 
@@ -172,7 +184,11 @@
 		init() {
 			metadata = controller.metadata;
 
-			extraColSpan = metadata.Component.Configuration.CanRemove ? 1 : 0;
+			extraColSpan =
+				metadata.Component.Configuration.CanRemove &&
+				metadata.Component.Configuration.Layout === ValueListLayout.Table
+					? 1
+					: 0;
 		},
 		async refresh() {
 			table = controller.table;
@@ -223,9 +239,33 @@
 	): OutputController<any> {
 		return controller as OutputController<any>;
 	}
+
+	class ItemReader {
+		private readonly row: TableRowGroup<TableBodyCell>;
+		private firstRowInitialized = false;
+
+		constructor(row: TableRowGroup<TableBodyCell>) {
+			this.row = row;
+		}
+
+		isFirstRow(): boolean {
+			if (this.firstRowInitialized) {
+				return false;
+			}
+
+			this.firstRowInitialized = true;
+			return true;
+		}
+	}
 </script>
 
 {#if metadata != null && table != null && (table.body.length > 0 || metadata.Component.Configuration.CanRemove || metadata.Component.Configuration.CanAdd)}
+	{@const showRemoveAsColumn =
+		metadata.Component.Configuration.CanRemove &&
+		metadata.Component.Configuration.Layout === ValueListLayout.Table}
+	{@const showRemoveAsRow =
+		metadata.Component.Configuration.CanRemove &&
+		metadata.Component.Configuration.Layout === ValueListLayout.List}
 	<div class="table-responsive">
 		<table class="table table-borderless table-sm">
 			{#if table.colgroups?.length > 0}
@@ -233,7 +273,7 @@
 					<colgroup span={colgroup.span} class={colgroup.cssClass} style={colgroup.style} />
 				{/each}
 			{/if}
-			<thead>
+			<thead class:list={metadata.Component.Configuration.Layout === ValueListLayout.List}>
 				{#each table.head.above as header}
 					<tr class={header.cssClass}>
 						{#each header.cells as cell, index}
@@ -253,6 +293,10 @@
 									{cell.label}
 								{/if}
 							</th>
+
+							{#if showRemoveAsColumn}
+								<th />
+							{/if}
 						{/each}
 					</tr>
 				{/each}
@@ -280,7 +324,7 @@
 							{/if}
 						</th>
 					{/each}
-					{#if metadata.Component.Configuration.CanRemove || metadata.Component.Configuration.CanAdd}
+					{#if showRemoveAsColumn}
 						<th />
 					{/if}
 				</tr>
@@ -308,10 +352,32 @@
 					</tr>
 				{/each}
 			</thead>
-			<tbody>
+			<tbody class:list={metadata.Component.Configuration.Layout === ValueListLayout.List}>
 				{#each table.body.filter((t) => !t.deleted) as rowGroup}
+					{@const reader = new ItemReader(rowGroup)}
+					{#if showRemoveAsRow}
+						<tr class:list-item-top-row={reader.isFirstRow()}>
+							<td colspan={table.head.main.cells.length} class="list-item-control-row">
+								<button
+									class="btn btn-outline-light"
+									type="button"
+									on:click|preventDefault={() => {
+										rowGroup.deleted = true;
+										table = table;
+									}}
+								>
+									{metadata.Component.Configuration.RemoveRowLabel ?? 'Remove row'}
+								</button>
+							</td>
+						</tr>
+					{/if}
+
 					{#each rowGroup.above as header, index}
-						<tr class:group-header={true} class={header.cssClass}>
+						<tr
+							class:group-header={true}
+							class={header.cssClass}
+							class:list-item-top-row={reader.isFirstRow()}
+						>
 							{#each header.cells as cell}
 								<td colspan={cell.colspan} class={cell.cssClass}>
 									<Output controller={asOutputController(cell.controller)} nolayout={true} />
@@ -320,7 +386,7 @@
 						</tr>
 					{/each}
 
-					<tr class="main">
+					<tr class="main" class:list-item-top-row={reader.isFirstRow()}>
 						{#each rowGroup.main.cells as cell}
 							<td colspan={cell.colspan + extraColSpan} class={cell.cssClass}>
 								{#if !cell.hidden}
@@ -332,12 +398,12 @@
 								{/if}
 							</td>
 						{/each}
-						{#if metadata.Component.Configuration.CanRemove == true}
+						{#if showRemoveAsColumn}
 							<td class="col-action">
 								<button
 									class="btn btn-outline-light"
 									type="button"
-									use:tooltip={'Remove row'}
+									use:tooltip={metadata.Component.Configuration.RemoveRowLabel ?? 'Remove row'}
 									on:click|preventDefault={() => {
 										rowGroup.deleted = true;
 										table = table;
@@ -356,24 +422,45 @@
 									<Output controller={asOutputController(cell.controller)} nolayout={true} />
 								</td>
 							{/each}
+
+							{#if showRemoveAsColumn}
+								<td />
+							{/if}
 						</tr>
 					{/each}
+
+					{#if showRemoveAsRow}
+						<tr class="list-item-gap">
+							<td colspan={table.head.main.cells.length} />
+						</tr>
+					{/if}
 				{/each}
 			</tbody>
 			{#if metadata.Component.Configuration.CanAdd}
 				<tfoot>
 					<tr>
-						<td colspan={table.head.main.cells.length} />
-						<td class="col-action">
-							<button
-								class="btn btn-outline-primary"
-								type="button"
-								use:tooltip={'Add row'}
-								on:click|preventDefault={addNewRow}
-							>
-								<i class="fa fa-circle-plus" />
-							</button>
-						</td>
+						{#if metadata.Component.Configuration.Layout === ValueListLayout.Table}
+							<td colspan={table.head.main.cells.length} />
+							<td class="col-action">
+								<button
+									class="btn btn-outline-primary"
+									type="button"
+									use:tooltip={metadata.Component.Configuration.AddRowLabel ?? 'Add row'}
+									on:click|preventDefault={addNewRow}
+								>
+									<i class="fa fa-circle-plus" />
+								</button>
+							</td>
+						{:else}
+							<td colspan={table.head.main.cells.length} class="list-footer list-item-control-row">
+								<button
+									class="btn btn-outline-primary"
+									type="button"
+									on:click|preventDefault={addNewRow}
+									>{metadata.Component.Configuration.AddRowLabel ?? 'Add row'}
+								</button>
+							</td>
+						{/if}
 					</tr>
 				</tfoot>
 			{/if}
@@ -390,6 +477,8 @@
 		--inner-border-color: rgba(0, 0, 0, 0.03);
 		--outer-border-color: #ebebeb;
 		--group-border-color: #d6d6d645;
+		--list-item-border-color: #269dce;
+
 		min-width: min-content;
 
 		thead {
@@ -405,6 +494,10 @@
 			& > tr.bulk-input-row > th {
 				background: $app-soft-bg;
 				border-bottom: 0 0 2px 0;
+			}
+
+			&.list > tr > th {
+				border-bottom: none;
 			}
 		}
 
@@ -424,6 +517,38 @@
 
 			& > tr.main:hover > td {
 				background-color: $app-soft-bg;
+			}
+
+			&.list {
+				& > tr > td:first-child {
+					border-left: 5px solid var(--list-item-border-color);
+				}
+
+				& > tr.list-item-gap > td {
+					border-top: none;
+					border-left: none;
+					border-right: none;
+					border-bottom: none;
+					height: 30px;
+				}
+			}
+		}
+
+		tfoot {
+			& > tr > td.list-footer {
+				padding: 5px 20px;
+				text-align: center;
+				border-width: 0 0 0 5px;
+				border-style: solid;
+				border-color: var(--list-item-border-color);
+			}
+		}
+
+		.list-item-control-row {
+			background: #f7fbff;
+
+			& > button {
+				background: transparent;
 			}
 		}
 
