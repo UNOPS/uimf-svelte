@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-	export interface PaginatedData {
+	export interface IPaginatedData {
 		Results: any[];
 		TotalCount: number;
 		Actions: FormLinkData[];
@@ -14,7 +14,7 @@
 	import ResultsTable, { type TableMetadata } from './Table/Components/ResultsTable.svelte';
 	import { OutputComponent } from '../Infrastructure/Component';
 
-	export let controller: OutputController<PaginatedData, TableMetadata>;
+	export let controller: OutputController<IPaginatedData, TableMetadata>;
 	export class Controller extends OutputController<FormLinkData> {}
 
 	let component = new OutputComponent({

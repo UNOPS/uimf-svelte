@@ -41,8 +41,10 @@
 	import { DocumentationExtension } from '../Extensions/DocumentationExtension';
 	import type { IField } from '../IColumn';
 	import { InputController } from '../../../Infrastructure/InputController';
+	import PaginatedData from '../../../Outputs/PaginatedData.svelte';
+	import { TableData } from '../../../Outputs/Table.svelte';
 
-	export let controller: OutputController<any, TableMetadata>;
+	export let controller: OutputController<PaginatedData | TableData, TableMetadata>;
 	export let type: string;
 
 	let allRowsSelected: boolean = false;
@@ -50,7 +52,6 @@
 	let bulkActionExtension: BulkActionsColumnExtension = new BulkActionsColumnExtension();
 	let extraColspan: number = 0;
 	let inputFieldValues: { [key: string]: any } | undefined;
-	let canExport: boolean = false;
 
 	const component = new OutputComponent({
 		async refresh() {
@@ -94,8 +95,6 @@
 			table.on('table:data:updated', (e) => {
 				table = table;
 			});
-
-			canExport = controller.metadata.Component.Configuration.CanExport;
 		}
 	});
 
