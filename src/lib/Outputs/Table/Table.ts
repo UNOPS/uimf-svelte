@@ -10,11 +10,11 @@ import type { InputController } from "../../Infrastructure/InputController";
 import type { OutputController } from "../../Infrastructure/OutputController";
 import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
 import type { TableMetadata } from "./Components/ResultsTable.svelte";
-import type { ValueListConfiguration } from "../../Inputs/ValueList.svelte";
+import type { ITableInputConfiguration } from "../../Inputs/TableInput.svelte";
 import type { IFieldMetadata, IInputFieldMetadata } from "../../Infrastructure/uimf";
 
 export interface ITableOption {
-    parent: IFormComponent<TableMetadata | IFieldMetadata<ValueListConfiguration>>;
+    parent: IFormComponent<TableMetadata | IFieldMetadata<ITableInputConfiguration>>;
     columns: IField[];
     extensions: TableExtension[];
     inputOnChange?: (row: TableRowGroup<TableBodyCell>, cell: InputController<any>) => Promise<void>;
@@ -38,7 +38,7 @@ interface IIndexedField extends IField {
 export class Table extends EventSource {
     public head: TableRowGroup<TableHeadCell> = new TableRowGroup<TableHeadCell>(0, []);
     public body: TableRowGroup<TableBodyCell>[] = [];
-    public parent: IFormComponent<TableMetadata | IFieldMetadata<ValueListConfiguration>>;
+    public parent: IFormComponent<TableMetadata | IFieldMetadata<ITableInputConfiguration>>;
     public colgroups: Colgroup[] = [];
 
     /**

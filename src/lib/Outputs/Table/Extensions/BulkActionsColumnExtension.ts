@@ -4,13 +4,13 @@ import { TableExtension } from "../TableExtension";
 import type { TableHeadCell } from "../TableHeadCell";
 import type { TableRowGroup } from "../TableRowGroup";
 import { FormLink as FormLinkMetadata } from "../../../Infrastructure/uimf";
-import type { Row, IValueList } from "../../../Inputs/ValueList.svelte";
+import type { Row, ITableInputData } from "../../../Inputs/TableInput.svelte";
 import type { TableMetadata } from "../Components/ResultsTable.svelte";
 
 export class BulkAction extends FormLinkMetadata {
     declare public InputFieldValues: {
         [key: string]: any;
-        ItemIds: IValueList;
+        ItemIds: ITableInputData;
     };
 
     public refreshLabel() {

@@ -4,27 +4,27 @@
 	import type { IFieldMetadata, IInputFieldMetadata } from '../Infrastructure/uimf';
 
 	export class Controller extends InputController<
-		IValueList,
-		IInputFieldMetadata<ValueListConfiguration>
+		ITableInputData,
+		IInputFieldMetadata<ITableInputConfiguration>
 	> {
 		public table: Table;
 
-		constructor(options: CreateInputOptions<IInputFieldMetadata<ValueListConfiguration>>) {
+		constructor(options: CreateInputOptions<IInputFieldMetadata<ITableInputConfiguration>>) {
 			super(options);
 
 			this.table = this.createTable();
 		}
 
-		public deserialize(value: string): Promise<IValueList> {
+		public deserialize(value: string): Promise<ITableInputData> {
 			var result = JSON.parse(value);
 			return Promise.resolve(result);
 		}
 
-		public serialize(value: IValueList): string | null {
+		public serialize(value: ITableInputData): string | null {
 			return value != null && value.Items?.length > 0 ? JSON.stringify(value) : null;
 		}
 
-		public async getValue(): Promise<IValueList> {
+		public async getValue(): Promise<ITableInputData> {
 			const promises = [];
 			const rowDatas: Record<string, any>[] = [];
 
@@ -58,7 +58,7 @@
 			return Promise.resolve({ Items: items });
 		}
 
-		protected async setValueInternal(value: IValueList | null): Promise<void> {
+		protected async setValueInternal(value: ITableInputData | null): Promise<void> {
 			// Make sure that `field.value.Items` has a non-null value.
 			// This is important to ensure that the newly-added items
 			// can be retrieved (and POSTed).
@@ -81,7 +81,7 @@
 
 		private createTable(): Table {
 			if (this.metadata.Component.Configuration.Row != null) {
-				// ValueList stores row metadata in component configuration,
+				// TableInput stores row metadata in component configuration,
 				// but `RowExtension` (which processes it) expects this metadata
 				// to be in `CustomProperties.row`. So we move it. A bit ugly,
 				// but no harm done.
@@ -98,10 +98,10 @@
 					new ColumnExtension(),
 					new RowExtension(),
 					new ActionListColumnExtension(),
-					new ValueListExtension()
+					new TableInputExtension()
 				],
 				inputOnChange: async (row, cell) => {
-					// When the cell value changes, the overall `value-list` should also be updated.
+					// When the cell value changes, the overall `table-input` should also be updated.
 					await cell.getValue().then((value) => {
 						if (this.metadata.Component.Configuration.IsPrimitive) {
 							this.value!.Items[row.index] = value;
@@ -114,7 +114,7 @@
 		}
 	}
 
-	export interface IValueList {
+	export interface ITableInputData {
 		Items: any[] | number[] | string[];
 	}
 
@@ -124,7 +124,7 @@
 		_deleted: boolean | null;
 	}
 
-	export interface ValueListConfiguration {
+	export interface ITableInputConfiguration {
 		AddRowLabel?: string;
 		RemoveRowLabel?: string;
 		Fields: IField[];
@@ -141,21 +141,11 @@
 		Row: { GroupBy?: string };
 
 		/**
-		 * If true, the value-list is an array of primitives (e.g. numbers or strings).
-		 * If false, the value-list is an array of objects where each object has a
+		 * If true, the table-input is an array of primitives (e.g. numbers or strings).
+		 * If false, the table-input is an array of objects where each object has a
 		 * collection of inputs/outputs.
 		 */
 		IsPrimitive: boolean;
-
-		/*
-		 * The layout of the value list.
-		 */
-		Layout: ValueListLayout;
-	}
-
-	export enum ValueListLayout {
-		Table = 10,
-		List = 20
 	}
 </script>
 
@@ -171,12 +161,12 @@
 	import { RowExtension } from '../Outputs/Table/Extensions/RowExtension';
 	import { ActionListColumnExtension } from '../Outputs/Table/Extensions/ActionListColumnExtension';
 	import type { IField } from '../Outputs/Table/IColumn';
-	import { ValueListExtension } from '../Outputs/Table/Extensions/ValueListExtension';
+	import { TableInputExtension as TableInputExtension } from '../Outputs/Table/Extensions/TableInputExtension';
 	import { ExpandableExtension } from '../Outputs/Table/Extensions/ExpandableExtension';
 
 	export let controller: Controller;
 
-	let metadata: IFieldMetadata<ValueListConfiguration> | null = null;
+	let metadata: IFieldMetadata<ITableInputConfiguration> | null = null;
 	let table: Table | null = null;
 	let extraColSpan: number = 0;
 
@@ -184,11 +174,7 @@
 		init() {
 			metadata = controller.metadata;
 
-			extraColSpan =
-				metadata.Component.Configuration.CanRemove &&
-				metadata.Component.Configuration.Layout === ValueListLayout.Table
-					? 1
-					: 0;
+			extraColSpan = metadata.Component.Configuration.CanRemove ? 1 : 0;
 		},
 		async refresh() {
 			table = controller.table;
@@ -239,33 +225,9 @@
 	): OutputController<any> {
 		return controller as OutputController<any>;
 	}
-
-	class ItemReader {
-		private readonly row: TableRowGroup<TableBodyCell>;
-		private firstRowInitialized = false;
-
-		constructor(row: TableRowGroup<TableBodyCell>) {
-			this.row = row;
-		}
-
-		isFirstRow(): boolean {
-			if (this.firstRowInitialized) {
-				return false;
-			}
-
-			this.firstRowInitialized = true;
-			return true;
-		}
-	}
 </script>
 
 {#if metadata != null && table != null && (table.body.length > 0 || metadata.Component.Configuration.CanRemove || metadata.Component.Configuration.CanAdd)}
-	{@const showRemoveAsColumn =
-		metadata.Component.Configuration.CanRemove &&
-		metadata.Component.Configuration.Layout === ValueListLayout.Table}
-	{@const showRemoveAsRow =
-		metadata.Component.Configuration.CanRemove &&
-		metadata.Component.Configuration.Layout === ValueListLayout.List}
 	<div class="table-responsive">
 		<table class="table table-borderless table-sm">
 			{#if table.colgroups?.length > 0}
@@ -273,7 +235,7 @@
 					<colgroup span={colgroup.span} class={colgroup.cssClass} style={colgroup.style} />
 				{/each}
 			{/if}
-			<thead class:list={metadata.Component.Configuration.Layout === ValueListLayout.List}>
+			<thead>
 				{#each table.head.above as header}
 					<tr class={header.cssClass}>
 						{#each header.cells as cell, index}
@@ -294,7 +256,7 @@
 								{/if}
 							</th>
 
-							{#if showRemoveAsColumn}
+							{#if metadata.Component.Configuration.CanRemove}
 								<th />
 							{/if}
 						{/each}
@@ -324,7 +286,8 @@
 							{/if}
 						</th>
 					{/each}
-					{#if showRemoveAsColumn}
+
+					{#if metadata.Component.Configuration.CanRemove}
 						<th />
 					{/if}
 				</tr>
@@ -352,32 +315,10 @@
 					</tr>
 				{/each}
 			</thead>
-			<tbody class:list={metadata.Component.Configuration.Layout === ValueListLayout.List}>
+			<tbody>
 				{#each table.body.filter((t) => !t.deleted) as rowGroup}
-					{@const reader = new ItemReader(rowGroup)}
-					{#if showRemoveAsRow}
-						<tr class:list-item-top-row={reader.isFirstRow()}>
-							<td colspan={table.head.main.cells.length} class="list-item-control-row">
-								<button
-									class="btn btn-outline-light"
-									type="button"
-									on:click|preventDefault={() => {
-										rowGroup.deleted = true;
-										table = table;
-									}}
-								>
-									{metadata.Component.Configuration.RemoveRowLabel ?? 'Remove row'}
-								</button>
-							</td>
-						</tr>
-					{/if}
-
 					{#each rowGroup.above as header, index}
-						<tr
-							class:group-header={true}
-							class={header.cssClass}
-							class:list-item-top-row={reader.isFirstRow()}
-						>
+						<tr class:group-header={true} class={header.cssClass}>
 							{#each header.cells as cell}
 								<td colspan={cell.colspan} class={cell.cssClass}>
 									<Output controller={asOutputController(cell.controller)} nolayout={true} />
@@ -386,7 +327,7 @@
 						</tr>
 					{/each}
 
-					<tr class="main" class:list-item-top-row={reader.isFirstRow()}>
+					<tr class="main">
 						{#each rowGroup.main.cells as cell}
 							<td colspan={cell.colspan + extraColSpan} class={cell.cssClass}>
 								{#if !cell.hidden}
@@ -398,7 +339,7 @@
 								{/if}
 							</td>
 						{/each}
-						{#if showRemoveAsColumn}
+						{#if metadata.Component.Configuration.CanRemove}
 							<td class="col-action">
 								<button
 									class="btn btn-outline-light"
@@ -423,44 +364,27 @@
 								</td>
 							{/each}
 
-							{#if showRemoveAsColumn}
+							{#if metadata.Component.Configuration.CanRemove}
 								<td />
 							{/if}
 						</tr>
 					{/each}
-
-					{#if showRemoveAsRow}
-						<tr class="list-item-gap">
-							<td colspan={table.head.main.cells.length} />
-						</tr>
-					{/if}
 				{/each}
 			</tbody>
 			{#if metadata.Component.Configuration.CanAdd}
 				<tfoot>
 					<tr>
-						{#if metadata.Component.Configuration.Layout === ValueListLayout.Table}
-							<td colspan={table.head.main.cells.length} />
-							<td class="col-action">
-								<button
-									class="btn btn-outline-primary"
-									type="button"
-									use:tooltip={metadata.Component.Configuration.AddRowLabel ?? 'Add row'}
-									on:click|preventDefault={addNewRow}
-								>
-									<i class="fa fa-circle-plus" />
-								</button>
-							</td>
-						{:else}
-							<td colspan={table.head.main.cells.length} class="list-footer list-item-control-row">
-								<button
-									class="btn btn-outline-primary"
-									type="button"
-									on:click|preventDefault={addNewRow}
-									>{metadata.Component.Configuration.AddRowLabel ?? 'Add row'}
-								</button>
-							</td>
-						{/if}
+						<td colspan={table.head.main.cells.length} />
+						<td class="col-action">
+							<button
+								class="btn btn-outline-primary"
+								type="button"
+								use:tooltip={metadata.Component.Configuration.AddRowLabel ?? 'Add row'}
+								on:click|preventDefault={addNewRow}
+							>
+								<i class="fa fa-circle-plus" />
+							</button>
+						</td>
 					</tr>
 				</tfoot>
 			{/if}
@@ -495,10 +419,6 @@
 				background: $app-soft-bg;
 				border-bottom: 0 0 2px 0;
 			}
-
-			&.list > tr > th {
-				border-bottom: none;
-			}
 		}
 
 		tbody {
@@ -517,38 +437,6 @@
 
 			& > tr.main:hover > td {
 				background-color: $app-soft-bg;
-			}
-
-			&.list {
-				& > tr > td:first-child {
-					border-left: 5px solid var(--list-item-border-color);
-				}
-
-				& > tr.list-item-gap > td {
-					border-top: none;
-					border-left: none;
-					border-right: none;
-					border-bottom: none;
-					height: 30px;
-				}
-			}
-		}
-
-		tfoot {
-			& > tr > td.list-footer {
-				padding: 5px 20px;
-				text-align: center;
-				border-width: 0 0 0 5px;
-				border-style: solid;
-				border-color: var(--list-item-border-color);
-			}
-		}
-
-		.list-item-control-row {
-			background: #f7fbff;
-
-			& > button {
-				background: transparent;
 			}
 		}
 

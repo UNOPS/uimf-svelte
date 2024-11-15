@@ -8,7 +8,7 @@ import { TableHeadCell } from "../TableHeadCell";
 import TableRow from "../TableRow";
 import type { TableRowGroup } from "../TableRowGroup";
 
-interface ValueListInput {
+interface ITableInputField {
     ShowBulkInput: boolean;
     DependentInputShownIfValueEqualsTo: any;
     DependentInput: string | null;
@@ -20,7 +20,7 @@ interface IInputCondition {
     MetadataId: string;
 }
 
-export class ValueListExtension extends TableExtension {
+export class TableInputExtension extends TableExtension {
     private bulkInputs: Record<string, IInputFieldMetadata> = {};
     private inputConditions: IInputCondition[] = [];
 
@@ -98,7 +98,7 @@ export class ValueListExtension extends TableExtension {
     }
 
     processHeadCell(table: Table, cell: TableHeadCell, rows: any[]): Promise<void> {
-        const inputProps: ValueListInput = cell.metadata.CustomProperties?.Input;
+        const inputProps: ITableInputField = cell.metadata.CustomProperties?.Input;
 
         if (inputProps != null) {
             if (!cell.isInput) {
