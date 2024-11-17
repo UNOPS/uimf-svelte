@@ -190,7 +190,21 @@
 
 {#if metadata != null && table != null && (table.body.length > 0 || metadata.Component.Configuration.CanRemove || metadata.Component.Configuration.CanAdd)}
 	{#each table.body.filter((t) => !t.deleted) as rowGroup}
-		<div class="item">
+		<div class="item mb-3">
+			{#if metadata.Component.Configuration.CanRemove}
+				<div class="buttons">
+					<button
+						type="button"
+						on:click|preventDefault={() => {
+							rowGroup.deleted = true;
+							table = table;
+						}}
+					>
+						{metadata.Component.Configuration.RemoveRowLabel ?? 'Remove item'}
+					</button>
+				</div>
+			{/if}
+
 			<div class="inputs">
 				{#each rowGroup.main.cells as cell}
 					{#if cell.isInput}
@@ -200,28 +214,17 @@
 					{/if}
 				{/each}
 			</div>
-
-			<div class="text-left">
-				{#if metadata.Component.Configuration.CanRemove}
-					<button
-						class="btn btn-default"
-						type="button"
-						on:click|preventDefault={() => {
-							rowGroup.deleted = true;
-							table = table;
-						}}
-					>
-						{metadata.Component.Configuration.RemoveRowLabel ?? 'Remove item'}
-					</button>
-				{/if}
-			</div>
 		</div>
 	{/each}
 
 	{#if metadata.Component.Configuration.CanAdd}
-		<button class="btn btn-default" type="button" on:click|preventDefault={addNewRow}>
-			{metadata.Component.Configuration.AddRowLabel ?? 'Add item'}
-		</button>
+		<div class="item">
+			<div class="buttons">
+				<button type="button" on:click|preventDefault={addNewRow}>
+					{metadata.Component.Configuration.AddRowLabel ?? 'Add item'}
+				</button>
+			</div>
+		</div>
 	{/if}
 {:else}
 	<div>No items found.</div>
@@ -230,10 +233,33 @@
 <style lang="scss">
 	@import '../scss/styles.variables.scss';
 
-	.inputs {
-		display: grid;
-		grid-template-columns: 1fr;
-		grid-gap: 10px;
-		margin-bottom: 20px;
+	.item {
+		border-left: 5px solid #a9d0ef;
+
+		& > .inputs {
+			padding: 15px 0 5px 15px;
+			display: grid;
+			grid-template-columns: 1fr;
+			grid-gap: 10px;
+			margin-bottom: 20px;
+		}
+
+		& > .buttons {
+			padding: 0px 15px;
+			background-color: #e7f4ff;
+
+			& > button {
+				background: transparent;
+				font-weight: bold;
+				text-align: left;
+				line-height: 3em;
+				border: none;
+				min-width: 100px;
+			}
+
+			& > button:hover {
+				text-decoration: underline;
+			}
+		}
 	}
 </style>
