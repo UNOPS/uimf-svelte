@@ -81,9 +81,7 @@
 				)
 			});
 
-			await tempTable.setData(
-				controller.value?.length != null ? controller.value : controller.value?.Results ?? []
-			);
+			await tempTable.setData(controller.value?.Results ?? []);
 
 			table = tempTable;
 
