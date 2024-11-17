@@ -61,7 +61,7 @@ import * as Tag from '../Outputs/Tag.svelte';
 import * as Link from '../Outputs/Link.svelte';
 import * as Tabstrip from '../Outputs/Tabstrip.svelte';
 import * as InlineForm from '../Outputs/InlineForm.svelte';
-import * as PaginatedData from '../Outputs/PaginatedData.svelte';
+import * as PaginatedTable from '../Outputs/PaginatedTable.svelte';
 import * as Sequence from '../Outputs/Sequence.svelte';
 import * as CartItem from '../Outputs/CartItem.svelte';
 import * as CartItemOe from '../Outputs/CartItemOe.svelte';
@@ -343,7 +343,7 @@ defaultControlRegister.registerOutputComponent('preformatted-text', Preformatted
 defaultControlRegister.registerOutputComponent('link', Link, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('table', Table, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('inline-form', InlineForm, { displayAsBlock: true });
-defaultControlRegister.registerOutputComponent('paginated-data', PaginatedData, {
+defaultControlRegister.registerOutputComponent('paginated-table', PaginatedTable, {
 	displayAsBlock: true
 });
 defaultControlRegister.registerOutputComponent('output', Output, { displayAsBlock: false });

@@ -144,7 +144,7 @@
 	});
 
 	beforeUpdate(async () => {
-		if (controller?.metadata?.Component.Type == 'paginated-data') {
+		if (controller?.metadata?.Component.Type == 'paginated-table') {
 			await component.setup(controller);
 		}
 	});

@@ -41,10 +41,10 @@
 	import { DocumentationExtension } from '../Extensions/DocumentationExtension';
 	import type { IField } from '../IColumn';
 	import { InputController } from '../../../Infrastructure/InputController';
-	import PaginatedData from '../../../Outputs/PaginatedData.svelte';
+	import { IPaginatedData } from '../../PaginatedTable.svelte';
 	import { TableData } from '../../../Outputs/Table.svelte';
 
-	export let controller: OutputController<PaginatedData | TableData, TableMetadata>;
+	export let controller: OutputController<IPaginatedData | TableData, TableMetadata>;
 	export let type: string;
 
 	let allRowsSelected: boolean = false;

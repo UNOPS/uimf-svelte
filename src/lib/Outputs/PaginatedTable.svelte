@@ -26,7 +26,7 @@
 	beforeUpdate(async () => await component.setup(controller));
 </script>
 
-<ResultsTable {controller} type="paginated-data" />
+<ResultsTable {controller} type="paginated-table" />
 
 {#if controller.value?.Results?.length > 0 && controller.metadata.Component.Configuration.Paginator != null}
 	<Pager {controller} />
