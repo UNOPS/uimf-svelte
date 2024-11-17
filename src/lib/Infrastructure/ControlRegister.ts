@@ -20,6 +20,7 @@ import * as Paginator from '../Inputs/Paginator.svelte';
 import * as TableInput from '../Inputs/TableInput.svelte';
 import * as ToggledInput from '../Inputs/ToggledInput.svelte';
 import * as JsonObject from '../Inputs/JsonObject.svelte';
+import * as ListInput from '../Inputs/ListInput.svelte';
 import * as MoneyInput from '../Inputs/Money.svelte';
 import * as Group from '../Inputs/Group.svelte';
 
@@ -292,6 +293,7 @@ defaultControlRegister.registerInputComponent('dynamic-input', DynamicInput, {
 	displayAsBlock: false
 });
 defaultControlRegister.registerInputComponent('json-object', JsonObject);
+defaultControlRegister.registerInputComponent('list-input', ListInput);
 defaultControlRegister.registerInputComponent('money', MoneyInput);
 defaultControlRegister.registerInputComponent('groups', Group);
 

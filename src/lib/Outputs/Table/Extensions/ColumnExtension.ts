@@ -47,7 +47,7 @@ export class ColumnExtension extends TableExtension {
             }
 
             if (config.SortableBy != null) {
-                if (table.parent.metadata.Component.Type === 'paginated-data') {
+                if (table.parent.metadata.Component.Type === 'paginated-table') {
                     let metadata: TableMetadata = table.parent.metadata as TableMetadata;
                     let paginatorName = metadata.Component.Configuration!.Paginator;
                     let paginator: PaginatorController = table.parent.form?.inputs[paginatorName] as PaginatorController;
