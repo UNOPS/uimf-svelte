@@ -38,7 +38,7 @@
 		}
 
 		public serialize(value: IValue | null): string | null {
-			return value != null && value.Value !== '' ? value.Value.toString() : null;
+			return value != null && value.Value !== '' ? value.Value?.toString() : null;
 		}
 	}
 </script>
