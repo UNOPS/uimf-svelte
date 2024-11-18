@@ -21,16 +21,16 @@
 
 	let component = new OutputComponent({
 		refresh() {
-			controller.value = new OutputController<TableData, TableMetadata>({
+			effectiveController = new OutputController<TableData, TableMetadata>({
 				data:
-					controller.value?.lenth != null
+					controller.value?.length != null
 						? { Results: controller.value, TotalCount: controller.value.length, Actions: [] }
 						: controller.value,
 				metadata: controller.metadata,
 				app: controller.app,
 				parent: controller.parent,
 				form: controller.form
-			}).value;
+			});
 		}
 	});
 
