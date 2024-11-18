@@ -50,4 +50,11 @@
 		color: #1b4350;
 		padding: 15px;
 	}
+
+	:global(div.alert > ul) {
+		margin: 10px 0;
+	}
+	:global(div.alert > ul > li) {
+		margin-bottom: 5px;
+	}
 </style>
