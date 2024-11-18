@@ -1,6 +1,6 @@
 <script context="module" lang="ts">
 	import { InputController, type CreateInputOptions } from '../Infrastructure/InputController';
-	import type { OutputController } from '../Infrastructure/OutputController';
+	import { OutputController } from '../Infrastructure/OutputController';
 	import type { IFieldMetadata, IInputFieldMetadata } from '../Infrastructure/uimf';
 
 	export class Controller extends InputController<
@@ -80,10 +80,10 @@
 		}
 
 		private createTable(): Table {
-			return new Table({
+			let result = new Table({
 				parent: this,
 				columns: this.metadata.Component.Configuration.Fields,
-				extensions: [],
+				extensions: [new ListInputExtension()],
 				inputOnChange: async (row, cell) => {
 					// When the cell value changes, the overall `list-input` should also be updated.
 					await cell.getValue().then((value) => {
@@ -95,6 +95,8 @@
 					});
 				}
 			});
+
+			return result;
 		}
 	}
 
@@ -108,6 +110,11 @@
 		Fields: IField[];
 		CanRemove?: boolean;
 		CanAdd?: boolean;
+
+		/**
+		 * Name of the field which will be used as a header for the item.
+		 */
+		Header?: string;
 
 		/**
 		 * The name of the field inside response that contains the default row value.
@@ -129,10 +136,10 @@
 	import { InputComponent } from '../Infrastructure/Component';
 	import { beforeUpdate, tick } from 'svelte';
 	import Input from '../Input.svelte';
-	import { tooltip } from '../Components/Tooltip.svelte';
 	import Output from '../Output.svelte';
 	import { Table, TableBodyCell, TableRowGroup } from '../Outputs/Table';
 	import type { IField } from '../Outputs/Table/IColumn';
+	import { ListInputExtension } from '../Outputs/Table/Extensions/ListInputExtension';
 
 	export let controller: Controller;
 
@@ -186,13 +193,39 @@
 	): T {
 		return controller.table?.controller(row, column.controller.metadata.Id) as T;
 	}
+
+	function getHeader(row: TableRowGroup<TableBodyCell>): OutputController<any> | null {
+		if (metadata == null || metadata.Component.Configuration.Header == null) {
+			return null;
+		}
+
+		let header = table?.field(metadata.Component.Configuration.Header);
+
+		if (header == null) {
+			return null;
+		}
+
+		return new OutputController<any>({
+			parent: null,
+			app: controller.app,
+			form: controller.form,
+			metadata: header.Metadata,
+			data: row.data[metadata.Component.Configuration.Header]
+		});
+	}
 </script>
 
 {#if metadata != null && table != null && (table.body.length > 0 || metadata.Component.Configuration.CanRemove || metadata.Component.Configuration.CanAdd)}
 	{#each table.body.filter((t) => !t.deleted) as rowGroup}
+		{@const header = getHeader(rowGroup)}
 		<div class="item mb-3">
-			{#if metadata.Component.Configuration.CanRemove}
-				<div class="buttons">
+			<div class="buttons">
+				{#if header != null}
+					<div class="header">
+						<Output controller={header} />
+					</div>
+				{/if}
+				{#if metadata.Component.Configuration.CanRemove}
 					<button
 						type="button"
 						on:click|preventDefault={() => {
@@ -202,8 +235,8 @@
 					>
 						{metadata.Component.Configuration.RemoveRowLabel ?? 'Remove item'}
 					</button>
-				</div>
-			{/if}
+				{/if}
+			</div>
 
 			<div class="inputs">
 				{#each rowGroup.main.cells as cell}
@@ -245,16 +278,24 @@
 		}
 
 		& > .buttons {
-			padding: 0px 15px;
+			display: flex;
+			justify-content: space-between;
+			padding: 10px 15px;
 			background-color: #e7f4ff;
+			text-align: right;
+
+			& > .header {
+				text-align: left;
+				flex-grow: 2;
+			}
 
 			& > button {
 				background: transparent;
 				font-weight: bold;
-				text-align: left;
-				line-height: 3em;
+				text-align: right;
 				border: none;
 				min-width: 100px;
+				flex-grow: 1;
 			}
 
 			& > button:hover {
