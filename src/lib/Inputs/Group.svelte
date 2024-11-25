@@ -140,7 +140,9 @@
 
 							<div>
 								{item.Label}
-								<a href={item.Link.Url}><i class="fa fa-external-link-alt fa-1x" /></a>
+								{#if item.Link != null}
+									<a href={item.Link.Url}><i class="fa fa-external-link-alt fa-1x" /></a>
+								{/if}
 							</div>
 
 							{#if group.Index < groups.length - 1}
