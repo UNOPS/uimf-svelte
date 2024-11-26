@@ -37,7 +37,7 @@ $app-soft-bg: #f9f9f9;
 // ---------------------------------------------------------- //
 // 4. Include any default map overrides here
 // ---------------------------------------------------------- //
-$theme-colors: map-remove($theme-colors, "light", "dark", "secondary");
+$theme-colors: map-remove($theme-colors, "light", "dark");
 
 $theme-colors: map-merge($theme-colors,
     ("inactive": $gray-600,

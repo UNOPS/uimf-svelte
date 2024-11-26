@@ -24,7 +24,7 @@
 
 {#if controller.value != null}
 	<span
-		class="label label-default"
+		class="badge"
 		style:background-color={controller.value.Color}
 		style:color={controller.value.FontColor}
 		use:tooltip={controller.value.Tooltip != null
@@ -36,4 +36,9 @@
 {/if}
 
 <style lang="scss">
+	.badge {
+		color: #fff;
+		background-color: RGBA(var(--bs-secondary-rgb), var(--bs-bg-opacity, 1));
+		border-radius: 3px;
+	}
 </style>
