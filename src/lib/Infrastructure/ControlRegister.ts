@@ -52,6 +52,7 @@ import * as ConversationTimeline from '../Outputs/ConversationTimeline/Conversat
 import * as DynamicInput from '../Inputs/DynamicInput.svelte';
 import * as Typeahead from '../Inputs/Typeahead/Typeahead.svelte';
 import * as Table from '../Outputs/Table.svelte';
+import * as ObjectFlexbox from '../Outputs/ObjectFlexbox.svelte';
 import * as ObjectList from '../Outputs/ObjectList.svelte';
 import * as ActionList from '../Outputs/ActionList.svelte';
 import * as MultiSelect from '../Inputs/Multiselect.svelte';
@@ -290,27 +291,19 @@ defaultControlRegister.registerInputComponent('toggled-input', ToggledInput);
 defaultControlRegister.registerInputComponent('typeahead', Typeahead);
 defaultControlRegister.registerInputComponent('multiselect', MultiSelect);
 defaultControlRegister.registerInputComponent('multilevel-picker', MultiLevelPicker);
-defaultControlRegister.registerInputComponent('dynamic-input', DynamicInput, {
-	displayAsBlock: false
-});
+defaultControlRegister.registerInputComponent('dynamic-input', DynamicInput, { displayAsBlock: false });
 defaultControlRegister.registerInputComponent('json-object', JsonObject);
 defaultControlRegister.registerInputComponent('list-input', ListInput);
 defaultControlRegister.registerInputComponent('money', MoneyInput);
 defaultControlRegister.registerInputComponent('groups', Group);
 
 // Outputs.
-defaultControlRegister.registerOutputComponent('action-list', ActionList, {
-	alwaysHideLabel: true
-});
+defaultControlRegister.registerOutputComponent('action-list', ActionList, { alwaysHideLabel: true });
 defaultControlRegister.registerOutputComponent('alert', Alert, { alwaysHideLabel: true });
 defaultControlRegister.registerOutputComponent('boolean', Boolean, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('breadcrumbs', Breadcrumbs, { displayAsBlock: true });
-defaultControlRegister.registerOutputComponent('datetime', DateTimeOutput, {
-	displayAsBlock: false
-});
-defaultControlRegister.registerOutputComponent('editable-value', EditableValue, {
-	displayAsBlock: false
-});
+defaultControlRegister.registerOutputComponent('datetime', DateTimeOutput, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('editable-value', EditableValue, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('flexbox', Flexbox, { alwaysHideLabel: false, displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('form-documentation', FormDocumentation, { alwaysHideLabel: true, displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('form-inputs', FormInputs, { displayAsBlock: true });
@@ -323,10 +316,7 @@ defaultControlRegister.registerOutputComponent('image-overlay', ImageOverlay);
 defaultControlRegister.registerOutputComponent('money', Money, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('number', Number, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('paginated-object-list', PaginatedObjectList);
-defaultControlRegister.registerOutputComponent('pie-chart', PieChart, {
-	displayAsBlock: true,
-	hideIfNull: true
-});
+defaultControlRegister.registerOutputComponent('pie-chart', PieChart, { displayAsBlock: true, hideIfNull: true });
 defaultControlRegister.registerOutputComponent('tidy-tree', TidyTree, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('line-chart', LineChart, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('sequence', Sequence, { displayAsBlock: false });
@@ -346,29 +336,18 @@ defaultControlRegister.registerOutputComponent('preformatted-text', Preformatted
 defaultControlRegister.registerOutputComponent('link', Link, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('table', Table, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('inline-form', InlineForm, { displayAsBlock: true });
-defaultControlRegister.registerOutputComponent('paginated-table', PaginatedTable, {
-	displayAsBlock: true
-});
+defaultControlRegister.registerOutputComponent('paginated-table', PaginatedTable, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('output', Output, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('expandable', Expandable, { displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('object-list', ObjectList, {
-	displayAsBlock: false
-});
-defaultControlRegister.registerOutputComponent('complex-output', ComplexOutput, {
-	displayAsBlock: true
-});
+defaultControlRegister.registerOutputComponent('object-flexbox', ObjectFlexbox, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('object-list', ObjectList, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('complex-output', ComplexOutput, { displayAsBlock: true });
 
 // App-specific components.
-defaultControlRegister.registerOutputComponent('event-description', EventDescription, {
-	displayAsBlock: false
-});
+defaultControlRegister.registerOutputComponent('event-description', EventDescription, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('cart-item', CartItem, { displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('cart-item-oe', CartItemOe, {
-	displayAsBlock: false
-});
-defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize, {
-	displayAsBlock: false
-});
+defaultControlRegister.registerOutputComponent('cart-item-oe', CartItemOe, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('bar-chart', BarChart, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('parent-field-doc', ParentFieldDocumentation, { alwaysHideLabel: true, displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('parent-field-label', ParentFieldLabel, { alwaysHideLabel: true, displayAsBlock: false });
