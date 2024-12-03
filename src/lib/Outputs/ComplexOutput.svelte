@@ -42,11 +42,4 @@
 </div>
 
 <style lang="scss">
-	:global(.output > div) > .complex-output {
-		// Offset the padding applied by the output component.
-		// This way each level of nested output components
-		// won't be adding extra padding.
-		margin-left: -15px;
-		margin-right: -15px;
-	}
 </style>
