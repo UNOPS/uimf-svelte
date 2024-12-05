@@ -483,6 +483,33 @@
 				}
 			}
 		}
+
+		&:has(.table-borderless) {
+			border: none;
+		}
+
+		.table-borderless {
+			border: none;
+			background: none;
+
+			& > thead > tr > th {
+				border: none;
+			}
+
+			& > tbody > tr > td {
+				border: none;
+			}
+		}
+
+		.table-sm {
+			& > thead > tr > th {
+				padding: 5px;
+			}
+
+			& > tbody > tr > td {
+				padding: 5px;
+			}
+		}
 	}
 
 	:global(.table > tbody > tr.footer > td .outputs) {
