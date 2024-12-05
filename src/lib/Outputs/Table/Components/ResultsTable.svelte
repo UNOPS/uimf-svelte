@@ -1,10 +1,12 @@
 <script context="module" lang="ts">
 	export interface TableConfiguration {
+		CssClass: string | null;
 		NoDataLabel?: string;
 		CanExport: boolean;
 		Columns: IFieldMetadata[];
 		Paginator: string;
 		BulkActions: string | null;
+		NoHeader: boolean;
 	}
 
 	export interface TableMetadata<T = TableConfiguration> extends IOutputFieldMetadata<T> {
@@ -169,7 +171,10 @@
 			</div>
 		{/if}
 
-		<table class="table table-bordered">
+		<table
+			class={controller.metadata.Component.Configuration.CssClass ??
+				'table table-bordered table-group-divider'}
+		>
 			{#if table.colgroups?.length > 0}
 				{#if bulkActionExtension.actions.length > 0}
 					<colgroup />
@@ -178,76 +183,78 @@
 					<colgroup span={colgroup.span} class={colgroup.cssClass} style={colgroup.style} />
 				{/each}
 			{/if}
-			<thead>
-				{#each table.head.above as header}
-					<tr class={header.cssClass} style={header.style}>
-						{#each header.cells as cell, index}
-							<th
-								use:tooltip={cell.documentation}
-								style={cell.style}
-								colspan={cell.colspan + (index === 0 ? extraColspan : 0)}
-								class={cell.cssClass}
-								on:click={() => cell.click()}>{cell.label}</th
-							>
-						{/each}
-					</tr>
-				{/each}
-				<tr class={table.head.main.cssClass} style={table.head.main.style}>
-					{#if bulkActionExtension.actions.length > 0}
-						<th class="min-width">
-							<input
-								type="checkbox"
-								bind:checked={allRowsSelected}
-								on:change={(e) => {
-									bulkActionExtension.selectAllRows(allRowsSelected);
-									if (table != null) {
-										table.body = table.body;
-									}
-									bulkActionExtension.actions = bulkActionExtension.actions;
-								}}
-							/>
-						</th>
-					{/if}
-					{#each table.head.main.cells as cell}
-						<th
-							use:tooltip={cell.documentation}
-							colspan={cell.colspan}
-							class={cell.cssClass}
-							style={cell.style}
-							on:click={() => cell.click()}
-						>
-							{#if cell.label?.length > 0}
-								{cell.label}
-							{:else if cell.documentation != null}
-								<div class="text-center">
-									<i class="fas fa-question-circle" />
-								</div>
-							{/if}
-
-							{#if cell.ascending === true}
-								<i class="fa-solid fa-sort-down" />
-							{:else if cell.ascending === false}
-								<i class="fa-solid fa-sort-up" />
-							{:else if cell.cssClassManager.cssClassObject['sortable'] === true}
-								<i class="fa-solid fa-sort" />
-							{/if}
-						</th>
+			{#if controller.metadata.Component.Configuration.NoHeader !== true}
+				<thead>
+					{#each table.head.above as header}
+						<tr class={header.cssClass} style={header.style}>
+							{#each header.cells as cell, index}
+								<th
+									use:tooltip={cell.documentation}
+									style={cell.style}
+									colspan={cell.colspan + (index === 0 ? extraColspan : 0)}
+									class={cell.cssClass}
+									on:click={() => cell.click()}>{cell.label}</th
+								>
+							{/each}
+						</tr>
 					{/each}
-				</tr>
-				{#each table.head.below as footer}
-					<tr class={footer.cssClass} style={footer.style}>
-						{#each footer.cells as cell, index}
+					<tr class={table.head.main.cssClass} style={table.head.main.style}>
+						{#if bulkActionExtension.actions.length > 0}
+							<th class="min-width">
+								<input
+									type="checkbox"
+									bind:checked={allRowsSelected}
+									on:change={(e) => {
+										bulkActionExtension.selectAllRows(allRowsSelected);
+										if (table != null) {
+											table.body = table.body;
+										}
+										bulkActionExtension.actions = bulkActionExtension.actions;
+									}}
+								/>
+							</th>
+						{/if}
+						{#each table.head.main.cells as cell}
 							<th
 								use:tooltip={cell.documentation}
-								colspan={cell.colspan + (index === 0 ? extraColspan : 0)}
+								colspan={cell.colspan}
 								class={cell.cssClass}
 								style={cell.style}
-								on:click={() => cell.click()}>{cell.label}</th
+								on:click={() => cell.click()}
 							>
+								{#if cell.label?.length > 0}
+									{cell.label}
+								{:else if cell.documentation != null}
+									<div class="text-center">
+										<i class="fas fa-question-circle" />
+									</div>
+								{/if}
+
+								{#if cell.ascending === true}
+									<i class="fa-solid fa-sort-down" />
+								{:else if cell.ascending === false}
+									<i class="fa-solid fa-sort-up" />
+								{:else if cell.cssClassManager.cssClassObject['sortable'] === true}
+									<i class="fa-solid fa-sort" />
+								{/if}
+							</th>
 						{/each}
 					</tr>
-				{/each}
-			</thead>
+					{#each table.head.below as footer}
+						<tr class={footer.cssClass} style={footer.style}>
+							{#each footer.cells as cell, index}
+								<th
+									use:tooltip={cell.documentation}
+									colspan={cell.colspan + (index === 0 ? extraColspan : 0)}
+									class={cell.cssClass}
+									style={cell.style}
+									on:click={() => cell.click()}>{cell.label}</th
+								>
+							{/each}
+						</tr>
+					{/each}
+				</thead>
+			{/if}
 			<tbody>
 				{#if table.body == null || table.body.length === 0}
 					<tr>
