@@ -1,9 +1,13 @@
+// ---------------------------------------------------------- //
+// 1. Include the basics.
+// ---------------------------------------------------------- //
 @import "styles.variables.scss";
 
 // ---------------------------------------------------------- //
-// 6. Include any needed components here
+// 2. Include any needed components here
 // ---------------------------------------------------------- //
 @import "bootstrap/scss/_root";
+//@import "bootstrap/scss/_tables";
 @import "bootstrap/scss/_buttons";
 @import "bootstrap/scss/_forms";
 @import "bootstrap/scss/_list-group";
