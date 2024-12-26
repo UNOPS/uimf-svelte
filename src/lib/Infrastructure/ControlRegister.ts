@@ -23,6 +23,7 @@ import * as JsonObject from '../Inputs/JsonObject.svelte';
 import * as ListInput from '../Inputs/ListInput.svelte';
 import * as MoneyInput from '../Inputs/Money.svelte';
 import * as Group from '../Inputs/Group.svelte';
+import * as InputOrOutput from '../Inputs/InputOrOutput.svelte';
 
 // Outputs.
 import * as StateDiagram from '../Outputs/StateDiagram.svelte';
@@ -296,6 +297,7 @@ defaultControlRegister.registerInputComponent('json-object', JsonObject);
 defaultControlRegister.registerInputComponent('list-input', ListInput);
 defaultControlRegister.registerInputComponent('money', MoneyInput);
 defaultControlRegister.registerInputComponent('groups', Group);
+defaultControlRegister.registerInputComponent('input-or-output', InputOrOutput);
 
 // Outputs.
 defaultControlRegister.registerOutputComponent('action-list', ActionList, { alwaysHideLabel: true });
