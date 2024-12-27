@@ -75,8 +75,16 @@
 		}
 
 		public serialize(value: IData | null): string | null {
+			let inputSerialized: string | null;
+
+			if (typeof value?.Input === 'string') {
+				inputSerialized = value?.Input;
+			} else {
+				inputSerialized = this.input.serialize(value?.Input);
+			}
+
 			return JSON.stringify({
-				Input: this.input.serialize(value?.Input),
+				Input: inputSerialized,
 				Output: value?.Output,
 				Readonly: value?.Readonly ?? false
 			});
