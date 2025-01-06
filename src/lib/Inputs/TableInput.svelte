@@ -473,6 +473,11 @@
 	.col-action {
 		width: 1px;
 		text-align: center;
+		vertical-align: middle;
+
+		button {
+			background: none;
+		}
 	}
 
 	button.btn {
