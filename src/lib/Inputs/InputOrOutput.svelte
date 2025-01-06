@@ -116,14 +116,19 @@
 	beforeUpdate(async () => await component.setup(controller));
 </script>
 
-<div>
-	{#if controller.value?.Readonly !== true}
-		<Input controller={controller.input} nolayout={true} />
-	{:else}
+{#if controller.value?.Readonly !== true}
+	<Input controller={controller.input} nolayout={true} />
+{:else}
+	<div class="form-control">
 		<Output controller={controller.output} nolayout={true} />
-	{/if}
-</div>
+	</div>
+{/if}
 
 <style lang="scss">
 	@import '../scss/styles.variables.scss';
+
+	:global(td) > .form-control {
+		// Mark with gray background to indicate it is a readonly control.
+		background: #f4f4f48a;
+	}
 </style>
