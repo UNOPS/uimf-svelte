@@ -2,6 +2,7 @@ import { CreateInputOptions, InputController } from '../Infrastructure/InputCont
 import { OutputController, type CreateOutputOptions } from './OutputController';
 
 // Inputs.
+import * as ArrayInput from '../Inputs/ArrayInput.svelte';
 import * as InputText from '../Inputs/Text.svelte';
 import * as FileUpload from '../Inputs/FileUpload.svelte';
 import * as CheckBox from '../Inputs/CheckBox.svelte';
@@ -272,6 +273,7 @@ export class ControlRegister {
 export const defaultControlRegister = new ControlRegister();
 
 // Inputs.
+defaultControlRegister.registerInputComponent('array-input', ArrayInput);
 defaultControlRegister.registerInputComponent('text', InputText);
 defaultControlRegister.registerInputComponent('file-upload', FileUpload);
 defaultControlRegister.registerInputComponent('boolean', CheckBox);
