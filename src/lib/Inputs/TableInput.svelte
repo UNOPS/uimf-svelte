@@ -342,7 +342,7 @@
 						{#if metadata.Component.Configuration.CanRemove}
 							<td class="col-action">
 								<button
-									class="btn btn-outline-light"
+									class="btn btn-link"
 									type="button"
 									use:tooltip={metadata.Component.Configuration.RemoveRowLabel ?? 'Remove row'}
 									on:click|preventDefault={() => {
@@ -350,7 +350,7 @@
 										table = table;
 									}}
 								>
-									<i class="fa fa-trash" />
+									<i class="fa fa-trash text-primary" />
 								</button>
 							</td>
 						{/if}
@@ -377,12 +377,12 @@
 						<td colspan={table.head.main.cells.length} />
 						<td class="col-action">
 							<button
-								class="btn btn-outline-primary"
+								class="btn btn-link"
 								type="button"
 								use:tooltip={metadata.Component.Configuration.AddRowLabel ?? 'Add row'}
 								on:click|preventDefault={addNewRow}
 							>
-								<i class="fa fa-circle-plus" />
+								<i class="fa fa-circle-plus text-primary" />
 							</button>
 						</td>
 					</tr>
@@ -427,7 +427,7 @@
 				padding: 10px 10px;
 			}
 
-			& > tr > td:has(input, select, .form-control) {
+			& > tr > td:has(input, select) {
 				padding: 4px 8px;
 			}
 
@@ -474,22 +474,12 @@
 		width: 1px;
 		text-align: center;
 		vertical-align: middle;
+		white-space: nowrap;
 
-		button {
-			background: none;
+		& > button {
+			padding: 10px 10px 5px;
+			background: transparent;
 		}
-	}
-
-	button.btn {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 1.1em;
-		color: #218fcf;
-		padding: 5px 15px;
-		background: #ffffff;
-		border: none;
-		cursor: pointer;
 	}
 
 	i.fa.fa-circle-plus {
