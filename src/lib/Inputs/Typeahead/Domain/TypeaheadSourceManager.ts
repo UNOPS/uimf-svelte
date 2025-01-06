@@ -212,9 +212,9 @@ export class TypeaheadSourceManager {
                 postData = { Query: query };
             } else if (typeof query === 'object') {
                 if ('Items' in query) {
-                    postData = { Ids: { Items: query.Items?.length > 0 ? query.Items : [] } };
+                    postData = { Ids: query.Items?.length > 0 ? query.Items : [] };
                 } else if ('Value' in query) {
-                    postData = { Ids: { Items: query.Value != null ? [query.Value] : [] } };
+                    postData = { Ids: query.Value != null ? [query.Value] : [] };
                 }
             }
         }
