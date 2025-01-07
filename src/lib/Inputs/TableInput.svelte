@@ -26,14 +26,14 @@
 
 		public async getValue(): Promise<ITableInputData> {
 			const promises = [];
-			const rowDatas: Record<string, any>[] = [];
+			const rowDatas: ITableInputItem[] = [];
 
 			for (const row of this.table.body) {
 				if (row.deleted) {
 					continue;
 				}
 
-				const rowData: Record<string, any> = {};
+				const rowData: ITableInputItem = { CanRemove: row.data.CanRemove };
 				rowDatas.push(rowData);
 
 				for (const column of this.metadata.Component.Configuration.Fields.filter(
@@ -51,11 +51,7 @@
 
 			await Promise.all(promises);
 
-			var items = this.metadata.Component.Configuration.IsPrimitive
-				? rowDatas.map((t) => t[this.metadata.Component.Configuration.Fields[0].Metadata.Id])
-				: rowDatas;
-
-			return Promise.resolve({ Items: items });
+			return Promise.resolve({ Items: rowDatas });
 		}
 
 		protected async setValueInternal(value: ITableInputData | null): Promise<void> {
@@ -69,10 +65,6 @@
 			this.table = this.createTable();
 
 			const items = this.value.Items.map((item) => {
-				if (this.metadata.Component.Configuration.IsPrimitive === true) {
-					return { [this.metadata.Component.Configuration.Fields[0].Metadata.Id]: item };
-				}
-
 				return { ...item };
 			});
 
@@ -103,11 +95,7 @@
 				inputOnChange: async (row, cell) => {
 					// When the cell value changes, the overall `table-input` should also be updated.
 					await cell.getValue().then((value) => {
-						if (this.metadata.Component.Configuration.IsPrimitive) {
-							this.value!.Items[row.index] = value;
-						} else {
-							this.value!.Items[row.index][cell.metadata.Id] = value;
-						}
+						this.value!.Items[row.index][cell.metadata.Id] = value;
 					});
 				}
 			});
@@ -115,7 +103,12 @@
 	}
 
 	export interface ITableInputData {
-		Items: any[] | number[] | string[];
+		Items: ITableInputItem[];
+	}
+
+	interface ITableInputItem {
+		CanRemove: boolean;
+		[key: string]: any;
 	}
 
 	export interface Row {
@@ -128,7 +121,6 @@
 		AddRowLabel?: string;
 		RemoveRowLabel?: string;
 		Fields: IField[];
-		CanRemove?: boolean;
 		CanAdd?: boolean;
 
 		/**
@@ -139,13 +131,6 @@
 		DefaultRowValue?: string;
 
 		Row: { GroupBy?: string };
-
-		/**
-		 * If true, the table-input is an array of primitives (e.g. numbers or strings).
-		 * If false, the table-input is an array of objects where each object has a
-		 * collection of inputs/outputs.
-		 */
-		IsPrimitive: boolean;
 	}
 </script>
 
@@ -173,8 +158,7 @@
 	const component = new InputComponent({
 		init() {
 			metadata = controller.metadata;
-
-			extraColSpan = metadata.Component.Configuration.CanRemove ? 1 : 0;
+			extraColSpan = 1;
 		},
 		async refresh() {
 			table = controller.table;
@@ -192,7 +176,11 @@
 			throw 'Cannot add row to a `null` table.';
 		}
 
-		let defaultRowValue = {};
+		let defaultRowValue = {
+			// Newly added rows can always be removed.
+			CanRemove: true
+		};
+
 		const config = controller.metadata.Component.Configuration;
 
 		if (config.DefaultRowValue != null && controller.form?.response != null) {
@@ -227,7 +215,7 @@
 	}
 </script>
 
-{#if metadata != null && table != null && (table.body.length > 0 || metadata.Component.Configuration.CanRemove || metadata.Component.Configuration.CanAdd)}
+{#if metadata != null && table != null && (table.body.length > 0 || metadata.Component.Configuration.CanAdd)}
 	<div class="table-responsive">
 		<table class="table table-borderless table-sm">
 			{#if table.colgroups?.length > 0}
@@ -256,9 +244,7 @@
 								{/if}
 							</th>
 
-							{#if metadata.Component.Configuration.CanRemove}
-								<th />
-							{/if}
+							<th />
 						{/each}
 					</tr>
 				{/each}
@@ -287,9 +273,7 @@
 						</th>
 					{/each}
 
-					{#if metadata.Component.Configuration.CanRemove}
-						<th />
-					{/if}
+					<th />
 				</tr>
 
 				{#each table.head.below as footer}
@@ -339,7 +323,7 @@
 								{/if}
 							</td>
 						{/each}
-						{#if metadata.Component.Configuration.CanRemove}
+						{#if rowGroup.data.CanRemove}
 							<td class="col-action">
 								<button
 									class="btn btn-link"
@@ -364,7 +348,7 @@
 								</td>
 							{/each}
 
-							{#if metadata.Component.Configuration.CanRemove}
+							{#if rowGroup.data.CanRemove}
 								<td />
 							{/if}
 						</tr>
