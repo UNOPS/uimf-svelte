@@ -51,7 +51,7 @@
 <script lang="ts">
 	import Select from 'svelte-select';
 	import { InputComponent } from '../../Infrastructure/Component';
-	import { beforeUpdate } from 'svelte';
+	import { beforeUpdate, onMount } from 'svelte';
 	import type { IInputFieldMetadata } from '../../Infrastructure/uimf';
 	import { TypeaheadSourceManager } from './Domain/TypeaheadSourceManager';
 	import { ITypeaheadValue } from './Domain/ITypeaheadValue';
@@ -60,6 +60,7 @@
 	export let controller: Controller;
 
 	let source: TypeaheadSourceManager;
+	let isMounted: boolean = false;
 
 	let component = new InputComponent({
 		async init() {
@@ -67,6 +68,8 @@
 				controller.metadata.Component.Configuration,
 				controller.form!
 			);
+
+			SubscribeToOnChangeEvents();
 		},
 		async refresh() {
 			const capturedValue = controller?.value;
@@ -107,15 +110,71 @@
 		return option;
 	}
 
-	async function loadOptionsAndFilter(query: string): Promise<IOption[]> {
-		if (source == null) {
-			return [];
-		}
+	async function handleOnFocus(_event: any) {
+		await loadOptionsAndFilter('');
+	}
 
-		return source.getOptionsAndFilter(query);
+	let options: IOption[] = [];
+
+	async function loadOptionsAndFilter(query: string): Promise<IOption[]> {
+		if (source == null) return Promise.resolve([]);
+
+		// Two-way update for dropdown items: ensures reactivity by refreshing the options
+		// while leveraging the select's loadOptions auto-filtering feature.
+		options = await source.getOptionsAndFilter(query);
+		return options;
 	}
 
 	const groupBy = (item: any) => item.Group;
+
+	function handleChange(_event: any) {
+		console.log('on:change event fired on typeahead');
+	}
+
+	onMount(() => {
+		setTimeout(() => {
+			// A typeahead cannot reset another typeahead before it is mounted
+			// because this is part of the initial loading process, not a user-triggered change.
+			isMounted = true;
+		}, 100);
+	});
+
+	// Listening for onChange events from all typeahead and dropdown components in the form.
+	// If an event is triggered and the current component relies on one of them as a remote source argument,
+	// its value is reset.
+	function SubscribeToOnChangeEvents() {
+		const inputs = controller.form?.inputs
+			? Object.values(controller.form.inputs).filter(
+					(input) =>
+						(input.metadata.Component.Type === 'typeahead' ||
+							input.metadata.Component.Type === 'dropdown') &&
+						input.metadata.Id !== controller.metadata.Id
+			  )
+			: [];
+
+		inputs.forEach((component) => {
+			component.on('input:change', (event: any) => {
+				var currentComponent = controller.metadata.Id;
+				var listenedComponent = event.metadata.Id;
+
+				if (listenedComponent === currentComponent) {
+					return;
+				}
+
+				//console.log('I am ', currentComponent, ' and I detected a change of', listenedComponent);
+				var componentWithRemoteArgument =
+					controller.metadata?.Component?.Configuration?.Parameters?.some(
+						(f: { Source: string | undefined }) => f.Source === event.metadata.Id
+					);
+
+				if (componentWithRemoteArgument) {
+					if (isMounted) {
+						controller.setValue(null);
+					}
+				}
+			});
+		});
+	}
 </script>
 
 <div class="input-container">
@@ -149,9 +208,12 @@
 		on:clear={async () => {
 			await controller?.setValue(null);
 		}}
+		on:change={handleChange}
 		hideEmptyState={true}
 		placeholder="type to search..."
 		loadOptions={loadOptionsAndFilter}
+		items={options}
+		on:focus={handleOnFocus}
 	>
 		<div slot="item" let:item class={item.CssClass} class:item-slot={true}>
 			<span>{@html item.Label}</span>
