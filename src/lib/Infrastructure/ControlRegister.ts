@@ -307,7 +307,6 @@ defaultControlRegister.registerOutputComponent('alert', Alert, { alwaysHideLabel
 defaultControlRegister.registerOutputComponent('boolean', Boolean, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('breadcrumbs', Breadcrumbs, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('datetime', DateTimeOutput, { displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('editable-value', EditableValue, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('flexbox', Flexbox, { alwaysHideLabel: false, displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('form-documentation', FormDocumentation, { alwaysHideLabel: true, displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('form-inputs', FormInputs, { displayAsBlock: true });
