@@ -101,7 +101,7 @@
 				: null;
 
 		if (option == null) {
-			throw `Cannot find option for "${controller.metadata.Id}".`;
+			throw `Cannot find option for "${controller.metadata.Id}" with value "${value?.Value}".`;
 		}
 
 		return option;
