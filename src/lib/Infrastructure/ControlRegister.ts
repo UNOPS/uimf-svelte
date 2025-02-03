@@ -74,7 +74,6 @@ import * as SlaTimer from '../Outputs/SlaTimer.svelte';
 import * as ShipmentSize from '../Outputs/ShipmentSize.svelte';
 import * as Boolean from '../Outputs/Boolean.svelte';
 import * as Breadcrumbs from '../Outputs/Breadcrumbs.svelte';
-import * as EditableValue from '../Outputs/EditableValue.svelte';
 import * as Flexbox from '../Outputs/Flexbox.svelte';
 import * as FormDocumentation from '../Outputs/FormDocumentation.svelte';
 import * as FormInputs from '../Outputs/FormInputs.svelte';
