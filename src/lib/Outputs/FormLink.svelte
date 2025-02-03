@@ -15,6 +15,7 @@
 		Filename?: string;
 		CssClass?: string;
 		Tooltip?: string;
+		Deadline?: string;
 		RenderInputTargets?: { [key: string]: string };
 		RenderOutputTargets?: { [key: string]: string };
 		ForwardedInputValues?: { [key: string]: string };
@@ -111,11 +112,20 @@
 			{/await}
 		{/if}
 	{:else if allowed}
+		{@const deadline =
+			controller.value.Deadline != null ? new Date(controller.value.Deadline) : null}
+		{@const now = new Date()}
+		{@const deadlineTooltip =
+			deadline != null
+				? `<br><br>This action ${
+						now < deadline ? 'will be' : 'was'
+				  } available only until ${deadline.toLocaleString()}.`
+				: ''}
 		<button
 			type="button"
 			class={cssClass ?? 'btn btn-default'}
 			{disabled}
-			use:tooltip={controller.value.Tooltip}
+			use:tooltip={controller.value.Tooltip + deadlineTooltip}
 			on:click={() => {
 				switch (controller.value.Action) {
 					case 'download': {
@@ -301,6 +311,9 @@
 			{#if controller.value.Label != null}
 				{controller.value.Label}
 			{/if}
+			{#if deadline != null && now < deadline}
+				<span class="deadline" />
+			{/if}
 		</button>
 	{/if}
 {/if}
@@ -383,5 +396,19 @@
 		background: none;
 		text-decoration: none;
 		border: none;
+	}
+
+	button {
+		position: relative;
+	}
+
+	.deadline {
+		background: red;
+		border-radius: 50%;
+		width: 6px;
+		height: 6px;
+		position: absolute;
+		top: 0px;
+		right: 0px;
 	}
 </style>
