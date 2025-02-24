@@ -125,7 +125,7 @@
 			type="button"
 			class={cssClass ?? 'btn btn-default'}
 			{disabled}
-			use:tooltip={controller.value.Tooltip + deadlineTooltip}
+			use:tooltip={(controller.value.Tooltip || '') + deadlineTooltip}
 			on:click={() => {
 				switch (controller.value.Action) {
 					case 'download': {
