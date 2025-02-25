@@ -86,7 +86,7 @@
 >
 	<option value="" />
 	{#each items as item}
-		<option value={item.Value.toString()}>{item.Label}</option>
+		<option value={item.Value.toString()} class={item.CssClass}>{item.Label}</option>
 	{/each}
 </select>
 
