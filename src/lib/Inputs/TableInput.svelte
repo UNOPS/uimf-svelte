@@ -243,8 +243,6 @@
 									{cell.label}
 								{/if}
 							</th>
-
-							<th />
 						{/each}
 					</tr>
 				{/each}
