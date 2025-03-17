@@ -9,6 +9,7 @@
 		Direction?: string;
 		AlignItems?: string;
 		Separator?: string;
+		ItemCssClass?: string;
 	}
 
 	interface IMetadata extends IFieldMetadata<Configuration> {}
@@ -88,7 +89,7 @@
 		style:align-items={controller.metadata.Component.Configuration.AlignItems}
 	>
 		{#each nestedItems as item, index}
-			<div>
+			<div class={controller.metadata.Component.Configuration.ItemCssClass}>
 				<svelte:component this={item.component} controller={item.controller} />
 			</div>
 			{#if separator != null}
