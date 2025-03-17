@@ -55,6 +55,7 @@ import * as DynamicInput from '../Inputs/DynamicInput.svelte';
 import * as Typeahead from '../Inputs/Typeahead/Typeahead.svelte';
 import * as Table from '../Outputs/Table.svelte';
 import * as ObjectFlexbox from '../Outputs/ObjectFlexbox.svelte';
+import * as ObjectGrid from '../Outputs/ObjectGrid.svelte';
 import * as ObjectList from '../Outputs/ObjectList.svelte';
 import * as ActionList from '../Outputs/ActionList.svelte';
 import * as MultiSelect from '../Inputs/Multiselect.svelte';
@@ -342,6 +343,7 @@ defaultControlRegister.registerOutputComponent('paginated-table', PaginatedTable
 defaultControlRegister.registerOutputComponent('output', Output, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('expandable', Expandable, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('object-flexbox', ObjectFlexbox, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('object-grid', ObjectGrid, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('object-list', ObjectList, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('complex-output', ComplexOutput, { displayAsBlock: true });
 
