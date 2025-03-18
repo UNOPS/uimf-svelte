@@ -20,6 +20,7 @@ export enum FieldLayout {
 export interface IOutputFieldMetadata<TConfiguration = any> extends IFieldMetadata<TConfiguration> {
     Layout?: FieldLayout | null;
     CssClass?: string | null;
+    HideIfNull: boolean;
 }
 
 export interface IInputFieldMetadata<TConfiguration = any> extends IFieldMetadata<TConfiguration> {

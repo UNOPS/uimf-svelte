@@ -33,7 +33,7 @@
 				controller.metadata.Label === null ||
 				controller.metadata.Label === '';
 
-			hideIfNull = controller.metadata.CustomProperties?.hideIfNull != null;
+			hideIfNull = controller.metadata.HideIfNull;
 
 			horizontalLayout =
 				controller.metadata.Layout === FieldLayout.Default || controller.metadata.Layout == null
