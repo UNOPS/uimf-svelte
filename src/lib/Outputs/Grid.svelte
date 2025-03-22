@@ -3,7 +3,7 @@
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
-	import type { IFieldMetadata } from '../Infrastructure/uimf';
+	import type { IOutputFieldMetadata } from '../Infrastructure/uimf';
 	import Output from '../Output.svelte';
 
 	interface OutputField {
@@ -12,14 +12,14 @@
 	}
 
 	interface Configuration {
-		Properties: IFieldMetadata[];
+		Properties: IOutputFieldMetadata[];
 		Areas: string;
 		Rows: string | null;
 		Columns: string | null;
 		Gap: string | null;
 	}
 
-	class GridController extends OutputController<any, IFieldMetadata<Configuration>> {}
+	class GridController extends OutputController<any, IOutputFieldMetadata<Configuration>> {}
 
 	export let controller: GridController;
 
