@@ -4,10 +4,10 @@
 	import { OutputComponent } from '../Infrastructure/Component';
 	import FormLink, { type FormLinkData } from './FormLink.svelte';
 
-	import type { IFieldMetadata, IOutputFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { IOutputFieldMetadata } from '$lib/Infrastructure/uimf';
 
 	export interface ActionListData {
-		Actions: FormLinkData[];
+		Actions: FormLinkData[] | null;
 	}
 
 	interface IConfiguration {
@@ -28,7 +28,7 @@
 		refresh() {
 			const value = controller.value;
 
-			if (value != null) {
+			if (value != null && value.Actions != null) {
 				for (let i = 0; i < value.Actions.length; i++) {
 					// By default we want all buttons (even if they're just links) to have
 					// the same styling.
@@ -44,7 +44,7 @@
 
 	const makeController = (value: FormLinkData) => {
 		return new OutputController<FormLinkData>({
-			metadata: {} as IFieldMetadata,
+			metadata: {} as IOutputFieldMetadata,
 			data: value,
 			form: controller.form!,
 			app: controller.app,
@@ -53,7 +53,7 @@
 	};
 </script>
 
-{#if controller.value?.Actions.length > 0}
+{#if controller.value?.Actions != null && controller.value?.Actions.length > 0}
 	<div class:action-list={true} class={controller.metadata.Component?.Configuration?.CssClass}>
 		{#each controller.value.Actions as action}
 			<div><FormLink controller={makeController(action)} /></div>
