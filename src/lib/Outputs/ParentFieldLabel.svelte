@@ -10,6 +10,7 @@
 
 	interface IConfiguration {
 		ParentLevel: number;
+		CssClass: string | null;
 	}
 
 	export let controller: OutputController<IData, IOutputFieldMetadata<IConfiguration>>;
@@ -40,5 +41,5 @@
 </script>
 
 {#if label != null && label.length > 0}
-	{@html label}
+	<div class={controller.metadata.Component.Configuration.CssClass}>{@html label}</div>
 {/if}
