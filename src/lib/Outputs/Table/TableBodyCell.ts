@@ -1,4 +1,4 @@
-import { IInputFieldMetadata } from '../../Infrastructure/uimf';
+import { IInputFieldMetadata, IOutputFieldMetadata } from '../../Infrastructure/uimf';
 import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
 import type { IFormComponent } from '../../Infrastructure/IFormComponent';
 import type { InputController } from '../../Infrastructure/InputController';
@@ -31,7 +31,7 @@ export class TableBodyCell {
         else {
             this.controller = new OutputController<any>(
                 {
-                    metadata: field.Metadata,
+                    metadata: field.Metadata as IOutputFieldMetadata,
                     data: data[field.Metadata.Id],
                     form: parent.form!,
                     app: parent.app,

@@ -153,12 +153,11 @@
 
 	let metadata: IFieldMetadata<ITableInputConfiguration> | null = null;
 	let table: Table | null = null;
-	let extraColSpan: number = 0;
+	let extraColSpan: number = 1;
 
 	const component = new InputComponent({
 		init() {
 			metadata = controller.metadata;
-			extraColSpan = 1;
 		},
 		async refresh() {
 			table = controller.table;
@@ -230,7 +229,7 @@
 							<th
 								use:tooltip={cell.documentation}
 								style={cell.style}
-								colspan={cell.colspan}
+								colspan={cell.colspan + (header.cells.length === index + 1 ? extraColSpan : 0)}
 								class={cell.cssClass}
 								on:click={() => cell.click()}
 							>
@@ -279,7 +278,7 @@
 						{#each footer.cells as cell, index}
 							<th
 								use:tooltip={cell.documentation}
-								colspan={cell.colspan}
+								colspan={cell.colspan + (footer.cells.length === index + 1 ? extraColSpan : 0)}
 								class={cell.cssClass}
 								style={cell.style}
 								on:click={() => cell.click()}
@@ -299,10 +298,13 @@
 			</thead>
 			<tbody>
 				{#each table.body.filter((t) => !t.deleted) as rowGroup}
-					{#each rowGroup.above as header, index}
+					{#each rowGroup.above as header}
 						<tr class:group-header={true} class={header.cssClass}>
-							{#each header.cells as cell}
-								<td colspan={cell.colspan} class={cell.cssClass}>
+							{#each header.cells as cell, index}
+								<td
+									colspan={cell.colspan + (header.cells.length === index + 1 ? extraColSpan : 0)}
+									class={cell.cssClass}
+								>
 									<Output controller={asOutputController(cell.controller)} nolayout={true} />
 								</td>
 							{/each}
@@ -311,7 +313,7 @@
 
 					<tr class="main">
 						{#each rowGroup.main.cells as cell}
-							<td colspan={cell.colspan + extraColSpan} class={cell.cssClass}>
+							<td colspan={cell.colspan} class={cell.cssClass}>
 								{#if !cell.hidden}
 									{#if cell.isInput}
 										<Input controller={getControllerOrException(rowGroup, cell)} nolayout={true} />
@@ -321,8 +323,9 @@
 								{/if}
 							</td>
 						{/each}
-						{#if rowGroup.data.CanRemove}
-							<td class="col-action">
+
+						<td class="col-action">
+							{#if rowGroup.data.CanRemove}
 								<button
 									class="btn btn-link"
 									type="button"
@@ -334,21 +337,20 @@
 								>
 									<i class="fa fa-trash text-primary" />
 								</button>
-							</td>
-						{/if}
+							{/if}
+						</td>
 					</tr>
 
 					{#each rowGroup.below as footer}
 						<tr class:footer={true} class={footer.cssClass}>
 							{#each footer.cells as cell, index}
-								<td colspan={cell.colspan} class={cell.cssClass}>
+								<td
+									colspan={cell.colspan + (footer.cells.length === index + 1 ? extraColSpan : 0)}
+									class={cell.cssClass}
+								>
 									<Output controller={asOutputController(cell.controller)} nolayout={true} />
 								</td>
 							{/each}
-
-							{#if rowGroup.data.CanRemove}
-								<td />
-							{/if}
 						</tr>
 					{/each}
 				{/each}
