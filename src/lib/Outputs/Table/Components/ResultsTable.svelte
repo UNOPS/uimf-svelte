@@ -119,7 +119,7 @@
 
 		let me: OutputController<any> | null = controller;
 
-		while (me != null) {
+		while (me != null && me.metadata.Id !== '_layout_') {
 			path = me.metadata.Id + (path != null ? '.' + path : '');
 			me = me.parent;
 		}
