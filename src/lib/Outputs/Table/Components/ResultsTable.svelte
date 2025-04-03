@@ -106,7 +106,7 @@
 
 	const makeFormLinkController = (formlink: FormLinkData | BulkAction) => {
 		return new OutputController<FormLinkData>({
-			metadata: {} as IFieldMetadata,
+			metadata: {} as IOutputFieldMetadata,
 			data: formlink,
 			form: controller.form,
 			app: controller.app,
