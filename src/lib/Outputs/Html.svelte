@@ -35,9 +35,6 @@
 		}
 
 		:global(p) {
-			font-size: initial;
-			line-height: initial;
-
 			&:last-child {
 				margin-bottom: 0;
 			}
