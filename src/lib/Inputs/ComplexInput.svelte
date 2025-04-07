@@ -7,7 +7,7 @@
 	export interface NestedComponentMetadata {
 		CssClassEach: string;
 		CssClass: string;
-		Properties: IInputFieldMetadata[];
+		Fields: IInputFieldMetadata[];
 	}
 
 	export class Controller extends InputController<
@@ -24,9 +24,9 @@
 
 			this.views = [];
 
-			this.metadata.Component.Configuration.Properties.sort((x, y) => x.OrderIndex - y.OrderIndex);
+			this.metadata.Component.Configuration.Fields.sort((x, y) => x.OrderIndex - y.OrderIndex);
 
-			for (const view of this.metadata.Component.Configuration.Properties) {
+			for (const view of this.metadata.Component.Configuration.Fields) {
 				let controllerClass = controlRegister.inputs[view.Component.Type].controller;
 
 				this.views.push({

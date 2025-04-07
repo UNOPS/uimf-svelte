@@ -12,7 +12,7 @@
 	}
 
 	interface Configuration {
-		Properties: IOutputFieldMetadata[];
+		Fields: IOutputFieldMetadata[];
 		Areas: string;
 		Rows: string | null;
 		Columns: string | null;
@@ -35,7 +35,7 @@
 	beforeUpdate(async () => await component.setup(controller));
 
 	function getComponentControllers(): OutputField[] {
-		return controller.metadata.Component.Configuration.Properties.sort(
+		return controller.metadata.Component.Configuration.Fields.sort(
 			(a, b) => a.OrderIndex - b.OrderIndex
 		).map((property) => {
 			const field = controlRegister.createOutput({

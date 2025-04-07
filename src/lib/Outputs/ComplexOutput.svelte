@@ -23,7 +23,7 @@
 
 	interface Configuration {
 		CssClass: string;
-		Properties: IComplexOutputFieldMetadata[];
+		Fields: IComplexOutputFieldMetadata[];
 		Areas: IArea[] | null;
 	}
 
@@ -37,7 +37,7 @@
 
 	let component = new OutputComponent({
 		refresh() {
-			let fields = controller.metadata.Component.Configuration.Properties.filter((t) => !t.Hidden)
+			let fields = controller.metadata.Component.Configuration.Fields.filter((t) => !t.Hidden)
 				.sort((a, b) => a.OrderIndex - b.OrderIndex)
 				.map((property) => {
 					return new OutputController<any, IComplexOutputFieldMetadata>({
