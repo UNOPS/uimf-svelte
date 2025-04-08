@@ -3,7 +3,7 @@
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
-	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { IOutputFieldMetadata } from '$lib/Infrastructure/uimf';
 	import Output from '../Output.svelte';
 
 	interface Configuration {
@@ -22,7 +22,7 @@
 		controller: FlexboxItemController;
 	}
 
-	interface FlexboxItemMetadata extends IFieldMetadata {
+	interface FlexboxItemMetadata extends IOutputFieldMetadata {
 		CustomProperties?: {
 			Flexbox?: {
 				FlexBasis?: string;
@@ -34,7 +34,7 @@
 		};
 	}
 
-	class FlexboxController extends OutputController<any, IFieldMetadata<Configuration>> {}
+	class FlexboxController extends OutputController<any, IOutputFieldMetadata<Configuration>> {}
 
 	class FlexboxItemController extends OutputController<any, FlexboxItemMetadata> {}
 
