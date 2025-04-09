@@ -69,7 +69,6 @@ import * as Tabstrip from '../Outputs/Tabstrip.svelte';
 import * as InlineForm from '../Outputs/InlineForm.svelte';
 import * as PaginatedTable from '../Outputs/PaginatedTable.svelte';
 import * as Sequence from '../Outputs/Sequence.svelte';
-import * as CartItem from '../Outputs/CartItem.svelte';
 import * as CartItemOe from '../Outputs/CartItemOe.svelte';
 import * as Output from '../Outputs/Output.svelte';
 import * as SlaTimer from '../Outputs/SlaTimer.svelte';
@@ -350,7 +349,6 @@ defaultControlRegister.registerOutputComponent('complex-output', ComplexOutput, 
 
 // App-specific components.
 defaultControlRegister.registerOutputComponent('event-description', EventDescription, { displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('cart-item', CartItem, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('cart-item-oe', CartItemOe, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('bar-chart', BarChart, { displayAsBlock: true });
