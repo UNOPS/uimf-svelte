@@ -29,12 +29,23 @@
 	}
 
 	export class Controller extends OutputController<FormLinkData> {}
+
+	export function makeController(value: FormLinkData, parent: OutputController<any, any>) {
+		return new OutputController<FormLinkData>({
+			metadata: {} as IOutputFieldMetadata,
+			data: value,
+			form: parent.form!,
+			app: parent.app,
+			parent: parent
+		}) as Controller;
+	}
 </script>
 
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { tooltip } from '../Components/Tooltip.svelte';
+	import { IOutputFieldMetadata } from '../Infrastructure/uimf';
 
 	export let controller: Controller;
 	export let disabled: boolean = false;

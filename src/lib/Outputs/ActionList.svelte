@@ -2,7 +2,7 @@
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
-	import FormLink, { type FormLinkData } from './FormLink.svelte';
+	import FormLink, { type FormLinkData, makeController } from './FormLink.svelte';
 
 	import type { IOutputFieldMetadata } from '$lib/Infrastructure/uimf';
 
@@ -41,22 +41,12 @@
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
-
-	const makeController = (value: FormLinkData) => {
-		return new OutputController<FormLinkData>({
-			metadata: {} as IOutputFieldMetadata,
-			data: value,
-			form: controller.form!,
-			app: controller.app,
-			parent: controller
-		}) as Controller;
-	};
 </script>
 
 {#if controller.value?.Actions != null && controller.value?.Actions.length > 0}
 	<div class:action-list={true} class={controller.metadata.Component?.Configuration?.CssClass}>
 		{#each controller.value.Actions as action}
-			<div><FormLink controller={makeController(action)} /></div>
+			<div><FormLink controller={makeController(action, controller)} /></div>
 		{/each}
 	</div>
 {/if}
