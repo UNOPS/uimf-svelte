@@ -127,15 +127,19 @@
 		<div class="buttons">
 			{#each effectiveActions as action}
 				{#if action.Form === '#submit'}
-					<button class="btn btn-primary" type="submit">
+					<button class={action.CssClass ?? 'btn btn-primary'} type="submit">
 						{action.Label}
 					</button>
 				{:else if action.Form === '#clear'}
-					<button class="btn btn-default" on:click={clearInputs} type="button">
+					<button class={action.CssClass ?? 'btn btn-default'} on:click={clearInputs} type="button">
 						{action.Label}
 					</button>
 				{:else if action.Form === '#cancel'}
-					<button class="btn btn-default" type="button" on:click={controller.form.cancel}>
+					<button
+						class={action.CssClass ?? 'btn btn-default'}
+						type="button"
+						on:click={controller.form.cancel}
+					>
 						{action.Label}
 					</button>
 				{:else}
