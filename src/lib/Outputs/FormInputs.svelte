@@ -6,8 +6,11 @@
 	import Input from '../Input.svelte';
 	import { defaultControlRegister } from '../Infrastructure/ControlRegister';
 	import { IOutputFieldMetadata } from '../Infrastructure/uimf';
+	import FormLinkComponent, { FormLinkData, makeController } from './FormLink.svelte';
 
-	interface IData {}
+	interface IData {
+		Actions: FormLinkData[];
+	}
 
 	interface IConfiguration {
 		CssClass: string | null;
@@ -16,6 +19,8 @@
 	export let controller: OutputController<IData, IOutputFieldMetadata<IConfiguration>>;
 
 	let visibleInputs: InputController<any>[] = [];
+	let isRecordForm = false;
+	let effectiveActions: FormLinkData[] = [];
 
 	let component = new OutputComponent({
 		async refresh() {
@@ -48,6 +53,43 @@
 				controller.form?.metadata.InputFields.filter((t) => t.Hidden === false)
 					.sort((a, b) => a.OrderIndex - b.OrderIndex)
 					.map((t) => controller.form!.inputs[t.Id]) ?? [];
+
+			isRecordForm =
+				controller.form?.metadata.InputFields.find(
+					(t) => t.Id === 'Operation' && t.Component.Type === 'dropdown'
+				) != null;
+
+			effectiveActions = controller.value?.Actions;
+
+			if (effectiveActions == null) {
+				effectiveActions = [];
+
+				if (controller.form != null) {
+					if (!controller.form.metadata.PostOnLoad || visibleInputs?.length > 0) {
+						effectiveActions.push({
+							Form: '#submit',
+							InputFieldValues: null,
+							Label: controller.form.metadata.CustomProperties.SubmitButtonLabel || 'Submit'
+						});
+
+						if (controller.form?.metadata.CustomProperties.ShowClearButton) {
+							effectiveActions.push({
+								Form: '#clear',
+								InputFieldValues: null,
+								Label: 'Clear'
+							});
+						}
+
+						if (controller.form.cancel != null) {
+							effectiveActions.push({
+								Form: '#cancel',
+								InputFieldValues: null,
+								Label: 'Cancel'
+							});
+						}
+					}
+				}
+			}
 		}
 	});
 
@@ -68,7 +110,7 @@
 	}
 </script>
 
-{#if controller.form != null && (!controller.form.metadata.PostOnLoad || visibleInputs?.length > 0)}
+{#if controller.form != null && (!controller.form.metadata.PostOnLoad || visibleInputs?.length > 0 || isRecordForm)}
 	<form
 		name={controller.form?.metadata.Id}
 		on:submit|preventDefault={submitForm}
@@ -82,20 +124,24 @@
 			{/each}
 		</div>
 
-		<div class="text-right">
-			<button class="btn btn-primary" type="submit">
-				{controller.form.metadata.CustomProperties.SubmitButtonLabel || 'Submit'}
-			</button>
-
-			{#if controller.form.cancel != null}
-				<button class="btn btn-default" type="button" on:click={controller.form.cancel}
-					>Cancel</button
-				>
-			{/if}
-
-			{#if controller.form.metadata.CustomProperties.ShowClearButton}
-				<button class="btn btn-default" on:click={clearInputs} type="button">Clear</button>
-			{/if}
+		<div class="buttons">
+			{#each effectiveActions as action}
+				{#if action.Form === '#submit'}
+					<button class="btn btn-primary" type="submit">
+						{action.Label}
+					</button>
+				{:else if action.Form === '#clear'}
+					<button class="btn btn-default" on:click={clearInputs} type="button">
+						{action.Label}
+					</button>
+				{:else if action.Form === '#cancel'}
+					<button class="btn btn-default" type="button" on:click={controller.form.cancel}>
+						{action.Label}
+					</button>
+				{:else}
+					<FormLinkComponent controller={makeController(action, controller)} />
+				{/if}
+			{/each}
 		</div>
 	</form>
 {/if}
@@ -110,5 +156,11 @@
 
 	form.vertical > .inputs {
 		grid-template-columns: 1fr;
+	}
+
+	.buttons {
+		display: flex;
+		justify-content: flex-end;
+		gap: 5px;
 	}
 </style>
