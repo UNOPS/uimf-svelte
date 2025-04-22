@@ -12,7 +12,7 @@
 		ItemCssClass?: string;
 	}
 
-	interface IMetadata extends IFieldMetadata<Configuration> {}
+	interface IMetadata extends IOutputFieldMetadata<Configuration> {}
 </script>
 
 <script lang="ts">
@@ -20,7 +20,7 @@
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
-	import type { IFieldMetadata, IComponent } from '$lib/Infrastructure/uimf';
+	import type { IComponent, IOutputFieldMetadata } from '$lib/Infrastructure/uimf';
 
 	export let controller: OutputController<any, IMetadata>;
 
@@ -65,7 +65,8 @@
 						Hidden: false,
 						Id: Date.now().toString(),
 						Label: '',
-						OrderIndex: 0
+						OrderIndex: 0,
+						HideIfNull: false
 					},
 					data: item,
 					form: controller.form!,

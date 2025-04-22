@@ -68,6 +68,7 @@ import * as Link from '../Outputs/Link.svelte';
 import * as Tabstrip from '../Outputs/Tabstrip.svelte';
 import * as InlineForm from '../Outputs/InlineForm.svelte';
 import * as PaginatedTable from '../Outputs/PaginatedTable.svelte';
+import * as ProgressTracker from '../Outputs/ProgressTracker.svelte';
 import * as Sequence from '../Outputs/Sequence.svelte';
 import * as CartItemOe from '../Outputs/CartItemOe.svelte';
 import * as Output from '../Outputs/Output.svelte';
@@ -322,6 +323,7 @@ defaultControlRegister.registerOutputComponent('paginated-object-list', Paginate
 defaultControlRegister.registerOutputComponent('pie-chart', PieChart, { displayAsBlock: true, hideIfNull: true });
 defaultControlRegister.registerOutputComponent('tidy-tree', TidyTree, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('line-chart', LineChart, { displayAsBlock: true });
+defaultControlRegister.registerOutputComponent('progress-tracker', ProgressTracker, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('sequence', Sequence, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('sla-timer', SlaTimer, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('slider', Slider);
