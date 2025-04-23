@@ -1,22 +1,47 @@
-<script lang="ts">
-	import type { OutputController } from '../Infrastructure/OutputController';
-	import { OutputComponent } from '../Infrastructure/Component';
-	import { beforeUpdate } from 'svelte';
+<script lang="ts" context="module">
+	interface Configuration {
+		Item: any;
+		Inner: IComponent;
+		CssClass?: string;
+	}
 
-	export let controller: OutputController<ImageOverlay>;
+	interface IMetadata extends IFieldMetadata<Configuration> {}
+</script>
+
+<script lang="ts">
+	import { beforeUpdate } from 'svelte';
+	import { OutputController } from '../Infrastructure/OutputController';
+	import { OutputComponent } from '../Infrastructure/Component';
+	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
+	import type { IFieldMetadata, IComponent } from '$lib/Infrastructure/uimf';
+
+	export let controller: OutputController<ImageOverlay, IMetadata>;
 
 	interface ImageOverlay {
 		Source: string;
 		MaxWidth: string;
 		Url: string;
-		InnerTitle: string;
-		InnerContent: string[];
+		InnerContent: any | null;
 		Title: string | null;
 	}
 
 	let isHovered: boolean;
 	let handleMouseEnter: () => void;
 	let handleMouseLeave: () => void;
+
+	let nestedComponent: ConstructorOfATypedSvelteComponent;
+
+	const inner = controller.metadata.Component.Configuration.Item.Configuration.Inner;
+	const cssClass =
+		controller.metadata.Component.Configuration.Item.Configuration.Inner.Configuration.CssClass;
+
+	const componentRegistration = controlRegister.outputs[inner.Type];
+
+	if (componentRegistration == null) {
+		throw `Cannot find output for type '${controller.metadata.Component.Type}'.`;
+	}
+
+	nestedComponent = componentRegistration.component;
 
 	let component = new OutputComponent({
 		refresh() {
@@ -33,6 +58,24 @@
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
+
+	export function makeController(value: any) {
+		return new OutputController<any>({
+			metadata: {
+				Component: inner,
+				Hidden: false,
+				Id: Date.now().toString(),
+				Label: '',
+				OrderIndex: 0,
+				HideIfNull: false,
+				CssClass: cssClass
+			},
+			data: value,
+			form: controller.form!,
+			app: controller.app,
+			parent: controller
+		});
+	}
 </script>
 
 {#if controller.value != null}
@@ -46,14 +89,14 @@
 	>
 		{#if isHovered}
 			<div class="overlay">
-				<a href={controller.value.Url}>
-					<div class="inner-title">{controller.value.InnerTitle}</div>
-					<ul>
-						{#each controller.value.InnerContent as line}
-							<li class="inner-text">{line}</li>
-						{/each}
-					</ul>
-				</a>
+				<div class={cssClass}>
+					<a href={controller.value.Url}>
+						<svelte:component
+							this={nestedComponent}
+							controller={makeController(controller.value.InnerContent)}
+						/>
+					</a>
+				</div>
 			</div>
 		{/if}
 		<div class="output-image-overlay"><img src={controller.value.Source} alt="img" /></div>
@@ -79,7 +122,7 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		height: 20vh;
+		height: 30vh;
 		background: #fbf6f6;
 		border-radius: 0%;
 		border-color: #c7c7c7;
@@ -87,8 +130,8 @@
 		padding: 0;
 		margin: 10px;
 		border-width: 0.5px;
-		max-width: 250px;
-		min-width: 247px;
+		max-width: 310px;
+		min-width: 307px;
 		overflow: hidden;
 	}
 
@@ -114,41 +157,11 @@
 		justify-content: center;
 		z-index: 2;
 		opacity: 1;
+		font-size: 0.8em;
 	}
 
 	.output-image-overlay:hover .overlay {
 		opacity: 0;
 		box-shadow: 7px 7px 5px lightgray;
-	}
-
-	.inner-title {
-		position: absolute;
-		color: white;
-		font-size: 14px;
-		text-align: center;
-		font-weight: bold;
-		top: 5%;
-	}
-
-	.inner-text {
-		position: relative;
-		color: white;
-		font-size: 12px;
-		line-height: 1em;
-	}
-
-	.inner-text ul,
-	li {
-		line-height: 1em;
-	}
-
-	.title {
-		color: rgb(52, 134, 211);
-		font-size: 16px;
-		text-align: center;
-		position: relative;
-		bottom: 0px;
-		left: 0;
-		right: 0;
 	}
 </style>
