@@ -6,6 +6,7 @@
 	interface IData {
 		Steps: IItem[];
 		Current: number | null;
+		Open: boolean;
 	}
 
 	interface ITask {
@@ -31,6 +32,7 @@
 	let component = new OutputComponent({
 		refresh() {
 			controller.value = controller.value;
+			showSteps = showSteps || controller.value.Open;
 		}
 	});
 
