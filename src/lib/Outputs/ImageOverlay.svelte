@@ -123,7 +123,7 @@
 		align-items: center;
 		justify-content: center;
 		height: 30vh;
-		background: #fbf6f6;
+		background: #e0e0e0;
 		border-radius: 0%;
 		border-color: #c7c7c7;
 		border-style: solid;
@@ -139,8 +139,8 @@
 		max-width: 360px;
 		max-height: 360px;
 		overflow: hidden;
-		top: 0px;
-		height: 85%;
+		top: -40px;
+    	height: 100%;
 		position: absolute;
 	}
 
