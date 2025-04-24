@@ -116,34 +116,6 @@
 		bottom: 0px;
 	}
 
-	.image-container {
-		position: relative;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		height: 30vh;
-		background: #e0e0e0;
-		border-radius: 0%;
-		border-color: #c7c7c7;
-		border-style: solid;
-		padding: 0;
-		margin: 10px;
-		border-width: 0.5px;
-		max-width: 310px;
-		min-width: 307px;
-		overflow: hidden;
-	}
-
-	.output-image-overlay {
-		max-width: 360px;
-		max-height: 360px;
-		overflow: hidden;
-		top: -40px;
-    	height: 100%;
-		position: absolute;
-	}
-
 	.overlay {
 		position: absolute;
 		top: 0;
@@ -164,4 +136,39 @@
 		opacity: 0;
 		box-shadow: 7px 7px 5px lightgray;
 	}
+
+	.image-container {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 30vh;
+	background: #e0e0e0;
+	border-radius: 0%;
+	border-color: #c7c7c7;
+	border-style: solid;
+	padding: 0;
+	margin: 10px;
+	border-width: 0.5px;
+	width: 310px;
+	overflow: hidden;
+}
+
+.output-image-overlay {
+	max-width: 360px;
+    max-height: 360px;
+    overflow: hidden;
+    top: -40px;
+    height: 100%;
+	width: 100%;
+    position: absolute;
+    display: flex;
+}
+
+.output-image-overlay img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
 </style>
