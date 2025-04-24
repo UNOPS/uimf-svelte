@@ -58,7 +58,7 @@ interface ColorOptions {
 export default interface IUimfApp {
     renderForm(options: { data: any, metadata: IFieldMetadata, form: FormInstance | null }): Element;
     runResponseHandler(response: FormResponse): Promise<void>;
-    runClientFunctions(response: FormResponse): Promise<void>;
+    runClientFunctions(response: FormResponse, parentForm?: FormInstance | null): Promise<void>;
     handleCustomFormLinkAction(value: FormLinkData): void;
     confirm(options: IConfirmOptions): Promise<void>;
     alert(options: IAlertOptions): Promise<void>;

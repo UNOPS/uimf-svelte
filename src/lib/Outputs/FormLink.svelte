@@ -201,6 +201,10 @@
 												modal.$close();
 											}
 										});
+
+										form.on('form:close', function () {
+											modal.$close();
+										});
 									}
 								})
 								.then(async function () {
@@ -272,12 +276,16 @@
 												}
 										}
 
-										controller.app.runResponseHandler(response);
-										controller.app.runClientFunctions(response);
+										console.log(controller);
 
-										if (renderInputTarget == null && renderOutputTarget == null) {
-											controller.form?.submit(false);
-										}
+										controller.app
+											.runResponseHandler(response)
+											.then(() => controller.app.runClientFunctions(response, controller.form))
+											.then(() => {
+												if (renderInputTarget == null && renderOutputTarget == null) {
+													controller.form?.submit(false);
+												}
+											});
 									}
 								});
 						});
