@@ -12,7 +12,9 @@
 	}
 
 	export let controller: OutputController<Item>;
-	let expanded = true;
+	export let depth: number = 0;
+
+	let expanded = depth === 0;
 
 	let component = new OutputComponent({
 		refresh() {
@@ -50,14 +52,17 @@
 						role="button"
 						aria-label={`Toggle ${controller.value.Name} expansion`}
 						class="arrow"
-						class:down={expanded}>&#x25b6;</span
+						class:down={expanded}
 					>
+						&#x25b6;
+					</span>
 				{/if}
 				<a href={controller.value.Url}>{controller.value.Name}</a>
 			{/if}
+
 			{#if expanded && controller.value.Children?.length > 0}
 				{#each controller.value.Children as child}
-					<svelte:self controller={buildController(child)} />
+					<svelte:self controller={buildController(child)} depth={depth + 1} />
 				{/each}
 			{/if}
 		</li>
