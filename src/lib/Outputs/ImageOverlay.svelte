@@ -47,13 +47,8 @@
 		refresh() {
 			controller.value = controller.value;
 
-			handleMouseEnter = function handleMouseEnter() {
-				isHovered = true;
-			};
-
-			handleMouseLeave = function handleMouseLeave() {
-				isHovered = false;
-			};
+			handleMouseEnter = () => (isHovered = true);
+			handleMouseLeave = () => (isHovered = false);
 		}
 	});
 
@@ -79,96 +74,100 @@
 </script>
 
 {#if controller.value != null}
-	<div
-		class="image-container"
-		on:mouseenter={handleMouseEnter}
-		on:mouseleave={handleMouseLeave}
-		role="button"
-		tabindex="0"
-		aria-label="Image Overlay"
-	>
-		{#if isHovered}
-			<div class="overlay">
-				<div class={cssClass}>
-					<a href={controller.value.Url}>
-						<svelte:component
-							this={nestedComponent}
-							controller={makeController(controller.value.InnerContent)}
-						/>
-					</a>
+	<div class="card-container">
+		<div
+			class="image-container"
+			on:mouseenter={handleMouseEnter}
+			on:mouseleave={handleMouseLeave}
+			role="button"
+			tabindex="0"
+			aria-label="Image Overlay"
+		>
+			{#if isHovered}
+				<div class="overlay">
+					<div class={cssClass}>
+						<a href={controller.value.Url}>
+							<svelte:component
+								this={nestedComponent}
+								controller={makeController(controller.value.InnerContent)}
+							/>
+						</a>
+					</div>
 				</div>
-			</div>
-		{/if}
-		<div class="output-image-overlay"><img src={controller.value.Source} alt="img" /></div>
-
-		<div class="title-container">
-			{#if controller.value.Title != null}
-				<div class="title">{controller.value.Title}</div>
 			{/if}
+			<div class="output-image-overlay">
+				<img src={controller.value.Source} alt="img" />
+			</div>
 		</div>
+
+		{#if controller.value.Title != null}
+			<div class="title">{controller.value.Title}</div>
+		{/if}
 	</div>
 {/if}
 
 <style lang="scss">
-	.title-container {
-		position: absolute;
-		height: 12%;
-		bottom: 0px;
-	}
 
-	.overlay {
-		position: absolute;
-		top: 0;
-		left: 0;
-		height: 100%;
-		width: 100%;
-		background-color: rgba(53, 53, 53, 0.9);
-		transition: opacity 0.4s;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		z-index: 2;
-		opacity: 1;
-		font-size: 0.8em;
-	}
+:global(.cards-wrapper) {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
+	justify-content: center;
+}
 
-	.output-image-overlay:hover .overlay {
-		opacity: 0;
-		box-shadow: 7px 7px 5px lightgray;
-	}
-
-	.image-container {
-	position: relative;
+.card-container {
 	display: flex;
 	flex-direction: column;
+	align-items: center;
+	width: 310px;
+	height: 330px;
+    margin: 10px;
+}
+
+.image-container {
+	position: relative;
+	display: flex;
 	align-items: center;
 	justify-content: center;
 	height: 30vh;
 	background: #e0e0e0;
+	border: 0.5px solid #c7c7c7;
 	border-radius: 0%;
-	border-color: #c7c7c7;
-	border-style: solid;
-	padding: 0;
-	margin: 10px;
-	border-width: 0.5px;
-	width: 310px;
+	width: 100%;
 	overflow: hidden;
 }
 
 .output-image-overlay {
-	max-width: 360px;
-    max-height: 360px;
-    overflow: hidden;
-    top: -40px;
-    height: 100%;
 	width: 100%;
-    position: absolute;
-    display: flex;
+	height: 100%;
+	display: flex;
 }
 
 .output-image-overlay img {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
+}
+
+.overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	background-color: rgba(53, 53, 53, 0.9);
+	transition: opacity 0.4s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 2;
+	font-size: 0.8em;
+}
+
+.title {
+	margin-top: 10px;
+    font-size: .9em;
+    color: #2b2b2b;
+    text-align: center;
 }
 </style>
