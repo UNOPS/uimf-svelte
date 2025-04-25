@@ -120,8 +120,8 @@
 	flex-direction: column;
 	align-items: center;
 	width: 310px;
-	height: 330px;
-    margin: 10px;
+	height: 350px;
+    margin: 15px;
 }
 
 .image-container {
@@ -129,7 +129,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: 30vh;
+	height: 280px;
 	background: #e0e0e0;
 	border: 0.5px solid #c7c7c7;
 	border-radius: 0%;
