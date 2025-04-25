@@ -56,7 +56,10 @@
 					>
 						&#x25b6;
 					</span>
+				{:else}
+					<i class="fa-solid fa-minus minus" />
 				{/if}
+
 				<a href={controller.value.Url}>{controller.value.Name}</a>
 			{/if}
 
@@ -73,13 +76,16 @@
 	@import '../scss/styles.variables.scss';
 
 	ul {
+		font-size: 1em;
 		margin: 0;
 		list-style: none;
 		padding-left: 14px;
 		user-select: none;
 
 		& > li {
+			font-size: 1em;
 			margin-bottom: 0;
+			margin-left: 10px;
 
 			& > a {
 				text-decoration: none;
@@ -87,13 +93,14 @@
 
 			&.active > a {
 				font-weight: bold;
-				text-decoration: underline;
 			}
 		}
 	}
 
 	.arrow {
-		margin-left: -14px;
+		margin-top: 5px;
+		margin-left: -21px;
+		margin-right: 6px;
 		cursor: pointer;
 		display: inline-block;
 		transition: transform 200ms;
@@ -103,5 +110,14 @@
 		&.down {
 			transform: rotate(90deg);
 		}
+	}
+	.minus {
+		margin-left: -21px;
+		margin-right: 6px;
+		cursor: pointer;
+		display: inline-block;
+		transition: transform 0.2s;
+		color: #579ddb;
+		opacity: 0.7;
 	}
 </style>
