@@ -12,6 +12,7 @@
 	import type { IFieldMetadata, IComponent } from '$lib/Infrastructure/uimf';
 
 	export let controller: OutputController<any, IFieldMetadata<SliderConfiguration>>;
+
 	class ComponentController {
 		index: number = 1;
 		component: any;
@@ -22,13 +23,16 @@
 	let componentThumbnailControllers: ComponentController[] = [];
 
 	function loadComponentControllers(items: any[]) {
+		componentItemControllers = [];
+		componentThumbnailControllers = [];
+
 		let nestedComponentType = controller.metadata.Component.Configuration.Item.Type;
 		let nestedComponent = controlRegister.outputs[nestedComponentType].component;
 
-		let i = 1;
-		items.forEach((item) => {
+		items.forEach((item, i) => {
+			let index = i + 1;
 			let itemController: ComponentController = {
-				index: i,
+				index,
 				component: nestedComponent,
 				controller: new OutputController<any>({
 					metadata: {
@@ -50,7 +54,7 @@
 
 			if (item.m_Item2 != null) {
 				let thumbnailController: ComponentController = {
-					index: i,
+					index,
 					component: nestedComponent,
 					controller: new OutputController<any>({
 						metadata: controller.metadata,
@@ -64,22 +68,25 @@
 				thumbnailController.controller.setValue(item.m_Item2);
 				componentThumbnailControllers.push(thumbnailController);
 			}
-
-			i++;
 		});
 	}
 
 	let component = new OutputComponent({
 		refresh() {
-			controller.value = controller.value;
-
-			if (controller.value != null) {
+			if (controller.value?.Items?.length) {
 				loadComponentControllers(controller.value.Items);
 			}
+			controller.value = controller.value;
 		}
 	});
 
-	beforeUpdate(async () => await component.setup(controller));
+	beforeUpdate(async () => {
+		await component.setup(controller);
+	});
+
+	$: if (controller.value?.Items?.length && componentItemControllers.length === 0) {
+		loadComponentControllers(controller.value.Items);
+	}
 
 	let currentIndex = 1;
 
@@ -99,44 +106,49 @@
 		currentIndex = number;
 	}
 
-	if (controller.value != null) {
-		loadComponentControllers(controller.value.Items);
-	}
-
-	// 400 is arbitrary value of the height for a slider with a width of 600px
-	var dynamicHeight = 400 / componentItemControllers.length;
-
-	if (dynamicHeight > 150) {
-		dynamicHeight = 150;
-	}
+	// Adjust height dynamically based on number of items
+	$: dynamicHeight = componentItemControllers.length > 0
+		? Math.min(150, 400 / componentItemControllers.length)
+		: 150;
 </script>
 
 <div class="slider-container">
-	{#if componentItemControllers != null && Array.isArray(componentItemControllers) && componentItemControllers.length > 0}
-		<div class="caption-container">
-			<button class="prev" on:click={prevSlide}>&#10094;</button>
-			<div class="caption">
-				<svelte:component
-					this={componentItemControllers[currentIndex - 1].component}
-					controller={componentItemControllers[currentIndex - 1].controller}
-				/>
-			</div>
-			<button class="next" on:click={nextSlide}>&#10095;</button>
-		</div>
+	{#if controller.value != null}
+		
+		{#if componentItemControllers != null}
+			{#if Array.isArray(componentItemControllers)}
+				{#if componentItemControllers.length === 0}
+					<p>No items to show.</p>
+				{/if}
+			{/if}
+		{/if}
 
-		<div class="thumbnails-row">
-			{#each componentThumbnailControllers as componentThumbnailController}
-				<button on:click={() => goToSlide(componentThumbnailController.index)}>
-					<div class="thumbnail">
-						<svelte:component
-							this={componentThumbnailController.component}
-							controller={componentThumbnailController.controller}
-							height="{dynamicHeight}px"
-						/>
-					</div>
-				</button>
-			{/each}
-		</div>
+		{#if componentItemControllers.length > 0}
+			<div class="caption-container">
+				<button class="prev" on:click={prevSlide}>&#10094;</button>
+				<div class="caption">
+					<svelte:component
+						this={componentItemControllers[currentIndex - 1].component}
+						controller={componentItemControllers[currentIndex - 1].controller}
+					/>
+				</div>
+				<button class="next" on:click={nextSlide}>&#10095;</button>
+			</div>
+
+			<div class="thumbnails-row">
+				{#each componentThumbnailControllers as componentThumbnailController}
+					<button on:click={() => goToSlide(componentThumbnailController.index)}>
+						<div class="thumbnail">
+							<svelte:component
+								this={componentThumbnailController.component}
+								controller={componentThumbnailController.controller}
+								height="{dynamicHeight}px"
+							/>
+						</div>
+					</button>
+				{/each}
+			</div>
+		{/if}
 	{/if}
 </div>
 
