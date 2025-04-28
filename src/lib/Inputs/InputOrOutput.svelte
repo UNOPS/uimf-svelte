@@ -43,7 +43,8 @@
 						Hidden: false,
 						Id: options.metadata.Id + '_output',
 						Label: '',
-						OrderIndex: 0
+						OrderIndex: 0,
+						HideIfNull: true
 					},
 					parent: null
 				}
