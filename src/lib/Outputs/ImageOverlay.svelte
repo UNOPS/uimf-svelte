@@ -155,7 +155,7 @@
 	left: 0;
 	height: 100%;
 	width: 100%;
-	background-color: rgba(53, 53, 53, 0.9);
+	background-color: rgba(0, 0, 0, 0.95);
 	transition: opacity 0.4s;
 	display: flex;
 	align-items: center;
