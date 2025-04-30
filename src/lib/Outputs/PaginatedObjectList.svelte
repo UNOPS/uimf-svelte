@@ -64,7 +64,7 @@
 		{/each}
 	{/if}
 </div>
-{#if controller.value?.Results?.length > 0}
+{#if controller.value?.Results?.length > 0 && controller.metadata.Component.Configuration.Paginator != null}
 	<Pager {controller} />
 {/if}
 
