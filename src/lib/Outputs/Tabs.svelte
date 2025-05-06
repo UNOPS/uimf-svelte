@@ -82,11 +82,7 @@
 
 <style>
 	.box {
-		margin-bottom: 10px;
 		padding: 40px;
-		border: 1px solid #dee2e6;
-		border-radius: 0 0 0.5rem 0.5rem;
-		border-top: 0;
 	}
 	ul {
 		display: flex;
@@ -117,5 +113,6 @@
 		color: #495057;
 		background-color: #fff;
 		border-color: #dee2e6 #dee2e6 #fff;
+		box-shadow: 1px -1px 2px 0px rgba(0, 0, 0, 0.1);
 	}
 </style>
