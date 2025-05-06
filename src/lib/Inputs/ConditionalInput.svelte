@@ -107,6 +107,7 @@
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
 	import { InputComponent } from '../Infrastructure/Component';
 	import uuid from '../Infrastructure/uuid';
+	import Input from '../Input.svelte';
 
 	export let controller: Controller;
 	let uniqueId: string = uuid();
@@ -155,10 +156,12 @@
 	{/if}
 
 	{#if controller.view != null}
-		<svelte:component
+		<Input controller={controller.view} />
+
+		<!-- <svelte:component
 			this={controlRegister.inputs[controller.view.metadata.Component.Type].component}
 			controller={controller.view}
-		/>
+		/> -->
 	{/if}
 </div>
 
