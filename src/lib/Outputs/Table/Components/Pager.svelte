@@ -157,7 +157,7 @@
 	<nav>
 		<div>
 			<span>
-				Showing rows {pager.fromRow}-{pager.toRow} of {controller.value.TotalCount}, with
+				Items {pager.fromRow}-{pager.toRow} of {controller.value.TotalCount} | 
 			</span>
 			<select
 				class="form-select page-size"
@@ -218,16 +218,17 @@
 			display: flex;
 			align-items: center;
 			opacity: 0.6;
+			width: 380px;
+			margin-left: 10px;
 
 			& > .page-size {
 				width: auto;
 				min-width: 38px;
-				height: 18px;
 				border: none;
 				outline: none;
 				font-size: 1.2rem;
 				margin: 0 5px;
-				padding: 0;
+				padding: 0 5px;
 				border-bottom: 1px solid var(--bs-body-color);
 				position: relative;
 				top: 1px;
