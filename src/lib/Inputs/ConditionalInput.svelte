@@ -157,11 +157,6 @@
 
 	{#if controller.view != null}
 		<Input controller={controller.view} />
-
-		<!-- <svelte:component
-			this={controlRegister.inputs[controller.view.metadata.Component.Type].component}
-			controller={controller.view}
-		/> -->
 	{/if}
 </div>
 
