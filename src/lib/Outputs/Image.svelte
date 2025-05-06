@@ -50,12 +50,22 @@
 	}
 
 	beforeUpdate(async () => await component.setup(controller));
+
+	function openPopUp() {
+		controller.app.openModal({
+			form: 'image-popup',
+			inputFieldValues: { Id: controller.value.Id }
+		});
+	}
 </script>
 
 {#if controller.value != null}
 	<div class="image-container" class:fit-container={controller.value.FitContainer}>
 		{#if controller.value.Url != null}
-			<a href={controller.value.Url}>
+			<!-- svelte-ignore a11y-click-events-have-key-events -->
+			<!-- svelte-ignore a11y-no-static-element-interactions -->
+			<!-- svelte-ignore a11y-missing-attribute -->
+			<a on:click={() => openPopUp()} class="zoom-link">
 				<img
 					class="output-image {controller.value.CssClass}"
 					style:width={controller.value.Width}
@@ -212,5 +222,9 @@
 		color: white;
 		border: none;
 		background: transparent;
+	}
+
+	.zoom-link:hover img {
+		cursor: zoom-in;
 	}
 </style>
