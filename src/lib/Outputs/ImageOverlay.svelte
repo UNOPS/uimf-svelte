@@ -107,67 +107,66 @@
 {/if}
 
 <style lang="scss">
+	:global(.cards-wrapper) {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 20px;
+		justify-content: center;
+	}
 
-:global(.cards-wrapper) {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 20px;
-	justify-content: center;
-}
+	.card-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		width: 310px;
+		height: 350px;
+		margin: 15px;
+	}
 
-.card-container {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	width: 310px;
-	height: 350px;
-    margin: 15px;
-}
+	.image-container {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 280px;
+		background: #e0e0e0;
+		border: 0.5px solid #c7c7c7;
+		border-radius: 0%;
+		width: 100%;
+		overflow: hidden;
+	}
 
-.image-container {
-	position: relative;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	height: 280px;
-	background: #e0e0e0;
-	border: 0.5px solid #c7c7c7;
-	border-radius: 0%;
-	width: 100%;
-	overflow: hidden;
-}
+	.output-image-overlay {
+		width: 100%;
+		height: 100%;
+		display: flex;
+	}
 
-.output-image-overlay {
-	width: 100%;
-	height: 100%;
-	display: flex;
-}
+	.output-image-overlay img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
 
-.output-image-overlay img {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-}
+	.overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 100%;
+		background-color: rgba(0, 0, 0, 0.95);
+		transition: opacity 0.4s;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 2;
+		font-size: 0.8em;
+	}
 
-.overlay {
-	position: absolute;
-	top: 0;
-	left: 0;
-	height: 100%;
-	width: 100%;
-	background-color: rgba(0, 0, 0, 0.95);
-	transition: opacity 0.4s;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	z-index: 2;
-	font-size: 0.8em;
-}
-
-.title {
-	margin-top: 10px;
-    font-size: .9em;
-    color: #2b2b2b;
-    text-align: center;
-}
+	.title {
+		margin-top: 10px;
+		font-size: 0.9em;
+		color: #2b2b2b;
+		text-align: center;
+	}
 </style>
