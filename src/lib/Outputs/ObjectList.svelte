@@ -184,4 +184,9 @@
 			}
 		}
 	}
+
+	.columns-8 {
+		column-count: 8;
+		column-gap: 1rem;
+	}
 </style>
