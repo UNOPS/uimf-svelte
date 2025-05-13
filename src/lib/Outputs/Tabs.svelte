@@ -96,6 +96,7 @@
 	}
 	li {
 		margin-bottom: -1px;
+		background-color: #f6f8fa ;
 	}
 
 	span {
@@ -115,6 +116,6 @@
 		color: #495057;
 		background-color: #fff;
 		border-color: #dee2e6 #dee2e6 #fff;
-		box-shadow: 1px -1px 2px 0px rgba(0, 0, 0, 0.1);
+		box-shadow: 1px -1px 2px 0px #f6f8fa;
 	}
 </style>
