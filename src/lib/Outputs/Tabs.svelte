@@ -34,7 +34,9 @@
 	function getComponentControllers(properties: IFieldMetadata[]): any[] {
 		let componentControllerArray: ComponentController[] = [];
 
-		properties.forEach((property) => {
+		let sortedProperties = [...properties].sort((a, b) => a.OrderIndex - b.OrderIndex);
+
+		sortedProperties.forEach((property) => {
 			let componentController = {
 				component: controlRegister.outputs[property.Component.Type].component,
 				controller: new OutputController<any>({
