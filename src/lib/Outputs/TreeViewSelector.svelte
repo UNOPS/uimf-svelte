@@ -60,7 +60,7 @@
 					<i class="fa-solid fa-minus minus" />
 				{/if}
 
-				<a href={controller.value.Url}>{controller.value.Name}</a>
+				<a href={controller.value.Url}>{@html controller.value.Name}</a>
 			{/if}
 
 			{#if expanded && controller.value.Children?.length > 0}
