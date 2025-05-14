@@ -189,4 +189,9 @@
 		column-count: 8;
 		column-gap: 1rem;
 	}
+
+	.columns-3 {
+		column-count: 3;
+		column-gap: 1rem;
+	}
 </style>
