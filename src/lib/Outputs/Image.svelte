@@ -1,5 +1,6 @@
 <script lang="ts" context="module">
 	interface Image {
+		ZoomIn: boolean | null;
 		Source: string;
 		Width: string | null;
 		Height: string | null;
@@ -62,6 +63,16 @@
 {#if controller.value != null}
 	<div class="image-container" class:fit-container={controller.value.FitContainer}>
 		{#if controller.value.Url != null}
+			<a href={controller.value.Url}>
+				<img
+					class="output-image {controller.value.CssClass}"
+					style:width={controller.value.Width}
+					style:height={height ?? controller.value.Height}
+					src={controller.value.Source}
+					alt={controller.value.AltText}
+				/>
+			</a>
+		{:else if controller.value.ZoomIn == true}
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<!-- svelte-ignore a11y-no-static-element-interactions -->
 			<!-- svelte-ignore a11y-missing-attribute -->
