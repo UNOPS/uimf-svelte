@@ -107,18 +107,18 @@
 	}
 
 	// Adjust height dynamically based on number of items
-	$: dynamicHeight = componentItemControllers.length > 0
-		? Math.min(150, 400 / componentItemControllers.length)
-		: 150;
+	$: dynamicHeight =
+		componentItemControllers.length > 0
+			? Math.min(150, 400 / componentItemControllers.length)
+			: 150;
 </script>
 
 <div class="slider-container">
 	{#if controller.value != null}
-		
 		{#if componentItemControllers != null}
 			{#if Array.isArray(componentItemControllers)}
 				{#if componentItemControllers.length === 0}
-					<p>No items to show.</p>
+					<div class="m-5 p-5">No picture</div>
 				{/if}
 			{/if}
 		{/if}
