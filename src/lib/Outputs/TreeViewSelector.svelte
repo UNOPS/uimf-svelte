@@ -14,7 +14,7 @@
 	export let controller: OutputController<Item>;
 	export let depth: number = 0;
 
-	let expanded = depth === 0;
+	let expanded = depth <= 1;
 
 	let component = new OutputComponent({
 		refresh() {
