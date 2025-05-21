@@ -84,16 +84,16 @@
 			aria-label="Image Overlay"
 		>
 			{#if isHovered}
-				<div class="overlay">
-					<div class={cssClass}>
-						<a href={controller.value.Url}>
+				<a href={controller.value.Url}>
+					<div class="overlay">
+						<div class={cssClass}>
 							<svelte:component
 								this={nestedComponent}
 								controller={makeController(controller.value.InnerContent)}
 							/>
-						</a>
+						</div>
 					</div>
-				</div>
+				</a>
 			{/if}
 			<div class="output-image-overlay">
 				<img src={controller.value.Source} alt="img" />
