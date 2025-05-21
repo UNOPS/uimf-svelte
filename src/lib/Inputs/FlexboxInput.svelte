@@ -157,4 +157,9 @@
 	.flex-container {
 		display: flex;
 	}
+
+	.mx-10 {
+		margin-left: 10%;
+		margin-right: 10%;
+	}
 </style>

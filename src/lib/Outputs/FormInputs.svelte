@@ -167,9 +167,4 @@
 		justify-content: flex-end;
 		gap: 5px;
 	}
-
-	.mx-10 {
-		margin-left: 10%;
-		margin-right: 10%;
-	}
 </style>

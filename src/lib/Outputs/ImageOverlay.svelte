@@ -120,7 +120,7 @@
 		align-items: center;
 		width: 310px;
 		height: 350px;
-		margin: 15px;
+		margin: 25px;
 	}
 
 	.image-container {
