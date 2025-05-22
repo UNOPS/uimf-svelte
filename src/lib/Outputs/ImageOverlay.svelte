@@ -101,7 +101,7 @@
 		</div>
 
 		{#if controller.value.Title != null}
-			<div class="title">{controller.value.Title}</div>
+			<a class="title" href={controller.value.Url}>{controller.value.Title}</a>
 		{/if}
 	</div>
 {/if}
@@ -168,5 +168,6 @@
 		font-size: 0.9em;
 		color: #2b2b2b;
 		text-align: center;
+		text-decoration: none;
 	}
 </style>
