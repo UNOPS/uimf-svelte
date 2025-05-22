@@ -84,7 +84,9 @@
 
 <style>
 	.box {
-		padding: 40px;
+		padding: 10px 20px;
+    	border-right: 1px solid #dee2e6;
+    	border-left: 1px solid #dee2e6;
 	}
 	ul {
 		display: flex;
@@ -100,9 +102,8 @@
 	}
 
 	span {
-		border: 1px solid transparent;
-		border-top-left-radius: 0.25rem;
-		border-top-right-radius: 0.25rem;
+		border: 1px solid;
+		border-color: #e9ecef #e9ecef #dee2e6;
 		display: block;
 		padding: 0.5rem 1rem;
 		cursor: pointer;
@@ -116,6 +117,5 @@
 		color: #495057;
 		background-color: #fff;
 		border-color: #dee2e6 #dee2e6 #fff;
-		box-shadow: 1px -1px 2px 0px #f6f8fa;
 	}
 </style>
