@@ -13,21 +13,21 @@
 
 	export let controller: OutputController<IData>;
 
-	let title: string | null = null;
+	let documentation: string | null = null;
 
 	let component = new OutputComponent({
 		refresh() {
-			title = controller.value?.Value ?? controller.form?.metadata?.CustomProperties?.documentation;
+			documentation = controller.value?.Value ?? controller.form?.metadata?.Documentation ?? null;
 		}
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
 </script>
 
-{#if title != null && title.length > 0}
+{#if documentation != null && documentation.length > 0}
 	<div class={controller.metadata.Component.Configuration?.CssClass}>
 		<div class="form-doc">
-			{@html title}
+			{@html documentation}
 		</div>
 	</div>
 {/if}

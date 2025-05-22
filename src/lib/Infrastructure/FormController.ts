@@ -9,6 +9,7 @@ interface FormMetadata extends IFieldMetadata {
     OutputFields: IOutputFieldMetadata[];
     CloseOnPostIfModal: boolean;
     PostOnLoadValidation: boolean;
+    Documentation?: string | null;
 }
 
 export interface FormInstance {
