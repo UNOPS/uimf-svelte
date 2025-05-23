@@ -98,7 +98,7 @@
 	}
 	li {
 		margin-bottom: -1px;
-		background-color: #f6f8fa ;
+		background-color: #f6f8fa;
 	}
 
 	span {
