@@ -85,8 +85,8 @@
 <style>
 	.box {
 		padding: 10px 20px;
-    	border-right: 1px solid #dee2e6;
-    	border-left: 1px solid #dee2e6;
+    	/* border-right: 1px solid #68b3ff;
+    	border-left: 1px solid #68b3ff; */
 	}
 	ul {
 		display: flex;
@@ -94,7 +94,7 @@
 		padding-left: 0;
 		margin-bottom: 0;
 		list-style: none;
-		border-bottom: 1px solid #dee2e6;
+		border-bottom: 1px solid #68b3ff;
 	}
 	li {
 		margin-bottom: -1px;
@@ -103,7 +103,7 @@
 
 	span {
 		border: 1px solid;
-		border-color: #e9ecef #e9ecef #dee2e6;
+		border-color: #e9ecef #e9ecef #68b3ff;
 		display: block;
 		padding: 0.5rem 1rem;
 		cursor: pointer;
@@ -116,6 +116,6 @@
 	li.active > span {
 		color: #495057;
 		background-color: #fff;
-		border-color: #dee2e6 #dee2e6 #fff;
+		border-color: #68b3ff #68b3ff #fff;
 	}
 </style>
