@@ -125,14 +125,26 @@
 
 		{#if componentItemControllers.length > 0}
 			<div class="caption-container">
-				<button class="prev" on:click={prevSlide}>&#10094;</button>
+				<button
+					class="prev"
+					on:click={prevSlide}
+					style="visibility: {currentIndex > 1 ? 'visible' : 'hidden'}"
+				>
+					&#10094;
+				</button>
 				<div class="caption">
 					<svelte:component
 						this={componentItemControllers[currentIndex - 1].component}
 						controller={componentItemControllers[currentIndex - 1].controller}
 					/>
 				</div>
-				<button class="next" on:click={nextSlide}>&#10095;</button>
+				<button
+					class="next"
+					on:click={nextSlide}
+					style="visibility: {currentIndex < componentItemControllers.length ? 'visible' : 'hidden'}"
+				>
+					&#10095;
+				</button>
 			</div>
 
 			<div class="thumbnails-row">
@@ -172,7 +184,7 @@
 		align-items: center;
 		justify-content: center;
 		padding: 5px 15px;
-		color: rgb(97, 97, 97);
+		color: #ccc;
 		height: 400px;
 		overflow: hidden;
 	}
@@ -190,8 +202,7 @@
 	.next {
 		cursor: pointer;
 		width: auto;
-		font-weight: bold;
-		font-size: 2rem;
+		font-size: 3rem;
 		margin: 30px;
 	}
 
