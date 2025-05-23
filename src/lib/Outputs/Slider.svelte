@@ -109,8 +109,8 @@
 	// Adjust height dynamically based on number of items
 	$: dynamicHeight =
 		componentItemControllers.length > 0
-			? Math.min(150, 400 / componentItemControllers.length)
-			: 150;
+			? Math.min(80, 400 / componentItemControllers.length)
+			: 80;
 </script>
 
 <div class="slider-container">
@@ -211,7 +211,7 @@
 		width: auto;
 		display: flex;
 		align-self: center;
-		max-height: 100px;
+		max-height: 80px;
 	}
 
 	.thumbnail {
