@@ -65,7 +65,7 @@
 		{#if controller.value.Url != null}
 			<a href={controller.value.Url}>
 				<img
-					class="output-image {controller.value.CssClass}"
+					class="{controller.value.CssClass}"
 					style:width={controller.value.Width}
 					style:height={height ?? controller.value.Height}
 					src={controller.value.Source}
@@ -78,7 +78,7 @@
 			<!-- svelte-ignore a11y-missing-attribute -->
 			<a on:click={() => openPopUp()} class="zoom-link">
 				<img
-					class="output-image {controller.value.CssClass}"
+					class="{controller.value.CssClass}"
 					style:width={controller.value.Width}
 					style:height={height ?? controller.value.Height}
 					src={controller.value.Source}
