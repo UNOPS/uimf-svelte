@@ -9,7 +9,7 @@ export class TableHeadCell {
     public styleManager: InlineStyleManager = new InlineStyleManager();
 
     public label: string;
-    public documentation: string;
+    public documentation: string | null;
     public colspan: number = 0;
     public metadata: IFieldMetadata;
     public hidden: boolean | undefined;
@@ -35,7 +35,7 @@ export class TableHeadCell {
 
         this.isInput = column.IsInput;
         this.metadata = metadata;
-        this.documentation = metadata.CustomProperties?.Documentation;
+        this.documentation = metadata.Documentation ?? null;
         this.label = metadata.Label;
         this.hidden = metadata.Hidden;
         this.orderIndex = metadata.OrderIndex;

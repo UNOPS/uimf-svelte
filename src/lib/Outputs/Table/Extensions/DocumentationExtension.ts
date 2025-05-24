@@ -6,7 +6,7 @@ import { TableExtension } from "../TableExtension";
  */
 export class DocumentationExtension extends TableExtension {
     processHeadCell(table: Table, cell: TableHeadCell, rows: any[]): Promise<void> {
-        cell.documentation = cell.metadata.CustomProperties?.documentation;
+        cell.documentation = cell.metadata.Documentation ?? null;
         return Promise.resolve();
     }
 }

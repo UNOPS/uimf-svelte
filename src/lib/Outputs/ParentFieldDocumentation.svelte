@@ -31,7 +31,7 @@
 					currentLevel++;
 				}
 
-				documentation = currentController?.metadata.CustomProperties?.documentation ?? null;
+				documentation = currentController?.metadata.Documentation ?? null;
 			}
 		}
 	});
