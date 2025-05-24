@@ -31,7 +31,7 @@
 				controller.metadata.Label === '';
 
 			component = componentRegistration.component;
-			documentation = controller.metadata.CustomProperties?.documentation;
+			documentation = controller.metadata.Documentation ?? null;
 
 			layout = nolayout ? FieldLayout.None : controller.metadata.Layout ?? FieldLayout.Default;
 

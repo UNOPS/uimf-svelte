@@ -12,7 +12,7 @@
 
 	// Field constants.
 	let component: ConstructorOfATypedSvelteComponent;
-	let documentation: any;
+	let documentation: string | null = null;
 	let hideIfNull: boolean;
 	let thisHideLabel: boolean;
 	let horizontalLayout: boolean = true;
@@ -42,7 +42,7 @@
 					: // Otherwise, we use the layout specified for this particular field.
 					  controller.metadata.Layout != FieldLayout.Vertical;
 
-			documentation = controller.metadata.CustomProperties?.documentation;
+			documentation = controller.metadata.Documentation ?? null;
 
 			layout = nolayout ? FieldLayout.None : controller.metadata.Layout ?? FieldLayout.Default;
 
