@@ -85,7 +85,7 @@
 		>
 			{#if isHovered}
 				<a href={controller.value.Url}>
-					<div class="overlay">
+					<div class="overlay text-container">
 						<div class={cssClass}>
 							<svelte:component
 								this={nestedComponent}
@@ -154,7 +154,8 @@
 		left: 0;
 		height: 100%;
 		width: 100%;
-		background-color: rgba(0, 0, 0, 0.95);
+		color: white;
+		background-color: rgba(0, 61, 97, 0.9);
 		transition: opacity 0.4s;
 		display: flex;
 		align-items: center;
@@ -169,5 +170,10 @@
 		color: #2b2b2b;
 		text-align: center;
 		text-decoration: none;
+	}
+
+	.text-container {
+		opacity: 1 !important;
+		color: white;
 	}
 </style>
