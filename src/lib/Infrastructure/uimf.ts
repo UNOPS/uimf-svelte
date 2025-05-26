@@ -17,6 +17,11 @@ export enum FieldLayout {
     None = 40
 }
 
+export enum DocumentationLayout {
+    Default = 0,
+    Icon = 10
+}
+
 export interface IOutputFieldMetadata<TConfiguration = any> extends IFieldMetadata<TConfiguration> {
     Layout?: FieldLayout | null;
     CssClass?: string | null;
@@ -26,6 +31,7 @@ export interface IOutputFieldMetadata<TConfiguration = any> extends IFieldMetada
 export interface IInputFieldMetadata<TConfiguration = any> extends IFieldMetadata<TConfiguration> {
     CssClass?: string | null;
     Layout?: FieldLayout | null;
+    DocumentationLayout?: DocumentationLayout | null;
     Required: boolean;
 }
 

@@ -5,8 +5,8 @@
 	import { tooltip } from './Components/Tooltip.svelte';
 	import { defaultControlRegister as controlRegister } from './Infrastructure/ControlRegister';
 	import { InputComponent } from './Infrastructure/Component';
-	import { FieldLayout } from './Infrastructure/uimf';
-
+	import { DocumentationLayout, FieldLayout } from './Infrastructure/uimf';
+	
 	export let controller: InputController<any>;
 	export let nolayout: boolean = false;
 
@@ -16,6 +16,7 @@
 	let thisHideLabel: boolean;
 	let required: boolean;
 	let layout: FieldLayout;
+	let documentationLayout: DocumentationLayout | null;
 
 	const componentController = new InputComponent({
 		init() {
@@ -32,6 +33,7 @@
 
 			component = componentRegistration.component;
 			documentation = controller.metadata.Documentation ?? null;
+			documentationLayout = controller.metadata.DocumentationLayout ?? DocumentationLayout.Default;
 
 			layout = nolayout ? FieldLayout.None : controller.metadata.Layout ?? FieldLayout.Default;
 
@@ -66,7 +68,12 @@
 {:else if layout === FieldLayout.Unstyled}
 	<div class={controller.metadata.CssClass}>
 		{#if !thisHideLabel}
-			<label use:tooltip={documentation}>{controller.metadata.Label}</label>
+			{#if documentationLayout == DocumentationLayout.Icon}
+				<label>{controller.metadata.Label}</label>
+				<span use:tooltip={documentation}><i class="fa-solid fa-circle-info text-info" /></span>
+			{:else}
+				<label use:tooltip={documentation}>{controller.metadata.Label}</label>
+			{/if}
 		{/if}
 		<div>
 			<svelte:component this={component} {controller} />
@@ -79,11 +86,18 @@
 		class:column={layout == FieldLayout.Vertical}
 	>
 		{#if !thisHideLabel}
-			<label
-				class="form-label"
-				class:col-sm-4={layout == FieldLayout.Horizontal}
-				use:tooltip={documentation}>{controller.metadata.Label}:</label
-			>
+			{#if documentationLayout == DocumentationLayout.Icon}
+				<label
+					class="form-label"
+					class:col-sm-4={layout == FieldLayout.Horizontal}>{controller.metadata.Label}:</label
+				><span use:tooltip={documentation}><i class="fa-solid fa-circle-info text-info" /></span>
+			{:else}
+				<label
+					class="form-label"
+					class:col-sm-4={layout == FieldLayout.Horizontal}
+					use:tooltip={documentation}>{controller.metadata.Label}:</label
+				>
+			{/if}
 		{/if}
 		<div
 			class:col-sm-8={layout == FieldLayout.Horizontal && !thisHideLabel}
