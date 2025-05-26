@@ -85,8 +85,6 @@
 <style>
 	.box {
 		padding: 10px 20px;
-    	/* border-right: 1px solid #68b3ff;
-    	border-left: 1px solid #68b3ff; */
 	}
 	ul {
 		display: flex;
@@ -110,7 +108,9 @@
 	}
 
 	span:hover {
-		border-color: #e9ecef #e9ecef #dee2e6;
+		border-color: #e9ecef #e9ecef #68b3ff;
+		background-color: #68b3ff;
+		color: white;
 	}
 
 	li.active > span {
