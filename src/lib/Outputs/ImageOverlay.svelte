@@ -120,7 +120,7 @@
 		align-items: center;
 		width: 310px;
 		height: 350px;
-		margin: 25px;
+		margin: 25px 50px;
 	}
 
 	.image-container {
@@ -166,8 +166,8 @@
 
 	.title {
 		margin-top: 10px;
-		font-size: 0.9em;
-		color: #2b2b2b;
+		font-size: 1em;
+		color: #218FCF;
 		text-align: center;
 		text-decoration: none;
 	}
