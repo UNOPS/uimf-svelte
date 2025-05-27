@@ -89,10 +89,8 @@
 			class={controller.metadata.CssClass}
 		>
 			{#if !thisHideLabel}
-				<label
-					class={controller.metadata.CustomProperties?.cssClassLabel ?? ''}
-					class:col-sm-2={horizontalLayout}
-					use:tooltip={documentation}>{controller.metadata.Label}</label
+				<label class:col-sm-2={horizontalLayout} use:tooltip={documentation}
+					>{controller.metadata.Label}</label
 				>
 			{/if}
 			<div
