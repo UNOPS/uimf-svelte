@@ -9,12 +9,12 @@
 		Name: string;
 		Children: Item[];
 		CssClass: string;
+		IsExpanded: boolean;
 	}
 
 	export let controller: OutputController<Item>;
-	export let depth: number = 0;
-
-	let expanded = depth <= 1;
+	
+	let expanded = controller.value.IsExpanded;
 
 	let component = new OutputComponent({
 		refresh() {
@@ -65,7 +65,7 @@
 
 			{#if expanded && controller.value.Children?.length > 0}
 				{#each controller.value.Children as child}
-					<svelte:self controller={buildController(child)} depth={depth + 1} />
+					<svelte:self controller={buildController(child)} />
 				{/each}
 			{/if}
 		</li>
