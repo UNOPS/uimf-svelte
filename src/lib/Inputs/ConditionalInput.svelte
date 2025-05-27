@@ -35,17 +35,23 @@
 		public readonly views: View[] = [];
 
 		public getValue(): Promise<ConditionalInput | null> {
-			if (this.condition == null || this.view == null) {
+			if (this.condition == null) {
 				return Promise.resolve(null);
 			}
 
-			var self = this;
+			if (this.view == null) {
+				return Promise.resolve({
+					Value: {
+						Condition: this.condition
+					}
+				});
+			}
 
 			return this.view.getValue().then((value: { Value: any }) => {
 				return Promise.resolve({
 					Value: {
-						Condition: self.condition,
-						[self.view!.metadata.Id]: value
+						Condition: this.condition,
+						[this.view!.metadata.Id]: value
 					}
 				});
 			});
@@ -82,7 +88,8 @@
 			const matchingView = this.views.find((t) => t.showIf === this.condition);
 
 			if (matchingView == null) {
-				throw `Cannot find view for condition '${this.condition}'.`;
+				this.view = null;
+				return Promise.resolve();
 			}
 
 			this.view = matchingView.controller;
