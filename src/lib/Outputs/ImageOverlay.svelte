@@ -131,10 +131,9 @@
 		height: 280px;
 		background: #e0e0e0;
 		border: 0.5px solid #c7c7c7;
-		border-radius: 3%;
+		border-radius: 0%;
 		width: 100%;
 		overflow: hidden;
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 	}
 
 	.output-image-overlay {
@@ -155,6 +154,7 @@
 		left: 0;
 		height: 100%;
 		width: 100%;
+		color: white;
 		background-color: rgba(0, 61, 97, 0.9);
 		transition: opacity 0.4s;
 		display: flex;
