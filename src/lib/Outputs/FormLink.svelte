@@ -51,7 +51,7 @@
 	export let disabled: boolean = false;
 
 	let allowed: boolean;
-	let cssClass: string;
+	let cssClass: string | null = null;
 
 	let component = new OutputComponent({
 		async refresh() {
@@ -62,7 +62,7 @@
 			}
 
 			allowed = controller.app.hasPermission(controller.value.RequiredPermission);
-			cssClass = controller.value.CssClass ?? controller.metadata?.CustomProperties?.cssClass;
+			cssClass = controller.value.CssClass ?? controller.metadata?.CssClass ?? null;
 		}
 	});
 

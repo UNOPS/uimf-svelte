@@ -18,7 +18,7 @@
 </script>
 
 {#if controller.value?.Value != null}
-	<div class={controller.metadata.CustomProperties?.cssClass}>{@html controller.value.Value}</div>
+	<div class={controller.metadata.CssClass}>{@html controller.value.Value}</div>
 {/if}
 
 <style lang="scss">
