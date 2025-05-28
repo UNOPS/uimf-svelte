@@ -15,6 +15,7 @@
 	}
 
 	interface IItem {
+		Tooltip: string | null;
 		Label: string;
 		Tasks: ITask[];
 	}
@@ -25,6 +26,7 @@
 	import { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
 	import type { IOutputFieldMetadata } from '$lib/Infrastructure/uimf';
+	import { tooltip } from '../Components/Tooltip.svelte';
 
 	export let controller: OutputController<IData, IMetadata>;
 	let showSteps = false;
@@ -48,7 +50,7 @@
 				class:previous={controller.value.Current != null && index < controller.value.Current}
 				class:next={controller.value.Current != null && index > controller.value.Current}
 			>
-				<div class="step-name">
+				<div class="step-name" use:tooltip={step.Tooltip}>
 					{step.Label}
 					{#if step.Tasks?.length > 0}
 						<small
