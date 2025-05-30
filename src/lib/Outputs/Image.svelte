@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
 	interface Image {
-		ZoomIn: boolean | null;
+		ZoomInPhotoId: number | null;
 		Source: string;
 		Width: string | null;
 		Height: string | null;
@@ -52,10 +52,14 @@
 
 	beforeUpdate(async () => await component.setup(controller));
 
-	function openPopUp() {
+	function openPopUp(photoId: number | null): void {
+		if (photoId == null) {
+			return;
+		}
+
 		controller.app.openModal({
 			form: 'image-popup',
-			inputFieldValues: { Id: controller.value.Id }
+			inputFieldValues: { Id: photoId }
 		});
 	}
 </script>
@@ -65,20 +69,20 @@
 		{#if controller.value.Url != null}
 			<a href={controller.value.Url}>
 				<img
-					class="{controller.value.CssClass}"
+					class={controller.value.CssClass}
 					style:width={controller.value.Width}
 					style:height={height ?? controller.value.Height}
 					src={controller.value.Source}
 					alt={controller.value.AltText}
 				/>
 			</a>
-		{:else if controller.value.ZoomIn == true}
+		{:else if controller.value.ZoomInPhotoId != null}
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<!-- svelte-ignore a11y-no-static-element-interactions -->
 			<!-- svelte-ignore a11y-missing-attribute -->
-			<a on:click={() => openPopUp()} class="zoom-link">
+			<a on:click={() => openPopUp(controller.value.ZoomInPhotoId)} class="zoom-link">
 				<img
-					class="{controller.value.CssClass}"
+					class={controller.value.CssClass}
 					style:width={controller.value.Width}
 					style:height={height ?? controller.value.Height}
 					src={controller.value.Source}
