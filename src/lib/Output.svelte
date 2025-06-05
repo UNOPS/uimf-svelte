@@ -1,6 +1,6 @@
 <!-- svelte-ignore a11y-label-has-associated-control -->
 <script lang="ts">
-	import { beforeUpdate } from 'svelte';
+	import { beforeUpdate, tick } from 'svelte';
 	import type { OutputController } from './Infrastructure/OutputController';
 	import { OutputComponent } from './Infrastructure/Component';
 	import { tooltip } from './Components/Tooltip.svelte';
@@ -18,8 +18,17 @@
 	let horizontalLayout: boolean = true;
 	let layout: FieldLayout = FieldLayout.Default;
 
+	// The actual field that is currently being displayed.
+	// We don't want to use `field` directly, because it
+	// can cause issues where Svelte attempts to reuse existing
+	// component for a completely different field (because Svelte
+	// will aggressively try to reuse components). To avoid the
+	// issue we will use `displayField` and set it to null before
+	// re-rendering to avoid component reuse.
+	let displayField: OutputController<any> | null = null;
+
 	const componentController = new OutputComponent({
-		refresh() {
+		async refresh() {
 			const componentRegistration = controlRegister.outputs[controller.metadata.Component.Type];
 
 			if (componentRegistration == null) {
@@ -53,29 +62,45 @@
 			}
 
 			controller = controller;
+
+			const newField = controller;
+
+			// Make field null first to avoid unexpected errors when Svelte
+			// tries to bind new field to the old component. Not sure why
+			// Svelte does this, but setting field to null and hiding the output
+			// first forces Svelte kit to create a new component.
+			displayField = null;
+
+			// Wait for Svelte to remove old components.
+			await tick();
+
+			// Set the new field and let Svelte create new components.
+			displayField = newField;
 		}
 	});
 
 	beforeUpdate(async () => {
-		await componentController.setup(controller);
+		if (controller != null) {
+			await componentController.setup(controller);
+		}
 	});
 </script>
 
-{#if controller.value != null || !hideIfNull}
-	{#if controller.metadata == null}
+{#if displayField != null && (displayField.value != null || !hideIfNull)}
+	{#if displayField.metadata == null}
 		<strong>null metadata</strong>
 	{:else if layout === FieldLayout.None}
-		{#if controller.metadata.CssClass != null}
-			<div class={controller.metadata.CssClass}>
+		{#if displayField.metadata.CssClass != null}
+			<div class={displayField.metadata.CssClass}>
 				<svelte:component this={component} {controller} />
 			</div>
 		{:else}
 			<svelte:component this={component} {controller} />
 		{/if}
 	{:else if layout === FieldLayout.Unstyled}
-		<div class={controller.metadata.CssClass}>
+		<div class={displayField.metadata.CssClass}>
 			{#if !thisHideLabel}
-				<label use:tooltip={documentation}>{controller.metadata.Label}</label>
+				<label use:tooltip={documentation}>{displayField.metadata.Label}</label>
 			{/if}
 			<div>
 				<svelte:component this={component} {controller} />
@@ -86,11 +111,11 @@
 			class:output={true}
 			class:row={horizontalLayout}
 			class:column={!horizontalLayout}
-			class={controller.metadata.CssClass}
+			class={displayField.metadata.CssClass}
 		>
 			{#if !thisHideLabel}
 				<label class:col-sm-2={horizontalLayout} use:tooltip={documentation}
-					>{controller.metadata.Label}</label
+					>{displayField.metadata.Label}</label
 				>
 			{/if}
 			<div
