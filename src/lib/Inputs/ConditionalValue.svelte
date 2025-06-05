@@ -119,7 +119,7 @@
 
 	controller.inputParent.on('input:change', async function () {
 			let nestedComponentValue = await controller.inputParent?.getValue();
-			show = !!nestedComponentValue.Value;
+			show = nestedComponentValue != null;
 		});
 </script>
 

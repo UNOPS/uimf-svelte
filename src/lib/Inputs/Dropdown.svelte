@@ -21,7 +21,7 @@
 
 		async setValueInternal(value: IValue | null): Promise<void> {
 			if (value == null || value.Value == '' || value.Value == null) {
-				this.value = this.metadata.Required ? null : { Value: '' };
+				this.value = null;
 				this.valueAsString = null;
 			} else {
 				this.valueAsString = this.serialize(this.value);
