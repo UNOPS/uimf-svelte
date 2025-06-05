@@ -35,6 +35,7 @@ import * as OutputImage from '../Outputs/Image.svelte';
 import * as ImageOverlay from '../Outputs/ImageOverlay.svelte';
 import * as PaginatedObjectList from '../Outputs/PaginatedObjectList.svelte';
 import * as PieChart from '../Outputs/PieChart.svelte';
+import * as Matrix from '../Outputs/Matrix.svelte';
 import * as Money from '../Outputs/Money.svelte';
 import * as TreeViewSelector from '../Outputs/TreeViewSelector.svelte';
 import * as Grid from '../Outputs/Grid.svelte';
@@ -319,6 +320,7 @@ defaultControlRegister.registerOutputComponent('grid', Grid, { displayAsBlock: t
 defaultControlRegister.registerOutputComponent('icon', Icon, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('image', OutputImage, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('image-overlay', ImageOverlay);
+defaultControlRegister.registerOutputComponent('matrix', Matrix, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('money', Money, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('number', Number, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('paginated-object-list', PaginatedObjectList);

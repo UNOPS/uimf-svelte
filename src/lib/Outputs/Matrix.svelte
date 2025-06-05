@@ -1,9 +1,11 @@
 <script context="module" lang="ts">
-	import { OutputControlConfiguration } from '../../ts/framework';
-	export const config = new OutputControlConfiguration('block', true, 'matrix');
+	interface IExtendedOutputFieldMetadata<TConfig, TExtras = undefined>
+		extends IOutputFieldMetadata<TConfig> {
+		Extras?: TExtras;
+	}
 
 	class RowMetadata {
-		public Metadata: IOutputFieldMetadata<
+		public Metadata!: IExtendedOutputFieldMetadata<
 			IMatrixConfiguration,
 			{
 				MatrixData?: { IsSummary: boolean };
@@ -11,12 +13,12 @@
 			} | null
 		>;
 
-		public Path: string;
-		public OrderIndex: number;
-		public Level: number;
+		public Path!: string | null;
+		public OrderIndex!: number;
+		public Level!: number;
 	}
 
-	export interface IMatrixConfiguration {
+	export interface IMatrixConfiguration extends IOutputFieldMetadata {
 		Properties: IOutputFieldMetadata[];
 	}
 
@@ -26,20 +28,21 @@
 </script>
 
 <script lang="ts">
-	import { OutputController } from '../../ts/framework';
-	import { SvelteOutputController } from '$lib/uimf/ts/framework/SvelteControllers';
-	import { beforeUpdate } from 'svelte';
-	import type { IOutputFieldMetadata } from '$lib/uimf/ts/server';
 	import Output from '../Output.svelte';
-	import { tooltip } from '../actions/Tooltip.svelte';
+	import { beforeUpdate } from 'svelte';
+	import { OutputController } from '../Infrastructure/OutputController';
+	import { tooltip } from '../Components/Tooltip.svelte';
+	import type { IOutputFieldMetadata } from '../Infrastructure/uimf';
+	import { OutputComponent } from '../Infrastructure/Component';
 
-	export let field: OutputController<IMatrix, IMatrixConfiguration | null>;
-	let columns: OutputController[] = [];
+	export let controller: OutputController<IMatrix, IMatrixConfiguration>;
+
+	let columns: { [key: string]: OutputController<any, IOutputFieldMetadata<any>> }[] = [];
 	let rows: RowMetadata[] = [];
 
 	function getRows(
 		properties: IOutputFieldMetadata<IMatrixConfiguration>[],
-		level: number = null
+		level: number | null = null
 	): RowMetadata[] {
 		var result: RowMetadata[] = [];
 		level = level || 1;
@@ -79,22 +82,22 @@
 		return result.sort((a, b) => a.OrderIndex - b.OrderIndex);
 	}
 
-	function getPropertyValue(object, propertyPath) {
+	function getPropertyValue(object: any, propertyPath: string) {
 		return propertyPath.split('.').reduce(function (a, b) {
 			return a && a[b];
 		}, object);
 	}
 
-	const controller = SvelteOutputController.for(field, {
-		refreshBrowser() {
-			field.data = field.data;
+	const componentController = new OutputComponent({
+		refresh() {
+			controller.value = controller.value;
 
-			rows = getRows(field.metadata.Component.Configuration.Properties);
+			rows = getRows(controller.metadata.Component.Configuration.Properties);
 
-			if (field?.data?.Items != null) {
+			if (controller?.value?.Items != null) {
 				columns = [];
 
-				for (let item of field.data.Items) {
+				for (let item of controller.value.Items) {
 					var column: any = {};
 
 					for (let row of rows) {
@@ -106,17 +109,17 @@
 							column[row.Path] = new OutputController({
 								metadata: row.Metadata,
 								data: getPropertyValue(item, row.Path),
-								form: field.form,
-								app: field.app,
-								parent: field
+								form: controller.form,
+								app: controller.app,
+								parent: controller
 							});
 						} else {
 							column[row.Path] = new OutputController({
 								metadata: row.Metadata,
 								data: item[row.Metadata.Id],
-								form: field.form,
-								app: field.app,
-								parent: field
+								form: controller.form,
+								app: controller.app,
+								parent: controller
 							});
 						}
 					}
@@ -130,10 +133,10 @@
 
 			return Promise.resolve();
 		}
-	}).start(field);
+	});
 
 	beforeUpdate(async () => {
-		await controller.setupBrowser(field);
+		await componentController.setup(controller);
 	});
 </script>
 
@@ -155,7 +158,9 @@
 							>
 							{#each columns as column}
 								<td class:first-row={index === 0}>
-									<Output field={column[row.Path]} nolayout={true} />
+									{#if row.Path !== null}
+										<Output controller={column[row.Path]} nolayout={true} />
+									{/if}
 								</td>
 							{/each}
 						{:else}
