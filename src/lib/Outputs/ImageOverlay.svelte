@@ -71,6 +71,19 @@
 			parent: controller
 		});
 	}
+
+	// Do not redirect to the url if a button is clicked inside
+	// the nested component
+	function handleOverlayClick(event: MouseEvent) {
+		const target = event.target as HTMLElement;
+
+		if (target.closest('button')) {
+			event.preventDefault();
+			return;
+		}
+
+		window.location.href = controller.value.Url;
+	}
 </script>
 
 {#if controller.value != null}
@@ -84,16 +97,16 @@
 			aria-label="Image Overlay"
 		>
 			{#if isHovered}
-				<a href={controller.value.Url}>
-					<div class="overlay text-container">
-						<div class={cssClass}>
-							<svelte:component
-								this={nestedComponent}
-								controller={makeController(controller.value.InnerContent)}
-							/>
-						</div>
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<!-- svelte-ignore a11y-no-static-element-interactions -->
+				<div class="overlay text-container" on:click|capture={handleOverlayClick}>
+					<div class={cssClass}>
+						<svelte:component
+							this={nestedComponent}
+							controller={makeController(controller.value.InnerContent)}
+						/>
 					</div>
-				</a>
+				</div>
 			{/if}
 			<div class="output-image-overlay">
 				<img src={controller.value.Source} alt="img" />
@@ -167,7 +180,7 @@
 	.title {
 		margin-top: 10px;
 		font-size: 1em;
-		color: #218FCF;
+		color: #218fcf;
 		text-align: center;
 		text-decoration: none;
 	}
