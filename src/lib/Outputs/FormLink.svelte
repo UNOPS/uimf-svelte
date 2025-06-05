@@ -173,6 +173,14 @@
 							controller.app.getApiFile(url);
 						}
 						break;
+					case 'update-section':
+						{							
+							let formId = controller.value.Form;
+							let inputFields = controller.value.InputFieldValues
+
+							controller.app.showToSection(formId, inputFields);
+						}
+						break;
 					case 'open-modal':
 						confirmAndRun(() => {
 							const originalUrl = window.location.href;
