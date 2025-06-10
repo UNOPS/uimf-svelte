@@ -68,8 +68,10 @@
 									{#if tab.Icon}
 										<i class={tab.Icon} />
 									{/if}
-									{tab.Label}</a
-								>
+									{#if tab.Label}
+										{tab.Label}
+									{/if}
+								</a>
 							{/await}
 						</li>
 					{/if}
