@@ -14,17 +14,27 @@
 
 	interface IConfiguration {
 		CssClass: string | null;
+		Layout: FormInputLayout | null;
 	}
 
-	export let controller: OutputController<IData, IOutputFieldMetadata<IConfiguration>>;
+	enum FormInputLayout {
+		Default = 0,
+		Centered = 10,
+		Inline = 20
+	}
+
+	export let controller: OutputController<IData, IOutputFieldMetadata<IConfiguration | null>>;
 
 	let visibleInputs: InputController<any>[] = [];
 	let isRecordForm = false;
 	let effectiveActions: FormLinkData[] = [];
+	let layout: FormInputLayout = FormInputLayout.Default;
 
 	let component = new OutputComponent({
 		async refresh() {
 			controller.value = controller.value;
+
+			layout = controller.metadata.Component.Configuration?.Layout ?? FormInputLayout.Default;
 
 			const promises = controller.form?.metadata.InputFields.map(async (inputMetadata) => {
 				const input = controller.form!.inputs[inputMetadata.Id];
@@ -114,7 +124,8 @@
 	<form
 		name={controller.form?.metadata.Id}
 		on:submit|preventDefault={submitForm}
-		class={controller.metadata.Component.Configuration.CssClass}
+		class={controller.metadata.Component.Configuration?.CssClass}
+		class:inline-layout={layout === FormInputLayout.Inline}
 	>
 		<div class="inputs">
 			{#each visibleInputs as input}
@@ -166,5 +177,17 @@
 		display: flex;
 		justify-content: flex-end;
 		gap: 5px;
+	}
+
+	.inline-layout {
+		display: flex;
+		gap: 5px;
+		align-items: center;
+
+		& > .buttons {
+			height: 37px;
+			position: relative;
+			top: 1px;
+		}
 	}
 </style>
