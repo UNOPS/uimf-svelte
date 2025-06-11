@@ -56,7 +56,7 @@ interface ColorOptions {
 }
 
 interface IAppStorage{
-    isStored(key:string): boolean;
+    isStored(key:string, value: any): boolean;
 	hasItems(key: string) : boolean;
 	getValue(key: string, value: any) : any;
 	update(key: string, values: number[]): void;
