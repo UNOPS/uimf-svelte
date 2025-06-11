@@ -1,6 +1,7 @@
 <script lang="ts" context="module">
 	import { OutputController } from '../Infrastructure/OutputController';
 	export interface FormLinkData {
+		AlternativeView: FormLinkView;
 		Icon?: string;
 		Label?: string;
 		Target?: string | null;
@@ -28,6 +29,12 @@
 		WindowClass?: string;
 	}
 
+	export interface FormLinkView {
+		CssClass?: string;
+		Icon?: string;
+		Label?: string;
+	}
+
 	export class Controller extends OutputController<FormLinkData> {}
 
 	export function makeController(value: FormLinkData, parent: OutputController<any, any>) {
@@ -42,16 +49,32 @@
 </script>
 
 <script lang="ts">
-	import { beforeUpdate } from 'svelte';
+	import { beforeUpdate, onMount } from 'svelte';
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { tooltip } from '../Components/Tooltip.svelte';
 	import { IOutputFieldMetadata } from '../Infrastructure/uimf';
+	import { tick } from 'svelte';
 
 	export let controller: Controller;
 	export let disabled: boolean = false;
 
 	let allowed: boolean;
 	let cssClass: string | null = null;
+
+	let useAlternativeView = false;
+
+	// Create reactive variables for both normal and alternative views
+	$: currentIcon = useAlternativeView
+		? controller.value?.AlternativeView?.Icon
+		: controller.value?.Icon;
+
+	$: currentLabel = useAlternativeView
+		? controller.value?.AlternativeView?.Label
+		: controller.value?.Label;
+
+	$: currentCssClass = useAlternativeView
+		? controller.value?.AlternativeView?.CssClass
+		: controller.value?.CssClass;
 
 	let component = new OutputComponent({
 		async refresh() {
@@ -62,7 +85,7 @@
 			}
 
 			allowed = controller.app.hasPermission(controller.value.RequiredPermission);
-			cssClass = controller.value.CssClass ?? controller.metadata?.CssClass ?? null;
+			cssClass = currentCssClass ?? controller.metadata?.CssClass ?? null;
 		}
 	});
 
@@ -88,21 +111,51 @@
 		}
 		return bytes;
 	}
+
+	onMount(() => {
+		if (controller.value.AlternativeView) {
+			let id = controller.value.InputFieldValues.ItemIds?.Items[0];
+
+			if (id !== null) {
+				// Set initial state
+				useAlternativeView = controller.app.appStorage.isStored('compare-products-popup', id) ?? false;
+				console.log('Initial state - id:', id, 'isSelected:', useAlternativeView);
+
+				const listener = async (e: any) => {
+					const newSelectedState = controller.app.appStorage.isStored('compare-products-popup', id) ?? false;
+					if (newSelectedState !== useAlternativeView) {
+						useAlternativeView = newSelectedState;
+						await tick(); // Ensure reactivity kicks in
+						console.log('State changed - id:', id, 'isSelected:', useAlternativeView);
+					}
+				};
+
+				controller.app.appStorage.setListener('change', listener);
+
+				//Cleanup on destroy
+				return () => {
+					if (controller.app.appStorage.removeListener) {
+						controller.app.appStorage.removeListener('change', listener);
+					}
+				};
+			}
+		}
+	});
 </script>
 
 {#if controller.value != null}
 	{#if [null, 'redirect', 'redirect-to-url', 'void'].includes(controller.value.Action)}
 		{#if !allowed || controller.value.Action === 'void'}
 			<span class={cssClass} use:tooltip={controller.value.Tooltip}>
-				{#if controller.value.Icon}
+				{#if currentIcon}
 					<i
-						class={controller.value.Icon}
+						class={currentIcon}
 						aria-hidden="true"
-						class:margin-right={(controller.value.Label?.length ?? 0) > 0}
+						class:margin-right={(currentLabel?.length ?? 0) > 0}
 					/>
 				{/if}
-				{#if controller.value.Label != null}
-					{controller.value.Label}
+				{#if currentLabel != null}
+					{currentLabel}
 				{/if}
 			</span>
 		{:else}
@@ -113,11 +166,11 @@
 					class={cssClass}
 					use:tooltip={controller.value.Tooltip}
 				>
-					{#if controller.value.Icon}
-						<i class={controller.value.Icon} aria-hidden="true" />
+					{#if currentIcon}
+						<i class={currentIcon} aria-hidden="true" />
 					{/if}
-					{#if controller.value.Label != null}
-						{controller.value.Label}
+					{#if currentLabel != null}
+						{currentLabel}
 					{/if}
 				</a>
 			{/await}
@@ -174,9 +227,9 @@
 						}
 						break;
 					case 'update-section':
-						{							
+						{
 							let formId = controller.value.Form;
-							let inputFields = controller.value.InputFieldValues
+							let inputFields = controller.value.InputFieldValues;
 
 							controller.app.showToSection(formId, inputFields);
 						}
@@ -284,8 +337,6 @@
 												}
 										}
 
-										console.log(controller);
-
 										controller.app
 											.runResponseHandler(response)
 											.then(() => controller.app.runClientFunctions(response, controller.form))
@@ -320,7 +371,6 @@
 									controller.form?.submit(true);
 								});
 						});
-
 						break;
 					default:
 						controller.app.handleCustomFormLinkAction(controller.value);
@@ -328,17 +378,17 @@
 				}
 			}}
 		>
-			{#if controller.value.Icon}
+			{#if currentIcon}
 				<i
-					class={controller.value.Icon}
+					class={currentIcon}
 					aria-hidden="true"
-					class:margin-right={(controller.value.Label?.length ?? 0) > 0}
+					class:margin-right={(currentLabel?.length ?? 0) > 0}
 				/>
 			{/if}
-			{#if controller.value.Label != null}
-				{controller.value.Label}
+			{#if currentLabel != null}
+				{currentLabel}
 			{/if}
-			{#if deadline != null && now < deadline}
+			{#if deadline != null && now < deadline && !useAlternativeView}
 				<span class="deadline" />
 			{/if}
 		</button>
