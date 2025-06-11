@@ -117,22 +117,20 @@
 			let id = controller.value.InputFieldValues.ItemIds?.Items[0];
 
 			if (id !== null) {
-				// Set initial state
-				useAlternativeView = controller.app.appStorage.isStored('compare-products-popup', id) ?? false;
-				console.log('Initial state - id:', id, 'isSelected:', useAlternativeView);
+				useAlternativeView =
+					controller.app.appStorage.isStored('compare-products-popup', id) ?? false;
 
 				const listener = async (e: any) => {
-					const newSelectedState = controller.app.appStorage.isStored('compare-products-popup', id) ?? false;
+					const newSelectedState =
+						controller.app.appStorage.isStored('compare-products-popup', id) ?? false;
 					if (newSelectedState !== useAlternativeView) {
 						useAlternativeView = newSelectedState;
-						await tick(); // Ensure reactivity kicks in
-						console.log('State changed - id:', id, 'isSelected:', useAlternativeView);
+						await tick(); // Ensure reactivity
 					}
 				};
 
 				controller.app.appStorage.setListener('change', listener);
 
-				//Cleanup on destroy
 				return () => {
 					if (controller.app.appStorage.removeListener) {
 						controller.app.appStorage.removeListener('change', listener);
