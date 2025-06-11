@@ -16,6 +16,8 @@
 		public Path!: string | null;
 		public OrderIndex!: number;
 		public Level!: number;
+		//public IsVirtualField?: boolean;
+		//public VirtualFieldName?: string;
 	}
 
 	export interface IMatrixConfiguration extends IOutputFieldMetadata {
@@ -51,7 +53,34 @@
 		let propertiesSorted = properties.sort((a, b) => a.OrderIndex - b.OrderIndex);
 
 		for (let property of propertiesSorted) {
-			if (property.Component.Type === 'matrix-data') {
+			
+			// flatten list
+			if (property.Component.Type == 'table') {
+				
+				const sampleItem = controller?.value?.Items?.[0];		
+				var propertyId = property.Id;
+
+				if (sampleItem !== undefined && sampleItem[propertyId]?.length) {
+					
+					for (let i = 0; i < sampleItem[propertyId].length; i++) {
+						
+						const field = sampleItem[propertyId][i];
+						let value = Object.keys(sampleItem[propertyId][i])[1];
+						
+						result.push({
+							OrderIndex: orderIndex++,
+							Path: `${[propertyId]}[${i}].${value}`,
+							Metadata: {
+								...property.Component.Configuration.Columns[i],
+								Id: `${[propertyId]}[${i}].${value}`,
+								Label: field.FieldName
+							},
+							Level: level,
+						});
+					}
+				}
+
+			} else if (property.Component.Type === 'matrix-data') {
 				result.push({
 					Metadata: property,
 					Path: null,
@@ -83,9 +112,14 @@
 	}
 
 	function getPropertyValue(object: any, propertyPath: string) {
-		return propertyPath.split('.').reduce(function (a, b) {
-			return a && a[b];
-		}, object);
+		try {
+			return propertyPath
+				.split(/[\.\[\]]/)
+				.filter(Boolean)
+				.reduce((a, b) => a?.[b], object);
+		} catch {
+			return null;
+		}
 	}
 
 	const componentController = new OutputComponent({
