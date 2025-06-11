@@ -55,7 +55,19 @@ interface ColorOptions {
     luminosity: string;
 }
 
+interface IAppStorage{
+    isStored(key:string): boolean;
+	hasItems(key: string) : boolean;
+	getValue(key: string, value: any) : any;
+	update(key: string, values: number[]): void;
+	removeValue(key: string, index: number) : void;
+	addValue(key: string, value: any) : void;
+	setListener(key: string, callback: (event?: Event) => void): void;
+	removeListener(key: string, callback: (event?: Event) => void): void;
+}
+
 export default interface IUimfApp {
+    appStorage: IAppStorage;
 	showToSection(formId: string, inputFieldValues:any): void;
     renderForm(options: { data: any, metadata: IFieldMetadata, form: FormInstance | null }): Element;
     runResponseHandler(response: FormResponse): Promise<void>;
