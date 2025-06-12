@@ -71,7 +71,7 @@
 							OrderIndex: orderIndex++,
 							Path: `${[propertyId]}[${i}].${value}`,
 							Metadata: {
-								...property.Component.Configuration.Columns[i],
+								...property.Component.Configuration.Columns[1],
 								Id: `${[propertyId]}[${i}].${value}`,
 								Label: field.FieldName
 							},
