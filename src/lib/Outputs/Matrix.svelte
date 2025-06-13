@@ -55,7 +55,7 @@
 		for (let property of propertiesSorted) {
 			
 			// flatten list
-			if (property.Component.Type == 'table') {
+			if (controller.metadata.Component.Configuration.FlattenLists && property.Component.Type == 'table') {
 				
 				const sampleItem = controller?.value?.Items?.[0];		
 				var propertyId = property.Id;
@@ -73,7 +73,7 @@
 							Metadata: {
 								...property.Component.Configuration.Columns[1],
 								Id: `${[propertyId]}[${i}].${value}`,
-								Label: field.FieldName
+								Label: field.Label
 							},
 							Level: level,
 						});
