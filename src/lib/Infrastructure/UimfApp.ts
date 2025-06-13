@@ -68,7 +68,7 @@ interface IAppStorage{
 
 export default interface IUimfApp {
     appStorage: IAppStorage;
-	showToSection(formId: string, inputFieldValues:any): void;
+	showToSection(formId: string, inputFieldValues: any, sectionId: string): void;
     renderForm(options: { data: any, metadata: IFieldMetadata, form: FormInstance | null }): Element;
     runResponseHandler(response: FormResponse): Promise<void>;
     runClientFunctions(response: FormResponse, parentForm?: FormInstance | null): Promise<void>;

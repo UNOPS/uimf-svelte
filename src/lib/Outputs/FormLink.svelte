@@ -62,6 +62,7 @@
 	let cssClass: string | null = null;
 
 	let useAlternativeView = false;
+	let formId = controller.value.Form;
 
 	// Create reactive variables for both normal and alternative views
 	$: currentIcon = useAlternativeView
@@ -118,11 +119,11 @@
 
 			if (id !== null) {
 				useAlternativeView =
-					controller.app.appStorage.isStored('compare-products-popup', id) ?? false;
+					controller.app.appStorage.isStored(formId, id) ?? false;
 
 				const listener = async (e: any) => {
 					const newSelectedState =
-						controller.app.appStorage.isStored('compare-products-popup', id) ?? false;
+						controller.app.appStorage.isStored(formId, id) ?? false;
 					if (newSelectedState !== useAlternativeView) {
 						useAlternativeView = newSelectedState;
 						await tick(); // Ensure reactivity
@@ -226,10 +227,10 @@
 						break;
 					case 'update-section':
 						{
-							let formId = controller.value.Form;
 							let inputFields = controller.value.InputFieldValues;
-
-							controller.app.showToSection(formId, inputFields);
+							let sectionId = "right-floating-section"; // TODO: make it generic
+							
+							controller.app.showToSection(formId, inputFields, sectionId);
 						}
 						break;
 					case 'open-modal':
