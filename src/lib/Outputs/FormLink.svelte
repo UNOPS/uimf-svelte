@@ -1,6 +1,7 @@
 <script lang="ts" context="module">
 	import { OutputController } from '../Infrastructure/OutputController';
 	export interface FormLinkData {
+		Section: undefined;
 		AlternativeView: FormLinkView;
 		Icon?: string;
 		Label?: string;
@@ -227,8 +228,12 @@
 						break;
 					case 'update-section':
 						{
+							if(controller.value.Section === undefined){
+								throw new Error('Section is missing.');
+							}
+
+							let sectionId = controller.value.Section;
 							let inputFields = controller.value.InputFieldValues;
-							let sectionId = "right-floating-section"; // TODO: make it generic
 							
 							controller.app.showToSection(formId, inputFields, sectionId);
 						}
