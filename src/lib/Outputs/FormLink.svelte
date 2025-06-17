@@ -1,7 +1,7 @@
 <script lang="ts" context="module">
 	import { OutputController } from '../Infrastructure/OutputController';
 	export interface FormLinkData {
-		AlternativeView: FormLinkView;
+		AlternativeView?: FormLinkView;
 		Icon?: string;
 		Label?: string;
 		Target?: string | null;
@@ -62,7 +62,6 @@
 	let cssClass: string | null = null;
 
 	let useAlternativeView = false;
-	let formId = controller.value.Form;
 
 	// Create reactive variables for both normal and alternative views
 	$: currentIcon = useAlternativeView
@@ -114,17 +113,15 @@
 	}
 
 	onMount(() => {
-		if (controller.value.AlternativeView) {
+		if (controller.value?.AlternativeView) {
 			let id = controller.value.InputFieldValues.ItemIds?.Items[0];
 
 			if (id !== null) {
-
-				useAlternativeView =
-					controller.app.appStorage.isStored(formId, id) ?? false;
+				useAlternativeView = controller.app.appStorage.isStored(controller.value.Form, id) ?? false;
 
 				const listener = async (e: any) => {
 					const newSelectedState =
-						controller.app.appStorage.isStored(formId, id) ?? false;
+						controller.app.appStorage.isStored(controller.value.Form, id) ?? false;
 					if (newSelectedState !== useAlternativeView) {
 						useAlternativeView = newSelectedState;
 						await tick(); // Ensure reactivity
@@ -134,9 +131,7 @@
 				controller.app.appStorage.on('change', listener);
 
 				return () => {
-					if (controller.app.appStorage.removeSubscriptions) {
-						controller.app.appStorage.removeSubscriptions();
-					}
+					controller.app.appStorage.removeSubscriptions();
 				};
 			}
 		}
@@ -228,14 +223,14 @@
 						break;
 					case 'update-section':
 						{
-							if(!controller.value.Target){
+							if (!controller.value.Target) {
 								throw new Error('Target is missing.');
 							}
 
 							let sectionId = controller.value.Target;
 							let inputFields = controller.value.InputFieldValues;
-							
-							controller.app.showFormInSection(formId, inputFields, sectionId);
+
+							controller.app.showFormInSection(controller.value.Form, inputFields, sectionId);
 						}
 						break;
 					case 'open-modal':
