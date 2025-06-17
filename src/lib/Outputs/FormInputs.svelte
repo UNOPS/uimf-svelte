@@ -26,7 +26,6 @@
 	export let controller: OutputController<IData, IOutputFieldMetadata<IConfiguration | null>>;
 
 	let visibleInputs: InputController<any>[] = [];
-	let isRecordForm = false;
 	let effectiveActions: FormLinkData[] = [];
 	let layout: FormInputLayout = FormInputLayout.Default;
 
@@ -63,11 +62,6 @@
 				controller.form?.metadata.InputFields.filter((t) => t.Hidden === false)
 					.sort((a, b) => a.OrderIndex - b.OrderIndex)
 					.map((t) => controller.form!.inputs[t.Id]) ?? [];
-
-			isRecordForm =
-				controller.form?.metadata.InputFields.find(
-					(t) => t.Id === 'Operation' && t.Component.Type === 'dropdown'
-				) != null;
 
 			effectiveActions = controller.value?.Actions;
 
@@ -120,7 +114,7 @@
 	}
 </script>
 
-{#if controller.form != null && (!controller.form.metadata.PostOnLoad || visibleInputs?.length > 0 || isRecordForm)}
+{#if controller.form != null && (!controller.form.metadata.PostOnLoad || visibleInputs?.length > 0 || controller.value?.Actions?.length > 0)}
 	<form
 		name={controller.form?.metadata.Id}
 		on:submit|preventDefault={submitForm}
