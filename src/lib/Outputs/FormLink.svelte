@@ -131,11 +131,11 @@
 					}
 				};
 
-				controller.app.appStorage.setListener('change', listener);
+				controller.app.appStorage.on('change', listener);
 
 				return () => {
-					if (controller.app.appStorage.removeListener) {
-						controller.app.appStorage.removeListener();
+					if (controller.app.appStorage.removeSubscriptions) {
+						controller.app.appStorage.removeSubscriptions();
 					}
 				};
 			}
