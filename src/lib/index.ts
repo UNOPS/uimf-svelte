@@ -1,6 +1,6 @@
 // Reexport your entry components here
 import { defaultControlRegister } from "./Infrastructure/ControlRegister";
-import { defaultAppStorage } from "./Infrastructure/AppStorage";
+import AppStorage from "./Infrastructure/AppStorage";
 import SmartNavigator from './Components/SmartNavigator.svelte';
 import './scss/styles.scss';
 
@@ -12,6 +12,6 @@ declare global {
 
 window.SvelteComponents = {
     SmartNavigator,
-    controlRegister: defaultControlRegister,
-    appStorage: defaultAppStorage
+    AppStorage,
+    controlRegister: defaultControlRegister
 };

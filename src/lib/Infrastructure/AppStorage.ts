@@ -4,7 +4,7 @@ interface FormItem {
     ItemIds: unknown[];
 }
 
-export class AppStorage extends EventSource {
+export default class AppStorage extends EventSource {
     private forms: Record<string, FormItem>;
 
     constructor() {
@@ -64,15 +64,7 @@ export class AppStorage extends EventSource {
           this.forms[key].ItemIds = [];
        }
        this.forms[key].ItemIds.push(value);
-    }
-
-    public setListener(key: string, callback: (event: CustomEvent<AppStorage>) => void): void {
-       this.on(`storage:${key}`, callback as EventListener);
-    }
-
-    public removeListener(): void {
-        this.removeSubscriptions();
-    }    
+    }  
 }
 
 export const defaultAppStorage = new AppStorage();
