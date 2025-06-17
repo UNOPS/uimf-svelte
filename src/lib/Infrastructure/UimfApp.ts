@@ -1,4 +1,5 @@
 import type { FormLinkData } from "$lib/Outputs/FormLink.svelte";
+import AppStorage from "./AppStorage";
 import type { FormInstance } from "./FormController";
 import type { IFieldMetadata, FormMetadata } from "./uimf";
 
@@ -55,18 +56,9 @@ interface ColorOptions {
     luminosity: string;
 }
 
-interface IAppStorage{
-    isStored(key:string, value: any): boolean;
-	hasItems(key: string) : boolean;
-	getValue(key: string, value: any) : any;
-	update(key: string, values: number[]): void;
-	removeValue(key: string, index: number) : void;
-	addValue(key: string, value: any) : void;
-}
-
 export default interface IUimfApp {
-    appStorage: IAppStorage;
-	showFormInSection(formId: string, inputFieldValues: any, sectionId: string): void;
+    appStorage: AppStorage;
+    showFormInSection(formId: string, inputFieldValues: any, sectionId: string): void;
     renderForm(options: { data: any, metadata: IFieldMetadata, form: FormInstance | null }): Element;
     runResponseHandler(response: FormResponse): Promise<void>;
     runClientFunctions(response: FormResponse, parentForm?: FormInstance | null): Promise<void>;
