@@ -63,7 +63,7 @@ interface IAppStorage{
 	removeValue(key: string, index: number) : void;
 	addValue(key: string, value: any) : void;
 	setListener(key: string, callback: (event?: Event) => void): void;
-	removeListener(key: string, callback: (event?: Event) => void): void;
+	removeListener(): void;
 }
 
 export default interface IUimfApp {

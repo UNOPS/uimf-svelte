@@ -1,7 +1,6 @@
 <script lang="ts" context="module">
 	import { OutputController } from '../Infrastructure/OutputController';
 	export interface FormLinkData {
-		Section: undefined;
 		AlternativeView: FormLinkView;
 		Icon?: string;
 		Label?: string;
@@ -119,6 +118,7 @@
 			let id = controller.value.InputFieldValues.ItemIds?.Items[0];
 
 			if (id !== null) {
+
 				useAlternativeView =
 					controller.app.appStorage.isStored(formId, id) ?? false;
 
@@ -135,7 +135,7 @@
 
 				return () => {
 					if (controller.app.appStorage.removeListener) {
-						controller.app.appStorage.removeListener('change', listener);
+						controller.app.appStorage.removeListener();
 					}
 				};
 			}
@@ -228,14 +228,14 @@
 						break;
 					case 'update-section':
 						{
-							if(controller.value.Section === undefined){
-								throw new Error('Section is missing.');
+							if(!controller.value.Target){
+								throw new Error('Target is missing.');
 							}
 
-							let sectionId = controller.value.Section;
+							let sectionId = controller.value.Target;
 							let inputFields = controller.value.InputFieldValues;
 							
-							controller.app.showToSection(formId, inputFields, sectionId);
+							controller.app.showFormInSection(formId, inputFields, sectionId);
 						}
 						break;
 					case 'open-modal':
