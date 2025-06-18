@@ -1,7 +1,8 @@
 <script lang="ts" context="module">
 	import { OutputController } from '../Infrastructure/OutputController';
 	export interface FormLinkData {
-		AlternativeView?: FormLinkView;
+		AlternativeView?: IFormlinkView;
+		ToggledVariable?: IFrontendVariableValue;
 		Icon?: string;
 		Label?: string;
 		Target?: string | null;
@@ -19,7 +20,7 @@
 		Deadline?: string;
 		RenderInputTargets?: { [key: string]: string };
 		RenderOutputTargets?: { [key: string]: string };
-		ForwardedInputValues?: { [key: string]: string };
+		DynamicInputValues?: { [key: string]: IDynamicInputValue };
 
 		// Html modal options.
 		StateParams?: any;
@@ -29,10 +30,21 @@
 		WindowClass?: string;
 	}
 
-	export interface FormLinkView {
+	interface IDynamicInputValue {
+		Name: string;
+		Source: DynamicValueSource;
+	}
+
+	enum DynamicValueSource {
+		ParentForm = 'ParentForm',
+		FrontendVariable = 'FrontendVariable'
+	}
+
+	interface IFormlinkView {
 		CssClass?: string;
 		Icon?: string;
 		Label?: string;
+		RequiredValue: IFrontendVariableValue;
 	}
 
 	export class Controller extends OutputController<FormLinkData> {}
@@ -49,11 +61,11 @@
 </script>
 
 <script lang="ts">
-	import { beforeUpdate, onMount } from 'svelte';
+	import { beforeUpdate } from 'svelte';
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { tooltip } from '../Components/Tooltip.svelte';
 	import { IOutputFieldMetadata } from '../Infrastructure/uimf';
-	import { tick } from 'svelte';
+	import { IFrontendVariableValue } from '../Infrastructure/AppStorage';
 
 	export let controller: Controller;
 	export let disabled: boolean = false;
@@ -62,6 +74,7 @@
 	let cssClass: string | null = null;
 
 	let useAlternativeView = false;
+	let unsubscribe: (() => void) | null = null;
 
 	// Create reactive variables for both normal and alternative views
 	$: currentIcon = useAlternativeView
@@ -77,7 +90,26 @@
 		: controller.value?.CssClass;
 
 	let component = new OutputComponent({
+		async init() {
+			const alternativeView = controller.value.AlternativeView;
+
+			if (alternativeView != null) {
+				if (unsubscribe != null) {
+					unsubscribe();
+				}
+
+				unsubscribe = controller.app.appStorage.on('change', () => {
+					useAlternativeView = !!controller.app.appStorage.isToggled(alternativeView.RequiredValue);
+				});
+
+				useAlternativeView = !!controller.app.appStorage.isToggled(alternativeView.RequiredValue);
+			}
+		},
 		async refresh() {
+			useAlternativeView =
+				controller.value.AlternativeView != null &&
+				controller.app.appStorage.isToggled(controller.value.AlternativeView.RequiredValue);
+
 			controller.value = controller.value;
 
 			if (controller.value == null) {
@@ -86,6 +118,11 @@
 
 			allowed = controller.app.hasPermission(controller.value.RequiredPermission);
 			cssClass = currentCssClass ?? controller.metadata?.CssClass ?? null;
+		},
+		destroy() {
+			if (unsubscribe != null) {
+				unsubscribe();
+			}
 		}
 	});
 
@@ -112,30 +149,29 @@
 		return bytes;
 	}
 
-	onMount(() => {
-		if (controller.value?.AlternativeView) {
-			let id = controller.value.InputFieldValues.ItemIds?.Items[0];
+	async function getInputValues(controller: Controller) {
+		const dynamicInputValues = controller.value.DynamicInputValues;
 
-			if (id !== null) {
-				useAlternativeView = controller.app.appStorage.isStored(controller.value.Form, id) ?? false;
+		const result = controller.value.InputFieldValues || {};
 
-				const listener = async (e: any) => {
-					const newSelectedState =
-						controller.app.appStorage.isStored(controller.value.Form, id) ?? false;
-					if (newSelectedState !== useAlternativeView) {
-						useAlternativeView = newSelectedState;
-						await tick(); // Ensure reactivity
+		if (controller.form != null && dynamicInputValues != null) {
+			let parentFormValues = null;
+
+			for (const [targetField, dynamicValue] of Object.entries(dynamicInputValues)) {
+				switch (dynamicValue.Source) {
+					case DynamicValueSource.ParentForm: {
+						parentFormValues = parentFormValues ?? (await controller.form.getInputFieldValues());
+						result[targetField] = await parentFormValues[dynamicValue.Name];
 					}
-				};
-
-				controller.app.appStorage.on('change', listener);
-
-				return () => {
-					controller.app.appStorage.removeSubscriptions();
-				};
+					case DynamicValueSource.FrontendVariable: {
+						result[targetField] = controller.app.appStorage.get(dynamicValue.Name);
+					}
+				}
 			}
 		}
-	});
+
+		return result;
+	}
 </script>
 
 {#if controller.value != null}
@@ -228,9 +264,14 @@
 							}
 
 							let sectionId = controller.value.Target;
-							let inputFields = controller.value.InputFieldValues;
 
-							controller.app.showFormInSection(controller.value.Form, inputFields, sectionId);
+							if (controller.value.ToggledVariable != null) {
+								controller.app.appStorage.toggleVariable(controller.value.ToggledVariable);
+							}
+
+							return getInputValues(controller).then((inputFields) => {
+								controller.app.showFormInSection(controller.value.Form, inputFields, sectionId);
+							});
 						}
 						break;
 					case 'open-modal':
@@ -288,18 +329,7 @@
 						break;
 					case 'run':
 						confirmAndRun(async () => {
-							const forwardedInputValues = controller.value.ForwardedInputValues;
-
-							const inputFieldValues = controller.value.InputFieldValues || {};
-
-							if (controller.form != null && forwardedInputValues != null) {
-								const parentFormValues = await controller.form.getInputFieldValues();
-
-								for (const [targetField, sourceField] of Object.entries(forwardedInputValues)) {
-									const forwardedValue = await parentFormValues[sourceField];
-									inputFieldValues[targetField] = forwardedValue;
-								}
-							}
+							const inputFieldValues = await getInputValues(controller);
 
 							return controller.app
 								.postForm(controller.value.Form, inputFieldValues, {
@@ -387,7 +417,7 @@
 			{#if currentLabel != null}
 				{currentLabel}
 			{/if}
-			{#if deadline != null && now < deadline && !useAlternativeView}
+			{#if deadline != null && now < deadline}
 				<span class="deadline" />
 			{/if}
 		</button>

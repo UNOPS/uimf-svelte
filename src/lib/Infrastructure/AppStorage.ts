@@ -1,80 +1,78 @@
 import EventSource from "./EventSource";
 
-interface ItemSet {
-   ItemIds: unknown[];
+export interface IFrontendVariable {
+   Name: string;
+   IsArray: boolean;
+}
+
+export interface IFrontendVariableValue {
+   Variable: IFrontendVariable;
+   Value: any;
+}
+
+interface Value {
+   Variable: IFrontendVariable;
+   Value: any;
+}
+
+interface IArrayValue {
+   Items: any[];
 }
 
 export default class AppStorage extends EventSource {
-   private entries: Record<string, ItemSet>;
+   #entries: Record<string, Value>;
 
    constructor() {
       super();
-      this.entries = {};
+      this.#entries = {};
    }
 
-   public hasItemsAt(key: string): boolean {
-      return Array.isArray(this.entries?.[key]?.ItemIds) &&
-         this.entries[key].ItemIds.length > 0;
+   public get(key: string): any {
+      return this.#entries[key]?.Value;
    }
 
-   public getValue(key: string, value: unknown): number {
-      if (!this.hasItemsAt(key)) {
-         return -1;
-      }
-      return this.entries[key].ItemIds.indexOf(value);
-   }
-
-   public isStored(key: string, value: unknown): boolean {
-      if (!this.hasItemsAt(key)) {
-         return false;
-      }
-      return this.getValue(key, value) !== -1;
-   }
-
-   public update(key: string, values: unknown[]): void {
-      if (!Array.isArray(values)) {
-         throw new TypeError('Expected values to be an array');
-      }
-
-      for (const value of values) {
-         const index = this.getValue(key, value);
-         if (index !== -1) {
-            this.removeValue(key, index);
-         } else {
-            this.addValue(key, value);
-         }
-      }
+   public set(variable: IFrontendVariable, value: any): void {
+      this.#entries[variable.Name] = { Variable: variable, Value: value };
 
       this.fire('storage:change', { detail: this });
    }
 
-   public getItems(key: string): unknown[] {
-      if (!this.entries[key]) {
-         this.entries[key] = { ItemIds: [] };
+   public isToggled(variable: IFrontendVariableValue): boolean {
+      if (variable.Variable.IsArray) {
+         const items: IArrayValue = this.get(variable.Variable.Name);
+         return items?.Items?.indexOf(variable.Value) >= 0;
+      } else {
+         return this.get(variable.Variable.Name) === variable.Value;
       }
-
-      if (!Array.isArray(this.entries[key].ItemIds)) {
-         this.entries[key].ItemIds = [];
-      }
-
-      return this.entries[key].ItemIds;
    }
 
-   private removeValue(key: string, indexToRemove: number): void {
-      if (!this.hasItemsAt(key)) {
-         return;
-      }
-      this.entries[key].ItemIds.splice(indexToRemove, 1);
-   }
+   /**
+    * Toggles the app storage variable.
+    */
+   toggleVariable(variable: IFrontendVariableValue) {
+      if (variable.Variable.IsArray) {
+         if (this.#entries[variable.Variable.Name] != null) {
+            if (this.#entries[variable.Variable.Name].Variable.IsArray !== variable.Variable.IsArray) {
+               throw new Error('Type of variable is not the same as the arg.');
+            }
+         }
 
-   private addValue(key: string, value: unknown): void {
-      if (!this.entries[key]) {
-         this.entries[key] = { ItemIds: [] };
-      }
+         let original: IArrayValue | null = this.#entries[variable.Variable.Name]?.Value;
 
-      if (!Array.isArray(this.entries[key].ItemIds)) {
-         this.entries[key].ItemIds = [];
+         let items: Set<string> = new Set(original?.Items ?? []);
+
+         if (items.has(variable.Value!)) {
+            items.delete(variable.Value!);
+         } else {
+            items.add(variable.Value!);
+         }
+
+         const value: IArrayValue = { Items: [...items] };
+         this.set(variable.Variable, value);
+
+         return items;
+      } else {
+         throw new Error('Toggle variable is not supported for non-array variables.');
       }
-      this.entries[key].ItemIds.push(value);
    }
 }
