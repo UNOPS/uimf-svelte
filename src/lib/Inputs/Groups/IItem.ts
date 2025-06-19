@@ -4,4 +4,5 @@ export interface IItem {
         Url: string;
     };
     Value: any;
+    SearchText?: string;
 } 
