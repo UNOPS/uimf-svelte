@@ -7,6 +7,7 @@ interface FormLink {
     Form: string;
     InputFieldValues?: any;
     Label?: string;
+    Action?: string;
 }
 
 export interface FormResponse extends Response {

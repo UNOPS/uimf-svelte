@@ -34,7 +34,7 @@ export default class AppStorage extends EventSource {
    public set(variable: IFrontendVariable, value: any): void {
       this.#entries[variable.Name] = { Variable: variable, Value: value };
 
-      this.fire('storage:change', { detail: this });
+      this.fire('change', null);
    }
 
    public isToggled(variable: IFrontendVariableValue): boolean {

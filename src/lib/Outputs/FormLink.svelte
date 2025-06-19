@@ -61,7 +61,7 @@
 </script>
 
 <script lang="ts">
-	import { beforeUpdate } from 'svelte';
+	import { beforeUpdate, tick } from 'svelte';
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { tooltip } from '../Components/Tooltip.svelte';
 	import { IOutputFieldMetadata } from '../Infrastructure/uimf';
@@ -77,13 +77,13 @@
 	let unsubscribe: (() => void) | null = null;
 
 	// Create reactive variables for both normal and alternative views
+	$: currentLabel = useAlternativeView
+		? controller.value?.AlternativeView?.Label ?? null
+		: controller.value?.Label ?? null;
+
 	$: currentIcon = useAlternativeView
 		? controller.value?.AlternativeView?.Icon
 		: controller.value?.Icon;
-
-	$: currentLabel = useAlternativeView
-		? controller.value?.AlternativeView?.Label
-		: controller.value?.Label;
 
 	$: currentCssClass = useAlternativeView
 		? controller.value?.AlternativeView?.CssClass
@@ -91,7 +91,7 @@
 
 	let component = new OutputComponent({
 		async init() {
-			const alternativeView = controller.value.AlternativeView;
+			const alternativeView = controller.value?.AlternativeView;
 
 			if (alternativeView != null) {
 				if (unsubscribe != null) {
@@ -99,15 +99,15 @@
 				}
 
 				unsubscribe = controller.app.appStorage.on('change', () => {
-					useAlternativeView = !!controller.app.appStorage.isToggled(alternativeView.RequiredValue);
+					useAlternativeView = controller.app.appStorage.isToggled(alternativeView.RequiredValue);
 				});
 
-				useAlternativeView = !!controller.app.appStorage.isToggled(alternativeView.RequiredValue);
+				useAlternativeView = controller.app.appStorage.isToggled(alternativeView.RequiredValue);
 			}
 		},
 		async refresh() {
 			useAlternativeView =
-				controller.value.AlternativeView != null &&
+				controller.value?.AlternativeView != null &&
 				controller.app.appStorage.isToggled(controller.value.AlternativeView.RequiredValue);
 
 			controller.value = controller.value;
@@ -149,6 +149,11 @@
 		return bytes;
 	}
 
+	/**
+	 * Gets the input values taking into account `IFormLinkData.InputFieldValues` and `IFormLinkData.DynamicInputValues`.
+	 * @param controller - The controller for the form link.
+	 * @returns The input values with which the form link should be submitted.
+	 */
 	async function getInputValues(controller: Controller) {
 		const dynamicInputValues = controller.value.DynamicInputValues;
 
@@ -172,6 +177,22 @@
 
 		return result;
 	}
+
+	function updateTargetFields(
+		targets: Record<string, string> | null,
+		source: any,
+		targetContainer: any
+	) {
+		if (targets != null) {
+			for (const [sourceField, targetField] of Object.entries(targets)) {
+				const target = targetContainer[targetField];
+				if (target != null && target.setValue != null) {
+					const newValue = source[sourceField];
+					target.setValue(newValue);
+				}
+			}
+		}
+	}
 </script>
 
 {#if controller.value != null}
@@ -190,20 +211,22 @@
 				{/if}
 			</span>
 		{:else}
-			{#await controller.app.makeUrl(controller.value) then url}
-				<a
-					href={url}
-					target={controller.value.Target}
-					class={cssClass}
-					use:tooltip={controller.value.Tooltip}
-				>
-					{#if currentIcon}
-						<i class={currentIcon} aria-hidden="true" />
-					{/if}
-					{#if currentLabel != null}
-						{currentLabel}
-					{/if}
-				</a>
+			{#await getInputValues(controller) then inputs}
+				{#await controller.app.makeUrl( { Form: controller.value.Form, InputFieldValues: inputs, Action: controller.value.Action } ) then url}
+					<a
+						href={url}
+						target={controller.value.Target}
+						class={cssClass}
+						use:tooltip={controller.value.Tooltip}
+					>
+						{#if currentIcon}
+							<i class={currentIcon} aria-hidden="true" />
+						{/if}
+						{#if currentLabel != null}
+							{currentLabel}
+						{/if}
+					</a>
+				{/await}
 			{/await}
 		{/if}
 	{:else if allowed}
@@ -221,11 +244,17 @@
 			class={cssClass ?? 'btn btn-default'}
 			{disabled}
 			use:tooltip={(controller.value.Tooltip || '') + deadlineTooltip}
-			on:click={() => {
+			on:click={async () => {
+				if (controller.value.ToggledVariable != null) {
+					controller.app.appStorage.toggleVariable(controller.value.ToggledVariable);
+				}
+
+				const inputs = await getInputValues(controller);
+
 				switch (controller.value.Action) {
 					case 'download': {
 						return controller.app
-							.postForm(controller.value.Form, controller.value.InputFieldValues, {
+							.postForm(controller.value.Form, inputs, {
 								skipClientFunctions: true
 							})
 							.then(function (response) {
@@ -246,12 +275,9 @@
 								document.body.removeChild(link);
 							});
 					}
-
 					case 'excel-export':
 						{
-							let urlQuery = encodeURIComponent(
-								JSON.stringify(controller.value.InputFieldValues || {})
-							);
+							let urlQuery = encodeURIComponent(JSON.stringify(inputs));
 
 							let url = `/api/form/${controller.value.Form}/${controller.value.Field}/exportToExcel?request=${urlQuery}`;
 							controller.app.getApiFile(url);
@@ -263,15 +289,11 @@
 								throw new Error('Target is missing.');
 							}
 
-							let sectionId = controller.value.Target;
-
-							if (controller.value.ToggledVariable != null) {
-								controller.app.appStorage.toggleVariable(controller.value.ToggledVariable);
-							}
-
-							return getInputValues(controller).then((inputFields) => {
-								controller.app.showFormInSection(controller.value.Form, inputFields, sectionId);
-							});
+							controller.app.showFormInSection(
+								controller.value.Form,
+								inputs,
+								controller.value.Target
+							);
 						}
 						break;
 					case 'open-modal':
@@ -329,48 +351,25 @@
 						break;
 					case 'run':
 						confirmAndRun(async () => {
-							const inputFieldValues = await getInputValues(controller);
-
 							return controller.app
-								.postForm(controller.value.Form, inputFieldValues, {
+								.postForm(controller.value.Form, inputs, {
 									skipClientFunctions: true
 								})
 								.then(function (response) {
 									if (response != null) {
-										const renderOutputTarget = controller.value.RenderOutputTargets;
-										const renderInputTarget = controller.value.RenderInputTargets;
-
-										if (controller.form != null) {
-											if (renderOutputTarget != null)
-												for (const [sourceField, targetField] of Object.entries(
-													renderOutputTarget
-												)) {
-													const newValue = response[sourceField];
-
-													const output = controller.form.response[targetField];
-													if (output != null && output.setValue != null) {
-														output.setValue(newValue);
-													}
-												}
-
-											if (renderInputTarget != null)
-												for (const [sourceField, targetField] of Object.entries(
-													renderInputTarget
-												)) {
-													const newValue = response[sourceField];
-
-													const input = controller.form.inputs[targetField];
-													if (input != null && input.setValue != null) {
-														input.setValue(newValue);
-													}
-												}
-										}
-
 										controller.app
 											.runResponseHandler(response)
 											.then(() => controller.app.runClientFunctions(response, controller.form))
 											.then(() => {
-												if (renderInputTarget == null && renderOutputTarget == null) {
+												const targetOutputs = controller.value.RenderOutputTargets ?? null;
+												const targetInputs = controller.value.RenderInputTargets ?? null;
+
+												if (controller.form != null) {
+													updateTargetFields(targetOutputs, response, controller.form.response);
+													updateTargetFields(targetInputs, response, controller.form.inputs);
+												}
+
+												if (targetInputs == null && targetOutputs == null) {
 													controller.form?.submit(false);
 												}
 											});
