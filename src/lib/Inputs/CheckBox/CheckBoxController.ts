@@ -1,0 +1,32 @@
+import { InputController } from '../../Infrastructure/InputController';
+import type { IInputFieldMetadata } from '../../Infrastructure/uimf';
+import { Configuration } from './CheckBoxConfiguration';
+
+export class CheckBoxController extends InputController<boolean, IInputFieldMetadata<Configuration>> {
+    public getValue(): Promise<boolean | null> {
+        const result = this.deserialize(this.value?.toString() ?? null);
+        return Promise.resolve(result);
+    }
+
+    public deserialize(value: string | null): Promise<boolean | null> {
+        if (!this.metadata.Required && (value == null || value === '')) {
+            return Promise.resolve(null);
+        }
+
+        const result = value == null ? false : value.toLowerCase() === 'true';
+
+        return Promise.resolve(result);
+    }
+
+    public serialize(value: boolean | null): string | null {
+        if (value == null) {
+            return null;
+        }
+
+        if (this.metadata.Required === true) {
+            return value ? 'true' : null;
+        }
+
+        return value ? 'true' : 'false';
+    }
+} 

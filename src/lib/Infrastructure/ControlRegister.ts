@@ -7,7 +7,7 @@ import * as InputText from '../Inputs/Text.svelte';
 import * as FileUpload from '../Inputs/FileUpload.svelte';
 import * as FlexboxInput from '../Inputs/FlexboxInput.svelte';
 import * as ConditionalValue from '../Inputs/ConditionalValue.svelte';
-import * as CheckBox from '../Inputs/CheckBox.svelte';
+import * as CheckBox from '../Inputs/CheckBox/CheckBox.svelte';
 import * as DateTime from '../Inputs/DateTime.svelte';
 import * as Radio from '../Inputs/Radio.svelte';
 import * as ComplexInput from '../Inputs/ComplexInput.svelte';
@@ -25,7 +25,7 @@ import * as ToggledInput from '../Inputs/ToggledInput.svelte';
 import * as JsonObject from '../Inputs/JsonObject.svelte';
 import * as ListInput from '../Inputs/ListInput.svelte';
 import * as MoneyInput from '../Inputs/Money.svelte';
-import * as Group from '../Inputs/Group.svelte';
+import * as Groups from '../Inputs/Groups/Groups.svelte';
 import * as InputOrOutput from '../Inputs/InputOrOutput.svelte';
 
 // Outputs.
@@ -302,7 +302,7 @@ defaultControlRegister.registerInputComponent('dynamic-input', DynamicInput, { d
 defaultControlRegister.registerInputComponent('json-object', JsonObject);
 defaultControlRegister.registerInputComponent('list-input', ListInput);
 defaultControlRegister.registerInputComponent('money', MoneyInput);
-defaultControlRegister.registerInputComponent('groups', Group);
+defaultControlRegister.registerInputComponent('groups', Groups);
 defaultControlRegister.registerInputComponent('input-or-output', InputOrOutput);
 
 // Outputs.

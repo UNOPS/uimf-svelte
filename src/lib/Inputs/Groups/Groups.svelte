@@ -1,52 +1,15 @@
 <script lang="ts" context="module">
-	import { InputController } from '../Infrastructure/InputController';
-
-	interface IGroups {
-		Items: Record<string, IItem[]>;
-	}
-
-	interface IItem {
-		Label: string;
-		Link: {
-			Url: string;
-		};
-		Value: any;
-	}
-
-	interface IGroup {
-		Index: number;
-		Name: string;
-		Items: IItem[];
-	}
-
-	export class Controller extends InputController<IGroups> {
-		public getValue(): Promise<IGroups | null> {
-			return Promise.resolve(this.value);
-		}
-
-		public deserialize(value: string | null): Promise<IGroups | null> {
-			if (value == null) {
-				return Promise.resolve(null);
-			}
-
-			return Promise.resolve(JSON.parse(value));
-		}
-
-		public serialize(value: IGroups | null): string | null {
-			if (value == null) {
-				return null;
-			}
-
-			return JSON.stringify(value);
-		}
-	}
+	import { GroupsController } from './GroupsController';
+	export { GroupsController as Controller };
 </script>
 
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
-	import { InputComponent } from '../Infrastructure/Component';
+	import { InputComponent } from '../../Infrastructure/Component';
+	import type { IItem } from './IItem';
+	import type { IGroup } from './IGroup';
 
-	export let controller: Controller;
+	export let controller: GroupsController;
 
 	let groups: IGroup[] = [];
 
