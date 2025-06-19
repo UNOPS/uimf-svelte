@@ -1,11 +1,8 @@
 <script context="module" lang="ts">
-	interface Data {
+	export interface TableData {
 		Results: any[];
-		TotalCount: number;
 		Actions: FormLinkData[];
 	}
-
-	export type TableData = Data;
 </script>
 
 <script lang="ts">
@@ -23,10 +20,9 @@
 	let component = new OutputComponent({
 		refresh() {
 			effectiveController = new OutputController<TableData, TableMetadata>({
-				data:
-					controller.value?.length != null
-						? { Results: controller.value, TotalCount: controller.value.length, Actions: [] }
-						: controller.value,
+				data: Array.isArray(controller.value)
+					? { Results: controller.value, TotalCount: controller.value.length, Actions: [] }
+					: controller.value,
 				metadata: controller.metadata,
 				app: controller.app,
 				parent: controller.parent,
