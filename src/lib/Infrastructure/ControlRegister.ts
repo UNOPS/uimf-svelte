@@ -1,4 +1,5 @@
-import { CreateInputOptions, InputController } from '../Infrastructure/InputController';
+import type { CreateInputOptions } from '../Infrastructure/InputController';
+import { InputController } from '../Infrastructure/InputController';
 import { OutputController, type CreateOutputOptions } from './OutputController';
 
 // Inputs.

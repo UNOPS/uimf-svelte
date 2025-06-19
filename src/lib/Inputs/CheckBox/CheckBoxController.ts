@@ -1,6 +1,6 @@
 import { InputController } from '../../Infrastructure/InputController';
 import type { IInputFieldMetadata } from '../../Infrastructure/uimf';
-import { Configuration } from './CheckBoxConfiguration';
+import type { Configuration } from './CheckBoxConfiguration';
 
 export class CheckBoxController extends InputController<boolean, IInputFieldMetadata<Configuration>> {
     public getValue(): Promise<boolean | null> {

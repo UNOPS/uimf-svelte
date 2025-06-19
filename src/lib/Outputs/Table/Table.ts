@@ -12,7 +12,7 @@ import { defaultControlRegister as controlRegister } from '../../Infrastructure/
 import type { TableMetadata } from "./Components/ResultsTable.svelte";
 import type { ITableInputConfiguration } from "../../Inputs/TableInput.svelte";
 import type { IFieldMetadata, IInputFieldMetadata } from "../../Infrastructure/uimf";
-import { IListInputConfiguration } from "../../Inputs/ListInput.svelte";
+import type { IListInputConfiguration } from '../../Inputs/ListInput.svelte';
 
 export interface ITableOption {
     parent: IFormComponent<TableMetadata | IFieldMetadata<ITableInputConfiguration | IListInputConfiguration>>;

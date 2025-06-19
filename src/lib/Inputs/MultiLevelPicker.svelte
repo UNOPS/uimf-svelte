@@ -50,7 +50,7 @@
 	import type { FormResponse } from '../Infrastructure/UimfApp';
 	import type { IInputFieldMetadata } from '$lib/Infrastructure/uimf';
 	import { augmentItems } from './Typeahead/Typeahead.svelte';
-	import { IOption } from './Typeahead/Domain';
+	import type { IOption } from './Typeahead/Domain/index';
 
 	export let controller: Controller;
 

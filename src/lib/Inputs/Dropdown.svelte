@@ -47,12 +47,10 @@
 	import { beforeUpdate } from 'svelte';
 	import type { IInputFieldMetadata } from '../Infrastructure/uimf';
 	import { InputComponent } from '../Infrastructure/Component';
-	import {
-		IOption,
-		ITypeaheadConfig,
-		ITypeaheadValue,
-		TypeaheadSourceManager
-	} from './Typeahead/Domain';
+	import type { IOption } from './Typeahead/Domain/index';
+	import type { ITypeaheadConfig } from './Typeahead/Domain/index';
+	import type { ITypeaheadValue } from './Typeahead/Domain/index';
+	import { TypeaheadSourceManager } from './Typeahead/Domain';
 
 	export let controller: Controller;
 

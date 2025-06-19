@@ -1,4 +1,4 @@
-import { IInputFieldMetadata, IOutputFieldMetadata } from '../../Infrastructure/uimf';
+import type { IInputFieldMetadata, IOutputFieldMetadata } from '../../Infrastructure/uimf';
 import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
 import type { IFormComponent } from '../../Infrastructure/IFormComponent';
 import type { InputController } from '../../Infrastructure/InputController';

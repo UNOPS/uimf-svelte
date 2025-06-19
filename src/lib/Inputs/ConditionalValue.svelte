@@ -1,5 +1,6 @@
 <script lang="ts" context="module">
-	import { CreateInputOptions, InputController } from '../Infrastructure/InputController';
+	import type { CreateInputOptions } from '../Infrastructure/InputController';
+	import { InputController } from '../Infrastructure/InputController';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
 
 	interface Configuration {
@@ -118,13 +119,13 @@
 	});
 
 	controller.inputParent.on('input:change', async function () {
-			let nestedComponentValue = await controller.inputParent?.getValue();
-			show = nestedComponentValue != null;
-		});
+		let nestedComponentValue = await controller.inputParent?.getValue();
+		show = nestedComponentValue != null;
+	});
 </script>
 
 <div class="input-container">
-	<Input controller={controller.inputParent} nolayout={true}	/>
+	<Input controller={controller.inputParent} nolayout={true} />
 	<div class="child-wrapper" class:hidden={!show}>
 		<Input controller={controller.inputChild} nolayout={false} />
 	</div>

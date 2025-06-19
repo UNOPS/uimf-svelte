@@ -42,9 +42,9 @@
 	import type { IFieldMetadata, IOutputFieldMetadata } from '../../../Infrastructure/uimf';
 	import { DocumentationExtension } from '../Extensions/DocumentationExtension';
 	import type { IField } from '../IColumn';
-	import { InputController } from '../../../Infrastructure/InputController';
-	import { IPaginatedData } from '../../PaginatedTable.svelte';
-	import { TableData } from '../../../Outputs/Table.svelte';
+	import type { InputController } from '../../../Infrastructure/InputController';
+	import type { IPaginatedData } from '../../PaginatedTable.svelte';
+	import type { TableData } from '../../../Outputs/Table.svelte';
 
 	export let controller: OutputController<IPaginatedData | TableData, TableMetadata>;
 	export let type: string;

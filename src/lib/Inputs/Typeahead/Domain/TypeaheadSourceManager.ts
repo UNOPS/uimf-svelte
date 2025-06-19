@@ -1,4 +1,4 @@
-import { FormInstance } from "../../../Infrastructure/FormController";
+import type { FormInstance } from '../../../Infrastructure/FormController';
 import type { IOption } from "./IOption";
 import type { ITypeaheadConfig } from "./ITypeaheadConfig";
 import type { IMultiselectValue, ITypeaheadValue } from "./ITypeaheadValue";

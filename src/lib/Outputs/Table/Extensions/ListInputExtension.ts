@@ -1,4 +1,4 @@
-import { IListInputConfiguration } from "../../../Inputs/ListInput.svelte";
+import type { IListInputConfiguration } from '../../../Inputs/ListInput.svelte';
 import type { Table } from "../Table";
 import type { TableBodyCell } from "../TableBodyCell";
 import { TableExtension } from "../TableExtension";

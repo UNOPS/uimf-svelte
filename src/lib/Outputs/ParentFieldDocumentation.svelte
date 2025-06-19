@@ -2,7 +2,7 @@
 	import { beforeUpdate } from 'svelte';
 	import type { OutputController } from '../Infrastructure/OutputController';
 	import { OutputComponent } from '../Infrastructure/Component';
-	import { IOutputFieldMetadata } from '../Infrastructure/uimf';
+	import type { IOutputFieldMetadata } from '../Infrastructure/uimf';
 
 	interface IData {
 		Value: string | null;

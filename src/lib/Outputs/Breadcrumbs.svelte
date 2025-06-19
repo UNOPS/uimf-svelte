@@ -2,8 +2,8 @@
 	import { beforeUpdate } from 'svelte';
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { OutputController } from '../Infrastructure/OutputController';
-	import FormLink, { FormLinkData } from './FormLink.svelte';
-	import { IOutputFieldMetadata } from '../Infrastructure/uimf';
+	import FormLink, { type FormLinkData } from './FormLink.svelte';
+	import type { IOutputFieldMetadata } from '../Infrastructure/uimf';
 	import type { Controller } from '../Outputs/FormLink.svelte';
 
 	interface BreadcrumbsData {

@@ -123,7 +123,7 @@
 	import { InputComponent } from '../Infrastructure/Component';
 	import type { IInputFieldMetadata } from '../Infrastructure/uimf';
 	import { tooltip } from '../Components/Tooltip.svelte';
-	import { FormInstance } from '../Infrastructure/FormController';
+	import type { FormInstance } from '../Infrastructure/FormController';
 
 	export let controller: Controller;
 

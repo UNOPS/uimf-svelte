@@ -56,7 +56,7 @@
 	import { InputComponent } from '../Infrastructure/Component';
 	import { type ITypeaheadMetadata } from './Typeahead/Typeahead.svelte';
 	import { TypeaheadSourceManager } from './Typeahead/Domain/TypeaheadSourceManager';
-	import { IOption } from './Typeahead/Domain';
+	import type { IOption } from './Typeahead/Domain/index';
 
 	export let controller: Controller;
 

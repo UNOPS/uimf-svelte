@@ -1,5 +1,5 @@
 import { InputController } from '../../Infrastructure/InputController';
-import { IGroups } from './IGroups';
+import type { IGroups } from './IGroups';
 
 export class GroupsController extends InputController<IGroups> {
     public getValue(): Promise<IGroups | null> {

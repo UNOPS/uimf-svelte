@@ -1,5 +1,8 @@
 <script lang="ts" context="module">
 	import { OutputController } from '../Infrastructure/OutputController';
+	import type { IFrontendVariableValue } from '../Infrastructure/AppStorage';
+	import type { IOutputFieldMetadata } from '../Infrastructure/uimf';
+
 	export interface FormLinkData {
 		AlternativeView?: IFormlinkView;
 		ToggledVariable?: IFrontendVariableValue;
@@ -64,8 +67,6 @@
 	import { beforeUpdate, tick } from 'svelte';
 	import { OutputComponent } from '../Infrastructure/Component';
 	import { tooltip } from '../Components/Tooltip.svelte';
-	import { IOutputFieldMetadata } from '../Infrastructure/uimf';
-	import { IFrontendVariableValue } from '../Infrastructure/AppStorage';
 
 	export let controller: Controller;
 	export let disabled: boolean = false;

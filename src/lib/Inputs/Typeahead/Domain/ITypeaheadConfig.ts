@@ -1,4 +1,4 @@
-import { IOption } from ".";
+import type { IOption } from './index';
 
 export interface ITypeaheadConfig {
     DefaultValue?: string | null;

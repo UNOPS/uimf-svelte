@@ -54,8 +54,9 @@
 	import { beforeUpdate } from 'svelte';
 	import type { IInputFieldMetadata } from '../../Infrastructure/uimf';
 	import { TypeaheadSourceManager } from './Domain/TypeaheadSourceManager';
-	import { ITypeaheadValue } from './Domain/ITypeaheadValue';
-	import { IOption, ITypeaheadConfig } from './Domain';
+	import type { ITypeaheadValue } from './Domain/ITypeaheadValue';
+	import type { IOption } from './Domain/index';
+	import type { ITypeaheadConfig } from './Domain/index';
 
 	export let controller: Controller;
 

@@ -5,8 +5,9 @@
 	import { InputController } from '../Infrastructure/InputController';
 	import Input from '../Input.svelte';
 	import { defaultControlRegister } from '../Infrastructure/ControlRegister';
-	import { IOutputFieldMetadata } from '../Infrastructure/uimf';
-	import FormLinkComponent, { FormLinkData, makeController } from './FormLink.svelte';
+	import type { IOutputFieldMetadata } from '../Infrastructure/uimf';
+	import type { FormLinkData } from './FormLink.svelte';
+	import FormLinkComponent, { makeController } from './FormLink.svelte';
 
 	interface IData {
 		Actions: FormLinkData[];

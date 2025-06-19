@@ -1,5 +1,6 @@
 <script lang="ts" context="module">
-	import { CreateInputOptions, InputController } from '../Infrastructure/InputController';
+	import type { CreateInputOptions } from '../Infrastructure/InputController';
+	import { InputController } from '../Infrastructure/InputController';
 	import { defaultControlRegister as controlRegister } from '../Infrastructure/ControlRegister';
 
 	interface Configuration {

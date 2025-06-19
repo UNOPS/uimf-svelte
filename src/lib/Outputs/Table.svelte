@@ -12,9 +12,10 @@
 	import { beforeUpdate } from 'svelte';
 
 	import { OutputController } from '../Infrastructure/OutputController';
-	import { FormLinkData } from './FormLink.svelte';
-	import ResultsTable, { TableMetadata } from './Table/Components/ResultsTable.svelte';
+	import type { FormLinkData } from './FormLink.svelte';
+	import type { TableMetadata } from './Table/Components/ResultsTable.svelte';
 	import { OutputComponent } from '../Infrastructure/Component';
+	import ResultsTable from './Table/Components/ResultsTable.svelte';
 
 	export let controller: OutputController<TableData | [], TableMetadata>;
 	let effectiveController: OutputController<TableData, TableMetadata>;

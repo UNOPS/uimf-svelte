@@ -1,7 +1,7 @@
-import { ITypeaheadValue } from "./ITypeaheadValue";
+import type { ITypeaheadValue } from './ITypeaheadValue';
 
 export interface IOption extends ITypeaheadValue {
-	CssClass: string | null | undefined;
+    CssClass: string | null | undefined;
     Label: string;
     SearchText?: string | null;
     Description?: string | null;
