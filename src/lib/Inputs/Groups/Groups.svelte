@@ -8,7 +8,7 @@
 	import { InputComponent } from '../../Infrastructure/Component';
 	import type { IItem } from './IItem';
 	import type { IGroup } from './IGroup';
-	import { IGroups } from './IGroups';
+	import type { IGroups } from './IGroups';
 
 	export let controller: GroupsController;
 
