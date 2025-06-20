@@ -11,7 +11,7 @@ import * as ConditionalValue from '../Inputs/ConditionalValue.svelte';
 import * as BooleanInput from '../Inputs/Boolean/Boolean.svelte';
 import * as DateTime from '../Inputs/DateTime.svelte';
 import * as Radio from '../Inputs/Radio.svelte';
-import * as ComplexInput from '../Inputs/ComplexInput.svelte';
+import * as ComplexInput from '../Inputs/ComplexInput/ComplexInput.svelte';
 import * as ConditionalInput from '../Inputs/ConditionalInput.svelte';
 import * as MultilevelPicker from '../Inputs/MultilevelPicker.svelte';
 import * as InputNumber from '../Inputs/Number.svelte';
