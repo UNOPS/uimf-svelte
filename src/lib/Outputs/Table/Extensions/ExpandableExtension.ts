@@ -1,4 +1,4 @@
-import type { ExpandableConfiguration, ExpandableData } from "$lib/Outputs/Expandable.svelte";
+import type { ExpandableConfiguration, ExpandableData } from "$lib/Outputs/Expandable/Expandable.svelte";
 import { TableBodyCell, type Table, type TableHeadCell, type TableRowGroup } from "..";
 import type { IField } from "../IColumn";
 import { TableExtension } from "../TableExtension";

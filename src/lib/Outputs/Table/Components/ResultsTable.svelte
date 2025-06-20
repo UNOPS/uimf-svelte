@@ -31,11 +31,11 @@
 	import { Table } from '../Table';
 	import { ColumnExtension } from '../Extensions/ColumnExtension';
 	import { ExpandableExtension } from '../Extensions/ExpandableExtension';
-	import FormLink from '../../../Outputs/FormLink.svelte';
+	import FormLink from '../../../Outputs/FormLink/FormLink.svelte';
 	import type {
 		Controller as FormLinkController,
 		FormLinkData
-	} from '../../../Outputs/FormLink.svelte';
+	} from '../../../Outputs/FormLink/FormLink.svelte';
 	import { tooltip } from '../../../Components/Tooltip.svelte';
 	import Output from '../../../Output.svelte';
 	import type { TableExtension } from '../TableExtension';
@@ -43,8 +43,8 @@
 	import { DocumentationExtension } from '../Extensions/DocumentationExtension';
 	import type { IField } from '../IColumn';
 	import type { InputController } from '../../../Infrastructure/InputController';
-	import type { IPaginatedData } from '../../PaginatedTable.svelte';
-	import type { TableData } from '../../../Outputs/Table.svelte';
+	import type { IPaginatedData } from '../../PaginatedTable/PaginatedTable.svelte';
+	import type { TableData } from '../../../Outputs/Table/Table.svelte';
 
 	export let controller: OutputController<IPaginatedData | TableData, TableMetadata>;
 	export let type: string;

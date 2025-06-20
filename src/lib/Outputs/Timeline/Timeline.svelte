@@ -25,10 +25,10 @@
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import CollapsibleSection from './CollapsibleSection.svelte';
-	import type DateTime from '../DateTime.svelte';
-	import ActionList, { ActionListController, type ActionListData } from '../ActionList.svelte';
+	import type DateTime from '../DateTime/DateTime.svelte';
+	import ActionList, { ActionListController, type ActionListData } from '../ActionList/ActionList.svelte';
 	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
-	import InlineForm from '../InlineForm.svelte';
+	import InlineForm from '../InlineForm/InlineForm.svelte';
 
 	export let controller: OutputController<Timeline>;
 

@@ -25,8 +25,8 @@
 	import type { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import CollapsibleSection from './ConversationCollapsibleSection.svelte';
-	import type DateTime from '../DateTime.svelte';
-	import type { FormLinkData } from '../FormLink.svelte';
+	import type DateTime from '../DateTime/DateTime.svelte';
+	import type { FormLinkData } from '../FormLink/FormLink.svelte';
 
 	export let controller: OutputController<Timeline>;
 

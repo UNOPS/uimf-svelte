@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { OutputController } from '../../Infrastructure/OutputController';
-	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
-	import type { Controller, FormLinkData } from '../FormLink.svelte';
-	import FormLink from '../FormLink.svelte';
-	import type DateTime from '../DateTime.svelte';
+	import type { IFieldMetadata } from '$libib/Infrastructure/uimf';
+	import type { Controller, FormLinkData } from '../FormLink/FormLink.svelte';
+	import FormLink from '../FormLink/FormLink.svelte';
+	import type DateTime from '../DateTime/DateTime.svelte';
 
 	export let headerText: string;
 	export let headerContent: string;
