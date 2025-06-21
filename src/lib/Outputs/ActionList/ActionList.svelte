@@ -2,9 +2,10 @@
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
-	import FormLink, { type FormLinkData, makeController } from '../FormLink/FormLink.svelte';
+	import FormLink, { type FormLinkData } from '../FormLink/FormLink.svelte';
 
 	import type { IOutputFieldMetadata } from '$lib/Infrastructure/uimf';
+	import { FormlinkUtilities } from '../FormLink/FormlinkUtilities';
 
 	export interface ActionListData {
 		Actions: FormLinkData[] | null;
@@ -45,7 +46,11 @@
 {#if controller.value?.Actions != null && controller.value?.Actions.length > 0}
 	<div class:action-list={true} class={controller.metadata.Component?.Configuration?.CssClass}>
 		{#each controller.value.Actions as action}
-			<div><FormLink controller={makeController(action, controller)} /></div>
+			<div>
+				<FormLink
+					controller={FormlinkUtilities.createFormlink({ data: action, parent: controller })}
+				/>
+			</div>
 		{/each}
 	</div>
 {/if}
