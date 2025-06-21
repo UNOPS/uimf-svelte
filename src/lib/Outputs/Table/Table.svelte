@@ -1,7 +1,7 @@
 <script context="module" lang="ts">
 	export interface TableData {
 		Results: any[];
-		Actions: FormLinkData[];
+		Actions: IFormLinkData[];
 	}
 </script>
 
@@ -9,7 +9,7 @@
 	import { beforeUpdate } from 'svelte';
 
 	import { OutputController } from '../../Infrastructure/OutputController';
-	import type { FormLinkData } from '../FormLink/FormLink.svelte';
+	import type { IFormLinkData } from '../FormLink/FormLink.svelte';
 	import type { TableMetadata } from './Components/ResultsTable.svelte';
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import ResultsTable from './Components/ResultsTable.svelte';

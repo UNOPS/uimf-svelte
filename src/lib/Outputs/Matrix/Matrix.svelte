@@ -16,8 +16,6 @@
 		public Path!: string | null;
 		public OrderIndex!: number;
 		public Level!: number;
-		//public IsVirtualField?: boolean;
-		//public VirtualFieldName?: string;
 	}
 
 	export interface IMatrixConfiguration extends IOutputFieldMetadata {

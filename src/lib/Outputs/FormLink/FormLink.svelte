@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-	export type { IFormLinkData as FormLinkData } from './FormLinkData';
+	export type { IFormLinkData } from './IFormLinkData';
 	export { DynamicValueSource } from './IDynamicInputValue';
 	export type { IDynamicInputValue } from './IDynamicInputValue';
 	export type { IFormlinkView } from './IFormlinkView';

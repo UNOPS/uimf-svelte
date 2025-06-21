@@ -1,4 +1,4 @@
-import type { FormLinkData } from "$lib/Outputs/FormLink/FormLink.svelte";
+import type { IFormLinkData } from "$lib/Outputs/FormLink/FormLink.svelte";
 import AppStorage from "./AppStorage";
 import type { FormInstance } from "./FormController";
 import type { IFieldMetadata, FormMetadata } from "./uimf";
@@ -63,7 +63,7 @@ export default interface IUimfApp {
     renderForm(options: { data: any, metadata: IFieldMetadata, form: FormInstance | null }): Element;
     runResponseHandler(response: FormResponse): Promise<void>;
     runClientFunctions(response: FormResponse, parentForm?: FormInstance | null): Promise<void>;
-    handleCustomFormLinkAction(value: FormLinkData): void;
+    handleCustomFormLinkAction(value: IFormLinkData): void;
     confirm(options: IConfirmOptions): Promise<void>;
     alert(options: IAlertOptions): Promise<void>;
     openModal(options: IModalOptions): Promise<void>;

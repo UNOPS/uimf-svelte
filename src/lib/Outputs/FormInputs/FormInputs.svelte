@@ -6,12 +6,12 @@
 	import Input from '../../Input.svelte';
 	import { defaultControlRegister } from '../../Infrastructure/ControlRegister';
 	import type { IOutputFieldMetadata } from '../../Infrastructure/uimf';
-	import type { FormLinkData } from '../FormLink/FormLink.svelte';
-	import FormLinkComponent, from '../FormLink/FormLink.svelte';
+	import type { IFormLinkData } from '../FormLink/FormLink.svelte';
+	import FormLinkComponent from '../FormLink/FormLink.svelte';
 	import { FormlinkUtilities } from '../FormLink/FormlinkUtilities';
 
 	interface IData {
-		Actions: FormLinkData[];
+		Actions: IFormLinkData[];
 	}
 
 	interface IConfiguration {
@@ -28,7 +28,7 @@
 	export let controller: OutputController<IData, IOutputFieldMetadata<IConfiguration | null>>;
 
 	let visibleInputs: InputController<any>[] = [];
-	let effectiveActions: FormLinkData[] = [];
+	let effectiveActions: IFormLinkData[] = [];
 	let layout: FormInputLayout = FormInputLayout.Default;
 
 	let component = new OutputComponent({

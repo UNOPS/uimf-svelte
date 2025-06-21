@@ -2,13 +2,13 @@
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
-	import FormLink, { type FormLinkData } from '../FormLink/FormLink.svelte';
+	import FormLink, { type IFormLinkData } from '../FormLink/FormLink.svelte';
 
 	import type { IOutputFieldMetadata } from '$lib/Infrastructure/uimf';
 	import { FormlinkUtilities } from '../FormLink/FormlinkUtilities';
 
 	export interface ActionListData {
-		Actions: FormLinkData[] | null;
+		Actions: IFormLinkData[] | null;
 	}
 
 	interface IConfiguration {

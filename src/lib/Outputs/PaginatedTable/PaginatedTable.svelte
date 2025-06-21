@@ -2,20 +2,20 @@
 	export interface IPaginatedData {
 		Results: any[];
 		TotalCount: number;
-		Actions: FormLinkData[];
+		Actions: IFormLinkData[];
 	}
 </script>
 
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
-	import { type FormLinkData } from '../FormLink/FormLink.svelte';
+	import { type IFormLinkData } from '../FormLink/FormLink.svelte';
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import Pager from '../Table/Components/Pager.svelte';
 	import ResultsTable, { type TableMetadata } from '../Table/Components/ResultsTable.svelte';
 	import { OutputComponent } from '../../Infrastructure/Component';
 
 	export let controller: OutputController<IPaginatedData, TableMetadata>;
-	export class Controller extends OutputController<FormLinkData> {}
+	export class Controller extends OutputController<IFormLinkData> {}
 
 	let component = new OutputComponent({
 		refresh() {

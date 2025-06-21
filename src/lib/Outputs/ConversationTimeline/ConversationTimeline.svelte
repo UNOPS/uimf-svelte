@@ -1,9 +1,4 @@
 <script lang="ts" context="module">
-	interface FormData {
-		Form: string;
-		InputFieldValues: any[];
-	}
-
 	interface TimelineItem {
 		Label: string;
 		Date: DateTime;
@@ -12,7 +7,7 @@
 		Icon: string;
 		Color: string;
 		Recipients: string;
-		Action: FormLinkData | null;
+		Action: IFormLinkData | null;
 	}
 
 	interface Timeline {
@@ -26,7 +21,7 @@
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import CollapsibleSection from './ConversationCollapsibleSection.svelte';
 	import type DateTime from '../DateTime/DateTime.svelte';
-	import type { FormLinkData } from '../FormLink/FormLink.svelte';
+	import type { IFormLinkData } from '../FormLink/FormLink.svelte';
 
 	export let controller: OutputController<Timeline>;
 
@@ -78,12 +73,11 @@
 		>
 			<div class="collapsible" style:background-color={AddOpacity(item.Color)}>
 				<div class="collapsible-content">
-					
 					{#if item.Recipients}
 						<div class="recipient">
 							External recipients: {item.Recipients}
 						</div>
-						<hr>
+						<hr />
 					{/if}
 
 					{@html RemoveWidthStyling(item.Content)}
