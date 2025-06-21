@@ -5,7 +5,7 @@
 	import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
 	import type { IFieldMetadata, IComponent, IOutputFieldMetadata } from '../../Infrastructure/uimf';
 	import { tooltip } from '../../Components/Tooltip.svelte';
-	import { OutputFieldMetadataFactory } from '$lib/Infrastructure/OutputFieldMetadataFactory';
+	import { OutputFieldMetadataFactory } from '../../Infrastructure/OutputFieldMetadataFactory';
 
 	export let controller: OutputController<OutputData, IOutputFieldMetadata<Configuration>>;
 

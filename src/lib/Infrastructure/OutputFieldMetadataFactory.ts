@@ -1,4 +1,4 @@
-import { IComponent, IOutputFieldMetadata } from "./uimf";
+import type { IComponent, IOutputFieldMetadata } from "./uimf";
 import uuid from "./uuid";
 
 export class OutputFieldMetadataFactory {

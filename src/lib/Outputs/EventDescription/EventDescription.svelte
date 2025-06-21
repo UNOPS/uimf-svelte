@@ -6,7 +6,7 @@
 	import type { IFormLinkData } from '../FormLink/FormLink.svelte';
 	import FormLink from '../FormLink/FormLink.svelte';
 	import { FormlinkUtilities } from '../FormLink/FormlinkUtilities';
-	import { OutputFieldMetadataFactory } from '$lib/Infrastructure/OutputFieldMetadataFactory';
+	import { OutputFieldMetadataFactory } from '../../Infrastructure/OutputFieldMetadataFactory';
 
 	interface EventDescriptionData {
 		Event: string | null;

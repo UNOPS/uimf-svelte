@@ -13,8 +13,8 @@
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
-	import type { IFieldMetadata, IComponent, IOutputFieldMetadata } from '../../Infrastructure/uimf';
-	import uuid from '$lib/Infrastructure/uuid';
+	import type { IComponent, IOutputFieldMetadata } from '../../Infrastructure/uimf';
+	import uuid from '../../Infrastructure/uuid';
 
 	export let controller: OutputController<ImageOverlay, IMetadata>;
 

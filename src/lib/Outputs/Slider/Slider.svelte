@@ -10,7 +10,7 @@
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
 	import type { IComponent, IOutputFieldMetadata } from '../../Infrastructure/uimf';
-	import { OutputFieldMetadataFactory } from '$lib/Infrastructure/OutputFieldMetadataFactory';
+	import { OutputFieldMetadataFactory } from '../../Infrastructure/OutputFieldMetadataFactory';
 
 	export let controller: OutputController<any, IOutputFieldMetadata<SliderConfiguration>>;
 
