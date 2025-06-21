@@ -26,16 +26,12 @@
 	import { OutputComponent } from '../../../Infrastructure/Component';
 	import { beforeUpdate } from 'svelte';
 	import { ActionListColumnExtension } from '../Extensions/ActionListColumnExtension';
-	import { BulkAction, BulkActionsColumnExtension } from '../Extensions/BulkActionsColumnExtension';
+	import { BulkActionsColumnExtension } from '../Extensions/BulkActionsColumnExtension';
 	import { RowExtension } from '../Extensions/RowExtension';
 	import { Table } from '../Table';
 	import { ColumnExtension } from '../Extensions/ColumnExtension';
 	import { ExpandableExtension } from '../Extensions/ExpandableExtension';
 	import FormLink from '../../../Outputs/FormLink/FormLink.svelte';
-	import type {
-		Controller as FormLinkController,
-		FormLinkData
-	} from '../../../Outputs/FormLink/FormLink.svelte';
 	import { tooltip } from '../../../Components/Tooltip.svelte';
 	import Output from '../../../Output.svelte';
 	import type { TableExtension } from '../TableExtension';
@@ -45,6 +41,7 @@
 	import type { InputController } from '../../../Infrastructure/InputController';
 	import type { IPaginatedData } from '../../PaginatedTable/PaginatedTable.svelte';
 	import type { TableData } from '../../../Outputs/Table/Table.svelte';
+	import { FormlinkUtilities } from '../../../Outputs/FormLink/FormlinkUtilities';
 
 	export let controller: OutputController<IPaginatedData | TableData, TableMetadata>;
 	export let type: string;
@@ -104,16 +101,6 @@
 		}
 	});
 
-	const makeFormLinkController = (formlink: FormLinkData | BulkAction) => {
-		return new OutputController<FormLinkData>({
-			metadata: {} as IOutputFieldMetadata,
-			data: formlink,
-			form: controller.form,
-			app: controller.app,
-			parent: controller
-		}) as FormLinkController;
-	};
-
 	function getExportField(): string | null {
 		let path: string | null = null;
 
@@ -143,7 +130,10 @@
 				{#if bulkActions.length > 0}
 					<div class="bulk-actions">
 						{#each bulkActions as action}
-							<FormLink controller={makeFormLinkController(action)} disabled={action.disabled} />
+							<FormLink
+								controller={FormlinkUtilities.createFormlink({ data: action, parent: controller })}
+								disabled={action.disabled}
+							/>
 						{/each}
 					</div>
 				{/if}
@@ -151,18 +141,23 @@
 				{#if regularActions.length > 0 || canExport}
 					<div class="regular-actions">
 						{#each regularActions as action}
-							<FormLink controller={makeFormLinkController(action)} />
+							<FormLink
+								controller={FormlinkUtilities.createFormlink({ data: action, parent: controller })}
+							/>
 						{/each}
 
 						{#if canExport && controller.form != null}
 							<FormLink
-								controller={makeFormLinkController({
-									Label: '',
-									Action: 'excel-export',
-									InputFieldValues: inputFieldValues,
-									Form: controller.form.metadata.Id,
-									Field: getExportField(),
-									Icon: 'fas fa-download'
+								controller={FormlinkUtilities.createFormlink({
+									data: {
+										Label: '',
+										Action: 'excel-export',
+										InputFieldValues: inputFieldValues,
+										Form: controller.form.metadata.Id,
+										Field: getExportField(),
+										Icon: 'fas fa-download'
+									},
+									parent: controller
 								})}
 							/>
 						{/if}

@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { OutputController } from '../../Infrastructure/OutputController';
-	import type { IFieldMetadata } from '$libib/Infrastructure/uimf';
-	import type { Controller, FormLinkData } from '../FormLink/FormLink.svelte';
-	import FormLink from '../FormLink/FormLink.svelte';
+	import FormLink, { type IFormLinkData } from '../FormLink/FormLink.svelte';
 	import type DateTime from '../DateTime/DateTime.svelte';
+	import { FormlinkUtilities } from '../FormLink/FormlinkUtilities';
 
 	export let headerText: string;
 	export let headerContent: string;
@@ -12,7 +11,7 @@
 	export let icon: string;
 	export let color: string;
 	export let isLast: boolean;
-	export let action: FormLinkData | null;
+	export let action: IFormLinkData | null;
 	export let controller: OutputController<Timeline>;
 
 	interface TimelineItem {
@@ -37,16 +36,6 @@
 
 	function ellipse(text: string) {
 		return text.replace(/<[^>]*>?/gm, '').substring(0, 30) + '...';
-	}
-
-	function buildControllers(data: FormLinkData | null) {
-		return new OutputController<FormLinkData>({
-			metadata: {} as IFieldMetadata,
-			data: data,
-			form: controller.form!,
-			app: controller.app,
-			parent: controller
-		}) as Controller;
 	}
 </script>
 
@@ -74,8 +63,10 @@
 					on:click={() => (expanded = !expanded)}
 				>
 					<div class="header-container">
-						{#if isExternal}
-							<FormLink controller={buildControllers(action)} />
+						{#if isExternal && action != null}
+							<FormLink
+								controller={FormlinkUtilities.createFormlink({ data: action, parent: controller })}
+							/>
 						{/if}
 
 						<div class="header-text">{headerText}</div>

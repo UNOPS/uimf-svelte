@@ -2,12 +2,11 @@
 	import { beforeUpdate } from 'svelte';
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import { OutputController } from '../../Infrastructure/OutputController';
-	import FormLink, { type FormLinkData } from '../FormLink/FormLink.svelte';
-	import type { IOutputFieldMetadata } from '../../Infrastructure/uimf';
-	import type { Controller } from '../FormLink/FormLink.svelte';
+	import FormLink, { type IFormLinkData } from '../FormLink/FormLink.svelte';
+	import { FormlinkUtilities } from '../FormLink/FormlinkUtilities';
 
 	interface BreadcrumbsData {
-		Path: FormLinkData[];
+		Path: IFormLinkData[];
 	}
 
 	export let controller: OutputController<BreadcrumbsData>;
@@ -19,16 +18,6 @@
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
-
-	const makeController = (value: FormLinkData) => {
-		return new OutputController<FormLinkData>({
-			metadata: {} as IOutputFieldMetadata,
-			data: value,
-			form: controller.form!,
-			app: controller.app,
-			parent: controller
-		}) as Controller;
-	};
 </script>
 
 {#if controller.value?.Path?.length > 0}
@@ -36,7 +25,9 @@
 		<ol class="breadcrumb">
 			{#each controller.value.Path as link}
 				<li class="breadcrumb-item active">
-					<FormLink controller={makeController(link)} />
+					<FormLink
+						controller={FormlinkUtilities.createFormlink({ data: link, parent: controller })}
+					/>
 				</li>
 			{/each}
 		</ol>

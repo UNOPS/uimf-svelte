@@ -3,16 +3,16 @@
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import DateTime, { DateTimeController } from '../DateTime/DateTime.svelte';
-	import type { FormLinkData } from '../FormLink/FormLink.svelte';
+	import type { IFormLinkData } from '../FormLink/FormLink.svelte';
 	import FormLink from '../FormLink/FormLink.svelte';
-	import type { IFieldMetadata } from '../../Infrastructure/uimf';
+	import { FormlinkUtilities } from '../FormLink/FormlinkUtilities';
 
 	interface EventDescriptionData {
 		Event: string | null;
 		Date: string;
 		HideTime: boolean;
 		DisplayFormat: string;
-		TriggeredBy: FormLinkData | null;
+		TriggeredBy: IFormLinkData | null;
 	}
 
 	export let controller: OutputController<EventDescriptionData>;
@@ -24,16 +24,6 @@
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
-
-	const makeFormLinkController = (value: FormLinkData) => {
-		return new OutputController<FormLinkData>({
-			metadata: {} as IFieldMetadata,
-			data: value,
-			form: controller.form!,
-			app: controller.app,
-			parent: controller
-		});
-	};
 
 	const makeDateTimeController = (value: EventDescriptionData) => {
 		return new DateTimeController({
@@ -72,7 +62,12 @@
 				<span>by</span>
 			{/if}
 			{#if controller.value.TriggeredBy.Form !== null}
-				<FormLink controller={makeFormLinkController(controller.value.TriggeredBy)} />
+				<FormLink
+					controller={FormlinkUtilities.createFormlink({
+						data: controller.value.TriggeredBy,
+						parent: controller
+					})}
+				/>
 			{:else}
 				<span>
 					{controller.value.TriggeredBy.Label}
