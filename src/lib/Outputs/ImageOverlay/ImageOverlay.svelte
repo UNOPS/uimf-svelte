@@ -14,6 +14,7 @@
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
 	import type { IFieldMetadata, IComponent, IOutputFieldMetadata } from '../../Infrastructure/uimf';
+	import uuid from '$lib/Infrastructure/uuid';
 
 	export let controller: OutputController<ImageOverlay, IMetadata>;
 
@@ -59,7 +60,7 @@
 			metadata: {
 				Component: inner,
 				Hidden: false,
-				Id: Date.now().toString(),
+				Id: uuid(),
 				Label: '',
 				OrderIndex: 0,
 				HideIfNull: false,

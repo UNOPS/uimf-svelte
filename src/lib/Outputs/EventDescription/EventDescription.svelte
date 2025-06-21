@@ -6,6 +6,7 @@
 	import type { IFormLinkData } from '../FormLink/FormLink.svelte';
 	import FormLink from '../FormLink/FormLink.svelte';
 	import { FormlinkUtilities } from '../FormLink/FormlinkUtilities';
+	import { OutputFieldMetadataFactory } from '$lib/Infrastructure/OutputFieldMetadataFactory';
 
 	interface EventDescriptionData {
 		Event: string | null;
@@ -27,18 +28,12 @@
 
 	const makeDateTimeController = (value: EventDescriptionData) => {
 		return new DateTimeController({
-			metadata: {
-				Id: '',
-				Hidden: false,
-				Label: '',
-				OrderIndex: 0,
-				Component: {
-					Type: 'datetime',
-					Configuration: {
-						HideTime: value?.HideTime ?? false
-					}
+			metadata: OutputFieldMetadataFactory.fromComponent({
+				Type: 'datetime',
+				Configuration: {
+					HideTime: value?.HideTime ?? false
 				}
-			},
+			}),
 			data: value.Date,
 			form: controller.form!,
 			app: controller.app,

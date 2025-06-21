@@ -5,6 +5,7 @@
 	import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
 	import type { IFieldMetadata, IComponent, IOutputFieldMetadata } from '../../Infrastructure/uimf';
 	import { tooltip } from '../../Components/Tooltip.svelte';
+	import { OutputFieldMetadataFactory } from '$lib/Infrastructure/OutputFieldMetadataFactory';
 
 	export let controller: OutputController<OutputData, IOutputFieldMetadata<Configuration>>;
 
@@ -48,13 +49,7 @@
 		let inner: ComponentController = {
 			component: controlRegister.outputs[component.Type].component,
 			controller: new OutputController<any>({
-				metadata: {
-					Hidden: false,
-					Id: Date.now().toString(),
-					Label: '',
-					OrderIndex: 0,
-					Component: component
-				},
+				metadata: OutputFieldMetadataFactory.fromComponent(component),
 				data: null,
 				form: controller.form!,
 				app: controller.app,

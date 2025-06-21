@@ -10,6 +10,7 @@
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
 	import type { IComponent, IOutputFieldMetadata } from '../../Infrastructure/uimf';
+	import { OutputFieldMetadataFactory } from '$lib/Infrastructure/OutputFieldMetadataFactory';
 
 	export let controller: OutputController<any, IOutputFieldMetadata<SliderConfiguration>>;
 
@@ -35,13 +36,9 @@
 				index,
 				component: nestedComponent,
 				controller: new OutputController<any>({
-					metadata: {
-						Component: controller.metadata.Component.Configuration.Item,
-						Hidden: false,
-						Id: Date.now().toString(),
-						Label: '',
-						OrderIndex: 0
-					} as IOutputFieldMetadata,
+					metadata: OutputFieldMetadataFactory.fromComponent(
+						controller.metadata.Component.Configuration.Item
+					),
 					data: null,
 					form: controller.form!,
 					app: controller.app,

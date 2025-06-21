@@ -17,6 +17,7 @@
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
 	import type { IFieldMetadata, IComponent, IOutputFieldMetadata } from '../../Infrastructure/uimf';
+	import { OutputFieldMetadataFactory } from '$lib/Infrastructure/OutputFieldMetadataFactory';
 
 	export let controller: OutputController<any, IMetadata>;
 
@@ -56,13 +57,7 @@
 			return {
 				component: controlRegister.outputs[inner.Type].component,
 				controller: new OutputController<any>({
-					metadata: {
-						Component: inner,
-						Hidden: false,
-						Id: Date.now().toString(),
-						Label: '',
-						OrderIndex: 0
-					} as IOutputFieldMetadata,
+					metadata: OutputFieldMetadataFactory.fromComponent(inner),
 					data: item,
 					form: controller.form!,
 					app: controller.app,
