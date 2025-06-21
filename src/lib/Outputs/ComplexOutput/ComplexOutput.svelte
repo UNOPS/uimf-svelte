@@ -2,10 +2,8 @@
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
-	import type { IOutputFieldMetadata } from '$lib../../Infrastructure/uimf';
+	import type { IOutputFieldMetadata } from '../../Infrastructure/uimf';
 	import Output from '../../Output.svelte';
-
-	type Group<Tkey extends string | number | symbol, TItem> = { Key: Tkey; Items: TItem[] };
 
 	interface IComplexOutputFieldMetadata extends IOutputFieldMetadata {
 		CustomProperties?: {

@@ -19,8 +19,11 @@
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
-	import ActionList, { ActionListController, type ActionListData } from '../ActionList/ActionList.svelte';
-	import type { IFieldMetadata } from '$lib../../Infrastructure/uimf';
+	import ActionList, {
+		ActionListController,
+		type ActionListData
+	} from '../ActionList/ActionList.svelte';
+	import type { IFieldMetadata } from '../../Infrastructure/uimf';
 
 	export let controller: OutputController<Image>;
 	export let height: string | null;

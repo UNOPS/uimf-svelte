@@ -8,7 +8,7 @@
 	import { beforeUpdate } from 'svelte';
 	import type { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
-	import type { IFieldMetadata } from '$lib../../Infrastructure/uimf';
+	import type { IFieldMetadata } from '../../Infrastructure/uimf';
 
 	export let controller: OutputController<number, IFieldMetadata<Configuration>>;
 	let displayValue: string | null = null;
