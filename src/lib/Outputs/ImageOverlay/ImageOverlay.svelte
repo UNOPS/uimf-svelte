@@ -5,7 +5,7 @@
 		CssClass?: string;
 	}
 
-	interface IMetadata extends IFieldMetadata<Configuration> {}
+	interface IMetadata extends IOutputFieldMetadata<Configuration> {}
 </script>
 
 <script lang="ts">

@@ -4,14 +4,17 @@
 		Format?: string;
 	}
 
-	export class DateTimeController extends OutputController<string, IFieldMetadata<Configuration>> {}
+	export class DateTimeController extends OutputController<
+		string,
+		IOutputFieldMetadata<Configuration>
+	> {}
 </script>
 
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
-	import type { IFieldMetadata } from '../../Infrastructure/uimf';
+	import type { IOutputFieldMetadata } from '../../Infrastructure/uimf';
 
 	export let controller: DateTimeController;
 	let options: Intl.DateTimeFormatOptions | null = null;

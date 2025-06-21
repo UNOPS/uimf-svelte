@@ -3,10 +3,10 @@
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
-	import type { IFieldMetadata, IComponent } from '../../Infrastructure/uimf';
+	import type { IFieldMetadata, IComponent, IOutputFieldMetadata } from '../../Infrastructure/uimf';
 	import { tooltip } from '../../Components/Tooltip.svelte';
 
-	export let controller: OutputController<OutputData, IFieldMetadata<Configuration>>;
+	export let controller: OutputController<OutputData, IOutputFieldMetadata<Configuration>>;
 
 	interface Configuration {
 		Inner: IComponent;

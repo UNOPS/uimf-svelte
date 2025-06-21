@@ -16,7 +16,7 @@
 
 	const handleClick = (tabValue: number) => () => (activeTabValue = tabValue);
 
-	export let controller: OutputController<any, IFieldMetadata<Configuration>>;
+	export let controller: OutputController<any, IOutputFieldMetadata<Configuration>>;
 
 	let component = new OutputComponent({
 		refresh() {
@@ -40,7 +40,7 @@
 			let componentController = {
 				component: controlRegister.outputs[property.Component.Type].component,
 				controller: new OutputController<any>({
-					metadata: property,
+					metadata: property as IOutputFieldMetadata,
 					data: null,
 					form: controller.form!,
 					app: controller.app,

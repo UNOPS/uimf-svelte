@@ -26,8 +26,11 @@
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import CollapsibleSection from './CollapsibleSection.svelte';
 	import type DateTime from '../DateTime/DateTime.svelte';
-	import ActionList, { ActionListController, type ActionListData } from '../ActionList/ActionList.svelte';
-	import type { IFieldMetadata } from '$lib/Infrastructure/uimf';
+	import ActionList, {
+		ActionListController,
+		type ActionListData
+	} from '../ActionList/ActionList.svelte';
+	import type { IFieldMetadata, IOutputFieldMetadata } from '$lib/Infrastructure/uimf';
 	import InlineForm from '../InlineForm/InlineForm.svelte';
 
 	export let controller: OutputController<Timeline>;
@@ -40,7 +43,7 @@
 
 	function buildControllers(data: ActionListData) {
 		return new OutputController<ActionListData>({
-			metadata: {} as IFieldMetadata,
+			metadata: {} as IOutputFieldMetadata,
 			data: data,
 			form: controller.form!,
 			app: controller.app,
@@ -50,7 +53,7 @@
 
 	function getController(data: FormData) {
 		return new OutputController<FormData>({
-			metadata: {} as IFieldMetadata,
+			metadata: {} as IOutputFieldMetadata,
 			data: data,
 			form: controller.form!,
 			app: controller.app,

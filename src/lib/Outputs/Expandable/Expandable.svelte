@@ -27,7 +27,7 @@
 
 	class ExpandableController extends OutputController<
 		ExpandableItem,
-		IFieldMetadata<ExpandableConfiguration>
+		IOutputFieldMetadata<ExpandableConfiguration>
 	> {}
 
 	export let controller: ExpandableController;
@@ -57,7 +57,7 @@
 					Id: Date.now().toString(),
 					Label: '',
 					OrderIndex: 0
-				},
+				} as IOutputFieldMetadata,
 				data: controller.value.Visible,
 				form: controller.form!,
 				app: controller.app,
@@ -72,7 +72,7 @@
 						Id: Date.now().toString(),
 						Label: '',
 						OrderIndex: 0
-					},
+					} as IOutputFieldMetadata,
 					data: controller.value.Hidden,
 					form: controller.form!,
 					app: controller.app,

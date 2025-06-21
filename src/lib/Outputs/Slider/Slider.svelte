@@ -11,7 +11,7 @@
 	import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
 	import type { IFieldMetadata, IComponent } from '$lib../../Infrastructure/uimf';
 
-	export let controller: OutputController<any, IFieldMetadata<SliderConfiguration>>;
+	export let controller: OutputController<any, IOutputFieldMetadata<SliderConfiguration>>;
 
 	class ComponentController {
 		index: number = 1;
@@ -41,7 +41,7 @@
 						Id: Date.now().toString(),
 						Label: '',
 						OrderIndex: 0
-					},
+					} as IOutputFieldMetadata,
 					data: null,
 					form: controller.form!,
 					app: controller.app,
@@ -108,9 +108,7 @@
 
 	// Adjust height dynamically based on number of items
 	$: dynamicHeight =
-		componentItemControllers.length > 0
-			? Math.min(80, 400 / componentItemControllers.length)
-			: 80;
+		componentItemControllers.length > 0 ? Math.min(80, 400 / componentItemControllers.length) : 80;
 </script>
 
 <div class="slider-container">
@@ -141,7 +139,9 @@
 				<button
 					class="next"
 					on:click={nextSlide}
-					style="visibility: {currentIndex < componentItemControllers.length ? 'visible' : 'hidden'}"
+					style="visibility: {currentIndex < componentItemControllers.length
+						? 'visible'
+						: 'hidden'}"
 				>
 					&#10095;
 				</button>

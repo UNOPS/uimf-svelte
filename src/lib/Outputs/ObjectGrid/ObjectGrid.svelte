@@ -8,7 +8,7 @@
 		ItemCssClass?: string;
 	}
 
-	interface IMetadata extends IFieldMetadata<Configuration> {}
+	interface IMetadata extends IOutputFieldMetadata<Configuration> {}
 </script>
 
 <script lang="ts">
@@ -62,7 +62,7 @@
 						Id: Date.now().toString(),
 						Label: '',
 						OrderIndex: 0
-					},
+					} as IOutputFieldMetadata,
 					data: item,
 					form: controller.form!,
 					app: controller.app,
