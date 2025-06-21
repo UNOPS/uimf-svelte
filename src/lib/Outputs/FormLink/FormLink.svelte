@@ -1,74 +1,19 @@
 <script lang="ts" context="module">
-	import { OutputController } from '../../Infrastructure/OutputController';
-	import type { IFrontendVariableValue } from '../../Infrastructure/AppStorage';
-	import type { IOutputFieldMetadata } from '../../Infrastructure/uimf';
-
-	export interface FormLinkData {
-		AlternativeView?: IFormlinkView;
-		ToggledVariable?: IFrontendVariableValue;
-		Icon?: string;
-		Label?: string;
-		Target?: string | null;
-		ConfirmationMessage?: string;
-		InputFieldValues?: any;
-		Action?: any;
-		RequiredPermission?: string;
-		Form: string;
-		Field?: string | null;
-		Controller?: any;
-		DocumentType?: string;
-		Filename?: string;
-		CssClass?: string;
-		Tooltip?: string;
-		Deadline?: string;
-		RenderInputTargets?: { [key: string]: string };
-		RenderOutputTargets?: { [key: string]: string };
-		DynamicInputValues?: { [key: string]: IDynamicInputValue };
-
-		// Html modal options.
-		StateParams?: any;
-		TemplateUrl?: string;
-		Resolve?: any;
-		Size?: string;
-		WindowClass?: string;
-	}
-
-	interface IDynamicInputValue {
-		Name: string;
-		Source: DynamicValueSource;
-	}
-
-	enum DynamicValueSource {
-		ParentForm = 'ParentForm',
-		FrontendVariable = 'FrontendVariable'
-	}
-
-	interface IFormlinkView {
-		CssClass?: string;
-		Icon?: string;
-		Label?: string;
-		RequiredValue: IFrontendVariableValue;
-	}
-
-	export class Controller extends OutputController<FormLinkData> {}
-
-	export function makeController(value: FormLinkData, parent: OutputController<any, any>) {
-		return new OutputController<FormLinkData>({
-			metadata: {} as IOutputFieldMetadata,
-			data: value,
-			form: parent.form!,
-			app: parent.app,
-			parent: parent
-		}) as Controller;
-	}
+	export type { IFormLinkData as FormLinkData } from './FormLinkData';
+	export { DynamicValueSource } from './IDynamicInputValue';
+	export type { IDynamicInputValue } from './IDynamicInputValue';
+	export type { IFormlinkView } from './IFormlinkView';
+	export { FormlinkController as Controller } from './FormLinkController';
 </script>
 
 <script lang="ts">
-	import { beforeUpdate, tick } from 'svelte';
+	import { beforeUpdate } from 'svelte';
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import { tooltip } from '../../Components/Tooltip.svelte';
+	import type { FormlinkController } from './FormLinkController';
+	import { DynamicValueSource } from './IDynamicInputValue';
 
-	export let controller: Controller;
+	export let controller: FormlinkController;
 	export let disabled: boolean = false;
 
 	let allowed: boolean;
@@ -155,7 +100,7 @@
 	 * @param controller - The controller for the form link.
 	 * @returns The input values with which the form link should be submitted.
 	 */
-	async function getInputValues(controller: Controller) {
+	async function getInputValues(controller: FormlinkController) {
 		const dynamicInputValues = controller.value.DynamicInputValues;
 
 		const result = controller.value.InputFieldValues || {};
