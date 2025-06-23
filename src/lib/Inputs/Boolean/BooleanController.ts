@@ -1,8 +1,8 @@
 import { InputController } from '../../Infrastructure/InputController';
 import type { IInputFieldMetadata } from '../../Infrastructure/uimf';
-import type { Configuration } from './CheckBoxConfiguration';
+import type { BooleanConfiguration } from './BooleanConfiguration';
 
-export class CheckBoxController extends InputController<boolean, IInputFieldMetadata<Configuration>> {
+export class BooleanController extends InputController<boolean, IInputFieldMetadata<BooleanConfiguration>> {
     public getValue(): Promise<boolean | null> {
         const result = this.deserialize(this.value?.toString() ?? null);
         return Promise.resolve(result);

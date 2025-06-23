@@ -1,9 +1,13 @@
+<script lang="ts" context="module">
+	export { BooleanController as Controller } from './BooleanController';
+</script>
+
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../../Infrastructure/Component';
-	import { CheckBoxController } from './CheckBoxController';
+	import { BooleanController } from './BooleanController';
 
-	export let controller: CheckBoxController;
+	export let controller: BooleanController;
 
 	let component = new InputComponent({
 		refresh() {
