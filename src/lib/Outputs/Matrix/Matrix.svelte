@@ -214,8 +214,7 @@
 
 <style lang="scss">
 	.first-column {
-		width: 100px;
-		white-space: nowrap;
+		white-space: wrap;
 		background-color: var(--app-primary-bg-subtle);
 		color: var(--app-primary-text-emphasis);
 		padding-left: 40px;
