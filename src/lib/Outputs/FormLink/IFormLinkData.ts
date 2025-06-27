@@ -3,6 +3,7 @@ import type { IDynamicInputValue } from './IDynamicInputValue';
 import type { IFormlinkView } from './IFormlinkView';
 
 export interface IFormLinkData {
+	VisibleOnlyTo?: string[];
 	AlternativeView?: IFormlinkView;
 	ToggledVariable?: IFrontendVariableValue;
 	Icon?: string;

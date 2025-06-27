@@ -238,7 +238,8 @@
 							controller.app.showFormInSection(
 								controller.value.Form,
 								inputs,
-								controller.value.Target
+								controller.value.Target,
+								controller.value.VisibleOnlyTo
 							);
 						}
 						break;

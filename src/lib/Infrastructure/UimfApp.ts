@@ -59,7 +59,7 @@ interface ColorOptions {
 
 export default interface IUimfApp {
     appStorage: AppStorage;
-    showFormInSection(formId: string, inputFieldValues: any, sectionId: string): void;
+    showFormInSection(formId: string, inputFieldValues: any, sectionId: string, visibleOnlyTo?: string[]): void;
     renderForm(options: { data: any, metadata: IFieldMetadata, form: FormInstance | null }): Element;
     runResponseHandler(response: FormResponse): Promise<void>;
     runClientFunctions(response: FormResponse, parentForm?: FormInstance | null): Promise<void>;
