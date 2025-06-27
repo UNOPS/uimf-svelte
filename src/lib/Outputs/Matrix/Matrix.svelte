@@ -39,6 +39,13 @@
 
 	let columns: { [key: string]: OutputController<any, IOutputFieldMetadata<any>> }[] = [];
 	let rows: RowMetadata[] = [];
+	let colgroups: { span: number; style?: string }[] = [];
+	let isColored = false;
+	
+	function getColor(index: number): string {
+		const colors = ['#fff9e6', '#eaf7ee', '#e8f7fa', '#fcebec'];
+		return colors[index % colors.length];
+	}
 
 	function getRows(
 		properties: IOutputFieldMetadata<IMatrixConfiguration>[],
@@ -125,9 +132,11 @@
 			controller.value = controller.value;
 
 			rows = getRows(controller.metadata.Component.Configuration.Properties);
+			isColored = controller.metadata.Component.Configuration.IsColored;
 
 			if (controller?.value?.Items != null) {
 				columns = [];
+				colgroups = [];
 
 				for (let item of controller.value.Items) {
 					var column: any = {};
@@ -157,6 +166,13 @@
 					}
 
 					columns.push(column);
+
+					if (isColored) {
+						colgroups.push({
+							span: 1,
+							style: `background-color: ${getColor(columns.length - 1)}`
+						});
+					}
 				}
 			} else {
 				columns = [];
@@ -174,7 +190,12 @@
 
 {#if columns?.length > 0 && rows?.length > 0}
 	<div class="table-responsive">
-		<table class="table table-striped table-bordered">
+		<table class="table table-bordered" class:table-striped={!isColored}>
+			<colgroup />
+			{#each colgroups as col}
+				<colgroup span={col.span} style={col.style} />
+			{/each}
+
 			<tbody>
 				{#each rows as row, index}
 					<tr class:summary={row.Metadata.CustomProperties?.MatrixData?.IsSummary}>
