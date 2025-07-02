@@ -69,15 +69,36 @@
 		await updateValue();
 	}
 
-	async function moveAll(currentGroupIndex: number, targetGroupIndex: number): Promise<void> {
-		const currentGroup = groups[currentGroupIndex];
+	async function moveAll(group: IGroup, targetGroupIndex: number): Promise<void> {
 		const targetGroup = groups[targetGroupIndex];
 
-		currentGroup.Items.forEach((i) => {
-			targetGroup.Items.push(i);
+		const query = queries[group.Index]?.trim().toLowerCase() ?? null;
+
+		// Collect indices and items to move in reverse order for efficient removal.
+		const itemsToMove: IItem[] = [];
+		const indicesToRemove: number[] = [];
+
+		group.Items.forEach((item, index) => {
+			const label = item.SearchText ?? item.Label.toLowerCase();
+
+			if (label.indexOf(query) >= 0) {
+				itemsToMove.push(item);
+				indicesToRemove.push(index);
+			}
 		});
 
-		currentGroup.Items.splice(0, currentGroup.Items.length);
+		// Remove items from source group in reverse order to avoid index shifting
+		// and add items to target group
+		for (let i = indicesToRemove.length - 1; i >= 0; i--) {
+			group.Items.splice(indicesToRemove[i], 1);
+		}
+
+		targetGroup.Items.push(...itemsToMove);
+
+		// Sort the target group because it now has some new items.
+		// The source group does not need to be sorted because we only
+		// removed things so it's just gonna shrink.
+		targetGroup.Items.sort((a, b) => a.Label.localeCompare(b.Label));
 
 		groups = groups;
 
@@ -108,11 +129,13 @@
 					{#if group.Index > 0}
 						<button
 							type="button"
-							class="btn"
-							on:click={async () => await moveAll(group.Index, group.Index - 1)}
+							class="btn btn-link space"
+							on:click={async () => await moveAll(group, group.Index - 1)}
 						>
 							<i class="fa fa-solid fa-arrow-left" />
 						</button>
+					{:else}
+						<span class="space" />
 					{/if}
 
 					<h6>{group.Name}</h6>
@@ -120,11 +143,13 @@
 					{#if group.Index < groups.length - 1}
 						<button
 							type="button"
-							class="btn"
-							on:click={async () => await moveAll(group.Index, group.Index + 1)}
+							class="btn btn-link space"
+							on:click={async () => await moveAll(group, group.Index + 1)}
 						>
 							<i class="fa fa-solid fa-arrow-right" />
 						</button>
+					{:else}
+						<span class="space" />
 					{/if}
 				</div>
 
@@ -133,12 +158,22 @@
 					class:left={group.Index > 0}
 					class:right={group.Index < groups.length - 1}
 				>
+					<span class="space" />
 					<input
 						type="text"
 						placeholder="Type to search"
 						name="group-{group.Index}"
 						bind:value={queries[group.Index]}
 					/>
+					<button
+						type="button"
+						class="btn btn-link space"
+						on:click={() => {
+							queries[group.Index] = '';
+						}}
+					>
+						<i class="fa-solid fa-xmark" />
+					</button>
 				</div>
 
 				<ul>
@@ -190,14 +225,16 @@
 		flex-grow: 1;
 
 		& > .group-header {
-			border-left-width: 1px;
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
+
+			padding: 5px 10px;
+
+			border-left-width: 1px;
 			background: #2d3c4b;
 			color: #fff;
 			font-weight: bold;
-			padding: 5px 10px;
 
 			& > h6 {
 				flex-grow: 1;
@@ -206,33 +243,32 @@
 				margin: 0;
 			}
 
-			& > button {
+			& > .space {
 				color: #fff;
 				width: 50px;
 			}
 		}
 
 		.group-search {
+			display: flex;
+			padding: 5px 10px;
+
 			border-style: solid;
 			border-color: #bfc6ce;
 			border-width: 1px 0;
 
-			&.left {
-				padding-left: 50px;
-			}
-
-			&.right {
-				padding-right: 50px;
-			}
-
 			& > input {
-				width: 100%;
+				flex-grow: 1;
 				border: none;
 				padding: 5px 10px;
 				outline: none;
 				color: #000;
 				text-align: center;
 				font-weight: normal;
+			}
+
+			& > .space {
+				width: 50px;
 			}
 		}
 	}
