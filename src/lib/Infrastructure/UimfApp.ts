@@ -57,6 +57,10 @@ interface ColorOptions {
     luminosity: string;
 }
 
+interface IPostFormConfig {
+    afterExceptionAction: () => void;
+}
+
 export default interface IUimfApp {
     appStorage: AppStorage;
     showFormInSection(formId: string, inputFieldValues: any, sectionId: string, visibleOnlyTo?: string[]): void;
@@ -71,7 +75,7 @@ export default interface IUimfApp {
     formsById: { [id: string]: FormMetadata };
     makeUrl(link: FormLink): Promise<string>;
     goto(link: FormLink): Promise<void>;
-    postForm<T extends FormResponse>(form: string, data: any, config: any): Promise<T>;
+    postForm<T extends FormResponse>(form: string, data: any, config: IPostFormConfig): Promise<T>;
     getApiFile(url: string): Promise<Response>;
     getApi(form: string): Promise<Response>;
     getResponseHandler(handler: string): any;
