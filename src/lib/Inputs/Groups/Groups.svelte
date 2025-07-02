@@ -79,9 +79,14 @@
 		const indicesToRemove: number[] = [];
 
 		group.Items.forEach((item, index) => {
-			const label = item.SearchText ?? item.Label.toLowerCase();
+			// If query is specified then only take matching items,
+			// otherwise take all items.
+			let match =
+				query?.length > 0
+					? (item.SearchText ?? item.Label.toLowerCase()).indexOf(query) >= 0
+					: true;
 
-			if (label.indexOf(query) >= 0) {
+			if (match) {
 				itemsToMove.push(item);
 				indicesToRemove.push(index);
 			}
