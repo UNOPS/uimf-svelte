@@ -37,11 +37,11 @@
 
 	const inner = controller.metadata.Component.Configuration.Item.Configuration.Inner;
 	const innerComponentRegistration = controlRegister.outputs[inner.Type];
-	
+
 	if (innerComponentRegistration == null) {
 		throw `Cannot find output for type '${controller.metadata.Component.Type}'.`;
 	}
-	
+
 	const cssClass =
 		controller.metadata.Component.Configuration.Item.Configuration.Inner.Configuration.CssClass;
 
@@ -63,7 +63,6 @@
 	beforeUpdate(async () => await component.setup(controller));
 
 	export function makeController(value: any, component: any) {
-
 		return new OutputController<any>({
 			metadata: {
 				Component: component,
@@ -110,20 +109,22 @@
 							/>
 						</div>
 					</div>
-					<div class="overlay-action">
-						<svelte:component
-							this={outerNestedComponent}
-							controller={makeController(controller.value.OuterContent, outer)}
-						/>
-					</div>
 				</div>
 			{/if}
+
 			<div class="output-image-overlay">
 				<img src={controller.value.Source} alt="img" />
 			</div>
 		</div>
 
-		{#if controller.value.Title != null}
+		{#if isHovered}
+			<div class="overlay-action">
+				<svelte:component
+					this={outerNestedComponent}
+					controller={makeController(controller.value.OuterContent, outer)}
+				/>
+			</div>
+		{:else if controller.value.Title != null}
 			<a class="title" href={controller.value.Url}>{controller.value.Title}</a>
 		{/if}
 	</div>
@@ -147,20 +148,17 @@
 	}
 
 	.overlay-container {
-		height: 120%;
-		width: 100%;
 		display: flex;
 		align-self: flex-start;
 	}
 
 	.overlay-action {
+		padding-top: 5px;
 		background-color: white;
-		width: 500px;
+		width: 100%;
 		opacity: 1;
 		z-index: 1;
-		align-items: flex-end;
 		display: flex;
-		padding-bottom: 14px;
 	}
 
 	.image-container {
@@ -194,7 +192,7 @@
 		height: 100%;
 		width: 100%;
 		color: white;
-		background-color: #218FCF;
+		background-color: rgb(33 143 207 / 80%);
 		transition: opacity 0.4s;
 		display: flex;
 		align-items: center;
