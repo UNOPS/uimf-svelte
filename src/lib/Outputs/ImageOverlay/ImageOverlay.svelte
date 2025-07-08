@@ -2,6 +2,7 @@
 	interface Configuration {
 		Item: any;
 		Inner: IComponent;
+		Outer: IComponent;
 		CssClass?: string;
 	}
 
@@ -19,10 +20,12 @@
 	export let controller: OutputController<ImageOverlay, IMetadata>;
 
 	interface ImageOverlay {
+		Subtitle: null;
 		Source: string;
 		MaxWidth: string;
 		Url: string;
 		InnerContent: any | null;
+		OuterContent: any | null;
 		Title: string | null;
 	}
 
@@ -30,19 +33,24 @@
 	let handleMouseEnter: () => void;
 	let handleMouseLeave: () => void;
 
-	let nestedComponent: ConstructorOfATypedSvelteComponent;
+	let innerNestedComponent: ConstructorOfATypedSvelteComponent;
+	let outerNestedComponent: ConstructorOfATypedSvelteComponent;
 
 	const inner = controller.metadata.Component.Configuration.Item.Configuration.Inner;
-	const cssClass =
-		controller.metadata.Component.Configuration.Item.Configuration.Inner.Configuration.CssClass;
+	const innerComponentRegistration = controlRegister.outputs[inner.Type];
 
-	const componentRegistration = controlRegister.outputs[inner.Type];
-
-	if (componentRegistration == null) {
+	if (innerComponentRegistration == null) {
 		throw `Cannot find output for type '${controller.metadata.Component.Type}'.`;
 	}
 
-	nestedComponent = componentRegistration.component;
+	const cssClass =
+		controller.metadata.Component.Configuration.Item.Configuration.Inner.Configuration.CssClass;
+
+	const outer = controller.metadata.Component.Configuration.Item.Configuration.Outer;
+	const outerComponentRegistration = controlRegister.outputs[outer.Type];
+
+	innerNestedComponent = innerComponentRegistration.component;
+	outerNestedComponent = outerComponentRegistration.component;
 
 	let component = new OutputComponent({
 		refresh() {
@@ -55,10 +63,10 @@
 
 	beforeUpdate(async () => await component.setup(controller));
 
-	export function makeController(value: any) {
+	export function makeController(value: any, component: any) {
 		return new OutputController<any>({
 			metadata: {
-				Component: inner,
+				Component: component,
 				Hidden: false,
 				Id: uuid(),
 				Label: '',
@@ -88,34 +96,41 @@
 </script>
 
 {#if controller.value != null}
-	<div class="card-container">
-		<div
-			class="image-container"
-			on:mouseenter={handleMouseEnter}
-			on:mouseleave={handleMouseLeave}
-			role="button"
-			tabindex="0"
-			aria-label="Image Overlay"
-		>
+	<!-- svelte-ignore a11y-no-static-element-interactions -->
+	<div class="card-container" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
+		<div class="image-container" role="button" tabindex="0" aria-label="Image Overlay">
 			{#if isHovered}
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
-				<!-- svelte-ignore a11y-no-static-element-interactions -->
-				<div class="overlay text-container" on:click|capture={handleOverlayClick}>
-					<div class={cssClass}>
-						<svelte:component
-							this={nestedComponent}
-							controller={makeController(controller.value.InnerContent)}
-						/>
+				<div class="overlay-container">
+					<div class="overlay text-container" on:click|capture={handleOverlayClick}>
+						<div class={cssClass}>
+							<svelte:component
+								this={innerNestedComponent}
+								controller={makeController(controller.value.InnerContent, inner)}
+							/>
+						</div>
 					</div>
 				</div>
 			{/if}
+
 			<div class="output-image-overlay">
 				<img src={controller.value.Source} alt="img" />
 			</div>
 		</div>
 
-		{#if controller.value.Title != null}
+		{#if isHovered}
+			<div class="overlay-action">
+				<svelte:component
+					this={outerNestedComponent}
+					controller={makeController(controller.value.OuterContent, outer)}
+				/>
+			</div>
+		{:else if controller.value.Title != null}
 			<a class="title" href={controller.value.Url}>{controller.value.Title}</a>
+
+			{#if controller.value.Subtitle != null}
+			<a class="subtitle" href={controller.value.Url}>{controller.value.Subtitle}</a>
+			{/if}
 		{/if}
 	</div>
 {/if}
@@ -137,6 +152,20 @@
 		margin: 25px 50px;
 	}
 
+	.overlay-container {
+		display: flex;
+		align-self: flex-start;
+	}
+
+	.overlay-action {
+		padding-top: 5px;
+		background-color: white;
+		width: 100%;
+		opacity: 1;
+		z-index: 1;
+		display: flex;
+	}
+
 	.image-container {
 		position: relative;
 		display: flex;
@@ -147,7 +176,6 @@
 		border: 0.5px solid #c7c7c7;
 		border-radius: 0%;
 		width: 100%;
-		overflow: hidden;
 	}
 
 	.output-image-overlay {
@@ -169,7 +197,7 @@
 		height: 100%;
 		width: 100%;
 		color: white;
-		background-color: rgba(0, 61, 97, 0.9);
+		background-color: rgb(33 143 207 / 80%);
 		transition: opacity 0.4s;
 		display: flex;
 		align-items: center;
@@ -182,6 +210,14 @@
 		margin-top: 10px;
 		font-size: 1em;
 		color: #218fcf;
+		text-align: center;
+		text-decoration: none;
+	}
+
+	.subtitle {
+		margin-top: 10px;
+		font-size: 1em;
+		color: #999999;
 		text-align: center;
 		text-decoration: none;
 	}
