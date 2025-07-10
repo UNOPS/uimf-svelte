@@ -1,6 +1,7 @@
 import type { InputController } from "./InputController";
 import { OutputController } from "./OutputController";
 import type IUimfApp from "./UimfApp";
+import { IFormContainer } from "./UimfApp";
 import type { IFieldMetadata, FormLink, IInputFieldMetadata, IOutputFieldMetadata } from "./uimf";
 
 interface FormMetadata extends IFieldMetadata {
@@ -12,7 +13,7 @@ interface FormMetadata extends IFieldMetadata {
     Documentation?: string | null;
 }
 
-export interface FormInstance {
+export interface FormInstance extends IFormContainer {
     submit: (postOnLoad?: boolean) => Promise<any>;
     hasVisibleOutputs: boolean;
     hasVisibleInputs: boolean;
@@ -29,6 +30,6 @@ export interface FormInstance {
     useUrl: boolean;
     setInputFieldValues(formlink: FormLink): Promise<any>;
     getInputFieldValues(): Promise<{ [key: string]: any; }>;
-    parentForm: FormInstance | null;
+    parentForm: IFormContainer | null;
     cancel: () => void | null;
 }

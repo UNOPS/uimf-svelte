@@ -241,10 +241,6 @@
 								controller.value.Target,
 								controller.value.VisibleOnlyTo
 							);
-
-							if (controller.form != null){
-								controller.form.submit(false);
-							}
 						}
 						break;
 					case 'open-modal':

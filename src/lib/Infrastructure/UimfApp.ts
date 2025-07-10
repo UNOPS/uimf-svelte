@@ -1,5 +1,6 @@
 import type { IFormLinkData } from "$lib/Outputs/FormLink/FormLink.svelte";
 import AppStorage from "./AppStorage";
+import EventSource, { IEventSource } from "./EventSource";
 import type { FormInstance } from "./FormController";
 import type { IFieldMetadata, FormMetadata } from "./uimf";
 
@@ -39,7 +40,7 @@ interface IModalOptions {
     inputFieldValues?: any;
     closeOnResponseHandled?: boolean;
     init?: (form: FormInstance, modal: { $close: () => void }) => void;
-    parentForm?: FormInstance | null;
+    parentForm?: IFormContainer | null;
 }
 
 interface IHtmlModalOptions {
@@ -59,6 +60,11 @@ interface ColorOptions {
 
 interface IPostFormConfig {
     afterExceptionAction: () => void;
+}
+
+export interface IFormContainer extends IEventSource {
+    // Must `fire('destroy')` when this container is removed from DOM.
+    // Must listen to `form:close` and destroy itself.
 }
 
 export default interface IUimfApp {
