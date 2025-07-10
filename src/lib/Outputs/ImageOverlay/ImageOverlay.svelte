@@ -20,6 +20,7 @@
 	export let controller: OutputController<ImageOverlay, IMetadata>;
 
 	interface ImageOverlay {
+		Subtitle: null;
 		Source: string;
 		MaxWidth: string;
 		Url: string;
@@ -126,6 +127,10 @@
 			</div>
 		{:else if controller.value.Title != null}
 			<a class="title" href={controller.value.Url}>{controller.value.Title}</a>
+
+			{#if controller.value.Subtitle != null}
+			<a class="subtitle" href={controller.value.Url}>{controller.value.Subtitle}</a>
+			{/if}
 		{/if}
 	</div>
 {/if}
@@ -205,6 +210,14 @@
 		margin-top: 10px;
 		font-size: 1em;
 		color: #218fcf;
+		text-align: center;
+		text-decoration: none;
+	}
+
+	.subtitle {
+		margin-top: 10px;
+		font-size: 1em;
+		color: #999999;
 		text-align: center;
 		text-decoration: none;
 	}
