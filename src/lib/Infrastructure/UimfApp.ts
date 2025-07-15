@@ -59,7 +59,8 @@ interface ColorOptions {
 }
 
 interface IPostFormConfig {
-    afterExceptionAction: () => void;
+    afterExceptionAction?: () => void;
+    skipClientFunctions?: boolean;
 }
 
 export interface IFormContainer extends IEventSource {
