@@ -45,6 +45,7 @@ import * as Tabs from '../Outputs/Tabs/Tabs.svelte';
 import * as Slider from '../Outputs/Slider/Slider.svelte';
 import * as Number from '../Outputs/Number/Number.svelte';
 import * as PreformattedText from '../Outputs/PreformattedText/PreformattedText.svelte';
+import * as PrintButton from '../Outputs/PrintButton/PrintButton.svelte';
 import * as Html from '../Outputs/Html/Html.svelte';
 import * as DateTimeOutput from '../Outputs/DateTime/DateTime.svelte';
 import * as EventDescription from '../Outputs/EventDescription/EventDescription.svelte';
@@ -90,7 +91,7 @@ import * as ParentFieldLabel from '../Outputs/ParentFieldLabel/ParentFieldLabel.
 import * as OutputWrapper from '../Output.svelte';
 
 interface InputFieldControllerConstructor {
-	new (options: CreateInputOptions): InputController<any>;
+	new(options: CreateInputOptions): InputController<any>;
 }
 
 interface InputRegistration {
@@ -213,11 +214,11 @@ export class ControlRegister {
 			component:
 				renderTarget != null
 					? new registration.component({
-							target: renderTarget,
-							props: {
-								controller: controller
-							}
-					  })
+						target: renderTarget,
+						props: {
+							controller: controller
+						}
+					})
 					: registration.component
 		};
 	}
@@ -243,12 +244,12 @@ export class ControlRegister {
 			component:
 				renderTarget != null
 					? new component({
-							target: renderTarget,
-							props: {
-								controller: controller,
-								nolayout: options.wrap?.nolayout
-							}
-					  })
+						target: renderTarget,
+						props: {
+							controller: controller,
+							nolayout: options.wrap?.nolayout
+						}
+					})
 					: component
 		};
 	}
@@ -261,8 +262,7 @@ export class ControlRegister {
 			: this.outputs[options.controller.metadata.Component.Type];
 
 		if (registration == null) {
-			throw `Cannot find ${isInput ? 'input' : 'output'} component '${
-				options.controller.metadata.Component.Type
+			throw `Cannot find ${isInput ? 'input' : 'output'} component '${options.controller.metadata.Component.Type
 			}'.`;
 		}
 
@@ -301,9 +301,7 @@ defaultControlRegister.registerInputComponent('toggled-input', ToggledInput);
 defaultControlRegister.registerInputComponent('typeahead', Typeahead);
 defaultControlRegister.registerInputComponent('multiselect', MultiSelect);
 defaultControlRegister.registerInputComponent('multilevel-picker', MultilevelPicker);
-defaultControlRegister.registerInputComponent('dynamic-input', DynamicInput, {
-	displayAsBlock: false
-});
+defaultControlRegister.registerInputComponent('dynamic-input', DynamicInput, { displayAsBlock: false });
 defaultControlRegister.registerInputComponent('json-object', JsonObject);
 defaultControlRegister.registerInputComponent('list-input', ListInput);
 defaultControlRegister.registerInputComponent('money', MoneyInput);
@@ -311,31 +309,16 @@ defaultControlRegister.registerInputComponent('groups', Groups);
 defaultControlRegister.registerInputComponent('input-or-output', InputOrOutput);
 
 // Outputs.
-defaultControlRegister.registerOutputComponent('action-list', ActionList, {
-	alwaysHideLabel: true
-});
+defaultControlRegister.registerOutputComponent('action-list', ActionList, { alwaysHideLabel: true });
 defaultControlRegister.registerOutputComponent('alert', Alert, { alwaysHideLabel: true });
 defaultControlRegister.registerOutputComponent('boolean', BooleanOutput, { displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('breadcrumbs', Breadcrumbs, {
-	displayAsBlock: true
-});
-defaultControlRegister.registerOutputComponent('datetime', DateTimeOutput, {
-	displayAsBlock: false
-});
-defaultControlRegister.registerOutputComponent('flexbox', Flexbox, {
-	alwaysHideLabel: false,
-	displayAsBlock: false
-});
-defaultControlRegister.registerOutputComponent('form-documentation', FormDocumentation, {
-	alwaysHideLabel: true,
-	displayAsBlock: true
-});
+defaultControlRegister.registerOutputComponent('breadcrumbs', Breadcrumbs, { displayAsBlock: true });
+defaultControlRegister.registerOutputComponent('datetime', DateTimeOutput, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('flexbox', Flexbox, { alwaysHideLabel: false, displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('form-documentation', FormDocumentation, { alwaysHideLabel: true, displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('form-inputs', FormInputs, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('formlink', FormLink, { displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('form-title', FormTitle, {
-	alwaysHideLabel: true,
-	displayAsBlock: true
-});
+defaultControlRegister.registerOutputComponent('form-title', FormTitle, { alwaysHideLabel: true, displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('grid', Grid, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('icon', Icon, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('image', OutputImage, { displayAsBlock: false });
@@ -344,15 +327,10 @@ defaultControlRegister.registerOutputComponent('matrix', Matrix, { displayAsBloc
 defaultControlRegister.registerOutputComponent('money', Money, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('number', Number, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('paginated-object-list', PaginatedObjectList);
-defaultControlRegister.registerOutputComponent('pie-chart', PieChart, {
-	displayAsBlock: true,
-	hideIfNull: true
-});
+defaultControlRegister.registerOutputComponent('pie-chart', PieChart, { displayAsBlock: true, hideIfNull: true });
 defaultControlRegister.registerOutputComponent('tidy-tree', TidyTree, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('line-chart', LineChart, { displayAsBlock: true });
-defaultControlRegister.registerOutputComponent('progress-tracker', ProgressTracker, {
-	displayAsBlock: true
-});
+defaultControlRegister.registerOutputComponent('progress-tracker', ProgressTracker, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('sequence', Sequence, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('sla-timer', SlaTimer, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('slider', Slider);
@@ -366,44 +344,23 @@ defaultControlRegister.registerOutputComponent('tag', Tag, { displayAsBlock: fal
 defaultControlRegister.registerOutputComponent('text', OutputText, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('tree-view-selector', TreeViewSelector);
 defaultControlRegister.registerOutputComponent('html', Html, { displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('preformatted-text', PreformattedText, {
-	displayAsBlock: true
-});
+defaultControlRegister.registerOutputComponent('preformatted-text', PreformattedText, { displayAsBlock: true });
+defaultControlRegister.registerOutputComponent('print-button', PrintButton, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('link', Link, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('table', Table, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('inline-form', InlineForm, { displayAsBlock: true });
-defaultControlRegister.registerOutputComponent('paginated-table', PaginatedTable, {
-	displayAsBlock: true
-});
+defaultControlRegister.registerOutputComponent('paginated-table', PaginatedTable, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('output', Output, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('expandable', Expandable, { displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('object-flexbox', ObjectFlexbox, {
-	displayAsBlock: false
-});
+defaultControlRegister.registerOutputComponent('object-flexbox', ObjectFlexbox, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('object-grid', ObjectGrid, { displayAsBlock: true });
-defaultControlRegister.registerOutputComponent('object-list', ObjectList, {
-	displayAsBlock: false
-});
-defaultControlRegister.registerOutputComponent('complex-output', ComplexOutput, {
-	displayAsBlock: true
-});
+defaultControlRegister.registerOutputComponent('object-list', ObjectList, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('complex-output', ComplexOutput, { displayAsBlock: true });
 
 // App-specific components.
-defaultControlRegister.registerOutputComponent('event-description', EventDescription, {
-	displayAsBlock: false
-});
-defaultControlRegister.registerOutputComponent('cart-item-oe', CartItemOe, {
-	displayAsBlock: false
-});
-defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize, {
-	displayAsBlock: false
-});
+defaultControlRegister.registerOutputComponent('event-description', EventDescription, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('cart-item-oe', CartItemOe, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('bar-chart', BarChart, { displayAsBlock: true });
-defaultControlRegister.registerOutputComponent('parent-field-doc', ParentFieldDocumentation, {
-	alwaysHideLabel: true,
-	displayAsBlock: true
-});
-defaultControlRegister.registerOutputComponent('parent-field-label', ParentFieldLabel, {
-	alwaysHideLabel: true,
-	displayAsBlock: false
-});
+defaultControlRegister.registerOutputComponent('parent-field-doc', ParentFieldDocumentation, { alwaysHideLabel: true, displayAsBlock: true });
+defaultControlRegister.registerOutputComponent('parent-field-label', ParentFieldLabel, { alwaysHideLabel: true, displayAsBlock: false });

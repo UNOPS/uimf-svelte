@@ -32,4 +32,9 @@ export interface FormInstance extends IFormContainer {
     getInputFieldValues(): Promise<{ [key: string]: any; }>;
     parentForm: IFormContainer | null;
     cancel: () => void | null;
+
+    /**
+     * DOM element holding this form instance.
+     */
+    element: HTMLElement | null;
 }
