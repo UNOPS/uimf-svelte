@@ -48,9 +48,11 @@
 				// Try to access stylesheet rules
 				const rules = stylesheet.cssRules || stylesheet.rules;
 				if (rules) {
-					styles += Array.from(rules)
-						.map((rule) => rule.cssText)
-						.join('\n');
+					if (rules) {
+						styles += Array.from(rules)
+							.map((rule) => rule.cssText)
+							.filter((cssText) => !cssText.includes('[ng\\:cloak]'));
+					}
 				}
 			} catch (e) {
 				// Cross-origin stylesheets might throw errors, try to include via link
@@ -59,6 +61,24 @@
 				}
 			}
 		});
+
+		const printStyles = `
+			.table {
+  				border: 1px solid #bbb;
+  				margin: 15px;
+			}
+			.table th, .table td {
+  				border: 1px solid #bbb;
+  				padding: 8px 12px;
+			}
+
+			@media (prefers-color-scheme: dark) {
+  				.table, .table th, .table td {
+    			border-color: #444;
+  			}
+		}`;
+		
+		styles = printStyles + styles;
 
 		// Create the document structure using modern DOM APIs properly
 		const printDoc = printWindow.document;
@@ -78,6 +98,7 @@
 
 		// Create and append styles
 		const styleElement = printDoc.createElement('style');
+		styleElement.innerText = styles;
 		head.appendChild(styleElement);
 
 		// Append the cloned element to the body
