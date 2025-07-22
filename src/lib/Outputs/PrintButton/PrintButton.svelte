@@ -115,7 +115,7 @@
 {#if controller.value != null}
 	<button
 		type="button"
-		class="btn btn-default btn-sm print-none"
+		class="rounded-2 my-3 px-4 py-2 btn btn-primary btn-sm print-none"
 		on:click={(e) => {
 			e.preventDefault();
 			print();
