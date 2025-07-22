@@ -67,6 +67,7 @@
 	input.form-control {
 		min-height: $app-input-min-height;
 		font-size: inherit;
+		background: white;
 	}
 
 	textarea {
