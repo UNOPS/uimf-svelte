@@ -144,7 +144,7 @@
 {#if controller.value != null}
 	{#if [null, 'redirect', 'redirect-to-url', 'void'].includes(controller.value.Action)}
 		{#if !allowed || controller.value.Action === 'void'}
-			<span class={cssClass} use:tooltip={controller.value.Tooltip}>
+			<span class={cssClass} class:formlink={true} use:tooltip={controller.value.Tooltip}>
 				{#if currentIcon}
 					<i
 						class={currentIcon}
@@ -163,6 +163,7 @@
 						href={url}
 						target={controller.value.Target}
 						class={cssClass}
+						class:formlink={true}
 						use:tooltip={controller.value.Tooltip}
 					>
 						{#if currentIcon}
@@ -188,6 +189,7 @@
 		<button
 			type="button"
 			class={cssClass ?? 'btn btn-default'}
+			class:formlink={true}
 			{disabled}
 			use:tooltip={(controller.value.Tooltip || '') + deadlineTooltip}
 			on:click={async () => {
