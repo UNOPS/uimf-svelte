@@ -101,28 +101,30 @@
 	beforeUpdate(async () => await component.setup(controller));
 </script>
 
-{#if controller.current == controller.primary.controller}
-	<button
-		type="button"
-		class="btn btn-link"
-		on:click={() => (controller.current = controller.secondary.controller)}
-		>{controller.metadata.Component.Configuration.PrimaryPickerText}</button
-	>
-	<svelte:component
-		this={controller.primary.component}
-		controller={controller.primary.controller}
-	/>
-{:else}
-	<button
-		type="button"
-		class="btn btn-link"
-		on:click={() => (controller.current = controller.primary.controller)}
-		>{controller.metadata.Component.Configuration.SecondaryPickerText}</button
-	>
-	<svelte:component
-		this={controller.secondary.component}
-		controller={controller.secondary.controller}
-	/>
+{#if controller.value != null}
+	{#if controller.current == controller.primary.controller}
+		<button
+			type="button"
+			class="btn btn-link"
+			on:click={() => (controller.current = controller.secondary.controller)}
+			>{controller.metadata.Component.Configuration.PrimaryPickerText}</button
+		>
+		<svelte:component
+			this={controller.primary.component}
+			controller={controller.primary.controller}
+		/>
+	{:else}
+		<button
+			type="button"
+			class="btn btn-link"
+			on:click={() => (controller.current = controller.primary.controller)}
+			>{controller.metadata.Component.Configuration.SecondaryPickerText}</button
+		>
+		<svelte:component
+			this={controller.secondary.component}
+			controller={controller.secondary.controller}
+		/>
+	{/if}
 {/if}
 
 <style lang="scss">
