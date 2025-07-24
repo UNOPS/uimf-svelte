@@ -75,7 +75,12 @@
 			.btn-sm {
 				display: none !important;
 			}
-		}`;
+		}
+			
+		.btn-sm {
+			display: none !important;
+		}	
+		`;
 
 		// Create the document structure using modern DOM APIs properly
 		const printDoc = printWindow.document;
