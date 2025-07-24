@@ -22,108 +22,53 @@
 	 * `controller.form?.element`.
 	 */
 	function print() {
-		const domElementToPrint = controller.form?.element;
+		const elementToPrint = controller.form?.element;
 
-		if (domElementToPrint == null) {
+		if (elementToPrint == null) {
 			// Nothing to print.
 			return;
 		}
 
-		// Create a new window for printing
-		const printWindow = window.open('', '_blank');
-		if (!printWindow) {
-			console.error('Could not open print window. Pop-up blocker may be enabled.');
-			return;
-		}
+		// Create an overlay which will contain the element to be printed.
+		// Give it `print` CSS class to make sure it is visible in the
+		// print preview (the class is coming from Boostrap CSS).
+		const overlay = document.createElement('div');
+		overlay.classList.add('print');
 
-		// Clone the element to avoid modifying the original
-		const elementClone = domElementToPrint.cloneNode(true) as HTMLElement;
+		// Clone our DOM element and insert the clone into the overlay.
+		const clone = elementToPrint.cloneNode(true);
+		overlay.appendChild(clone);
 
-		// Get all stylesheets from the current document
-		const stylesheets = Array.from(document.styleSheets);
-		let styles: string = ``;
+		// Add overlay to the DOM.
+		document.body.appendChild(overlay);
 
-		stylesheets.forEach((stylesheet) => {
-			try {
-				// Try to access stylesheet rules
-				const rules = stylesheet.cssRules || stylesheet.rules;
+		setTimeout(
+			function () {
+				// For some reason if we don't have a little delay,
+				// between amending DOM and calling `window.print()`
+				// then images won't be visible in the print preview.
+				window.print();
 
-				if (rules) {
-					let rulesArray = Array.from(rules);
-
-					for (let rule of rulesArray) {
-						styles += rule.cssText;
-					}
-				}
-			} catch (e) {
-				// Cross-origin stylesheets might throw errors, try to include via link
-				if (stylesheet.href) {
-					styles += `@import url("${stylesheet.href}");\n`;
-				}
-			}
-		});
-
-		styles += `
-		@media print {
-			* {
-				visibility: visible !important;
-				box-shadow: none !important;
-				text-shadow: none !important;
-				opacity: 1 !important;
-			}     
-
-			.btn-sm {
-				display: none !important;
-			}
-		}
-			
-		.btn-sm {
-			display: none !important;
-		}	
-		`;
-
-		// Create the document structure using modern DOM APIs properly
-		const printDoc = printWindow.document;
-
-		// Work with the existing head and body elements that the browser creates
-		const head = printDoc.head;
-		const body = printDoc.body;
-
-		// Clear existing content
-		head.innerHTML = '';
-		body.innerHTML = '';
-
-		// Set title
-		const title = printDoc.createElement('title');
-		title.textContent = 'Print Preview';
-		head.appendChild(title);
-
-		// Create and append styles
-		const styleElement = printDoc.createElement('style');
-		styleElement.innerHTML = styles;
-		head.appendChild(styleElement);
-
-		// Append the cloned element to the body
-		body.appendChild(elementClone);
-
-		// Wait for the document to load, then show print preview
-		printWindow.onload = () => {
-			printWindow.focus();
-			printWindow.print();
-		};
+				setTimeout(function () {
+					// Remove the print overlay after a short delay,
+					// once the native preview window has opened.
+					overlay.remove();
+				}, 1000);
+			},
+			// Keep the delay minimal for better user experience, but
+			// big enough for print preview to reflect DOM changes.
+			100
+		);
 	}
 </script>
 
 {#if controller.value != null}
 	<button
 		type="button"
-		class="rounded-2 my-3 px-4 py-2 btn btn-primary btn-sm"
+		class="btn btn-sm"
 		on:click={(e) => {
 			e.preventDefault();
 			print();
 		}}>Print</button
 	>
 {/if}
-
-<style>
-</style>
