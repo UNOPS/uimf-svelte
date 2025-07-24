@@ -41,17 +41,18 @@
 
 		// Get all stylesheets from the current document
 		const stylesheets = Array.from(document.styleSheets);
-		let styles = '';
+		let styles: string = ``;
 
 		stylesheets.forEach((stylesheet) => {
 			try {
 				// Try to access stylesheet rules
 				const rules = stylesheet.cssRules || stylesheet.rules;
+
 				if (rules) {
-					if (rules) {
-						styles += Array.from(rules)
-							.map((rule) => rule.cssText)
-							.filter((cssText) => !cssText.includes('[ng\\:cloak]'));
+					let rulesArray = Array.from(rules);
+
+					for (let rule of rulesArray) {
+						styles += rule.cssText;
 					}
 				}
 			} catch (e) {
@@ -62,23 +63,19 @@
 			}
 		});
 
-		const printStyles = `
-			.table {
-  				border: 1px solid #bbb;
-  				margin: 15px;
-			}
-			.table th, .table td {
-  				border: 1px solid #bbb;
-  				padding: 8px 12px;
-			}
+		styles += `
+		@media print {
+			* {
+				visibility: visible !important;
+				box-shadow: none !important;
+				text-shadow: none !important;
+				opacity: 1 !important;
+			}     
 
-			@media (prefers-color-scheme: dark) {
-  				.table, .table th, .table td {
-    			border-color: #444;
-  			}
+			.btn-sm {
+				display: none !important;
+			}
 		}`;
-		
-		styles = printStyles + styles;
 
 		// Create the document structure using modern DOM APIs properly
 		const printDoc = printWindow.document;
@@ -98,7 +95,7 @@
 
 		// Create and append styles
 		const styleElement = printDoc.createElement('style');
-		styleElement.innerText = styles;
+		styleElement.innerHTML = styles;
 		head.appendChild(styleElement);
 
 		// Append the cloned element to the body
@@ -115,7 +112,7 @@
 {#if controller.value != null}
 	<button
 		type="button"
-		class="rounded-2 my-3 px-4 py-2 btn btn-primary btn-sm print-none"
+		class="rounded-2 my-3 px-4 py-2 btn btn-primary btn-sm"
 		on:click={(e) => {
 			e.preventDefault();
 			print();
