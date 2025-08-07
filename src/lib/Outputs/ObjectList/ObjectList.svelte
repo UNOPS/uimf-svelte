@@ -114,12 +114,6 @@
 		border-width: 1px;
 	}
 
-	.line-separated-list > div {
-		display: list-item;
-		list-style-type: none;
-		margin-left: 0em;
-	}
-
 	.label {
 		font-weight: bold;
 		font-size: medium;
@@ -178,6 +172,21 @@
 			border-bottom: 1px #d2d2d2 solid;
 			margin: 0 0 25px 0;
 			border-radius: 1px;
+			list-style-type: none;
+			margin-left: 0em;
+
+			&:last-child {
+				margin-bottom: 0;
+				border-bottom: none;
+			}
+		}
+	}
+
+	.unstyled-list {
+		& > div {
+			display: block;
+			list-style-type: none;
+			margin-left: 0em;
 
 			&:last-child {
 				margin-bottom: 0;
