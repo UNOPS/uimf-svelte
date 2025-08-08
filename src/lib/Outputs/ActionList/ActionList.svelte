@@ -58,7 +58,7 @@
 <style lang="scss">
 	@import '../../scss/styles.variables.scss';
 
-	:global(td) > .action-list {
+	:global(td > .action-list) {
 		padding: 3px 0px 3px 5px;
 		margin: 0;
 		background-color: transparent;
@@ -81,11 +81,11 @@
 		white-space: nowrap;
 	}
 
-	:global(.section > .form-group > div > div) > .action-list {
+	:global(.section > .form-group > div > div > .action-list) {
 		background: transparent;
 	}
 
-	.action-list {
+	:global(.action-list) {
 		background-color: $app-soft-bg;
 		border-width: 0;
 		padding: 5px 15px;
@@ -93,10 +93,10 @@
 		margin-left: 0;
 		margin-right: 0;
 		margin-bottom: 1px;
-	}
 
-	.action-list > div {
-		display: inline-block;
-		margin-right: 5px;
+		& > :global(div) {
+			display: inline-block;
+			margin-right: 5px;
+		}
 	}
 </style>
