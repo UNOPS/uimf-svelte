@@ -190,6 +190,7 @@
 			type="button"
 			class={cssClass ?? 'btn btn-default'}
 			class:formlink={true}
+			class:opens-modal={['open-modal', 'open-html-modal'].includes(controller.value.Action)}
 			{disabled}
 			use:tooltip={(controller.value.Tooltip || '') + deadlineTooltip}
 			on:click={async () => {
@@ -407,6 +408,22 @@
 
 			&:focus-visible {
 				border-color: $app-btn-border-color;
+			}
+		}
+
+		&.opens-modal {
+			position: relative;
+
+			&::after {
+				content: '';
+				position: absolute;
+				top: 1px;
+				right: 1px;
+				width: 6px;
+				height: 6px;
+				background-color: #dbdbdb;
+				clip-path: polygon(100% 0%, 0% 0%, 100% 100%);
+				pointer-events: none;
 			}
 		}
 	}
