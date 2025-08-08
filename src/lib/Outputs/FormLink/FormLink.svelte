@@ -113,9 +113,11 @@
 					case DynamicValueSource.ParentForm: {
 						parentFormValues = parentFormValues ?? (await controller.form.getInputFieldValues());
 						result[targetField] = await parentFormValues[dynamicValue.Name];
+						break;
 					}
 					case DynamicValueSource.FrontendVariable: {
 						result[targetField] = controller.app.appStorage.get(dynamicValue.Name);
+						break;
 					}
 				}
 			}
