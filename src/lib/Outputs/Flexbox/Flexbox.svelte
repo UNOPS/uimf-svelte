@@ -127,21 +127,12 @@
 
 	/* Every flexbox item will be styled as a panel */
 	.panels {
-		gap: 20px;
+		gap: 25px;
 		flex-wrap: wrap;
+		background-color: var(--bs-gray-200);
 
 		& > div {
-			border: 1px solid var(--bs-border-color);
-			padding: 0;
-			background: white;
-
-			& > :global(div > label) {
-				font-size: 1.8rem;
-				display: block;
-				background: var(--bs-soft);
-				padding: 5px 25px;
-				margin: 0 0 15px 0;
-			}
+			background-color: white;
 		}
 	}
 </style>
