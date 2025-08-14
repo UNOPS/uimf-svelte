@@ -130,7 +130,7 @@
 
 <style lang="scss">
 	.output {
-		--horizontal-padding: 25px;
+		--horizontal-padding: 1.5rem;
 		--vertical-padding: 15px;
 
 		padding-left: var(--horizontal-padding);

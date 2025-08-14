@@ -6,7 +6,7 @@
 	import { defaultControlRegister as controlRegister } from './Infrastructure/ControlRegister';
 	import { InputComponent } from './Infrastructure/Component';
 	import { DocumentationLayout, FieldLayout } from './Infrastructure/uimf';
-	
+
 	export let controller: InputController<any>;
 	export let nolayout: boolean = false;
 
@@ -87,9 +87,8 @@
 	>
 		{#if !thisHideLabel}
 			{#if documentationLayout == DocumentationLayout.Icon}
-				<label
-					class="form-label"
-					class:col-sm-4={layout == FieldLayout.Horizontal}>{controller.metadata.Label}:</label
+				<label class="form-label" class:col-sm-4={layout == FieldLayout.Horizontal}
+					>{controller.metadata.Label}:</label
 				><span use:tooltip={documentation}><i class="fa-solid fa-circle-info text-info" /></span>
 			{:else}
 				<label
@@ -110,7 +109,7 @@
 
 <style lang="scss">
 	.section {
-		--horizontal-padding: 25px;
+		--horizontal-padding: 1.5rem;
 		--vertical-padding: 15px;
 
 		border-color: #ebeef0;
