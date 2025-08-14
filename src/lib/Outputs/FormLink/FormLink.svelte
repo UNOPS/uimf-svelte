@@ -353,7 +353,7 @@
 						});
 						break;
 					default:
-						controller.app.handleCustomFormLinkAction(controller.value);
+						controller.app.handleCustomFormLinkAction(controller.value, inputs);
 						break;
 				}
 			}}
