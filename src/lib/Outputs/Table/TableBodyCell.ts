@@ -1,10 +1,10 @@
 import type { IOutputFieldMetadata } from "$lib/Infrastructure/Metadata/IOutputFieldMetadata";
 import type { IInputFieldMetadata } from "$lib/Infrastructure/Metadata/IInputFieldMetadata";
 import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
-import type { IFormComponent } from '../../Infrastructure/IFormComponent';
 import type { InputController } from '../../Infrastructure/InputController';
 import { OutputController } from '../../Infrastructure/OutputController';
 import type { IField } from './IColumn';
+import type { Field } from "$lib/Infrastructure/Fields/Field";
 
 
 export class TableBodyCell {
@@ -19,11 +19,12 @@ export class TableBodyCell {
      */
     public hidden: boolean = false;
 
-    constructor(parent: IFormComponent, data: any, field: IField) {
+    constructor(parent: Field, data: any, field: IField) {
         this.isInput = field.IsInput;
 
         if (field.IsInput) {
             this.controller = controlRegister.createInput({
+                parent: parent,
                 app: parent.app,
                 form: parent.form,
                 metadata: field.Metadata as IInputFieldMetadata

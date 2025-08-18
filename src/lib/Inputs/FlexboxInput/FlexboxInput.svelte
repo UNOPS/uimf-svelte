@@ -49,6 +49,7 @@
 				this.fields.push({
 					metadata: view,
 					controller: new controllerClass({
+						parent: this,
 						metadata: view,
 						form: this.form,
 						app: this.app

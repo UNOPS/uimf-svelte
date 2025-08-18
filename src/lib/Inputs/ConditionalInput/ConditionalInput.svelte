@@ -68,6 +68,7 @@
 				this.views.push({
 					showIf: view.CustomProperties.showIfConditionIs,
 					controller: new controllerClass({
+						parent: this,
 						metadata: view,
 						form: this.form,
 						app: this.app

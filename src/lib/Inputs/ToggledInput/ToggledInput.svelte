@@ -24,12 +24,14 @@
 			super(options);
 
 			this.primary = controlRegister.createInput({
+				parent: this,
 				app: this.app,
 				form: this.form,
 				metadata: this.metadata.Component.Configuration.Primary
 			});
 
 			this.secondary = controlRegister.createInput({
+				parent: this,
 				app: this.app,
 				form: this.form,
 				metadata: this.metadata.Component.Configuration.Secondary

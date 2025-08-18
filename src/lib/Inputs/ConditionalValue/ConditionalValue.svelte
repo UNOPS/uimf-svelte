@@ -20,6 +20,7 @@
 			super(options);
 
 			this.inputParent = controlRegister.createInput({
+				parent: this,
 				app: options.app,
 				form: options.form,
 				metadata: {
@@ -33,6 +34,7 @@
 			}).controller;
 
 			this.inputChild = controlRegister.createInput({
+				parent: this,
 				app: options.app,
 				form: options.form,
 				metadata: {

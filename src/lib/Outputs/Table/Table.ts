@@ -14,9 +14,10 @@ import type { ITableInputConfiguration } from "../../Inputs/TableInput/TableInpu
 import type { IInputFieldMetadata } from "$lib/Infrastructure/Metadata/IInputFieldMetadata";
 import type { IFieldMetadata } from "$lib/Infrastructure/Metadata/IFieldMetadata";
 import type { IListInputConfiguration } from '../../Inputs/ListInput/ListInput.svelte';
+import type { Field } from "$lib/Infrastructure/Fields/Field";
 
 export interface ITableOption {
-    parent: IFormComponent<TableMetadata | IFieldMetadata<ITableInputConfiguration | IListInputConfiguration>>;
+    parent: Field & IFormComponent<TableMetadata | IFieldMetadata<ITableInputConfiguration | IListInputConfiguration>>;
     columns: IField[];
     extensions: TableExtension[];
     inputOnChange?: (row: TableRowGroup<TableBodyCell>, cell: InputController<any>) => Promise<void>;
@@ -40,7 +41,7 @@ interface IIndexedField extends IField {
 export class Table extends EventSource {
     public head: TableRowGroup<TableHeadCell> = new TableRowGroup<TableHeadCell>(0, []);
     public body: TableRowGroup<TableBodyCell>[] = [];
-    public parent: IFormComponent<TableMetadata | IFieldMetadata<ITableInputConfiguration | IListInputConfiguration>>;
+    public parent: Field & IFormComponent<TableMetadata | IFieldMetadata<ITableInputConfiguration | IListInputConfiguration>>;
     public colgroups: Colgroup[] = [];
 
     /**
@@ -201,6 +202,7 @@ export class Table extends EventSource {
 
         for (let hiddenInput of Object.values(this.hiddenInputs)) {
             const controller = controlRegister.createInput({
+                parent: this.parent,
                 app: this.parent.app,
                 form: this.parent.form,
                 metadata: hiddenInput.Metadata as IInputFieldMetadata

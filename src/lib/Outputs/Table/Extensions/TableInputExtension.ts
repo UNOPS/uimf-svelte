@@ -51,6 +51,7 @@ export class TableInputExtension extends TableExtension {
 
                 if (bulkInputMetadata != null) {
                     const bulkInput = controlRegister.createInput({
+                        parent: table.parent,
                         app: table.parent.app,
                         form: table.parent.form,
                         metadata: bulkInputMetadata

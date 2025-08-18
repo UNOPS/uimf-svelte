@@ -3,6 +3,7 @@
 	import type { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import type { IOutputFieldMetadata } from '../../Infrastructure/Metadata';
+	import type { Field } from '../../Infrastructure/Fields/Field';
 
 	interface IData {
 		Value: string | null;
@@ -24,7 +25,7 @@
 				const parentLevel = controller.metadata.Component.Configuration.ParentLevel;
 
 				let currentLevel = 0;
-				let currentController: OutputController<any> | null = controller;
+				let currentController: Field | null = controller;
 
 				while (currentLevel < parentLevel && currentController != null) {
 					currentController = currentController.parent;

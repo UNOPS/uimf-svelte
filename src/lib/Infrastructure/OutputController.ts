@@ -1,9 +1,8 @@
-import EventSource from "./EventSource";
 import type { FormInstance } from "./FormInstance";
 import type { IFormComponent } from "./IFormComponent";
 import type IUimfApp from "./UimfApp";
 import type { IOutputFieldMetadata } from "./Metadata/IOutputFieldMetadata";
-import uuid from "./uuid";
+import { Field } from "./Fields/Field";
 
 export interface CreateOutputOptions<TMetadata extends IOutputFieldMetadata = IOutputFieldMetadata> {
     props: OutputComponentProps<TMetadata>;
@@ -13,7 +12,7 @@ export interface CreateOutputOptions<TMetadata extends IOutputFieldMetadata = IO
 }
 
 export interface OutputComponentProps<TMetadata extends IOutputFieldMetadata = IOutputFieldMetadata> {
-    parent: OutputController<any, any> | null;
+    parent: Field | null;
     metadata: TMetadata;
     data: any;
     form: FormInstance | null;
@@ -25,33 +24,20 @@ export interface OutputComponentProps<TMetadata extends IOutputFieldMetadata = I
  * so that output fields can be managed via a consistent API.
  */
 export class OutputController<TValue, TMetadata extends IOutputFieldMetadata = IOutputFieldMetadata>
-    extends EventSource
+    extends Field
     implements IFormComponent {
-    /**
-     * Gets unique identifier for this `InputController` instance.
-     */
-    public readonly id: string = uuid();
-
-    /**
-     * Gets form to which the field belongs. If the field is not rendered in a form
-     * the value of this property may be `null`.
-     */
-    public readonly form: FormInstance | null;
-
-    /**
-     * Gets the app to which the field belongs.
-     */
-    public readonly app: IUimfApp;
-
-    public readonly parent: OutputController<any, any> | null = null;
 
     constructor(options: OutputComponentProps<TMetadata>) {
-        super();
+        super({
+            form: options.form ?? null,
+            parent: options.parent ?? null,
+            children: {},
+            app: options.app,
+            metadata: options.metadata
+        });
+
         this.metadata = options.metadata as TMetadata;
-        this.value = options.data;
-        this.app = options.app;
-        this.form = options.form;
-        this.parent = options.parent;
+        this.value = options.data ?? null;
     }
 
     public metadata: TMetadata;

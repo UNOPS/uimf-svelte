@@ -51,6 +51,7 @@
 				this.view = {
 					metadata: value.Metadata,
 					controller: new controllerClass({
+						parent: this,
 						metadata: {
 							Component: value.Metadata,
 							Hidden: false,

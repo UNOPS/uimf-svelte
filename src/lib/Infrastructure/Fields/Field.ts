@@ -1,5 +1,6 @@
 import EventSource from "../EventSource";
 import type { FormInstance } from "../FormInstance";
+import type { IFieldMetadata } from "../Metadata";
 import type IUimfApp from "../UimfApp";
 import type UimfApp from "../UimfApp";
 import uuid from "../uuid";
@@ -19,7 +20,7 @@ export abstract class Field extends EventSource {
     /**
      * Gets the app to which the field belongs.
      */
-    public readonly app: IUimfApp | null;
+    public readonly app: IUimfApp;
 
     /**
      * Gets nested fields owned by this field.
@@ -31,17 +32,28 @@ export abstract class Field extends EventSource {
      */
     readonly parent: Field | null;
 
+    /**
+     * Metadata describing this field.
+     */
+    public metadata: IFieldMetadata;
+
     constructor(options: {
         form: FormInstance | null,
         children: Record<string, Field>,
         parent: Field | null,
-        app: UimfApp | null
+        app: UimfApp,
+        metadata: IFieldMetadata
     }) {
         super();
 
-        this.app = options.app ?? options.form?.app ?? null;
+        this.app = options.app;
         this.form = options.form;
         this.parent = options.parent;
         this.children = options.children;
+        this.metadata = options.metadata;
+
+        if (this.parent != null) {
+            this.parent.children[options.metadata.Id] = this;
+        }
     }
 }

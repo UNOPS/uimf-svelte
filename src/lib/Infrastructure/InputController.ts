@@ -1,9 +1,8 @@
 import type { IInputFieldMetadata } from "./Metadata/IInputFieldMetadata";
-import EventSource from './EventSource';
-import uuid from "./uuid";
 import type IUimfApp from "./UimfApp";
 import type { FormInstance } from "./FormInstance";
 import type { IFormComponent } from "./IFormComponent";
+import { Field } from "./Fields/Field";
 
 export interface Deferrer {
     resolve: () => void;
@@ -11,18 +10,15 @@ export interface Deferrer {
 };
 
 export interface CreateInputOptions<TMetadata extends IInputFieldMetadata = IInputFieldMetadata> {
+    parent: Field | null;
     metadata: TMetadata;
     form: FormInstance | null;
     app: IUimfApp;
 }
 
 export abstract class InputController<TValue, TMetadata extends IInputFieldMetadata = IInputFieldMetadata>
-    extends EventSource
+    extends Field
     implements IFormComponent {
-    /**
-     * Gets unique identifier for this `InputController` instance.
-     */
-    public readonly id: string = uuid();
 
     /**
      * Gets input's underlying value. This field is intended for internal use
@@ -36,22 +32,16 @@ export abstract class InputController<TValue, TMetadata extends IInputFieldMetad
      */
     public readonly metadata: TMetadata;
 
-    /**
-     * Gets form to which the field belongs. If the field is not rendered in a form
-     * the value of this property may be `null`.
-     */
-    public readonly form: FormInstance | null;
-
-    /**
-     * Gets the app to which the field belongs.
-     */
-    public readonly app: IUimfApp;
-
     constructor(options: CreateInputOptions<TMetadata>) {
-        super();
+        super({
+            form: options.form ?? null,
+            parent: options.parent ?? null,
+            children: {},
+            app: options.app,
+            metadata: options.metadata
+        });
+
         this.metadata = options.metadata;
-        this.form = options.form;
-        this.app = options.app;
         this.value = null;
     }
 

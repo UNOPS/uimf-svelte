@@ -42,6 +42,7 @@
 	import type { IPaginatedData } from '../../PaginatedTable/PaginatedTable.svelte';
 	import type { TableData } from '../../../Outputs/Table/Table.svelte';
 	import { FormlinkUtilities } from '../../../Outputs/FormLink/FormlinkUtilities';
+	import type { Field } from '$lib/Infrastructure/Fields/Field';
 
 	export let controller: OutputController<IPaginatedData | TableData, TableMetadata>;
 	export let type: string;
@@ -104,7 +105,7 @@
 	function getExportField(): string | null {
 		let path: string | null = null;
 
-		let me: OutputController<any> | null = controller;
+		let me: Field | null = controller;
 
 		while (me != null && me.metadata.Id !== '_layout_') {
 			path = me.metadata.Id + (path != null ? '.' + path : '');

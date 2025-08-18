@@ -22,6 +22,7 @@
 			super(options);
 
 			this.input = controlRegister.createInput({
+				parent: this,
 				app: options.app,
 				form: options.form,
 				metadata: {
@@ -47,7 +48,7 @@
 						OrderIndex: 0,
 						HideIfNull: true
 					},
-					parent: null
+					parent: this
 				}
 			}).controller;
 		}
