@@ -5,7 +5,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../../Infrastructure/Component';
-	import { BooleanController } from './BooleanController';
+	import type { BooleanController } from './BooleanController';
 
 	export let controller: BooleanController;
 

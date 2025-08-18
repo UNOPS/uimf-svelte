@@ -1,7 +1,7 @@
 import EventSource from "../EventSource";
-import { FormInstance } from "../FormInstance";
-import IUimfApp from "../UimfApp";
-import UimfApp from "../UimfApp";
+import type { FormInstance } from "../FormInstance";
+import type IUimfApp from "../UimfApp";
+import type UimfApp from "../UimfApp";
 import uuid from "../uuid";
 
 export abstract class Field extends EventSource {

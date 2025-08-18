@@ -8,7 +8,7 @@
 
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
-	import { type IFormLinkData } from '../FormLink/FormLink.svelte';
+	import type { IFormLinkData } from '../FormLink/FormLink.svelte';
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import Pager from '../Table/Components/Pager.svelte';
 	import ResultsTable, { type TableMetadata } from '../Table/Components/ResultsTable.svelte';

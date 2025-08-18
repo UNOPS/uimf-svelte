@@ -1,4 +1,4 @@
-import { IComponent } from "./IComponent";
+import type { IComponent } from "./IComponent";
 
 export interface IFieldMetadata<TConfiguration = any> {
     Id: string;

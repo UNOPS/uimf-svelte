@@ -1,5 +1,5 @@
-import { IFieldMetadata } from "./IFieldMetadata";
-import { FieldLayout } from "./FieldLayout";
+import type { IFieldMetadata } from "./IFieldMetadata";
+import type { FieldLayout } from "./FieldLayout";
 
 export interface IOutputFieldMetadata<TConfiguration = any> extends IFieldMetadata<TConfiguration> {
     Layout?: FieldLayout | null;

@@ -121,7 +121,7 @@
 
 		return group.Items.filter((t) => {
 			const label = t.SearchText ?? t.Label.toLowerCase();
-			return label.indexOf(query) >= 0;
+			return label.indexOf(query!) >= 0;
 		});
 	}
 </script>

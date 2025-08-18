@@ -1,6 +1,6 @@
 import EventSource from "../../EventSource";
-import { IFrontendVariable } from "./IFrontendVariable";
-import { IFrontendVariableValue } from "./IFrontendVariableValue";
+import type { IFrontendVariable } from "./IFrontendVariable";
+import type { IFrontendVariableValue } from "./IFrontendVariableValue";
 
 interface Value {
    Variable: IFrontendVariable;

@@ -1,4 +1,3 @@
-import type { InputController } from "$lib/Infrastructure/InputController";
 import { Colgroup } from "../Colgroup";
 import type { TableMetadata } from "../Components/ResultsTable.svelte";
 import type { IField } from "../IColumn";
@@ -8,7 +7,7 @@ import { TableExtension } from "../TableExtension";
 import { TableHeadCell } from "../TableHeadCell";
 import TableRow from "../TableRow";
 import type { TableRowGroup } from "../TableRowGroup";
-import type { Controller as PaginatorController } from "../../../Inputs/Paginator.svelte";
+import type { Controller as PaginatorController } from "../../../Inputs/Paginator/Paginator.svelte";
 
 interface IColumnCustomProperty {
     Color: string;

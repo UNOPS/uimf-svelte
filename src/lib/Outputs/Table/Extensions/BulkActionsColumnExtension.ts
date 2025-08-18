@@ -4,7 +4,7 @@ import { TableExtension } from "../TableExtension";
 import type { TableHeadCell } from "../TableHeadCell";
 import type { TableRowGroup } from "../TableRowGroup";
 import { FormLink as FormLinkMetadata } from "../../../Infrastructure/Metadata/FormLink";
-import type { Row, ITableInputData } from "../../../Inputs/TableInput/TableInput.svelte";
+import type { Row, ITableInputData, ITableInputItem } from "../../../Inputs/TableInput/TableInput.svelte";
 import type { TableMetadata } from "../Components/ResultsTable.svelte";
 
 export class BulkAction extends FormLinkMetadata {
@@ -23,7 +23,7 @@ export class BulkAction extends FormLinkMetadata {
         }
     }
 
-    public addItem(itemId: Row) {
+    public addItem(itemId: ITableInputItem) {
         this.InputFieldValues.ItemIds.Items.push(itemId);
     }
 

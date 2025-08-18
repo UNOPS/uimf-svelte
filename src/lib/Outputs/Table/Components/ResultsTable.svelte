@@ -22,7 +22,7 @@
 </script>
 
 <script lang="ts">
-	import { OutputController } from '../../../Infrastructure/OutputController';
+	import type { OutputController } from '../../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../../Infrastructure/Component';
 	import { beforeUpdate } from 'svelte';
 	import { ActionListColumnExtension } from '../Extensions/ActionListColumnExtension';

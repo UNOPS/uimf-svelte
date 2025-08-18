@@ -1,9 +1,9 @@
-import { FormMetadata } from "./Metadata/FormMetadata";
+import type { FormMetadata } from "./Metadata/FormMetadata";
 import type { InputController } from "./InputController";
-import { OutputController } from "./OutputController";
+import type { OutputController } from "./OutputController";
 import type { FormLink } from "./Metadata/FormLink";
 import type IUimfApp from "./UimfApp";
-import { IFormContainer } from "./UimfApp";
+import type { IFormContainer } from "./UimfApp";
 
 export interface FormInstance extends IFormContainer {
     submit: (postOnLoad?: boolean) => Promise<any>;

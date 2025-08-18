@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { OutputComponent } from '../../Infrastructure/Component';
-	import { OutputController } from '../../Infrastructure/OutputController';
-	import { InputController } from '../../Infrastructure/InputController';
+	import type { OutputController } from '../../Infrastructure/OutputController';
+	import type { InputController } from '../../Infrastructure/InputController';
 	import Input from '../../Input.svelte';
 	import { defaultControlRegister } from '../../Infrastructure/ControlRegister';
 	import type { IOutputFieldMetadata } from '../../Infrastructure/Metadata';
@@ -75,10 +75,10 @@
 						effectiveActions.push({
 							Form: '#submit',
 							InputFieldValues: null,
-							Label: controller.form.metadata.CustomProperties.SubmitButtonLabel || 'Submit'
+							Label: controller.form.metadata.CustomProperties?.SubmitButtonLabel || 'Submit'
 						});
 
-						if (controller.form?.metadata.CustomProperties.ShowClearButton) {
+						if (controller.form?.metadata.CustomProperties?.ShowClearButton == true) {
 							effectiveActions.push({
 								Form: '#clear',
 								InputFieldValues: null,

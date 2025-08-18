@@ -1,4 +1,4 @@
-import { IItem } from './IItem';
+import type { IItem } from './IItem';
 
 export interface IGroup {
     Index: number;

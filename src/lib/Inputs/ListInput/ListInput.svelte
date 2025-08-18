@@ -209,7 +209,10 @@
 			parent: null,
 			app: controller.app,
 			form: controller.form,
-			metadata: header.Metadata,
+			metadata: {
+				...header.Metadata,
+				HideIfNull: false
+			},
 			data: row.data[metadata.Component.Configuration.Header]
 		});
 	}

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { OutputController } from '../../Infrastructure/OutputController';
+	import type { OutputController } from '../../Infrastructure/OutputController';
 	import FormLink, { type IFormLinkData } from '../FormLink/FormLink.svelte';
 	import type DateTime from '../DateTime/DateTime.svelte';
 	import { FormlinkUtilities } from '../FormLink/FormlinkUtilities';

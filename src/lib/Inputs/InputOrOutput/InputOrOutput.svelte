@@ -103,7 +103,7 @@
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../../Infrastructure/Component';
 	import type { IComponent, IInputFieldMetadata } from '../../Infrastructure/Metadata';
-	import { OutputController } from '../../Infrastructure/OutputController';
+	import type { OutputController } from '../../Infrastructure/OutputController';
 	import Input from '../../Input.svelte';
 	import Output from '../../Output.svelte';
 

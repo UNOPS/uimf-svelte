@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { OutputComponent } from '../../Infrastructure/Component';
-	import { OutputController } from '../../Infrastructure/OutputController';
+	import type { OutputController } from '../../Infrastructure/OutputController';
 	import FormLink, { type IFormLinkData } from '../FormLink/FormLink.svelte';
 	import { FormlinkUtilities } from '../FormLink/FormlinkUtilities';
 

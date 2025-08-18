@@ -1,6 +1,6 @@
-import { IInputFieldMetadata } from "./IInputFieldMetadata";
-import { IOutputFieldMetadata } from "./IOutputFieldMetadata";
-import { SmartNavigatorCustomProperty } from "./SmartNavigatorCustomProperty";
+import type { IInputFieldMetadata } from "./IInputFieldMetadata";
+import type { IOutputFieldMetadata } from "./IOutputFieldMetadata";
+import type { SmartNavigatorCustomProperty } from "./SmartNavigatorCustomProperty";
 
 export interface FormMetadata {
     CloseOnPostIfModal: boolean;

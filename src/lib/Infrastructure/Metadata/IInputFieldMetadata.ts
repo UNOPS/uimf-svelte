@@ -1,6 +1,6 @@
-import { IFieldMetadata } from "./IFieldMetadata";
-import { FieldLayout } from "./FieldLayout";
-import { DocumentationLayout } from "./DocumentationLayout";
+import type { IFieldMetadata } from "./IFieldMetadata";
+import type { FieldLayout } from "./FieldLayout";
+import type { DocumentationLayout } from "./DocumentationLayout";
 
 export interface IInputFieldMetadata<TConfiguration = any> extends IFieldMetadata<TConfiguration> {
     CssClass?: string | null;

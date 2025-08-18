@@ -8,9 +8,9 @@
 	import { beforeUpdate } from 'svelte';
 	import type { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
-	import type { IFieldMetadata } from '../../Infrastructure/Metadata';
+	import type { IOutputFieldMetadata } from '../../Infrastructure/Metadata';
 
-	export let controller: OutputController<number, IFieldMetadata<Configuration>>;
+	export let controller: OutputController<number, IOutputFieldMetadata<Configuration>>;
 	let displayValue: string | null = null;
 
 	let component = new OutputComponent({

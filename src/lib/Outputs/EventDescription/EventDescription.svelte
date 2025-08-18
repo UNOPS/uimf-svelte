@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
-	import { OutputController } from '../../Infrastructure/OutputController';
+	import type { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import DateTime, { DateTimeController } from '../DateTime/DateTime.svelte';
 	import type { IFormLinkData } from '../FormLink/FormLink.svelte';

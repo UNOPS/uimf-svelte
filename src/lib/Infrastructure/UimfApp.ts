@@ -1,6 +1,6 @@
 import type { IFormLinkData } from "$lib/Outputs/FormLink/FormLink.svelte";
-import AppStorage from "./Storage/App/AppStorage";
-import { IEventSource } from "./EventSource";
+import type AppStorage from "./Storage/App/AppStorage";
+import type { IEventSource } from "./EventSource";
 import type { FormInstance } from "./FormInstance";
 import type { IFieldMetadata } from "./Metadata/IFieldMetadata";
 import type { FormMetadata } from "./Metadata/FormMetadata";

@@ -1,8 +1,8 @@
-import type { IListInputConfiguration } from '../../../Inputs/ListInput.svelte';
+import type { IListInputConfiguration } from '../../../Inputs/ListInput/ListInput.svelte';
 import type { Table } from "../Table";
 import type { TableBodyCell } from "../TableBodyCell";
 import { TableExtension } from "../TableExtension";
-import { TableHeadCell } from "../TableHeadCell";
+import type { TableHeadCell } from "../TableHeadCell";
 import type { TableRowGroup } from "../TableRowGroup";
 
 export class ListInputExtension extends TableExtension {

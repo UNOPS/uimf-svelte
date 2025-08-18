@@ -106,7 +106,7 @@
 		Items: ITableInputItem[];
 	}
 
-	interface ITableInputItem {
+	export interface ITableInputItem {
 		CanRemove: boolean;
 		[key: string]: any;
 	}

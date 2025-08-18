@@ -7,7 +7,7 @@
 
 	import { InputComponent } from '../../Infrastructure/Component';
 	import Input from '../../Input.svelte';
-	import { ComplexInputController } from './ComplexInputController';
+	import type { ComplexInputController } from './ComplexInputController';
 
 	export let controller: ComplexInputController;
 

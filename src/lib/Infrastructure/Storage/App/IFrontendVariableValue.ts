@@ -1,4 +1,4 @@
-import { IFrontendVariable } from "./IFrontendVariable";
+import type { IFrontendVariable } from "./IFrontendVariable";
 
 export interface IFrontendVariableValue {
     Variable: IFrontendVariable;

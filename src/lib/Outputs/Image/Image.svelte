@@ -23,7 +23,7 @@
 		ActionListController,
 		type ActionListData
 	} from '../ActionList/ActionList.svelte';
-	import type { IFieldMetadata } from '../../Infrastructure/Metadata';
+	import type { IOutputFieldMetadata } from '../../Infrastructure/Metadata';
 
 	export let controller: OutputController<Image>;
 	export let height: string | null;
@@ -45,7 +45,7 @@
 
 	function buildControllers(data: ActionListData) {
 		return new OutputController<ActionListData>({
-			metadata: {} as IFieldMetadata,
+			metadata: {} as IOutputFieldMetadata,
 			data: data,
 			form: controller.form!,
 			app: controller.app,

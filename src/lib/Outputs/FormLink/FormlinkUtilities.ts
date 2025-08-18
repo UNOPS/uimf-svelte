@@ -1,7 +1,7 @@
-import { OutputController } from "../../Infrastructure/OutputController";
-import { type IOutputFieldMetadata } from "../../Infrastructure/Metadata/IOutputFieldMetadata";
+import type { OutputController } from "../../Infrastructure/OutputController";
+import type { IOutputFieldMetadata } from "../../Infrastructure/Metadata/IOutputFieldMetadata";
 import { FormlinkController } from "./FormLinkController";
-import { type IFormLinkData } from "./IFormLinkData";
+import type { IFormLinkData } from "./IFormLinkData";
 
 interface IOptions {
     data: IFormLinkData;

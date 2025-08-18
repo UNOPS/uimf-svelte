@@ -54,7 +54,7 @@
 	import { beforeUpdate } from 'svelte';
 	import Select from 'svelte-select';
 	import { InputComponent } from '../../Infrastructure/Component';
-	import { type ITypeaheadMetadata } from '../Typeahead/Typeahead.svelte';
+	import type { ITypeaheadMetadata } from '../Typeahead/Typeahead.svelte';
 	import { TypeaheadSourceManager } from '../Typeahead/Domain/TypeaheadSourceManager';
 	import type { IOption } from '../Typeahead/Domain/index';
 
