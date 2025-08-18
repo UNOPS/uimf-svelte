@@ -2,7 +2,7 @@
 	import type { FormInstance } from '$lib/Infrastructure/FormInstance';
 	import { OutputComponent } from '../../../Infrastructure/Component';
 	import type { OutputController } from '../../../Infrastructure/OutputController';
-	import type UimfApp from '../../../Infrastructure/UimfApp';
+	import type UimfApp from '../../../Infrastructure/App/UimfApp';
 	import { PaginationParameters } from '../../../Inputs/Paginator/Paginator.svelte';
 	import { beforeUpdate } from 'svelte';
 	import type { TableMetadata } from './ResultsTable.svelte';

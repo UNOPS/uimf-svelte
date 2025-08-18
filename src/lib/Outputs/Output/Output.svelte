@@ -9,7 +9,7 @@
 		IOutputFieldMetadata
 	} from '../../Infrastructure/Metadata';
 	import { tooltip } from '../../Components/Tooltip.svelte';
-	import { OutputFieldMetadataFactory } from '../../Infrastructure/OutputFieldMetadataFactory';
+	import { OutputFieldMetadataFactory } from '../../Infrastructure/Utilities/OutputFieldMetadataFactory';
 
 	export let controller: OutputController<OutputData, IOutputFieldMetadata<Configuration>>;
 

@@ -1,25 +1,11 @@
 import type { IFormLinkData } from "$lib/Outputs/FormLink/FormLink.svelte";
-import type AppStorage from "./Storage/App/AppStorage";
-import type { IEventSource } from "./EventSource";
-import type { FormInstance } from "./FormInstance";
-import type { IFieldMetadata } from "./Metadata/IFieldMetadata";
-import type { FormMetadata } from "./Metadata/FormMetadata";
-
-interface FormLink {
-    Form: string;
-    InputFieldValues?: any;
-    Label?: string;
-    Action?: string;
-}
-
-export interface FormResponse extends Response {
-    FileData?: {
-        Filename: string;
-        ContentType: string;
-        Data: string;
-    };
-    Metadata: any;
-}
+import type AppStorage from "../Storage/App/AppStorage";
+import type { FormInstance } from "../FormInstance";
+import type { IFieldMetadata } from "../Metadata/IFieldMetadata";
+import type { FormMetadata } from "../Metadata/FormMetadata";
+import { FormResponse } from "./FormResponse";
+import { IFormContainer } from "./IFormContainer";
+import { FormLink } from "../Metadata";
 
 interface IConfirmOptions {
     headerText?: string;
@@ -62,11 +48,6 @@ interface ColorOptions {
 interface IPostFormConfig {
     afterExceptionAction?: () => void;
     skipClientFunctions?: boolean;
-}
-
-export interface IFormContainer extends IEventSource {
-    // Must `fire('destroy')` when this container is removed from DOM.
-    // Must listen to `form:close` and destroy itself.
 }
 
 export default interface IUimfApp {

@@ -1,5 +1,5 @@
 import type { FormInstance } from "./FormInstance";
-import type IUimfApp from "./UimfApp";
+import type IUimfApp from "./App/UimfApp";
 import type { IOutputFieldMetadata } from "./Metadata/IOutputFieldMetadata";
 import { Field } from "./Fields/Field";
 

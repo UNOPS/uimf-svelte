@@ -1,9 +1,9 @@
 import EventSource from "../EventSource";
 import type { FormInstance } from "../FormInstance";
 import type { IFieldMetadata } from "../Metadata";
-import type IUimfApp from "../UimfApp";
-import type UimfApp from "../UimfApp";
-import uuid from "../uuid";
+import type IUimfApp from "../App/UimfApp";
+import type UimfApp from "../App/UimfApp";
+import uuid from "../Utilities/uuid";
 
 export abstract class Field<TMetadata extends IFieldMetadata = IFieldMetadata> extends EventSource {
     /**

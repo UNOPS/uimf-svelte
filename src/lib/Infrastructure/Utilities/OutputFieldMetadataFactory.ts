@@ -1,5 +1,5 @@
-import type { IComponent } from "./Metadata/IComponent";
-import type { IOutputFieldMetadata } from "./Metadata/IOutputFieldMetadata";
+import type { IComponent } from "../Metadata/IComponent";
+import type { IOutputFieldMetadata } from "../Metadata/IOutputFieldMetadata";
 import uuid from "./uuid";
 
 export class OutputFieldMetadataFactory {

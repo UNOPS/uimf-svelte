@@ -15,7 +15,7 @@
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
 	import type { IComponent, IOutputFieldMetadata } from '../../Infrastructure/Metadata';
-	import uuid from '../../Infrastructure/uuid';
+	import uuid from '../../Infrastructure/Utilities/uuid';
 
 	export let controller: OutputController<ImageOverlay, IMetadata>;
 

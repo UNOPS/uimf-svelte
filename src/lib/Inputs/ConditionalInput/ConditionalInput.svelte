@@ -114,7 +114,7 @@
 	import { beforeUpdate } from 'svelte';
 	import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
 	import { InputComponent } from '../../Infrastructure/Component';
-	import uuid from '../../Infrastructure/uuid';
+	import uuid from '../../Infrastructure/Utilities/uuid';
 	import Input from '../../Input.svelte';
 
 	export let controller: Controller;

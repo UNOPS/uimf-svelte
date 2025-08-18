@@ -71,7 +71,7 @@
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../../Infrastructure/Component';
 	import type { IInputFieldMetadata } from '../../Infrastructure/Metadata';
-	import uuid from '../../Infrastructure/uuid';
+	import uuid from '../../Infrastructure/Utilities/uuid';
 
 	export let controller: Controller;
 	export let onChange: null | (() => any) = null;
