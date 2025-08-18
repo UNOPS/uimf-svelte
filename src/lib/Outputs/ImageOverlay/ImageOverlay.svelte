@@ -27,6 +27,7 @@
 		InnerContent: any | null;
 		OuterContent: any | null;
 		Title: string | null;
+		Header: string | null;
 	}
 
 	let isHovered: boolean;
@@ -99,6 +100,9 @@
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<div class="card-container" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
 		<div class="image-container" role="button" tabindex="0" aria-label="Image Overlay">
+			{#if controller.value.Header}
+				<div class="header">{controller.value.Header}</div>
+			{/if}
 			{#if isHovered}
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<div class="overlay-container">
@@ -202,7 +206,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		z-index: 2;
+		z-index: 4;
 		font-size: 0.8em;
 	}
 
@@ -225,5 +229,20 @@
 	.text-container {
 		opacity: 1 !important;
 		color: white;
+	}
+
+	.header {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		background-color: purple;
+		color: #fff;
+		padding: 5px 10px;
+		font-size: 0.8em;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border: 0.5px solid #c7c7c7;
 	}
 </style>
