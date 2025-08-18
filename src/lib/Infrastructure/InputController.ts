@@ -1,7 +1,6 @@
 import type { IInputFieldMetadata } from "./Metadata/IInputFieldMetadata";
 import type IUimfApp from "./UimfApp";
 import type { FormInstance } from "./FormInstance";
-import type { IFormComponent } from "./IFormComponent";
 import { Field } from "./Fields/Field";
 
 export interface Deferrer {
@@ -16,10 +15,7 @@ export interface CreateInputOptions<TMetadata extends IInputFieldMetadata = IInp
     app: IUimfApp;
 }
 
-export abstract class InputController<TValue, TMetadata extends IInputFieldMetadata = IInputFieldMetadata>
-    extends Field
-    implements IFormComponent {
-
+export abstract class InputController<TValue, TMetadata extends IInputFieldMetadata = IInputFieldMetadata> extends Field<TMetadata> {
     /**
      * Gets input's underlying value. This field is intended for internal use
      * and does not necessarily represent the actual value that is will be returned

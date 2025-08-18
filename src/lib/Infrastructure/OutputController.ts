@@ -1,5 +1,4 @@
 import type { FormInstance } from "./FormInstance";
-import type { IFormComponent } from "./IFormComponent";
 import type IUimfApp from "./UimfApp";
 import type { IOutputFieldMetadata } from "./Metadata/IOutputFieldMetadata";
 import { Field } from "./Fields/Field";
@@ -23,10 +22,7 @@ export interface OutputComponentProps<TMetadata extends IOutputFieldMetadata = I
  * Controller for an output field. Each output field in a form will have `OutputController assigned to it
  * so that output fields can be managed via a consistent API.
  */
-export class OutputController<TValue, TMetadata extends IOutputFieldMetadata = IOutputFieldMetadata>
-    extends Field
-    implements IFormComponent {
-
+export class OutputController<TValue, TMetadata extends IOutputFieldMetadata = IOutputFieldMetadata> extends Field<TMetadata> {
     constructor(options: OutputComponentProps<TMetadata>) {
         super({
             form: options.form ?? null,

@@ -5,7 +5,7 @@ import type IUimfApp from "../UimfApp";
 import type UimfApp from "../UimfApp";
 import uuid from "../uuid";
 
-export abstract class Field extends EventSource {
+export abstract class Field<TMetadata extends IFieldMetadata = IFieldMetadata> extends EventSource {
     /**
      * Gets unique identifier for this field instance.
      */
@@ -35,14 +35,14 @@ export abstract class Field extends EventSource {
     /**
      * Metadata describing this field.
      */
-    public metadata: IFieldMetadata;
+    public metadata: TMetadata;
 
     constructor(options: {
         form: FormInstance | null,
         children: Record<string, Field>,
         parent: Field | null,
         app: UimfApp,
-        metadata: IFieldMetadata
+        metadata: TMetadata
     }) {
         super();
 

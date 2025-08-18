@@ -4,7 +4,6 @@ import { TableHeadCell } from "./TableHeadCell";
 import { TableRowGroup } from "./TableRowGroup";
 import type { Colgroup } from "./Colgroup";
 import EventSource from '../../Infrastructure/EventSource';
-import type { IFormComponent } from '../../Infrastructure/IFormComponent';
 import type { IField } from "./IColumn";
 import type { InputController } from "../../Infrastructure/InputController";
 import type { OutputController } from "../../Infrastructure/OutputController";
@@ -17,7 +16,7 @@ import type { IListInputConfiguration } from '../../Inputs/ListInput/ListInput.s
 import type { Field } from "$lib/Infrastructure/Fields/Field";
 
 export interface ITableOption {
-    parent: Field & IFormComponent<TableMetadata | IFieldMetadata<ITableInputConfiguration | IListInputConfiguration>>;
+    parent: Field<TableMetadata | IFieldMetadata<ITableInputConfiguration | IListInputConfiguration>>;
     columns: IField[];
     extensions: TableExtension[];
     inputOnChange?: (row: TableRowGroup<TableBodyCell>, cell: InputController<any>) => Promise<void>;
@@ -41,7 +40,7 @@ interface IIndexedField extends IField {
 export class Table extends EventSource {
     public head: TableRowGroup<TableHeadCell> = new TableRowGroup<TableHeadCell>(0, []);
     public body: TableRowGroup<TableBodyCell>[] = [];
-    public parent: Field & IFormComponent<TableMetadata | IFieldMetadata<ITableInputConfiguration | IListInputConfiguration>>;
+    public parent: Field<TableMetadata | IFieldMetadata<ITableInputConfiguration | IListInputConfiguration>>;
     public colgroups: Colgroup[] = [];
 
     /**
