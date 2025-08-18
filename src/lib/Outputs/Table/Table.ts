@@ -10,10 +10,10 @@ import type { InputController } from "../../Infrastructure/InputController";
 import type { OutputController } from "../../Infrastructure/OutputController";
 import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
 import type { TableMetadata } from "./Components/ResultsTable.svelte";
-import type { ITableInputConfiguration } from "../../Inputs/TableInput.svelte";
+import type { ITableInputConfiguration } from "../../Inputs/TableInput/TableInput.svelte";
 import type { IInputFieldMetadata } from "$lib/Infrastructure/Metadata/IInputFieldMetadata";
 import type { IFieldMetadata } from "$lib/Infrastructure/Metadata/IFieldMetadata";
-import type { IListInputConfiguration } from '../../Inputs/ListInput.svelte';
+import type { IListInputConfiguration } from '../../Inputs/ListInput/ListInput.svelte';
 
 export interface ITableOption {
     parent: IFormComponent<TableMetadata | IFieldMetadata<ITableInputConfiguration | IListInputConfiguration>>;
