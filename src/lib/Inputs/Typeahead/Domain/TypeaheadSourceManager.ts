@@ -1,4 +1,7 @@
+import { Field } from "$lib/Infrastructure/Fields/Field";
 import type { FormInstance } from "$lib/Infrastructure/FormInstance";
+import { InputController } from "$lib/Infrastructure/InputController";
+import { ITypeaheadMetadata } from "../Typeahead.svelte";
 import type { IOption } from "./IOption";
 import type { ITypeaheadConfig } from "./ITypeaheadConfig";
 import type { IMultiselectValue, ITypeaheadValue } from "./ITypeaheadValue";
@@ -14,13 +17,15 @@ export class TypeaheadSourceManager {
     #inlineItems: IOption[] | null;
     #cachedItems: IOption[] = [];
     #form: FormInstance;
+    #field: Field<ITypeaheadMetadata>;
 
-    constructor(config: ITypeaheadConfig, form: FormInstance) {
-        if (form == null) {
+    constructor(config: ITypeaheadConfig, field: Field<ITypeaheadMetadata>) {
+        if (field.form == null) {
             throw "Form is required to retrieve parameters, but was not provided.";
         }
 
-        this.#form = form;
+        this.#field = field;
+        this.#form = field.form;
         this.#config = config;
 
         this.#inlineItems = Array.isArray(config.Items)
@@ -249,6 +254,11 @@ export class TypeaheadSourceManager {
                         return Promise.resolve();
                     case 'request':
                         return this.#form.inputs[p.Source]
+                            .getValue()
+                            .then((value) => (postData[p.Parameter] = value));
+                    case 'path':
+                        return this.#field
+                            .getRelatedFieldByPath(p.Source)!
                             .getValue()
                             .then((value) => (postData[p.Parameter] = value));
                 }

@@ -94,4 +94,9 @@ export abstract class Field<TMetadata extends IFieldMetadata = IFieldMetadata> e
 
         return FormFieldNavigator.resolveFieldPath(this, path);
     }
+
+    /**
+     * Gets the current value of this field.
+     */
+    public abstract getValue(): Promise<any>;
 }

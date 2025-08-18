@@ -52,4 +52,8 @@ export class OutputController<TValue, TMetadata extends IOutputFieldMetadata = I
 
         this.fire("output:change", this);
     }
+
+    public getValue(): Promise<any> {
+        return Promise.resolve(this.value);
+    }
 }

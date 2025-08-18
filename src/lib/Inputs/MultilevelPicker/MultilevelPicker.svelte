@@ -192,6 +192,11 @@
 					return controller?.form?.inputs[p.Source]
 						.getValue()
 						.then((value: any) => (postData[p.Parameter] = value));
+				case 'path':
+					return controller
+						.getRelatedFieldByPath(p.Source)!
+						.getValue()
+						.then((value) => (postData[p.Parameter] = value));
 			}
 		});
 
