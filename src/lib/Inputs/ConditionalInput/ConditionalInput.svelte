@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
 	import { InputController, type CreateInputOptions } from '../../Infrastructure/InputController';
-	import type { IInputFieldMetadata } from '../../Infrastructure/uimf';
+	import type { IInputFieldMetadata } from '../../Infrastructure/Metadata';
 
 	export interface Option {
 		Label: string;

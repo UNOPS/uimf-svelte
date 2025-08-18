@@ -4,7 +4,7 @@
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import FormLink, { type IFormLinkData } from '../FormLink/FormLink.svelte';
 
-	import type { IOutputFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { IOutputFieldMetadata } from '$lib/Infrastructure/Metadata';
 	import { FormlinkUtilities } from '../FormLink/FormlinkUtilities';
 
 	export interface ActionListData {

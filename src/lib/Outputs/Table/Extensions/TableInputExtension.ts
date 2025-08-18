@@ -1,6 +1,6 @@
 import type { InputController } from "../../../Infrastructure/InputController";
 import { defaultControlRegister as controlRegister } from "../../../Infrastructure/ControlRegister";
-import type { IInputFieldMetadata } from "../../../Infrastructure/uimf";
+import type { IInputFieldMetadata } from "$lib/Infrastructure/Metadata/IInputFieldMetadata";
 import type { Table } from "../Table";
 import type { TableBodyCell } from "../TableBodyCell";
 import { TableExtension } from "../TableExtension";

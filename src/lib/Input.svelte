@@ -5,7 +5,9 @@
 	import { tooltip } from './Components/Tooltip.svelte';
 	import { defaultControlRegister as controlRegister } from './Infrastructure/ControlRegister';
 	import { InputComponent } from './Infrastructure/Component';
-	import { DocumentationLayout, FieldLayout } from './Infrastructure/uimf';
+
+	import { FieldLayout } from './Infrastructure/Metadata/FieldLayout';
+	import { DocumentationLayout } from './Infrastructure/Metadata/DocumentationLayout';
 
 	export let controller: InputController<any>;
 	export let nolayout: boolean = false;

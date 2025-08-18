@@ -23,7 +23,7 @@
 		ActionListController,
 		type ActionListData
 	} from '../ActionList/ActionList.svelte';
-	import type { IFieldMetadata } from '../../Infrastructure/uimf';
+	import type { IFieldMetadata } from '../../Infrastructure/Metadata';
 
 	export let controller: OutputController<Image>;
 	export let height: string | null;

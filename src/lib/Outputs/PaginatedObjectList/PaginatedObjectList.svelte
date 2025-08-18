@@ -11,7 +11,7 @@
 	import { beforeUpdate } from 'svelte';
 	import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
 	import Pager from '../Table/Components/Pager.svelte';
-	import type { IComponent } from '$lib/Infrastructure/uimf';
+	import type { IComponent } from '$lib/Infrastructure/Metadata';
 	import type { TableConfiguration, TableMetadata } from '../Table/Components/ResultsTable.svelte';
 
 	export let controller: OutputController<PaginatedObjectList, TableMetadata<Configuration>>;

@@ -1,5 +1,5 @@
 import type { CreateInputResult } from "../../Infrastructure/ControlRegister";
-import type { IFieldMetadata } from "../../Infrastructure/uimf";
+import type { IFieldMetadata } from "$lib/Infrastructure/Metadata/IFieldMetadata";
 import { CssClassManager } from "./CssClassManager";
 import type { IField } from "./IColumn";
 import { InlineStyleManager } from "./InlineStyleManager";

@@ -70,7 +70,7 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../../Infrastructure/Component';
-	import type { IInputFieldMetadata } from '../../Infrastructure/uimf';
+	import type { IInputFieldMetadata } from '../../Infrastructure/Metadata';
 	import uuid from '../../Infrastructure/uuid';
 
 	export let controller: Controller;

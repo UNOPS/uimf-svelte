@@ -17,7 +17,7 @@
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
-	import type { IFieldMetadata, IComponent, IOutputFieldMetadata } from '../../Infrastructure/uimf';
+	import type { IComponent, IOutputFieldMetadata } from '../../Infrastructure/Metadata';
 	import Output from '../../Output.svelte';
 
 	interface ExpandableItem extends ExpandableData {

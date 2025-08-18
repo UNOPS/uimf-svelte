@@ -1,5 +1,5 @@
 
-import type { IFieldMetadata } from "../../../Infrastructure/uimf";
+import type { IFieldMetadata } from "$lib/Infrastructure/Metadata/IFieldMetadata";
 import { Table, TableBodyCell, TableHeadCell, TableRowGroup } from "..";
 import { TableExtension } from "../TableExtension";
 import TableRow from "../TableRow";

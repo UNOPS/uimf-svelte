@@ -3,7 +3,7 @@
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
-	import type { IOutputFieldMetadata } from '../../Infrastructure/uimf';
+	import type { IOutputFieldMetadata } from '../../Infrastructure/Metadata';
 	import Output from '../../Output.svelte';
 
 	interface OutputField {

@@ -1,7 +1,7 @@
 <script context="module" lang="ts">
 	import { InputController, type CreateInputOptions } from '../../Infrastructure/InputController';
 	import type { OutputController } from '../../Infrastructure/OutputController';
-	import type { IFieldMetadata, IInputFieldMetadata } from '../../Infrastructure/uimf';
+	import type { IFieldMetadata, IInputFieldMetadata } from '../../Infrastructure/Metadata';
 
 	export class Controller extends InputController<
 		ITableInputData,

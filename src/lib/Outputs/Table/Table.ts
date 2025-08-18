@@ -11,7 +11,8 @@ import type { OutputController } from "../../Infrastructure/OutputController";
 import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
 import type { TableMetadata } from "./Components/ResultsTable.svelte";
 import type { ITableInputConfiguration } from "../../Inputs/TableInput.svelte";
-import type { IFieldMetadata, IInputFieldMetadata } from "../../Infrastructure/uimf";
+import type { IInputFieldMetadata } from "$lib/Infrastructure/Metadata/IInputFieldMetadata";
+import type { IFieldMetadata } from "$lib/Infrastructure/Metadata/IFieldMetadata";
 import type { IListInputConfiguration } from '../../Inputs/ListInput.svelte';
 
 export interface ITableOption {

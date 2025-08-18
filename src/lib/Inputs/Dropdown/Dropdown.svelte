@@ -45,7 +45,7 @@
 
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
-	import type { IInputFieldMetadata } from '../../Infrastructure/uimf';
+	import type { IInputFieldMetadata } from '../../Infrastructure/Metadata';
 	import { InputComponent } from '../../Infrastructure/Component';
 	import type { IOption } from '../Typeahead/Domain/index';
 	import type { ITypeaheadConfig } from '../Typeahead/Domain/index';

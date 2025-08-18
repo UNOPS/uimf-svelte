@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
 	import { InputController, type CreateInputOptions } from '../../Infrastructure/InputController';
-	import type { IComponent, IInputFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { IComponent, IInputFieldMetadata } from '$lib/Infrastructure/Metadata';
 
 	export interface ViewData {
 		Metadata: IComponent;

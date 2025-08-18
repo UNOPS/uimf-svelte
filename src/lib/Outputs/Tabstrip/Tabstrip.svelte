@@ -3,7 +3,7 @@
 	import type { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import { tooltip } from '../../Components/Tooltip.svelte';
-	import type { IOutputFieldMetadata } from '../../Infrastructure/uimf';
+	import type { IOutputFieldMetadata } from '../../Infrastructure/Metadata';
 
 	interface Tab {
 		CssClass: string | null | undefined;

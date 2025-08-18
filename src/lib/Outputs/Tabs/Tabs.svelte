@@ -3,7 +3,7 @@
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import { beforeUpdate } from 'svelte';
 	import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
-	import type { IFieldMetadata, IOutputFieldMetadata } from '../../Infrastructure/uimf';
+	import type { IFieldMetadata, IOutputFieldMetadata } from '../../Infrastructure/Metadata';
 
 	interface Configuration {
 		Properties: IFieldMetadata[];

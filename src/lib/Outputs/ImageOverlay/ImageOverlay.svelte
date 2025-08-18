@@ -14,7 +14,7 @@
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
-	import type { IComponent, IOutputFieldMetadata } from '../../Infrastructure/uimf';
+	import type { IComponent, IOutputFieldMetadata } from '../../Infrastructure/Metadata';
 	import uuid from '../../Infrastructure/uuid';
 
 	export let controller: OutputController<ImageOverlay, IMetadata>;
@@ -129,7 +129,7 @@
 			<a class="title" href={controller.value.Url}>{controller.value.Title}</a>
 
 			{#if controller.value.Subtitle != null}
-			<a class="subtitle" href={controller.value.Url}>{controller.value.Subtitle}</a>
+				<a class="subtitle" href={controller.value.Url}>{controller.value.Subtitle}</a>
 			{/if}
 		{/if}
 	</div>

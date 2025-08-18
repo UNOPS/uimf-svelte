@@ -1,17 +1,9 @@
+import { FormMetadata } from "./Metadata/FormMetadata";
 import type { InputController } from "./InputController";
 import { OutputController } from "./OutputController";
+import type { FormLink } from "./Metadata/FormLink";
 import type IUimfApp from "./UimfApp";
 import { IFormContainer } from "./UimfApp";
-import type { IFieldMetadata, FormLink, IInputFieldMetadata, IOutputFieldMetadata } from "./uimf";
-
-interface FormMetadata extends IFieldMetadata {
-    InputFields: IInputFieldMetadata[];
-    PostOnLoad: any;
-    OutputFields: IOutputFieldMetadata[];
-    CloseOnPostIfModal: boolean;
-    PostOnLoadValidation: boolean;
-    Documentation?: string | null;
-}
 
 export interface FormInstance extends IFormContainer {
     submit: (postOnLoad?: boolean) => Promise<any>;
@@ -22,9 +14,9 @@ export interface FormInstance extends IFormContainer {
     destroy(): any;
     fire(event: string, args?: { postOnLoad: any; }): any;
     metadata: FormMetadata;
-    response: { [key: string]: OutputController<any> };
-    inputs: { [key: string]: InputController<any> };
-    originalInputValues: { [key: string]: any };
+    response: { [key: string]: OutputController<any>; };
+    inputs: { [key: string]: InputController<any>; };
+    originalInputValues: { [key: string]: any; };
     app: IUimfApp;
     currentUrl: string;
     useUrl: boolean;

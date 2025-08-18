@@ -1,5 +1,5 @@
 import { InputController, type CreateInputOptions } from '../../Infrastructure/InputController';
-import type { IInputFieldMetadata } from '../../Infrastructure/uimf';
+import type { IInputFieldMetadata } from "$lib/Infrastructure/Metadata/IInputFieldMetadata";
 import type { IArrayInputData } from './IArrayInputData';
 
 export class ArrayInputController extends InputController<IArrayInputData, IInputFieldMetadata> {

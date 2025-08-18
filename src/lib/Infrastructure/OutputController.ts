@@ -1,8 +1,8 @@
 import EventSource from "./EventSource";
-import type { FormInstance } from "./FormController";
+import type { FormInstance } from "./FormInstance";
 import type { IFormComponent } from "./IFormComponent";
 import type IUimfApp from "./UimfApp";
-import type { IOutputFieldMetadata } from "./uimf";
+import type { IOutputFieldMetadata } from "./Metadata/IOutputFieldMetadata";
 import uuid from "./uuid";
 
 export interface CreateOutputOptions<TMetadata extends IOutputFieldMetadata = IOutputFieldMetadata> {

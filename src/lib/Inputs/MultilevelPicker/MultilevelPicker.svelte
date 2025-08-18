@@ -47,8 +47,8 @@
 	import { beforeUpdate } from 'svelte';
 	import { InputController } from '../../Infrastructure/InputController';
 	import { InputComponent } from '../../Infrastructure/Component';
-	import type { FormResponse } from '../../Infrastructure/UimfApp';
-	import type { IInputFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { FormResponse } from '../../Infrastructure/MetadataApp';
+	import type { IInputFieldMetadata } from '$lib/Infrastructure/Metadata';
 	import { augmentItems } from '../Typeahead/Typeahead.svelte';
 	import type { IOption } from '../Typeahead/Domain/index';
 

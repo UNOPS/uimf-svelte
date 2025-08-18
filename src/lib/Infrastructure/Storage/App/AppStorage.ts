@@ -1,14 +1,6 @@
-import EventSource from "./EventSource";
-
-export interface IFrontendVariable {
-   Name: string;
-   IsArray: boolean;
-}
-
-export interface IFrontendVariableValue {
-   Variable: IFrontendVariable;
-   Value: any;
-}
+import EventSource from "../../EventSource";
+import { IFrontendVariable } from "./IFrontendVariable";
+import { IFrontendVariableValue } from "./IFrontendVariableValue";
 
 interface Value {
    Variable: IFrontendVariable;

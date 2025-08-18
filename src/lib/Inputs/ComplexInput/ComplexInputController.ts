@@ -1,6 +1,6 @@
 import { InputController, type CreateInputOptions } from '../../Infrastructure/InputController';
 import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
-import type { IInputFieldMetadata } from '$lib/Infrastructure/uimf';
+import type { IInputFieldMetadata } from "$lib/Infrastructure/Metadata/IInputFieldMetadata";
 import type { ViewData } from './ViewData';
 import type { NestedComponentMetadata } from './NestedComponentMetadata';
 

@@ -121,9 +121,10 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../../Infrastructure/Component';
-	import type { IInputFieldMetadata } from '../../Infrastructure/uimf';
+	import type { IInputFieldMetadata } from '../../Infrastructure/Metadata';
 	import { tooltip } from '../../Components/Tooltip.svelte';
-	import type { FormInstance } from '../../Infrastructure/FormController';
+
+	import type { FormInstance } from '$lib/Infrastructure/FormInstance';
 
 	export let controller: Controller;
 

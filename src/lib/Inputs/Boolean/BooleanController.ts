@@ -1,5 +1,5 @@
 import { InputController } from '../../Infrastructure/InputController';
-import type { IInputFieldMetadata } from '../../Infrastructure/uimf';
+import type { IInputFieldMetadata } from "$lib/Infrastructure/Metadata/IInputFieldMetadata";
 import type { BooleanConfiguration } from './BooleanConfiguration';
 
 export class BooleanController extends InputController<boolean, IInputFieldMetadata<BooleanConfiguration>> {

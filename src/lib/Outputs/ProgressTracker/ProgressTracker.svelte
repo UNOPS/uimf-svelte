@@ -25,7 +25,7 @@
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
-	import type { IOutputFieldMetadata } from '../../Infrastructure/uimf';
+	import type { IOutputFieldMetadata } from '../../Infrastructure/Metadata';
 	import { tooltip } from '../../Components/Tooltip.svelte';
 
 	export let controller: OutputController<IData, IMetadata>;

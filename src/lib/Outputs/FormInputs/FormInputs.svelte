@@ -5,7 +5,7 @@
 	import { InputController } from '../../Infrastructure/InputController';
 	import Input from '../../Input.svelte';
 	import { defaultControlRegister } from '../../Infrastructure/ControlRegister';
-	import type { IOutputFieldMetadata } from '../../Infrastructure/uimf';
+	import type { IOutputFieldMetadata } from '../../Infrastructure/Metadata';
 	import type { IFormLinkData } from '../FormLink/FormLink.svelte';
 	import FormLinkComponent from '../FormLink/FormLink.svelte';
 	import { FormlinkUtilities } from '../FormLink/FormlinkUtilities';

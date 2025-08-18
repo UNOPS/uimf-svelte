@@ -1,4 +1,4 @@
-import type { IFrontendVariableValue } from '../../Infrastructure/AppStorage';
+import type { IFrontendVariableValue } from "$lib/Infrastructure/Storage/App/IFrontendVariableValue";
 import type { IDynamicInputValue } from './IDynamicInputValue';
 import type { IFormlinkView } from './IFormlinkView';
 

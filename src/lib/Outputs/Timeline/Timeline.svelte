@@ -30,7 +30,7 @@
 		ActionListController,
 		type ActionListData
 	} from '../ActionList/ActionList.svelte';
-	import type { IFieldMetadata, IOutputFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { IFieldMetadata, IOutputFieldMetadata } from '$lib/Infrastructure/Metadata';
 	import InlineForm from '../InlineForm/InlineForm.svelte';
 
 	export let controller: OutputController<Timeline>;

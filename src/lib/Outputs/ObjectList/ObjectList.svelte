@@ -16,7 +16,11 @@
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
-	import type { IFieldMetadata, IComponent, IOutputFieldMetadata } from '../../Infrastructure/uimf';
+	import type {
+		IFieldMetadata,
+		IComponent,
+		IOutputFieldMetadata
+	} from '../../Infrastructure/Metadata';
 
 	export let controller: OutputController<any, IMetadata>;
 

@@ -42,7 +42,7 @@
 
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
-	import type { IInputFieldMetadata } from '$lib/Infrastructure/uimf';
+	import type { IInputFieldMetadata } from '$lib/Infrastructure/Metadata';
 	import { InputComponent } from '../../Infrastructure/Component';
 	import { tooltip } from '../../Components/Tooltip.svelte';
 

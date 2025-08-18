@@ -5,7 +5,8 @@
 	import { OutputComponent } from './Infrastructure/Component';
 	import { tooltip } from './Components/Tooltip.svelte';
 	import { defaultControlRegister as controlRegister } from './Infrastructure/ControlRegister';
-	import { FieldLayout } from './Infrastructure/uimf';
+
+	import { FieldLayout } from './Infrastructure/Metadata/FieldLayout';
 
 	export let controller: OutputController<any>;
 	export let nolayout: boolean = false;

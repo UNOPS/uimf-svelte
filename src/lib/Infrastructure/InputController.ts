@@ -1,8 +1,8 @@
-import type { IInputFieldMetadata } from "./uimf";
+import type { IInputFieldMetadata } from "./Metadata/IInputFieldMetadata";
 import EventSource from './EventSource';
 import uuid from "./uuid";
 import type IUimfApp from "./UimfApp";
-import type { FormInstance } from "./FormController";
+import type { FormInstance } from "./FormInstance";
 import type { IFormComponent } from "./IFormComponent";
 
 export interface Deferrer {

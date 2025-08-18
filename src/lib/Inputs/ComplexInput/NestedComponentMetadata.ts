@@ -1,4 +1,4 @@
-import type { IInputFieldMetadata } from '$lib/Infrastructure/uimf';
+import type { IInputFieldMetadata } from "$lib/Infrastructure/Metadata/IInputFieldMetadata";
 
 export interface NestedComponentMetadata {
 	CssClassEach: string;

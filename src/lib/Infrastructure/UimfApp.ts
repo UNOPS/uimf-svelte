@@ -1,8 +1,9 @@
 import type { IFormLinkData } from "$lib/Outputs/FormLink/FormLink.svelte";
-import AppStorage from "./AppStorage";
-import EventSource, { IEventSource } from "./EventSource";
-import type { FormInstance } from "./FormController";
-import type { IFieldMetadata, FormMetadata } from "./uimf";
+import AppStorage from "./Storage/App/AppStorage";
+import { IEventSource } from "./EventSource";
+import type { FormInstance } from "./FormInstance";
+import type { IFieldMetadata } from "./Metadata/IFieldMetadata";
+import type { FormMetadata } from "./Metadata/FormMetadata";
 
 interface FormLink {
     Form: string;
@@ -82,7 +83,7 @@ export default interface IUimfApp {
     formsById: { [id: string]: FormMetadata };
     makeUrl(link: FormLink): Promise<string>;
     goto(link: FormLink): Promise<void>;
-    postForm<T extends FormResponse>(form: string, data: any, config: IPostFormConfig): Promise<T>;
+    postForm<T extends FormResponse>(form: string, data: any, config: IPostFormConfig | null): Promise<T>;
     getApiFile(url: string): Promise<Response>;
     getApi(form: string): Promise<Response>;
     getResponseHandler(handler: string): any;

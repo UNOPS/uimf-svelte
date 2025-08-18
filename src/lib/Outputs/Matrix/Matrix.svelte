@@ -32,7 +32,7 @@
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import { tooltip } from '../../Components/Tooltip.svelte';
-	import type { IOutputFieldMetadata } from '../../Infrastructure/uimf';
+	import type { IOutputFieldMetadata } from '../../Infrastructure/Metadata';
 	import { OutputComponent } from '../../Infrastructure/Component';
 
 	export let controller: OutputController<IMatrix, IMatrixConfiguration>;
@@ -41,7 +41,7 @@
 	let rows: RowMetadata[] = [];
 	let colgroups: { span: number; style?: string }[] = [];
 	let isColored = false;
-	
+
 	function getColor(index: number): string {
 		const colors = ['#fff9e6', '#eaf7ee', '#e8f7fa', '#fcebec'];
 		return colors[index % colors.length];
@@ -58,20 +58,19 @@
 		let propertiesSorted = properties.sort((a, b) => a.OrderIndex - b.OrderIndex);
 
 		for (let property of propertiesSorted) {
-			
 			// flatten list
-			if (controller.metadata.Component.Configuration.FlattenLists && property.Component.Type == 'table') {
-				
-				const sampleItem = controller?.value?.Items?.[0];		
+			if (
+				controller.metadata.Component.Configuration.FlattenLists &&
+				property.Component.Type == 'table'
+			) {
+				const sampleItem = controller?.value?.Items?.[0];
 				var propertyId = property.Id;
 
 				if (sampleItem !== undefined && sampleItem[propertyId]?.length) {
-					
 					for (let i = 0; i < sampleItem[propertyId].length; i++) {
-						
 						const field = sampleItem[propertyId][i];
 						let value = Object.keys(sampleItem[propertyId][i])[1];
-						
+
 						result.push({
 							OrderIndex: orderIndex++,
 							Path: `${[propertyId]}[${i}].${value}`,
@@ -80,11 +79,10 @@
 								Id: `${[propertyId]}[${i}].${value}`,
 								Label: field.Label
 							},
-							Level: level,
+							Level: level
 						});
 					}
 				}
-
 			} else if (property.Component.Type === 'matrix-data') {
 				result.push({
 					Metadata: property,

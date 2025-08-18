@@ -1,5 +1,5 @@
 import { OutputController } from "../../Infrastructure/OutputController";
-import { type IOutputFieldMetadata } from "../../Infrastructure/uimf";
+import { type IOutputFieldMetadata } from "../../Infrastructure/Metadata/IOutputFieldMetadata";
 import { FormlinkController } from "./FormLinkController";
 import { type IFormLinkData } from "./IFormLinkData";
 

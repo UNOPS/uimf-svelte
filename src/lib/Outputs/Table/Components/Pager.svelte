@@ -1,8 +1,8 @@
 <script context="module" lang="ts">
-	import type { FormInstance } from '../../../Infrastructure/FormController';
+	import type { FormInstance } from '$lib/Infrastructure/FormInstance';
 	import { OutputComponent } from '../../../Infrastructure/Component';
 	import type { OutputController } from '../../../Infrastructure/OutputController';
-	import type UimfApp from '../../../Infrastructure/UimfApp';
+	import type UimfApp from '../../../Infrastructure/MetadataApp';
 	import { PaginationParameters } from '../../../Inputs/Paginator/Paginator.svelte';
 	import { beforeUpdate } from 'svelte';
 	import type { TableMetadata } from './ResultsTable.svelte';
@@ -157,7 +157,7 @@
 	<nav>
 		<div>
 			<span>
-				Items {pager.fromRow}-{pager.toRow} of {controller.value.TotalCount} | 
+				Items {pager.fromRow}-{pager.toRow} of {controller.value.TotalCount} |
 			</span>
 			<select
 				class="form-select page-size"

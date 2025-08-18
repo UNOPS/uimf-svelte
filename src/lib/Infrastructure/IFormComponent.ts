@@ -1,6 +1,6 @@
-import type { FormInstance } from "./FormController";
+import type { FormInstance } from "./FormInstance";
 import type IUimfApp from "./UimfApp";
-import type { IFieldMetadata } from "./uimf";
+import type { IFieldMetadata } from "./Metadata/IFieldMetadata";
 
 /**
  * Represents an input or an output component.

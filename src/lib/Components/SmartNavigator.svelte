@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type {
 		FormMetadata,
-		InputField,
+		IInputFieldMetadata,
 		SmartNavigatorCustomProperty
-	} from '../Infrastructure/uimf';
+	} from '../Infrastructure/Metadata';
 
 	export let formMetadatas: Array<FormMetadata> = [];
 	let forms: SmartNavEntry[] = [];
@@ -19,7 +19,7 @@
 		Metadata: FormMetadata;
 		SmartNav: SmartNavigatorCustomProperty;
 		EffectiveLabel: string;
-		RequiredInput: InputField | null;
+		RequiredInput: IInputFieldMetadata | null;
 		SearchText: string;
 
 		constructor(form: FormMetadata) {

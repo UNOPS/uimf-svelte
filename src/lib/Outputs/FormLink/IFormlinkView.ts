@@ -1,4 +1,4 @@
-import type { IFrontendVariableValue } from '../../Infrastructure/AppStorage';
+import type { IFrontendVariableValue } from "$lib/Infrastructure/Storage/App/IFrontendVariableValue";
 
 export interface IFormlinkView {
 	CssClass?: string;

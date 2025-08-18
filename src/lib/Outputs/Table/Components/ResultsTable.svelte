@@ -35,7 +35,7 @@
 	import { tooltip } from '../../../Components/Tooltip.svelte';
 	import Output from '../../../Output.svelte';
 	import type { TableExtension } from '../TableExtension';
-	import type { IFieldMetadata, IOutputFieldMetadata } from '../../../Infrastructure/uimf';
+	import type { IFieldMetadata, IOutputFieldMetadata } from '../../../Infrastructure/Metadata';
 	import { DocumentationExtension } from '../Extensions/DocumentationExtension';
 	import type { IField } from '../IColumn';
 	import type { InputController } from '../../../Infrastructure/InputController';

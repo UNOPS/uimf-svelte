@@ -52,7 +52,7 @@
 	import Select from 'svelte-select';
 	import { InputComponent } from '../../Infrastructure/Component';
 	import { beforeUpdate } from 'svelte';
-	import type { IInputFieldMetadata } from '../../Infrastructure/uimf';
+	import type { IInputFieldMetadata } from '../../Infrastructure/Metadata';
 	import { TypeaheadSourceManager } from './Domain/TypeaheadSourceManager';
 	import type { ITypeaheadValue } from './Domain/ITypeaheadValue';
 	import type { IOption } from './Domain/index';

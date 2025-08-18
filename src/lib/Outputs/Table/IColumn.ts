@@ -1,4 +1,4 @@
-import type { IFieldMetadata } from "../../Infrastructure/uimf";
+import type { IFieldMetadata } from "$lib/Infrastructure/Metadata/IFieldMetadata";
 
 export interface IField {
     /**
