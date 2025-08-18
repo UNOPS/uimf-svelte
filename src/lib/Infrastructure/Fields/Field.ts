@@ -4,6 +4,7 @@ import type { IFieldMetadata } from "../Metadata";
 import type IUimfApp from "../App/UimfApp";
 import type UimfApp from "../App/UimfApp";
 import uuid from "../Utilities/uuid";
+import { FormFieldNavigator } from "./FormFieldNavigator";
 
 export abstract class Field<TMetadata extends IFieldMetadata = IFieldMetadata> extends EventSource {
     /**
@@ -55,5 +56,42 @@ export abstract class Field<TMetadata extends IFieldMetadata = IFieldMetadata> e
         if (this.parent != null) {
             this.parent.children[options.metadata.Id] = this;
         }
+    }
+
+    /**
+     * Gets all inputs belonging to the same exact object. In most cases this will all 
+     * form's inputs (`FormInstance.inputs`), unless this input is "nested" inside another
+     * input (e.g. - `TableInput`).
+     */
+    public siblings(): Record<string, Field> {
+        if (this.parent == null) {
+            if (this.form == null) {
+                return {};
+            }
+
+            return this.form.inputs;
+        }
+
+        return this.parent.children;
+    }
+
+    /**
+     * Finds a related field (i.e. - belonging to the same `FormInstance`) given the 
+     * field's path.. Path can either be relative or absolute (where root is the form).
+     * Some examples:
+     * <ul>
+     * <li>/response/Contact/FirstName</li>
+     * <li>/request/Address/City</li>
+     * <li>./ChildField or ChildField (identical)</li>
+     * <li>../Sibling</li>
+     * <li>../ - parent field</li>
+     * </ul>
+     */
+    public getRelatedFieldByPath(path: string): Field | null {
+        if (!this.form) {
+            return null;
+        }
+
+        return FormFieldNavigator.resolveFieldPath(this, path);
     }
 }
