@@ -76,7 +76,11 @@
 </ul>
 {#each tabs as tab}
 	{#if activeTabValue == tab.controller.metadata.Id}
-		<div class="box">
+		<div class="box active-tab">
+			<svelte:component this={tab.component} controller={tab.controller} />
+		</div>
+	{:else}
+		<div class="box hidden-tab">
 			<svelte:component this={tab.component} controller={tab.controller} />
 		</div>
 	{/if}
@@ -117,5 +121,23 @@
 		color: #495057;
 		background-color: #fff;
 		border-color: #68b3ff #68b3ff #fff;
+	}
+
+	.hidden-tab {
+		display: none;
+	}
+
+	@media print {
+		ul {
+			display: none !important;
+		}
+
+		.box {
+			display: block !important;
+		}
+
+		.hidden-tab {
+			display: block !important;
+		}
 	}
 </style>
