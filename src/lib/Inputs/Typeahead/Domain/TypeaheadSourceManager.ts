@@ -1,6 +1,5 @@
-import { Field } from "$lib/Infrastructure/Fields/Field";
-import type { FormInstance } from "$lib/Infrastructure/FormInstance";
-import { InputController } from "$lib/Infrastructure/InputController";
+import { Field } from "../../../Infrastructure/Fields/Field";
+import type { FormInstance } from "../../../Infrastructure/FormInstance";
 import { ITypeaheadMetadata } from "../Typeahead.svelte";
 import type { IOption } from "./IOption";
 import type { ITypeaheadConfig } from "./ITypeaheadConfig";
