@@ -130,10 +130,10 @@
 				/>
 			</div>
 		{:else if controller.value.Title != null}
-			<a class="title" href={controller.value.Url}>{controller.value.Title}</a>
+			<a class="title" href={controller.value.Url}>{@html controller.value.Title}</a>
 
 			{#if controller.value.Subtitle != null}
-				<a class="subtitle" href={controller.value.Url}>{controller.value.Subtitle}</a>
+				<a class="subtitle" href={controller.value.Url}>{@html controller.value.Subtitle}</a>
 			{/if}
 		{/if}
 	</div>
