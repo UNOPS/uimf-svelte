@@ -28,6 +28,8 @@ export abstract class InputController<TValue, TMetadata extends IInputFieldMetad
      */
     public readonly metadata: TMetadata;
 
+    public readonly type: string = "input";
+
     constructor(options: CreateInputOptions<TMetadata>) {
         super({
             form: options.form ?? null,

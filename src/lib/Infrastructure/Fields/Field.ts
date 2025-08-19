@@ -38,6 +38,11 @@ export abstract class Field<TMetadata extends IFieldMetadata = IFieldMetadata> e
      */
     public metadata: TMetadata;
 
+    /**
+     * Indicates the type of field this is.
+     */
+    abstract readonly type: string;
+
     constructor(options: {
         form: FormInstance | null,
         children: Record<string, Field>,

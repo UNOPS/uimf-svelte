@@ -38,6 +38,8 @@ export class OutputController<TValue, TMetadata extends IOutputFieldMetadata = I
 
     public metadata: TMetadata;
 
+    public readonly type: string = "input";
+
     /**
      * Value of the output field.
      */
