@@ -64,9 +64,9 @@ export abstract class Field<TMetadata extends IFieldMetadata = IFieldMetadata> e
     }
 
     /**
-     * Gets all inputs belonging to the same exact object. In most cases this will all 
-     * form's inputs (`FormInstance.inputs`), unless this input is "nested" inside another
-     * input (e.g. - `TableInput`).
+     * Gets all fields belonging to the same exact object. In most cases this will get all 
+     * form's inputs (`FormInstance.inputs`) or outputs (`FormInstance.response`), unless 
+     * this field is "nested" inside another one (e.g. - `TableInput`).
      */
     public siblings(): Record<string, Field> {
         if (this.parent == null) {
@@ -74,7 +74,11 @@ export abstract class Field<TMetadata extends IFieldMetadata = IFieldMetadata> e
                 return {};
             }
 
-            return this.form.inputs;
+            if (this.type === 'input') {
+                return this.form.inputs;
+            }
+
+            return this.form.response;
         }
 
         return this.parent.children;

@@ -56,8 +56,15 @@ export class FormFieldNavigator {
         }
 
         // Handle relative paths
-        let currentContainer: Field | null = currentField.parent;
+        let currentContainer: { parent: Field | null, children: Record<string, Field> } | null = currentField.parent;
         const segments = path.split('/').filter(s => s.length > 0);
+
+        if (currentContainer == null) {
+            currentContainer = {
+                children: currentField.siblings(),
+                parent: null
+            };
+        }
 
         for (const segment of segments) {
             if (segment === '.' || segment === '') {
@@ -84,7 +91,7 @@ export class FormFieldNavigator {
             }
         }
 
-        return currentContainer;
+        return currentContainer as Field;
     }
 
     /**
