@@ -59,10 +59,7 @@
 
 	let component = new InputComponent({
 		async init() {
-			source = new TypeaheadSourceManager(
-				controller.metadata.Component.Configuration,
-				controller.form!
-			);
+			source = new TypeaheadSourceManager(controller.metadata.Component.Configuration, controller);
 		},
 		async refresh() {
 			items = await source.getOptionsAndFilter(null);
