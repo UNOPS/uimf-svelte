@@ -52,7 +52,7 @@
 		refresh() {
 			controller.value = controller.value;
 
-			if (controller.value == null) {
+			if (controller.value == null && fileInput != null) {
 				fileInput.value = '';
 			}
 		}
