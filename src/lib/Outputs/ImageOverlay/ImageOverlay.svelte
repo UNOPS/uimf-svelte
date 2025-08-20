@@ -143,7 +143,7 @@
 	:global(.cards-wrapper) {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 20px;
+		gap: 10px;
 		justify-content: center;
 	}
 
@@ -153,7 +153,7 @@
 		align-items: center;
 		width: 310px;
 		height: 350px;
-		margin: 25px 50px;
+		margin: 25px 20px;
 	}
 
 	.overlay-container {
