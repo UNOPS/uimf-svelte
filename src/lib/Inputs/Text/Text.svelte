@@ -5,6 +5,7 @@
 		MinLength?: number;
 		MaxLength?: number;
 		Multiline: boolean;
+		Password: boolean;
 		Placeholder: string;
 	}
 
@@ -37,7 +38,19 @@
 	beforeUpdate(async () => await component.setup(controller));
 </script>
 
-{#if controller.metadata.Component.Configuration?.Multiline === true}
+{#if controller.metadata.Component.Configuration?.Password === true}
+	<input
+		autocomplete="off"
+		class="form-control"
+		on:change={() => controller.setValue(controller.value)}
+		bind:value={controller.value}
+		required={controller.metadata.Required}
+		minlength={controller.metadata.Component.Configuration?.MinLength}
+		maxlength={controller.metadata.Component.Configuration?.MaxLength}
+		placeholder={controller.metadata.Component.Configuration?.Placeholder}
+		type="password"
+	/>
+{:else if controller.metadata.Component.Configuration?.Multiline === true}
 	<textarea
 		class="form-control"
 		rows="4"
