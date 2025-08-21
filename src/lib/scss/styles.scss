@@ -33,3 +33,14 @@
         box-shadow: none !important;
     }
 }
+
+/* Every item inside `panels` will be styled as a panel. This class can be applied to a flexbox or a grid. */
+.panels {
+    gap: 25px;
+    flex-wrap: wrap;
+    background-color: var(--bs-gray-200);
+
+    &>div {
+        background-color: white;
+    }
+}

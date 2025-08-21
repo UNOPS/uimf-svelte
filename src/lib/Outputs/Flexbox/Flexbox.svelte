@@ -124,15 +124,4 @@
 	.height700 {
 		height: 750px;
 	}
-
-	/* Every flexbox item will be styled as a panel */
-	.panels {
-		gap: 25px;
-		flex-wrap: wrap;
-		background-color: var(--bs-gray-200);
-
-		& > div {
-			background-color: white;
-		}
-	}
 </style>
