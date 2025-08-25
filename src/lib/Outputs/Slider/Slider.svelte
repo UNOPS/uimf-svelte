@@ -157,6 +157,12 @@
 					</button>
 				{/each}
 			</div>
+
+			{#if componentItemControllers[currentIndex - 1].controller.value.Description}
+				<div class="description">
+					{componentItemControllers[currentIndex - 1].controller.value.Description}
+				</div>
+			{/if}
 		{/if}
 	{/if}
 </div>
@@ -225,5 +231,11 @@
 	.thumbnail {
 		display: flex;
 		height: inherit;
+	}
+
+	.description {
+		margin-top: 10px;
+		font-size: small;
+		align-self: center;
 	}
 </style>
