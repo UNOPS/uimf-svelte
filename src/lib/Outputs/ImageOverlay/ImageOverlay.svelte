@@ -152,7 +152,7 @@
 		flex-direction: column;
 		align-items: center;
 		width: 310px;
-		height: 350px;
+		height: 390px;
 		margin: 25px 20px;
 	}
 
