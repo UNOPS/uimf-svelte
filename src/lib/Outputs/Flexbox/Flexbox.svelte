@@ -30,6 +30,7 @@
 				FlexShrink?: string;
 				CssClass?: string;
 				MinWidth?: string;
+				HideIfNull: boolean;
 			};
 		};
 	}
@@ -92,6 +93,8 @@
 				style:flex-grow={field.controller.metadata.CustomProperties?.Flexbox?.FlexGrow}
 				style:flex-shrink={field.controller.metadata.CustomProperties?.Flexbox?.FlexShrink}
 				style:min-width={field.controller.metadata.CustomProperties?.Flexbox?.MinWidth}
+				class:d-none={field.controller.metadata.CustomProperties?.Flexbox?.HideIfNull &&
+					field.controller.value == null}
 			>
 				<Output controller={field.controller} />
 			</div>
