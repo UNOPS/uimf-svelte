@@ -73,6 +73,7 @@ import * as Tabstrip from '../Outputs/Tabstrip/Tabstrip.svelte';
 import * as InlineForm from '../Outputs/InlineForm/InlineForm.svelte';
 import * as PaginatedTable from '../Outputs/PaginatedTable/PaginatedTable.svelte';
 import * as ProgressTracker from '../Outputs/ProgressTracker/ProgressTracker.svelte';
+import * as Recursive from '../Outputs/Recursive/Recursive.svelte';
 import * as Sequence from '../Outputs/Sequence/Sequence.svelte';
 import * as CartItemOe from '../Outputs/CartItemOe/CartItemOe.svelte';
 import * as Output from '../Outputs/Output/Output.svelte';
@@ -331,6 +332,7 @@ defaultControlRegister.registerOutputComponent('pie-chart', PieChart, { displayA
 defaultControlRegister.registerOutputComponent('tidy-tree', TidyTree, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('line-chart', LineChart, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('progress-tracker', ProgressTracker, { displayAsBlock: true });
+defaultControlRegister.registerOutputComponent('recursive', Recursive, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('sequence', Sequence, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('sla-timer', SlaTimer, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('slider', Slider);
