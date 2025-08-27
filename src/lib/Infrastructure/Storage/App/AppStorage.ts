@@ -38,9 +38,6 @@ export default class AppStorage extends EventSource {
       }
    }
 
-   /**
-    * Toggles the app storage variable.
-    */
    toggleVariable(variable: IFrontendVariableValue) {
       if (variable.Variable.IsArray) {
          if (this.#entries[variable.Variable.Name] != null) {
@@ -66,5 +63,10 @@ export default class AppStorage extends EventSource {
       } else {
          throw new Error('Toggle variable is not supported for non-array variables.');
       }
+   }
+
+   public clear(): void {
+      this.#entries = {};
+      this.fire('change', null);
    }
 }
