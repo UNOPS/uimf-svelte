@@ -141,7 +141,7 @@
 	) {
 		if (targets != null) {
 			for (const [sourceField, targetField] of Object.entries(targets)) {
-				const target = targetContainer[targetField];
+				const target = controller.getRelatedFieldByPath(targetField) ?? targetContainer[targetField];
 				if (target != null && target.setValue != null) {
 					const newValue = source[sourceField];
 					target.setValue(newValue);
