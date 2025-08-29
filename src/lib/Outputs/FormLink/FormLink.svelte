@@ -110,6 +110,14 @@
 
 			for (const [targetField, dynamicValue] of Object.entries(dynamicInputValues)) {
 				switch (dynamicValue.Source) {
+					case DynamicValueSource.LocalSource: {
+						const numberField = controller.getRelatedFieldByPath(dynamicValue.Name);
+						if (numberField) {
+							result[targetField] = await numberField.getValue();
+						}
+
+						break;
+					}
 					case DynamicValueSource.ParentForm: {
 						parentFormValues = parentFormValues ?? (await controller.form.getInputFieldValues());
 						result[targetField] = await parentFormValues[dynamicValue.Name];
