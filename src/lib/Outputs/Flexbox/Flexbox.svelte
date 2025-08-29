@@ -1,13 +1,15 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../../Infrastructure/OutputController';
+	import { InputController } from '../../Infrastructure/InputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
-	import type { IOutputFieldMetadata } from '../../Infrastructure/Metadata';
+	import type { IOutputFieldMetadata, IInputFieldMetadata } from '../../Infrastructure/Metadata';
 	import Output from '../../Output.svelte';
+	import Input from '../../Input.svelte';
 
 	interface Configuration {
-		Fields: FlexboxItemMetadata[];
+		Fields: (IOutputFieldMetadata | IInputFieldMetadata)[];
 		Gap?: string;
 		Wrap?: string;
 		CssClass?: string;
@@ -18,30 +20,17 @@
 	}
 
 	interface FlexboxItem {
+		isInput: boolean;
 		component: any;
-		controller: FlexboxItemController;
-	}
-
-	interface FlexboxItemMetadata extends IOutputFieldMetadata {
-		CustomProperties?: {
-			Flexbox?: {
-				FlexBasis?: string;
-				FlexGrow?: string;
-				FlexShrink?: string;
-				CssClass?: string;
-				MinWidth?: string;
-				HideIfNull: boolean;
-			};
-		};
+		controller: any;
+		metadata: IOutputFieldMetadata | IInputFieldMetadata;
 	}
 
 	class FlexboxController extends OutputController<any, IOutputFieldMetadata<Configuration>> {}
 
-	class FlexboxItemController extends OutputController<any, FlexboxItemMetadata> {}
-
 	export let controller: FlexboxController;
 
-	let fields: FlexboxItem[];
+	let fields: FlexboxItem[] = [];
 
 	let component = new OutputComponent({
 		refresh() {
@@ -55,23 +44,39 @@
 
 	function getComponentControllers(): FlexboxItem[] {
 		return controller.metadata.Component.Configuration.Fields.sort(
-			(a, b) => a.OrderIndex - b.OrderIndex
-		).map((item) => {
-			const field = controlRegister.createOutput({
-				props: {
-					metadata: item,
+			(a: { OrderIndex: number; }, b: { OrderIndex: number; }) => a.OrderIndex - b.OrderIndex
+		).map((itemMetadata: { Id: string | number; }) => {
+			// Prefer the Required property to determine input vs output
+			const isInput = typeof (itemMetadata as any).Required === 'boolean';
+			let field;
+			if (isInput) {
+				field = controlRegister.createInput({
+					metadata: itemMetadata as IInputFieldMetadata,
 					app: controller.app,
 					form: controller.form,
-					data: null,
 					parent: controller
-				}
-			});
 
-			if (controller.value != null) {
-				field.controller.setValue(controller.value[item.Id]);
+				});
+			} else {
+				field = controlRegister.createOutput({
+					props: {
+						metadata: itemMetadata as IOutputFieldMetadata,
+						app: controller.app,
+						form: controller.form,
+						data: null,
+						parent: controller
+					}
+				});
 			}
-
-			return field;
+			if (!isInput && controller.value != null) {
+				field.controller.setValue(controller.value[itemMetadata.Id]);
+			}
+			return {
+				isInput,
+				component: field,
+				controller: field.controller,
+				metadata: itemMetadata
+			};
 		});
 	}
 </script>
@@ -88,15 +93,19 @@
 	>
 		{#each fields as field}
 			<div
-				class={field.controller.metadata.CustomProperties?.Flexbox?.CssClass}
-				style:flex-basis={field.controller.metadata.CustomProperties?.Flexbox?.FlexBasis}
-				style:flex-grow={field.controller.metadata.CustomProperties?.Flexbox?.FlexGrow}
-				style:flex-shrink={field.controller.metadata.CustomProperties?.Flexbox?.FlexShrink}
-				style:min-width={field.controller.metadata.CustomProperties?.Flexbox?.MinWidth}
-				class:d-none={field.controller.metadata.CustomProperties?.Flexbox?.HideIfNull &&
+				class={field.metadata.CustomProperties?.Flexbox?.CssClass}
+				style:flex-basis={field.metadata.CustomProperties?.Flexbox?.FlexBasis}
+				style:flex-grow={field.metadata.CustomProperties?.Flexbox?.FlexGrow}
+				style:flex-shrink={field.metadata.CustomProperties?.Flexbox?.FlexShrink}
+				style:min-width={field.metadata.CustomProperties?.Flexbox?.MinWidth}
+				class:d-none={field.metadata.CustomProperties?.Flexbox?.HideIfNull &&
 					field.controller.value == null}
 			>
-				<Output controller={field.controller} />
+				{#if field.isInput}
+					<Input controller={field.controller} />
+				{:else}
+					<Output controller={field.controller} />
+				{/if}
 			</div>
 		{/each}
 	</div>
@@ -126,5 +135,25 @@
 
 	.height700 {
 		height: 750px;
+	}
+
+	/* Every flexbox item will be styled as a panel */
+	.panels {
+		gap: 20px;
+		flex-wrap: wrap;
+
+		& > div {
+			border: 1px solid var(--bs-border-color);
+			padding: 0;
+			background: white;
+
+			& > :global(div > label) {
+				font-size: 1.8rem;
+				display: block;
+				background: var(--bs-soft);
+				padding: 5px 25px;
+				margin: 0 0 15px 0;
+			}
+		}
 	}
 </style>
