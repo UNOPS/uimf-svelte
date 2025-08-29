@@ -5,5 +5,6 @@ export interface IDynamicInputValue {
 
 export enum DynamicValueSource {
 	ParentForm = 'ParentForm',
-	FrontendVariable = 'FrontendVariable'
+	FrontendVariable = 'FrontendVariable',
+	LocalSource = 'LocalSource'
 }
