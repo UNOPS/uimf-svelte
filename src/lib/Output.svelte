@@ -155,7 +155,9 @@
 			border-style: solid;
 			border-width: 20px 0 0 0;
 
-			margin: 0 -15px;
+			&.row {
+				margin: 0;
+			}
 
 			padding-left: 0;
 			padding-right: 0;
@@ -171,6 +173,7 @@
 				margin-bottom: var(--vertical-padding);
 
 				padding: 5px var(--horizontal-padding);
+				width: 100%;
 			}
 
 			& > div {
