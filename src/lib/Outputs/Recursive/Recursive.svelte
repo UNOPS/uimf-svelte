@@ -64,7 +64,7 @@
 	}
 </script>
 
-{#if controller.value != null}
+{#if controller.value?.Items != null}
 	{#each controller.value.Items as item}
 		{@const content = getContentController(item)}
 		{@const level = controller.value.Level ?? 1}
