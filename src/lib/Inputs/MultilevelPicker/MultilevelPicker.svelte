@@ -51,6 +51,7 @@
 	import type { IInputFieldMetadata } from '$lib/Infrastructure/Metadata';
 	import { augmentItems } from '../Typeahead/Typeahead.svelte';
 	import type { IOption } from '../Typeahead/Domain/index';
+	import { MultilevelPickerCache } from './MultilevelPickerCache';
 
 	export let controller: Controller;
 
@@ -63,11 +64,16 @@
 	};
 
 	let options: IMyOption[] = [];
-	let cachedOptions: Record<string, Promise<any>> = {};
 	let path: IMyOption[] = [];
 	let selected: IMyOption = emptyOption;
-	let loading = true;
+	let loading = false;
 	let listOpen: boolean = false;
+
+	// Create cache instance with component-specific key prefix
+	const cache = new MultilevelPickerCache({
+		keyPrefix: `multilevel`,
+		ttl: 60000
+	});
 
 	const component = new InputComponent({
 		init() {},
@@ -118,28 +124,27 @@
 			return Promise.resolve([]);
 		}
 
-		let cacheKey = '#' + node.Value.toString();
+		const source = controller.metadata.Component.Configuration.Form;
+		let cacheKey = `${source}#${node.Value.toString()}`;
 
-		if (cachedOptions[cacheKey] != null) {
-			return cachedOptions[cacheKey];
-		}
+		loading = true;
 
-		var postData = { Id: node.Value };
+		return await cache
+			.getItem(cacheKey, async () => {
+				var postData = { Id: node.Value };
 
-		await setRequestParameters(postData);
+				await setRequestParameters(postData);
 
-		cachedOptions[cacheKey] = controller.app
-			.postForm<Response>(controller.metadata.Component.Configuration.Form, postData, null)
-			.then((t: any) => {
-				loading = false;
-				return augmentItems(t.Path || []);
+				return controller.app
+					.postForm<Response>(controller.metadata.Component.Configuration.Form, postData, null)
+					.then((t: any) => {
+						return augmentItems(t.Path || []) as IMyOption[];
+					})
+					.catch(() => {
+						return [];
+					});
 			})
-			.catch(() => {
-				loading = false;
-				return [];
-			});
-
-		return await cachedOptions[cacheKey];
+			.finally(() => (loading = false));
 	}
 
 	async function fetchPathItems(query?: string | null): Promise<IMyOption[]> {
@@ -154,30 +159,27 @@
 			}
 		}
 
-		let cacheKey = `${parentId ?? ''}/${query?.trim() ?? ''}`;
-
-		if (cachedOptions[cacheKey] != null) {
-			return cachedOptions[cacheKey];
-		}
-
-		var postData = { Query: query, ParentId: parentId };
-
-		await setRequestParameters(postData);
+		const source = controller.metadata.Component.Configuration.Form;
+		let cacheKey = `${source}/${parentId ?? ''}/${query?.trim() ?? ''}`;
 
 		loading = true;
 
-		cachedOptions[cacheKey] = controller.app
-			.postForm<Response>(controller.metadata.Component.Configuration.Form, postData, null)
-			.then((t: any) => {
-				loading = false;
-				return augmentItems(t.Items);
-			})
-			.catch(() => {
-				loading = false;
-				return [];
-			});
+		return await cache
+			.getItem(cacheKey, async () => {
+				var postData = { Query: query, ParentId: parentId };
 
-		return await cachedOptions[cacheKey];
+				await setRequestParameters(postData);
+
+				return controller.app
+					.postForm<Response>(controller.metadata.Component.Configuration.Form, postData, null)
+					.then((t: any) => {
+						return augmentItems(t.Items) as IMyOption[];
+					})
+					.catch(() => {
+						return [];
+					});
+			})
+			.finally(() => (loading = false));
 	}
 
 	function setRequestParameters(postData: any): Promise<any> {
