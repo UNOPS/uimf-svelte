@@ -50,22 +50,24 @@
 	};
 </script>
 
-<div class="wrapper">
-	<div>
-		<i
-			class="fa fa-copy hand-cursor"
-			on:click={copy}
-			on:keydown={handleCopyKeydown}
-			tabindex="0"
-			role="button"
-			aria-label="Copy to clipboard"
-		/>
-	</div>
+{#if controller.value?.Text?.length > 0}
+	<div class="wrapper">
+		<div>
+			<i
+				class="fa fa-copy hand-cursor"
+				on:click={copy}
+				on:keydown={handleCopyKeydown}
+				tabindex="0"
+				role="button"
+				aria-label="Copy to clipboard"
+			/>
+		</div>
 
-	<textarea style:height={heightInEm + 'em'} bind:this={textarea} readonly
-		>{controller.value?.Text}</textarea
-	>
-</div>
+		<textarea style:height={heightInEm + 'em'} bind:this={textarea} readonly
+			>{controller.value?.Text}</textarea
+		>
+	</div>
+{/if}
 
 <style lang="scss">
 	.wrapper {
