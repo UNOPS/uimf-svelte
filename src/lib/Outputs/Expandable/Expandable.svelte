@@ -7,7 +7,6 @@
 	}
 
 	export interface ExpandableData {
-		ShowButton: boolean;
 		Visible: any;
 		Hidden: any;
 	}
