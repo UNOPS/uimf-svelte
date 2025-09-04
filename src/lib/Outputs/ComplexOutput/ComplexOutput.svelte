@@ -105,23 +105,4 @@
 	.complex-output > div:not(:has(*)) {
 		display: none;
 	}
-
-	.complex-output > div.compact {
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-
-		& > div {
-			display: flex;
-			gap: 10px;
-		}
-
-		& > div > label {
-			margin-bottom: 0;
-		}
-
-		& > div > label::after {
-			content: ':';
-		}
-	}
 </style>
