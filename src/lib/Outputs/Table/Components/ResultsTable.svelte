@@ -302,7 +302,7 @@
 							{#if footer.append}
 								<tr
 									class:d-none={!footer.visible}
-									class:fotter={true}
+									class:footer={true}
 									class={footer.cssClass}
 									style={footer.style}
 								>
@@ -430,10 +430,12 @@
 		tbody > tr.footer:hover,
 		tbody > tr.footer {
 			& > td {
-				--border: 1px solid var(--inner-border-color);
+				--border: 2px solid rgb(200 204 206 / 60%);
 				border-top: var(--border);
 				border-bottom: var(--border);
 				padding: 10px 15px;
+				background: aliceblue;
+				color: var(--bs-body-color);
 			}
 		}
 
