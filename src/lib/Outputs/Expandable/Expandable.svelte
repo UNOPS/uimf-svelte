@@ -141,6 +141,7 @@
 	.expandable-visible {
 		display: inline-flex;
 		align-items: center;
+		gap: 8px;
 	}
 
 	.expandable-visible > i {
@@ -161,7 +162,6 @@
 		border: none;
 		outline: none;
 		background: transparent;
-		margin: 0 0 0 8px;
 		padding: 0;
 		opacity: 0.8;
 	}
