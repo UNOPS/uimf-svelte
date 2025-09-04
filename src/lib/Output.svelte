@@ -182,6 +182,20 @@
 		}
 	}
 
+	div.compact {
+		display: flex;
+		gap: 10px;
+		margin-bottom: 10px;
+
+		& > label {
+			margin-bottom: 0;
+
+			&::after {
+				content: ':';
+			}
+		}
+	}
+
 	.long-label {
 		padding: 0px;
 	}
