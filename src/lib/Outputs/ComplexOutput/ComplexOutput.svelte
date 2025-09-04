@@ -15,7 +15,8 @@
 
 	interface IArea {
 		Name: string | null;
-		CssClass: string | null;
+		AreaCssClass: string | null;
+		FieldCssClass: string | null;
 		OrderIndex: number;
 	}
 
@@ -47,7 +48,7 @@
 					});
 				});
 
-			let results: Record<string, { Area: IArea | null; Fields: NestedField[] }> = {};
+			let areaDictionary: Record<string, { Area: IArea | null; Fields: NestedField[] }> = {};
 
 			for (let i = 0; i < fields.length; i++) {
 				const field = fields[i];
@@ -56,22 +57,29 @@
 				// Make sure key is not null.
 				const key = areaName ?? '';
 
-				if (!results[key]) {
+				if (!areaDictionary[key]) {
 					let area =
 						controller.metadata.Component.Configuration.Areas?.find((t) => t.Name == areaName) ??
 						null;
 
-					results[key] = {
+					areaDictionary[key] = {
 						Area: area,
 						Fields: []
 					};
 				}
 
-				results[key].Fields.push(field);
+				const area = areaDictionary[key];
+
+				if (area.Area?.FieldCssClass != null) {
+					field.metadata.CssClass ??= '';
+					field.metadata.CssClass += ' ' + area.Area.FieldCssClass;
+				}
+
+				areaDictionary[key].Fields.push(field);
 			}
 
 			// Sort `results` entries by `Area.OrderIndex` and put in array.
-			areas = Object.entries(results)
+			areas = Object.entries(areaDictionary)
 				.map(([_, value]) => {
 					return { Area: value.Area, Items: value.Fields };
 				})
@@ -84,7 +92,7 @@
 
 <div class={controller.metadata.Component.Configuration?.CssClass} class:complex-output={true}>
 	{#each areas as area}
-		<div class={area.Area?.CssClass}>
+		<div class={area.Area?.AreaCssClass}>
 			{#each area.Items as field}
 				<Output controller={field} />
 			{/each}
@@ -93,4 +101,27 @@
 </div>
 
 <style lang="scss">
+	// Do not display empty areas.
+	.complex-output > div:not(:has(*)) {
+		display: none;
+	}
+
+	.complex-output > div.compact {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+
+		& > div {
+			display: flex;
+			gap: 10px;
+		}
+
+		& > div > label {
+			margin-bottom: 0;
+		}
+
+		& > div > label::after {
+			content: ':';
+		}
+	}
 </style>
