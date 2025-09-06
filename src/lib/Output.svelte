@@ -215,7 +215,7 @@
 				margin-top: calc(var(--vertical-padding) * -1);
 				margin-bottom: var(--vertical-padding);
 
-				padding: 0 var(--horizontal-padding);
+				padding: 8px var(--horizontal-padding);
 				width: 100%;
 			}
 
