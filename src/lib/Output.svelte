@@ -110,19 +110,14 @@
 	{:else if layout === FieldLayout.Horizontal || layout == FieldLayout.Vertical}
 		<div
 			class:output={true}
-			class:row={horizontalLayout}
-			class:column={!horizontalLayout}
+			class:output-h={horizontalLayout}
+			class:output-v={!horizontalLayout}
 			class={displayField.metadata.CssClass}
 		>
 			{#if !thisHideLabel}
-				<label class:col-sm-2={horizontalLayout} use:tooltip={documentation}
-					>{displayField.metadata.Label}</label
-				>
+				<label use:tooltip={documentation}>{displayField.metadata.Label}</label>
 			{/if}
-			<div
-				class:col-sm-10={horizontalLayout && !thisHideLabel}
-				class:col-sm-12={horizontalLayout && thisHideLabel}
-			>
+			<div>
 				<svelte:component this={component} {controller} />
 			</div>
 		</div>
@@ -130,24 +125,72 @@
 {/if}
 
 <style lang="scss">
+	// Import Bootstrap functions and variables for media queries
+	@import 'bootstrap/scss/functions';
+	@import 'bootstrap/scss/variables';
+	@import 'bootstrap/scss/mixins';
+
 	.output {
 		--horizontal-padding: 1.5rem;
 		--vertical-padding: 15px;
 
-		padding-left: var(--horizontal-padding);
-		padding-right: var(--horizontal-padding);
+		display: flex;
 
-		&.row {
-			padding-bottom: var(--vertical-padding);
+		// padding-left: var(--horizontal-padding);
+		// padding-right: var(--horizontal-padding);
 
-			& > label::after {
-				content: ':';
+		&.output-h {
+			flex-direction: row;
+
+			& > label {
+				flex-shrink: 0;
+				min-width: 0;
+				padding-right: 10px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+
+				// Default (mobile first - xs)
+				flex-basis: 100px;
+
+				// Bootstrap responsive breakpoints using mixins
+				@include media-breakpoint-up(sm) {
+					flex-basis: 120px;
+				}
+
+				@include media-breakpoint-up(md) {
+					flex-basis: 150px;
+				}
+
+				@include media-breakpoint-up(lg) {
+					flex-basis: 180px;
+				}
+
+				@include media-breakpoint-up(xl) {
+					flex-basis: 200px;
+				}
+
+				@include media-breakpoint-up(xxl) {
+					flex-basis: 220px;
+				}
+
+				&::after {
+					content: ':';
+				}
+			}
+
+			& > div {
+				flex-grow: 1;
+				min-width: 0;
 			}
 		}
 
-		&.column {
+		&.output-v {
 			flex-direction: column;
-			padding-bottom: 25px;
+		}
+
+		label {
+			margin: 0;
 		}
 
 		&.section {
@@ -155,7 +198,7 @@
 			border-style: solid;
 			border-width: 20px 0 0 0;
 
-			&.row {
+			&.output-h {
 				margin: 0;
 			}
 
@@ -172,7 +215,7 @@
 				margin-top: calc(var(--vertical-padding) * -1);
 				margin-bottom: var(--vertical-padding);
 
-				padding: 5px var(--horizontal-padding);
+				padding: 0 var(--horizontal-padding);
 				width: 100%;
 			}
 
@@ -182,38 +225,7 @@
 		}
 	}
 
-	div.compact {
-		display: flex;
-		gap: 10px;
-		margin-bottom: 10px;
-
-		& > label {
-			margin-bottom: 0;
-
-			&::after {
-				content: ':';
-			}
-		}
-	}
-
 	.long-label {
 		padding: 0px;
-	}
-
-	:global(.output-section-heading) {
-		font-size: 1.5em;
-		margin: 0 0px 25px !important;
-		display: block;
-		background: #f4f5f7;
-		padding: 10px 0px !important;
-
-		& > a {
-			color: white;
-		}
-	}
-
-	:global(.custom-layout .output.section) {
-		margin-left: -15px;
-		margin-right: -15px;
 	}
 </style>
