@@ -68,16 +68,12 @@
 </script>
 
 {#if controller.value != null}
-	<span class="nowrap" class:expired={controller.value.Expired} use:tooltip={tooltipContent}>
+	<span class="text-nowrap" class:expired={controller.value.Expired} use:tooltip={tooltipContent}>
 		{expiresOnAsString}
 	</span>
 {/if}
 
 <style>
-	.nowrap {
-		white-space: nowrap;
-	}
-
 	.expired {
 		text-decoration: line-through;
 	}
