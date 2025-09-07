@@ -74,11 +74,14 @@
 			</div>
 
 			{#if item.Items != null}
-				{#each item.Items as child}
+				{#each item.Items as child, index}
 					{@const childController = createChildController(child, level + 1)}
 					<div class="child">
 						<svelte:self controller={childController} />
 					</div>
+					{#if index < item.Items.length - 1}
+						<div class="separator" />
+					{/if}
 				{/each}
 			{/if}
 		</div>
@@ -109,5 +112,13 @@
 		&:last-child {
 			padding-bottom: 20px;
 		}
+	}
+
+	.root > .separator {
+		display: none;
+	}
+
+	.separator {
+		height: 15px;
 	}
 </style>
