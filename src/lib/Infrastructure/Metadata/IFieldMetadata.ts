@@ -1,3 +1,5 @@
+import { DocumentationLayout } from "./DocumentationLayout";
+import { FieldLayout } from "./FieldLayout";
 import type { IComponent } from "./IComponent";
 
 export interface IFieldMetadata<TConfiguration = any> {
@@ -8,5 +10,8 @@ export interface IFieldMetadata<TConfiguration = any> {
     OrderIndex: number;
     Component: IComponent<TConfiguration>;
     DefaultValue?: string | null;
-    Documentation?: string | null;
+    Documentation: string | null;
+    CssClass?: string | null;
+    Layout?: FieldLayout | null;
+    DocumentationLayout: DocumentationLayout | null;
 }

@@ -3,20 +3,18 @@
 	import { beforeUpdate, tick } from 'svelte';
 	import type { OutputController } from './Infrastructure/OutputController';
 	import { OutputComponent } from './Infrastructure/Component';
-	import { tooltip } from './Components/Tooltip.svelte';
 	import { defaultControlRegister as controlRegister } from './Infrastructure/ControlRegister';
 
 	import { FieldLayout } from './Infrastructure/Metadata/FieldLayout';
+	import FieldLabel from './Components/FieldLabel.svelte';
 
 	export let controller: OutputController<any>;
 	export let nolayout: boolean = false;
 
 	// Field constants.
 	let component: ConstructorOfATypedSvelteComponent;
-	let documentation: string | null = null;
 	let hideIfNull: boolean;
 	let thisHideLabel: boolean;
-	let horizontalLayout: boolean = true;
 	let layout: FieldLayout = FieldLayout.Default;
 
 	// The actual field that is currently being displayed.
@@ -44,15 +42,6 @@
 				controller.metadata.Label === '';
 
 			hideIfNull = controller.metadata.HideIfNull;
-
-			horizontalLayout =
-				controller.metadata.Layout === FieldLayout.Default || controller.metadata.Layout == null
-					? // If the layout is default, we use the component's config.
-					  componentRegistration.config.displayAsBlock === false
-					: // Otherwise, we use the layout specified for this particular field.
-					  controller.metadata.Layout != FieldLayout.Vertical;
-
-			documentation = controller.metadata.Documentation ?? null;
 
 			layout = nolayout ? FieldLayout.None : controller.metadata.Layout ?? FieldLayout.Default;
 
@@ -101,7 +90,12 @@
 	{:else if layout === FieldLayout.Unstyled}
 		<div class={displayField.metadata.CssClass}>
 			{#if !thisHideLabel}
-				<label use:tooltip={documentation}>{displayField.metadata.Label}</label>
+				<FieldLabel
+					label={displayField.metadata.Label}
+					documentation={displayField.metadata.Documentation}
+					documentationLayout={displayField.metadata.DocumentationLayout}
+					fieldLayout={layout}
+				/>
 			{/if}
 			<div>
 				<svelte:component this={component} {controller} />
@@ -109,13 +103,18 @@
 		</div>
 	{:else if layout === FieldLayout.Horizontal || layout == FieldLayout.Vertical}
 		<div
-			class:output={true}
-			class:output-h={horizontalLayout}
-			class:output-v={!horizontalLayout}
+			class:field={true}
+			class:field-h={layout == FieldLayout.Horizontal}
+			class:field-v={layout != FieldLayout.Horizontal}
 			class={displayField.metadata.CssClass}
 		>
 			{#if !thisHideLabel}
-				<label use:tooltip={documentation}>{displayField.metadata.Label}</label>
+				<FieldLabel
+					label={displayField.metadata.Label}
+					documentation={displayField.metadata.Documentation}
+					documentationLayout={displayField.metadata.DocumentationLayout}
+					fieldLayout={layout}
+				/>
 			{/if}
 			<div>
 				<svelte:component this={component} {controller} />
@@ -125,106 +124,6 @@
 {/if}
 
 <style lang="scss">
-	// Import Bootstrap functions and variables for media queries
-	@import 'bootstrap/scss/functions';
-	@import 'bootstrap/scss/variables';
-	@import 'bootstrap/scss/mixins';
-
-	.output {
-		--horizontal-padding: 1.5rem;
-		--vertical-padding: 15px;
-
-		display: flex;
-
-		// padding-left: var(--horizontal-padding);
-		// padding-right: var(--horizontal-padding);
-
-		&.output-h {
-			flex-direction: row;
-
-			& > label {
-				flex-shrink: 0;
-				min-width: 0;
-				padding-right: 10px;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				white-space: nowrap;
-
-				// Default (mobile first - xs)
-				flex-basis: 100px;
-
-				// Bootstrap responsive breakpoints using mixins
-				@include media-breakpoint-up(sm) {
-					flex-basis: 120px;
-				}
-
-				@include media-breakpoint-up(md) {
-					flex-basis: 150px;
-				}
-
-				@include media-breakpoint-up(lg) {
-					flex-basis: 180px;
-				}
-
-				@include media-breakpoint-up(xl) {
-					flex-basis: 200px;
-				}
-
-				@include media-breakpoint-up(xxl) {
-					flex-basis: 220px;
-				}
-
-				&::after {
-					content: ':';
-				}
-			}
-
-			& > div {
-				flex-grow: 1;
-				min-width: 0;
-			}
-		}
-
-		&.output-v {
-			flex-direction: column;
-		}
-
-		label {
-			margin: 0;
-		}
-
-		&.section {
-			border-color: #ebeef0;
-			border-style: solid;
-			border-width: 20px 0 0 0;
-
-			&.output-h {
-				margin: 0;
-			}
-
-			padding-left: 0;
-			padding-right: 0;
-			padding-top: var(--vertical-padding);
-			padding-bottom: var(--vertical-padding);
-
-			& > label {
-				display: block;
-				background-color: #f9f9f9;
-				font-size: 1.8rem;
-
-				margin-top: calc(var(--vertical-padding) * -1);
-				margin-bottom: var(--vertical-padding);
-
-				padding: 8px var(--horizontal-padding);
-				width: 100%;
-			}
-
-			& > div {
-				padding: 0 var(--horizontal-padding);
-			}
-		}
-	}
-
 	.long-label {
 		padding: 0px;
 	}

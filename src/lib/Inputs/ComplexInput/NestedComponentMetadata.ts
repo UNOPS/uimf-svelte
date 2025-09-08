@@ -3,5 +3,10 @@ import type { IInputFieldMetadata } from "$lib/Infrastructure/Metadata/IInputFie
 export interface NestedComponentMetadata {
 	CssClassEach: string;
 	CssClass: string;
-	Fields: IInputFieldMetadata[];
+	Fields: FieldItem[];
+}
+
+interface FieldItem {
+	IsInput: boolean;
+	Metadata: IInputFieldMetadata;
 }

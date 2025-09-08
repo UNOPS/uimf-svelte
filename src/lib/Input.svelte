@@ -2,9 +2,9 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import type { InputController } from './Infrastructure/InputController';
-	import { tooltip } from './Components/Tooltip.svelte';
 	import { defaultControlRegister as controlRegister } from './Infrastructure/ControlRegister';
 	import { InputComponent } from './Infrastructure/Component';
+	import FieldLabel from './Components/FieldLabel.svelte';
 
 	import { FieldLayout } from './Infrastructure/Metadata/FieldLayout';
 	import { DocumentationLayout } from './Infrastructure/Metadata/DocumentationLayout';
@@ -14,11 +14,9 @@
 
 	// Field constants.
 	let component: ConstructorOfATypedSvelteComponent;
-	let documentation: string | null = null;
 	let thisHideLabel: boolean;
 	let required: boolean;
 	let layout: FieldLayout;
-	let documentationLayout: DocumentationLayout | null;
 
 	const componentController = new InputComponent({
 		init() {
@@ -34,8 +32,6 @@
 				controller.metadata.Label === '';
 
 			component = componentRegistration.component;
-			documentation = controller.metadata.Documentation ?? null;
-			documentationLayout = controller.metadata.DocumentationLayout ?? DocumentationLayout.Default;
 
 			layout = nolayout ? FieldLayout.None : controller.metadata.Layout ?? FieldLayout.Default;
 
@@ -70,12 +66,12 @@
 {:else if layout === FieldLayout.Unstyled}
 	<div class={controller.metadata.CssClass}>
 		{#if !thisHideLabel}
-			{#if documentationLayout == DocumentationLayout.Icon}
-				<label>{controller.metadata.Label}</label>
-				<span use:tooltip={documentation}><i class="fa-solid fa-circle-info text-info" /></span>
-			{:else}
-				<label use:tooltip={documentation}>{controller.metadata.Label}</label>
-			{/if}
+			<FieldLabel
+				label={controller.metadata.Label}
+				documentation={controller.metadata.Documentation}
+				documentationLayout={controller.metadata.DocumentationLayout}
+				fieldLayout={layout}
+			/>
 		{/if}
 		<div>
 			<svelte:component this={component} {controller} />
@@ -83,61 +79,21 @@
 	</div>
 {:else if layout === FieldLayout.Horizontal || layout == FieldLayout.Vertical}
 	<div
+		class:field={true}
+		class:field-h={layout == FieldLayout.Horizontal}
+		class:field-v={layout != FieldLayout.Horizontal}
 		class={controller.metadata.CssClass}
-		class:row={layout == FieldLayout.Horizontal}
-		class:column={layout == FieldLayout.Vertical}
 	>
 		{#if !thisHideLabel}
-			{#if documentationLayout == DocumentationLayout.Icon}
-				<label class="form-label" class:col-sm-4={layout == FieldLayout.Horizontal}
-					>{controller.metadata.Label}:</label
-				><span use:tooltip={documentation}><i class="fa-solid fa-circle-info text-info" /></span>
-			{:else}
-				<label
-					class="form-label"
-					class:col-sm-4={layout == FieldLayout.Horizontal}
-					use:tooltip={documentation}>{controller.metadata.Label}:</label
-				>
-			{/if}
+			<FieldLabel
+				label={controller.metadata.Label}
+				documentation={controller.metadata.Documentation}
+				documentationLayout={controller.metadata.DocumentationLayout}
+				fieldLayout={layout}
+			/>
 		{/if}
-		<div
-			class:col-sm-8={layout == FieldLayout.Horizontal && !thisHideLabel}
-			class:col-sm-12={layout == FieldLayout.Horizontal && thisHideLabel}
-		>
+		<div>
 			<svelte:component this={component} {controller} {required} />
 		</div>
 	</div>
 {/if}
-
-<style lang="scss">
-	.section {
-		--horizontal-padding: 1.5rem;
-		--vertical-padding: 15px;
-
-		border-color: #ebeef0;
-		border-style: solid;
-		border-width: 20px 0 0 0;
-
-		margin: 0 -15px;
-
-		padding-left: 0;
-		padding-right: 0;
-		padding-top: var(--vertical-padding);
-		padding-bottom: var(--vertical-padding);
-
-		& > label {
-			display: block;
-			background-color: #f9f9f9;
-			font-size: 1.8rem;
-
-			margin-top: calc(var(--vertical-padding) * -1);
-			margin-bottom: var(--vertical-padding);
-
-			padding: 5px var(--horizontal-padding);
-		}
-
-		& > div {
-			padding: 0 var(--horizontal-padding);
-		}
-	}
-</style>

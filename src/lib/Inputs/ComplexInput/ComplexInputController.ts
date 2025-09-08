@@ -1,16 +1,19 @@
 import { InputController, type CreateInputOptions } from '../../Infrastructure/InputController';
 import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
-import type { IInputFieldMetadata } from "$lib/Infrastructure/Metadata/IInputFieldMetadata";
+import type { IInputFieldMetadata } from "../../Infrastructure/Metadata/IInputFieldMetadata";
 import type { ViewData } from './ViewData';
 import type { NestedComponentMetadata } from './NestedComponentMetadata';
+import { IOutputFieldMetadata } from '../../Infrastructure/Metadata';
+import { OutputController } from '../../Infrastructure/OutputController';
 
 export class ComplexInputController extends InputController<
 	ViewData,
 	IInputFieldMetadata<NestedComponentMetadata>
 > {
 	declare views: Array<{
-		metadata: IInputFieldMetadata;
-		controller: InputController<any>;
+		isInput: boolean;
+		metadata: IInputFieldMetadata | IOutputFieldMetadata;
+		controller: InputController<any> | OutputController<any>;
 	}>;
 
 	constructor(options: CreateInputOptions<IInputFieldMetadata<NestedComponentMetadata>>) {
@@ -18,18 +21,27 @@ export class ComplexInputController extends InputController<
 
 		this.views = [];
 
-		this.metadata.Component.Configuration.Fields.sort((x, y) => x.OrderIndex - y.OrderIndex);
+		this.metadata.Component.Configuration.Fields.sort((x, y) => x.Metadata.OrderIndex - y.Metadata.OrderIndex);
 
 		for (const view of this.metadata.Component.Configuration.Fields) {
-			let controllerClass = controlRegister.inputs[view.Component.Type].controller;
+			let controllerClass = view.IsInput
+				? controlRegister.inputs[view.Metadata.Component.Type].controller
+				: null;
 
 			this.views.push({
-				metadata: view,
-				controller: new controllerClass({
+				isInput: view.IsInput,
+				metadata: view.Metadata,
+				controller: view.IsInput ? new controllerClass!({
 					parent: this,
-					metadata: view,
+					metadata: view.Metadata,
 					form: this.form,
 					app: this.app
+				}) : new OutputController<any>({
+					app: this.app,
+					parent: this,
+					metadata: view.Metadata as unknown as IOutputFieldMetadata,
+					form: this.form,
+					data: null
 				})
 			});
 		}
@@ -40,9 +52,9 @@ export class ComplexInputController extends InputController<
 
 		let allRequiredInputsHaveValues = true;
 
-		let promises = this.views.map(function (view) {
+		let promises = this.views.filter(t => t.isInput).map(function (view) {
 			return view.controller.getValue().then(function (value: any) {
-				if (value == null && view.metadata.Required) {
+				if (value == null && (view.metadata as IInputFieldMetadata).Required) {
 					allRequiredInputsHaveValues = false;
 				}
 

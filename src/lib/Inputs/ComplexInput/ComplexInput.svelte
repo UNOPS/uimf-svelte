@@ -8,6 +8,9 @@
 	import { InputComponent } from '../../Infrastructure/Component';
 	import Input from '../../Input.svelte';
 	import type { ComplexInputController } from './ComplexInputController';
+	import { InputController } from '../../Infrastructure/InputController';
+	import { OutputController } from '../../Infrastructure/OutputController';
+	import Output from '../../Output.svelte';
 
 	export let controller: ComplexInputController;
 
@@ -20,12 +23,24 @@
 	beforeUpdate(async () => {
 		await component.setup(controller);
 	});
+
+	function asInput(controller: any): InputController<any> {
+		return controller as InputController<any>;
+	}
+
+	function asOutput(controller: any): OutputController<any> {
+		return controller as OutputController<any>;
+	}
 </script>
 
-<div class={controller.metadata.Component.Configuration?.CssClass}>
+<div class={controller.metadata.Component.Configuration?.CssClass} class:complex-input={true}>
 	{#each controller.views as view}
 		<div class={controller.metadata.Component.Configuration?.CssClassEach}>
-			<Input controller={view.controller} />
+			{#if view.isInput}
+				<Input controller={asInput(view.controller)} />
+			{:else}
+				<Output controller={asOutput(view.controller)} />
+			{/if}
 		</div>
 	{/each}
 </div>
