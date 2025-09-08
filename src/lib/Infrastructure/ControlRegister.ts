@@ -18,6 +18,7 @@ import * as InputNumber from '../Inputs/Number/Number.svelte';
 import * as NumberRange from '../Inputs/NumberRange/NumberRange.svelte';
 import * as Dropdown from '../Inputs/Dropdown/Dropdown.svelte';
 import * as DateRange from '../Inputs/DateRange/DateRange.svelte';
+import * as Email from '../Inputs/Email/Email.svelte';
 import * as RichTextEditor from '../Inputs/RichTextEditor/RichTextEditor.svelte';
 import * as Consent from '../Inputs/Consent/Consent.svelte';
 import * as Paginator from '../Inputs/Paginator/Paginator.svelte';
@@ -292,6 +293,7 @@ defaultControlRegister.registerInputComponent('conditional-value', ConditionalVa
 defaultControlRegister.registerInputComponent('number', InputNumber);
 defaultControlRegister.registerInputComponent('number-range', NumberRange);
 defaultControlRegister.registerInputComponent('dropdown', Dropdown);
+defaultControlRegister.registerInputComponent('email', Email);
 defaultControlRegister.registerInputComponent('rich-text-editor', RichTextEditor);
 defaultControlRegister.registerInputComponent('date-range', DateRange);
 defaultControlRegister.registerInputComponent('consent', Consent, { alwaysHideLabel: true });
