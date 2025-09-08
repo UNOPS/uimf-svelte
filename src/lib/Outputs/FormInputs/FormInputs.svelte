@@ -124,11 +124,9 @@
 		class={controller.metadata.Component.Configuration?.CssClass}
 		class:inline-layout={layout === FormInputLayout.Inline}
 	>
-		<div class="inputs">
+		<div class:form-inputs={true}>
 			{#each visibleInputs as input}
-				<div>
-					<Input controller={input} />
-				</div>
+				<Input controller={input} />
 			{/each}
 		</div>
 
@@ -161,14 +159,14 @@
 {/if}
 
 <style lang="scss">
-	.inputs {
+	.form-inputs {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
 		grid-gap: 10px;
 		margin-bottom: 20px;
 	}
 
-	form.vertical > .inputs {
+	form.vertical > .form-inputs {
 		grid-template-columns: 1fr;
 	}
 
