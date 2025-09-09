@@ -81,7 +81,7 @@
 		<strong>null metadata</strong>
 	{:else if layout === FieldLayout.None}
 		{#if displayField.metadata.CssClass != null}
-			<div class={displayField.metadata.CssClass}>
+			<div class={displayField.metadata.CssClass} class:component={true}>
 				<svelte:component this={component} {controller} />
 			</div>
 		{:else}
@@ -97,7 +97,7 @@
 					fieldLayout={layout}
 				/>
 			{/if}
-			<div>
+			<div class:component={true}>
 				<svelte:component this={component} {controller} />
 			</div>
 		</div>
@@ -116,7 +116,7 @@
 					fieldLayout={layout}
 				/>
 			{/if}
-			<div>
+			<div class:component={true}>
 				<svelte:component this={component} {controller} />
 			</div>
 		</div>

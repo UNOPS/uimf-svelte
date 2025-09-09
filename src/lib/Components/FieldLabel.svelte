@@ -24,7 +24,7 @@
 		class:label-h={fieldLayout == FieldLayout.Horizontal}
 		class:label-v={fieldLayout == FieldLayout.Vertical}>{label}:</label
 	>
-	<div class="alert alert-info">
+	<div class="alert alert-info field-doc">
 		{@html documentation}
 	</div>
 {:else}
