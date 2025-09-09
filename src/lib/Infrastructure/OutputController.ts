@@ -49,10 +49,12 @@ export class OutputController<TValue, TMetadata extends IOutputFieldMetadata = I
      * Sets output field's value.
      * @param data New value for the output field.
      */
-    public setValue(data: TValue) {
+    public override setValue(data: TValue): Promise<void> {
         this.value = data;
 
         this.fire("output:change", this);
+
+        return Promise.resolve();
     }
 
     public getValue(): Promise<any> {

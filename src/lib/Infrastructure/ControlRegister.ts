@@ -89,6 +89,7 @@ import * as FormLink from '../Outputs/FormLink/FormLink.svelte';
 import * as FormTitle from '../Outputs/FormTitle/FormTitle.svelte';
 import * as ParentFieldDocumentation from '../Outputs/ParentFieldDocumentation/ParentFieldDocumentation.svelte';
 import * as ParentFieldLabel from '../Outputs/ParentFieldLabel/ParentFieldLabel.svelte';
+import * as ActionButton from '../Outputs/ActionButton/ActionButton.svelte';
 
 import * as OutputWrapper from '../Output.svelte';
 
@@ -368,3 +369,4 @@ defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize, { 
 defaultControlRegister.registerOutputComponent('bar-chart', BarChart, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('parent-field-doc', ParentFieldDocumentation, { alwaysHideLabel: true, displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('parent-field-label', ParentFieldLabel, { alwaysHideLabel: true, displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('action-button', ActionButton, { alwaysHideLabel: true, displayAsBlock: false });

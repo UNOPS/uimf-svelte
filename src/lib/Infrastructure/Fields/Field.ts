@@ -96,16 +96,30 @@ export abstract class Field<TMetadata extends IFieldMetadata = IFieldMetadata> e
      * <li>../ - parent field</li>
      * </ul>
      */
-    public getRelatedFieldByPath(path: string): Field | null {
+    public getRelatedFieldByPath(path: string, throwIfNotFound: boolean = false): Field | null {
+        let field = null;
+
         if (!this.form) {
-            return null;
+            field = null;
+        }
+        else {
+            field = FormFieldNavigator.resolveFieldPath(this, path);
         }
 
-        return FormFieldNavigator.resolveFieldPath(this, path);
+        if (throwIfNotFound && field == null) {
+            throw new Error(`Cannot find field with path "${path}".`);
+        }
+
+        return field;
     }
 
     /**
      * Gets the current value of this field.
      */
     public abstract getValue(): Promise<any>;
+
+    /**
+     * Sets the value of this field.
+     */
+    public abstract setValue(value: any): Promise<void>;
 }

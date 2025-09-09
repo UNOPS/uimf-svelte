@@ -48,7 +48,7 @@ export abstract class InputController<TValue, TMetadata extends IInputFieldMetad
      * @param value Value to set. This value can either be the actual value
      * or its serialized representation.
      */
-    public setValue(value: TValue | string | null): Promise<void> {
+    public override setValue(value: TValue | string | null): Promise<void> {
         var promise = null;
 
         if (value == null) {
