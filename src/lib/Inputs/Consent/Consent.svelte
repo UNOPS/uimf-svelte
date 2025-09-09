@@ -65,30 +65,40 @@
 	beforeUpdate(async () => await component.setup(controller));
 </script>
 
-<label>
-	<input
-		on:change={() => controller.setValue({ Consented: !controller.value?.Consented })}
-		required={controller.metadata.Required}
-		type="checkbox"
-	/>
-	{#if controller.metadata.Component?.Configuration?.Label != null}
-		{@html controller.metadata.Component.Configuration.Label}
-	{/if}
-</label>
+<div>
+	<label>
+		<input
+			on:change={() => controller.setValue({ Consented: !controller.value?.Consented })}
+			required={controller.metadata.Required}
+			type="checkbox"
+		/>
+		{#if controller.metadata.Component?.Configuration?.Label != null}
+			{@html controller.metadata.Component.Configuration.Label}
+		{/if}
+	</label>
 
-{#if controller.metadata.Component?.Configuration?.Explanation != null}
-	<button
-		type="button"
-		on:click={() => {
-			controller.open();
-		}}
-		aria-label="Open Explanation"
-	>
-		<i class="fa fa-external-link" />
-	</button>
-{/if}
+	{#if controller.metadata.Component?.Configuration?.Explanation != null}
+		<button
+			type="button"
+			on:click={() => {
+				controller.open();
+			}}
+			aria-label="Open Explanation"
+		>
+			<i class="fa fa-external-link" />
+		</button>
+	{/if}
+</div>
 
 <style lang="scss">
+	label {
+		display: inline;
+	}
+
+	button {
+		display: inline;
+	}
+
 	input {
 		margin-right: 5px;
 		position: relative;
