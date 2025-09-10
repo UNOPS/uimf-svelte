@@ -17,6 +17,7 @@
 	interface IConfiguration {
 		CssClass: string | null;
 		Layout: FormInputLayout | null;
+		LayoutCssClass: string | null;
 	}
 
 	enum FormInputLayout {
@@ -124,7 +125,10 @@
 		class={controller.metadata.Component.Configuration?.CssClass}
 		class:inline-layout={layout === FormInputLayout.Inline}
 	>
-		<div class:form-inputs={true}>
+		<div
+			class:form-inputs={true}
+			class={controller.metadata.Component.Configuration?.LayoutCssClass}
+		>
 			{#each visibleInputs as input}
 				<Input controller={input} />
 			{/each}
