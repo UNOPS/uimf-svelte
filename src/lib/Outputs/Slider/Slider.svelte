@@ -234,7 +234,7 @@
 	}
 
 	.description {
-		margin-top: 10px;
+		margin-top: 20px;
 		font-size: small;
 		align-self: center;
 	}
