@@ -4,7 +4,7 @@
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import { tooltip } from '../../Components/Tooltip.svelte';
 	import type { ActionButtonData, ActionHandler } from './ActionHandler';
-	import { CopyInputValuesHandler } from './Actions/CopyInputValuesHandler';
+	import { SetFieldValuesHandler } from './Actions/SetFieldValuesHandler';
 
 	export let controller: OutputController<ActionButtonData>;
 	let handler: ActionHandler | null;
@@ -26,7 +26,7 @@
 
 	// Simple handler registry
 	const handlers: Record<string, any> = {
-		'copy-input-values': CopyInputValuesHandler
+		'set-field-values': SetFieldValuesHandler
 	};
 
 	beforeUpdate(async () => await component.setup(controller));
@@ -60,6 +60,6 @@
 	button {
 		display: flex;
 		align-items: center;
-		gap: 5px;
+		gap: 8px;
 	}
 </style>
