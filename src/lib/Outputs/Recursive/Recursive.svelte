@@ -2,7 +2,11 @@
 	import { beforeUpdate } from 'svelte';
 	import type { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
-	import { FieldLayout, IComponent, IOutputFieldMetadata } from '../../Infrastructure/Metadata';
+	import {
+		FieldLayout,
+		type IComponent,
+		type IOutputFieldMetadata
+	} from '../../Infrastructure/Metadata';
 	import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
 	import { OutputFieldMetadataFactory } from '../../Infrastructure/Utilities/OutputFieldMetadataFactory';
 	import Output from '../../Output.svelte';

@@ -1,4 +1,4 @@
-import { Field } from "../../../Infrastructure/Fields/Field";
+import type { Field } from "../../../Infrastructure/Fields/Field";
 import type { FormInstance } from "../../../Infrastructure/FormInstance";
 import { ITypeaheadMetadata } from "../Typeahead.svelte";
 import type { IOption } from "./IOption";
