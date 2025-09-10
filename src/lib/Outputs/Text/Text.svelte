@@ -2,8 +2,13 @@
 	import { beforeUpdate } from 'svelte';
 	import type { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
+	import type { IOutputFieldMetadata } from '../../Infrastructure/Metadata';
 
-	export let controller: OutputController<string>;
+	interface Configuration {
+		CssClass: string | null;
+	}
+
+	export let controller: OutputController<string, IOutputFieldMetadata<Configuration>>;
 
 	let component = new OutputComponent({
 		refresh() {
@@ -15,7 +20,7 @@
 </script>
 
 {#if controller.value != null}
-	<span class={controller.metadata.CssClass}>{controller.value}</span>
+	<span class={controller.metadata.Component.Configuration?.CssClass}>{controller.value}</span>
 {/if}
 
 <style>
