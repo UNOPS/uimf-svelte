@@ -10,8 +10,8 @@ export interface IFieldMetadata<TConfiguration = any> {
     OrderIndex: number;
     Component: IComponent<TConfiguration>;
     DefaultValue?: string | null;
-    Documentation: string | null;
+    Documentation?: string | null;
     CssClass?: string | null;
     Layout?: FieldLayout | null;
-    DocumentationLayout: DocumentationLayout | null;
+    DocumentationLayout?: DocumentationLayout | null;
 }
