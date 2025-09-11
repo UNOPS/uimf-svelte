@@ -92,8 +92,8 @@
 			{#if !thisHideLabel}
 				<FieldLabel
 					label={displayField.metadata.Label}
-					documentation={displayField.metadata.Documentation}
-					documentationLayout={displayField.metadata.DocumentationLayout}
+					documentation={displayField.metadata.Documentation ?? null}
+					documentationLayout={displayField.metadata.DocumentationLayout ?? null}
 					fieldLayout={layout}
 				/>
 			{/if}
@@ -111,8 +111,8 @@
 			{#if !thisHideLabel}
 				<FieldLabel
 					label={displayField.metadata.Label}
-					documentation={displayField.metadata.Documentation}
-					documentationLayout={displayField.metadata.DocumentationLayout}
+					documentation={displayField.metadata.Documentation ?? null}
+					documentationLayout={displayField.metadata.DocumentationLayout ?? null}
 					fieldLayout={layout}
 				/>
 			{/if}

@@ -68,8 +68,8 @@
 		{#if !thisHideLabel}
 			<FieldLabel
 				label={controller.metadata.Label}
-				documentation={controller.metadata.Documentation}
-				documentationLayout={controller.metadata.DocumentationLayout}
+				documentation={controller.metadata.Documentation ?? null}
+				documentationLayout={controller.metadata.DocumentationLayout ?? null}
 				fieldLayout={layout}
 			/>
 		{/if}
@@ -87,8 +87,8 @@
 		{#if !thisHideLabel}
 			<FieldLabel
 				label={controller.metadata.Label}
-				documentation={controller.metadata.Documentation}
-				documentationLayout={controller.metadata.DocumentationLayout}
+				documentation={controller.metadata.Documentation ?? null}
+				documentationLayout={controller.metadata.DocumentationLayout ?? null}
 				fieldLayout={layout}
 			/>
 		{/if}
