@@ -79,13 +79,13 @@
 		font-size: 1em;
 		margin: 0;
 		list-style: none;
-		padding-left: 14px;
+		padding-left: 5px;
 		user-select: none;
 
 		& > li {
 			font-size: 1em;
 			margin-bottom: 0;
-			margin-left: 10px;
+			margin-left: 5px;
 
 			& > a {
 				text-decoration: none;
@@ -99,11 +99,11 @@
 
 	.arrow {
 		margin-top: 5px;
-		margin-left: -21px;
-		margin-right: 6px;
+		margin-left: -20px;
+		margin-right: 3px;
 		cursor: pointer;
 		display: inline-block;
-		transition: transform 200ms;
+		transition: transform 0.2s;
 		color: $primary;
 		opacity: 0.6;
 
@@ -112,12 +112,12 @@
 		}
 	}
 	.minus {
-		margin-left: -21px;
-		margin-right: 6px;
+		margin-left: -20px;
+		margin-right: 3px;
 		cursor: pointer;
 		display: inline-block;
 		transition: transform 0.2s;
 		color: #579ddb;
-		opacity: 0.7;
+		opacity: 0.6;
 	}
 </style>

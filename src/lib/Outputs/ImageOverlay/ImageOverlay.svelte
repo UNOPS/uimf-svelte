@@ -151,9 +151,9 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		width: 310px;
-		height: 390px;
-		margin: 25px 20px;
+		width: 300px;
+		height: 350px;
+		margin: 12px;
 	}
 
 	.overlay-container {
@@ -175,7 +175,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		height: 280px;
+		height: 240px;
 		background: #e0e0e0;
 		border: 0.5px solid #c7c7c7;
 		border-radius: 0%;
