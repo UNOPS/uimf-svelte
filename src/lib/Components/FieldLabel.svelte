@@ -14,9 +14,15 @@
 	<label
 		class:form-label={true}
 		class:label-h={fieldLayout == FieldLayout.Horizontal}
-		class:label-v={fieldLayout == FieldLayout.Vertical}>{label}:</label
-	>
-	<span use:tooltip={documentation}><i class="fa-solid fa-circle-info text-info" /></span>
+		class:label-v={fieldLayout == FieldLayout.Vertical}
+		>{label}
+
+		{#if documentation}
+			<span use:tooltip={documentation} class="ms-1"
+				><i class="fa-solid fa-circle-info text-info" /></span
+			>
+		{/if}
+	</label>
 {:else if documentationLayout == DocumentationLayout.Inline}
 	<!-- svelte-ignore a11y-label-has-associated-control -->
 	<label
@@ -24,9 +30,11 @@
 		class:label-h={fieldLayout == FieldLayout.Horizontal}
 		class:label-v={fieldLayout == FieldLayout.Vertical}>{label}:</label
 	>
-	<div class="alert alert-info field-doc">
-		{@html documentation}
-	</div>
+	{#if documentation}
+		<div class="alert alert-info field-doc">
+			{@html documentation}
+		</div>
+	{/if}
 {:else}
 	<!-- svelte-ignore a11y-label-has-associated-control -->
 	<label
