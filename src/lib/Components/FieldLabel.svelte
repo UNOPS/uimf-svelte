@@ -47,8 +47,7 @@
 		min-width: 0;
 		padding-right: 10px;
 		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
+		white-space: normal;
 
 		// Default (mobile first - xs)
 		flex-basis: 100px;
