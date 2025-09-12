@@ -31,8 +31,6 @@
 	}
 
 	let isHovered: boolean;
-	let handleMouseEnter: () => void;
-	let handleMouseLeave: () => void;
 
 	let innerNestedComponent: ConstructorOfATypedSvelteComponent;
 	let outerNestedComponent: ConstructorOfATypedSvelteComponent;
@@ -56,9 +54,6 @@
 	let component = new OutputComponent({
 		refresh() {
 			controller.value = controller.value;
-
-			handleMouseEnter = () => (isHovered = true);
-			handleMouseLeave = () => (isHovered = false);
 		}
 	});
 
@@ -98,7 +93,11 @@
 
 {#if controller.value != null}
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div class="card-container" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
+	<div
+		class="card-container"
+		on:mouseenter={() => (isHovered = true)}
+		on:mouseleave={() => (isHovered = false)}
+	>
 		<div class="image-container" role="button" tabindex="0" aria-label="Image Overlay">
 			{#if controller.value.Header}
 				<div class="header">{controller.value.Header}</div>
