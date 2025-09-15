@@ -90,6 +90,7 @@ import * as FormTitle from '../Outputs/FormTitle/FormTitle.svelte';
 import * as ParentFieldDocumentation from '../Outputs/ParentFieldDocumentation/ParentFieldDocumentation.svelte';
 import * as ParentFieldLabel from '../Outputs/ParentFieldLabel/ParentFieldLabel.svelte';
 import * as ActionButton from '../Outputs/ActionButton/ActionButton.svelte';
+import * as SimpleImage from '../Outputs/SimpleImage/SimpleImage.svelte';
 
 import * as OutputWrapper from '../Output.svelte';
 
@@ -370,3 +371,4 @@ defaultControlRegister.registerOutputComponent('bar-chart', BarChart, { displayA
 defaultControlRegister.registerOutputComponent('parent-field-doc', ParentFieldDocumentation, { alwaysHideLabel: true, displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('parent-field-label', ParentFieldLabel, { alwaysHideLabel: true, displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('action-button', ActionButton, { alwaysHideLabel: true, displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('simple-image', SimpleImage, { displayAsBlock: false });
