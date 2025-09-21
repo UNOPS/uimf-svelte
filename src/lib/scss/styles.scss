@@ -19,6 +19,10 @@
 @import "bootstrap/scss/_helpers";
 @import "bootstrap/scss/utilities/_api";
 
+:root() {
+    --uimf-btn-bg: #fafafa;
+}
+
 .height-100 {
     height: 100%;
 }

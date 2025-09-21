@@ -380,7 +380,7 @@
 		}
 
 		thead {
-			background: #fafafa;
+			background: var(--uimf-btn-bg);
 
 			& > tr:last-child {
 				border-bottom-width: 3px;

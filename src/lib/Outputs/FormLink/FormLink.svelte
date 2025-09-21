@@ -404,7 +404,7 @@
 		}
 
 		&.btn-default {
-			background-color: #fafafa;
+			background-color: var(--uimf-btn-bg);
 			border-color: $app-btn-border-color;
 			color: $link-color;
 
