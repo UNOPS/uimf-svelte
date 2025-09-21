@@ -62,9 +62,9 @@
 </script>
 
 {#if controller.value != null}
-	<span use:tooltip={tooltipContent}>
-		{amountFormatted}
-		<span>{controller.value.Currency}</span>
+	<span use:tooltip={tooltipContent} class:has-components={tooltipContent?.length > 0}>
+		<span class="amount">{amountFormatted}</span>
+		<span class="currency">{controller.value.Currency}</span>
 	</span>
 {/if}
 
@@ -73,7 +73,15 @@
 		text-wrap: nowrap;
 	}
 
-	span > span {
+	.has-components > .amount {
+		text-decoration: underline dashed;
+		text-decoration-line: underline;
+		text-decoration-color: #c99319;
+		text-decoration-thickness: 2px;
+		text-underline-offset: 5px;
+	}
+
+	.currency {
 		font-size: 0.9em;
 		opacity: 0.5;
 	}
