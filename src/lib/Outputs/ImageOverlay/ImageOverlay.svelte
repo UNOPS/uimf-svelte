@@ -207,6 +207,7 @@
 		justify-content: center;
 		z-index: 4;
 		font-size: 0.8em;
+		padding: 0px 15px;
 	}
 
 	.title {
