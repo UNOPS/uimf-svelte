@@ -31,30 +31,6 @@ export class SetFieldValuesHandler extends ActionHandler {
 		return current;
 	}
 
-	async #getFieldOrNonFieldValue(path: string): Promise<any> {
-		const source = this.controller.getRelatedFieldByPath(path, false);
-
-		if (source == null) {
-			if (path.startsWith('/response/')) {
-				const responsePath = path.substring('/response/'.length);
-
-				const parts = responsePath.split('/');
-
-				if (parts.length > 0) {
-					const nonFieldName = parts[0];
-					const nonFieldValue = this.controller.form?.response?.[nonFieldName].value;
-					const nonFieldSubpath = responsePath.substring(nonFieldName.length);
-
-					return this.#getPropertyValueByPath(nonFieldValue, nonFieldSubpath);
-				}
-			}
-
-			throw new Error(`Cannot find field/non-field "${path}".`);
-		}
-
-		return await source.getValue();
-	}
-
 	async execute(data: ActionButtonData): Promise<void> {
 		const copyParams = data.Parameters as SetFieldValuesArgs;
 		if (!copyParams?.FieldMappings) {
@@ -76,7 +52,7 @@ export class SetFieldValuesHandler extends ActionHandler {
 				// Store original value before copying.
 				this.before[targetPath] = await target.getValue();
 
-				const value = await this.#getFieldOrNonFieldValue(sourcePath);
+				const value = await this.controller.getRelatedFieldValueByPath(sourcePath);
 				await target.setValue(value);
 
 			} else {

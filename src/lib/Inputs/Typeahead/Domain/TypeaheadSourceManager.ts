@@ -5,6 +5,10 @@ import type { IOption } from "./IOption";
 import type { ITypeaheadConfig } from "./ITypeaheadConfig";
 import type { IMultiselectValue, ITypeaheadValue } from "./ITypeaheadValue";
 
+export type TypeaheadSourceManagerConfig = ITypeaheadConfig & {
+    ForDropdown: boolean;
+}
+
 interface IResponse {
     Items: any[];
     TotalItemCount: number;
@@ -12,13 +16,13 @@ interface IResponse {
 
 export class TypeaheadSourceManager {
     static #requestPromises: Record<string, Promise<any>> = {};
-    #config: ITypeaheadConfig;
+    #config: TypeaheadSourceManagerConfig;
     #inlineItems: IOption[] | null;
     #cachedItems: IOption[] = [];
     #form: FormInstance;
     #field: Field<ITypeaheadMetadata>;
 
-    constructor(config: ITypeaheadConfig, field: Field<ITypeaheadMetadata>) {
+    constructor(config: TypeaheadSourceManagerConfig, field: Field<ITypeaheadMetadata>) {
         if (field.form == null) {
             throw "Form is required to retrieve parameters, but was not provided.";
         }
@@ -35,7 +39,7 @@ export class TypeaheadSourceManager {
     async #generateKey(query: ITypeaheadValue | IMultiselectValue | string | null): Promise<string> {
         let cachePrefix = `${this.#config.Source}`;
 
-        let parameters = await this.#getConfigs();
+        let parameters = await this.#getParameters();
 
         for (const key in parameters) {
             const valueAsString = JSON.stringify(parameters[key]);
@@ -223,7 +227,7 @@ export class TypeaheadSourceManager {
             }
         }
 
-        let params = await this.#getConfigs();
+        let params = await this.#getParameters();
 
         for (const key in params) {
             postData[key] = params[key];
@@ -239,8 +243,12 @@ export class TypeaheadSourceManager {
             }));
     }
 
-    async #getConfigs(): Promise<{ [key: string]: any }> {
+    async #getParameters(): Promise<{ [key: string]: any }> {
         let postData: { [key: string]: any } = {};
+
+        if (this.#config.ForDropdown) {
+            postData.GetAll = true;
+        }
 
         if (this.#config.Parameters != null) {
             let promises = this.#config.Parameters.map((p) => {
@@ -257,8 +265,7 @@ export class TypeaheadSourceManager {
                             .then((value) => (postData[p.Parameter] = value));
                     case 'path':
                         return this.#field
-                            .getRelatedFieldByPath(p.Source)!
-                            .getValue()
+                            .getRelatedFieldValueByPath(p.Source)!
                             .then((value) => (postData[p.Parameter] = value));
                 }
             });

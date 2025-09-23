@@ -64,7 +64,13 @@
 
 	let component = new InputComponent({
 		async init() {
-			source = new TypeaheadSourceManager(controller.metadata.Component.Configuration, controller);
+			source = new TypeaheadSourceManager(
+				{
+					...controller.metadata.Component.Configuration,
+					ForDropdown: false
+				},
+				controller
+			);
 		},
 		async refresh() {
 			const capturedValue = controller?.value;

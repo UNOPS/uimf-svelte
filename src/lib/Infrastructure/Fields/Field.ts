@@ -113,6 +113,8 @@ export abstract class Field<TMetadata extends IFieldMetadata = IFieldMetadata> e
         return field;
     }
 
+
+
     /**
      * Gets the current value of this field.
      */
@@ -122,4 +124,49 @@ export abstract class Field<TMetadata extends IFieldMetadata = IFieldMetadata> e
      * Sets the value of this field.
      */
     public abstract setValue(value: any): Promise<void>;
+
+    public async getRelatedFieldValueByPath(path: string): Promise<any> {
+        const source = this.getRelatedFieldByPath(path, false);
+
+        if (source == null) {
+            if (path.startsWith('/response/')) {
+                const responsePath = path.substring('/response/'.length);
+
+                const parts = responsePath.split('/');
+
+                if (parts.length > 0) {
+                    const nonFieldName = parts[0];
+                    const nonFieldValue = this.form?.response?.[nonFieldName].value;
+                    const nonFieldSubpath = responsePath.substring(nonFieldName.length);
+
+                    return this.#getPropertyValueByPath(nonFieldValue, nonFieldSubpath);
+                }
+            }
+
+            throw new Error(`Cannot find field/non-field "${path}".`);
+        }
+
+        if (typeof (source.getValue) === 'function') {
+            return await source.getValue();
+        }
+
+        return (source as any).value;
+    }
+
+    #getPropertyValueByPath(obj: any, path: string): any {
+        if (!obj || !path) return null;
+
+        const parts = path.split('/').filter(part => part.length > 0);
+        let current = obj;
+
+        for (const part of parts) {
+            if (current == null) {
+                return null;
+            }
+
+            current = current[part];
+        }
+
+        return current;
+    }
 }
