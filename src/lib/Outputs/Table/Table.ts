@@ -10,14 +10,16 @@ import type { OutputController } from "../../Infrastructure/OutputController";
 import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
 import type { TableMetadata } from "./Components/ResultsTable.svelte";
 import type { ITableInputConfiguration } from "../../Inputs/TableInput/TableInput.svelte";
-import type { IInputFieldMetadata } from "$lib/Infrastructure/Metadata/IInputFieldMetadata";
-import type { IFieldMetadata } from "$lib/Infrastructure/Metadata/IFieldMetadata";
+import type { IInputFieldMetadata } from "../../Infrastructure/Metadata/IInputFieldMetadata";
+import type { IFieldMetadata } from "../../Infrastructure/Metadata/IFieldMetadata";
 import type { IListInputConfiguration } from '../../Inputs/ListInput/ListInput.svelte';
-import type { Field } from "$lib/Infrastructure/Fields/Field";
+import type { Field } from "../../Infrastructure/Fields/Field";
+import { IOutputFieldMetadata } from "../../Infrastructure/Metadata";
 
 export interface ITableOption {
     parent: Field<TableMetadata | IFieldMetadata<ITableInputConfiguration | IListInputConfiguration>>;
     columns: IField[];
+    footer?: FooterColumnMetadata[];
     extensions: TableExtension[];
     inputOnChange?: (row: TableRowGroup<TableBodyCell>, cell: InputController<any>) => Promise<void>;
 }
@@ -28,6 +30,16 @@ interface IIndexedField extends IField {
      */
     Index: number;
 }
+
+export type FooterColumnMetadata = IOutputFieldMetadata<any> & {
+    CustomProperties: {
+        [propertyName: string]: any;
+        FooterColumn: {
+            StartColumn: string;
+            CssClass: string | null;
+        }
+    }
+};
 
 /**
  * Data structure that represents a table with rows and columns.
@@ -70,6 +82,11 @@ export class Table extends EventSource {
      */
     private fields: IField[];
 
+    #footer: FooterColumnMetadata[];
+
+
+    public footerColumns: { metadata: FooterColumnMetadata | null, colspan: number }[] = [];
+
     constructor(options: ITableOption) {
         super();
 
@@ -77,6 +94,7 @@ export class Table extends EventSource {
         this.extensions = options.extensions;
         this.inputOnChange = options.inputOnChange ?? null;
         this.fields = options.columns;
+        this.#footer = options.footer ?? [];
 
         this.hiddenInputs = options.columns
             .filter(t => t.Metadata.Hidden)
@@ -131,6 +149,32 @@ export class Table extends EventSource {
             }, {});
 
         this.head = new TableRowGroup<TableHeadCell>(0, headCells);
+
+        this.footerColumns = [];
+
+        Object.entries(this.columns)
+            .map(t => t[1])
+            .sort((a, b) => a.Index - b.Index)
+            .forEach(column => {
+                const footerColumn = this.#footer.find(t => t.CustomProperties.FooterColumn.StartColumn === column.Metadata.Id);
+
+                if (footerColumn == null) {
+                    if (this.footerColumns.length == 0) {
+                        this.footerColumns.push({
+                            metadata: null,
+                            colspan: 1
+                        });
+                    }
+                    else {
+                        this.footerColumns[this.footerColumns.length - 1].colspan += 1;
+                    }
+                } else {
+                    this.footerColumns.push({
+                        metadata: footerColumn,
+                        colspan: 1
+                    });
+                }
+            });
 
         const promises = [];
 

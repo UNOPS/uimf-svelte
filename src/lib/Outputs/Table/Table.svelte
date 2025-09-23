@@ -2,6 +2,7 @@
 	export interface TableData {
 		Results: any[];
 		Actions: IFormLinkData[];
+		Footer: any[];
 	}
 </script>
 

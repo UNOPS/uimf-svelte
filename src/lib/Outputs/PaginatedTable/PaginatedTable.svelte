@@ -1,8 +1,6 @@
 <script context="module" lang="ts">
-	export interface IPaginatedData {
-		Results: any[];
+	export interface IPaginatedData extends TableData {
 		TotalCount: number;
-		Actions: IFormLinkData[];
 	}
 </script>
 
@@ -13,6 +11,7 @@
 	import Pager from '../Table/Components/Pager.svelte';
 	import ResultsTable, { type TableMetadata } from '../Table/Components/ResultsTable.svelte';
 	import { OutputComponent } from '../../Infrastructure/Component';
+	import { TableData } from '../Table/Table.svelte';
 
 	export let controller: OutputController<IPaginatedData, TableMetadata>;
 	export class Controller extends OutputController<IFormLinkData> {}

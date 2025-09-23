@@ -7,6 +7,7 @@
 		Paginator: string;
 		BulkActions: string | null;
 		NoHeader: boolean;
+		Footer: FooterColumnMetadata[];
 	}
 
 	export interface TableMetadata<T = TableConfiguration> extends IOutputFieldMetadata<T> {
@@ -22,13 +23,13 @@
 </script>
 
 <script lang="ts">
-	import type { OutputController } from '../../../Infrastructure/OutputController';
+	import { OutputController } from '../../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../../Infrastructure/Component';
 	import { beforeUpdate } from 'svelte';
 	import { ActionListColumnExtension } from '../Extensions/ActionListColumnExtension';
 	import { BulkActionsColumnExtension } from '../Extensions/BulkActionsColumnExtension';
 	import { RowExtension } from '../Extensions/RowExtension';
-	import { Table } from '../Table';
+	import { FooterColumnMetadata, Table } from '../Table';
 	import { ColumnExtension } from '../Extensions/ColumnExtension';
 	import { ExpandableExtension } from '../Extensions/ExpandableExtension';
 	import FormLink from '../../../Outputs/FormLink/FormLink.svelte';
@@ -71,6 +72,7 @@
 			const tempTable = new Table({
 				parent: controller,
 				extensions: extensions,
+				footer: controller.metadata.Component.Configuration!.Footer,
 				columns: (controller.metadata.Component.Configuration!.Columns ?? []).map(
 					(t: IFieldMetadata) => {
 						return {
@@ -117,6 +119,19 @@
 
 	function getAsOutput(ctrl: OutputController<any> | InputController<any>): OutputController<any> {
 		return ctrl as OutputController<any>;
+	}
+
+	function getFooterCellController(
+		footer: any,
+		field: IOutputFieldMetadata
+	): OutputController<any, IOutputFieldMetadata<any>> {
+		return new OutputController<any>({
+			app: controller.app,
+			data: footer[field.Id],
+			form: controller.form,
+			metadata: field,
+			parent: controller
+		});
 	}
 </script>
 
@@ -320,6 +335,27 @@
 					{/each}
 				{/if}
 			</tbody>
+			{#if controller.value?.Footer?.length > 0}
+				<tfoot>
+					{#each controller.value.Footer as row}
+						<tr class={row.CssClass}>
+							{#each table.footerColumns as cell}
+								<td
+									colspan={cell.colspan}
+									class={cell.metadata?.CustomProperties.FooterColumn.CssClass}
+								>
+									{#if cell.metadata != null}
+										<Output
+											controller={getFooterCellController(row, cell.metadata)}
+											nolayout={true}
+										/>
+									{/if}
+								</td>
+							{/each}
+						</tr>
+					{/each}
+				</tfoot>
+			{/if}
 		</table>
 	</div>
 {/if}
@@ -479,6 +515,22 @@
 				&.fa-sort {
 					opacity: 0.2;
 				}
+			}
+		}
+
+		tfoot > tr {
+			&:first-child > td {
+				border-top: 3px solid var(--outer-border-color);
+				padding-top: 15px;
+			}
+
+			&:last-child > td {
+				padding-bottom: 15px;
+			}
+
+			& > td {
+				background-color: #f9f9f9;
+				border-width: 0;
 			}
 		}
 
