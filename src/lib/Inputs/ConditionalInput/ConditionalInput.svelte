@@ -147,20 +147,22 @@
 
 <div class={controller.metadata.Component.Configuration?.CssClass}>
 	{#if controller.metadata.Component.Configuration.ConditionIsReadonly !== true}
-		{#each controller.metadata.Component.Configuration.Options as option}
-			{@const selected = controller.condition === option.Value}
-			<label class:selected class:not-selected={!selected}>
-				<input
-					type="radio"
-					checked={selected}
-					data-value={option.Value}
-					on:change={() => changeCondition(option.Value)}
-					required={true}
-					name={uniqueId}
-				/>
-				<span>{option.Label}</span>
-			</label>
-		{/each}
+		<div class="options">
+			{#each controller.metadata.Component.Configuration.Options as option}
+				{@const selected = controller.condition === option.Value}
+				<label class:selected class:not-selected={!selected}>
+					<input
+						type="radio"
+						checked={selected}
+						data-value={option.Value}
+						on:change={() => changeCondition(option.Value)}
+						required={true}
+						name={uniqueId}
+					/>
+					<span>{option.Label}</span>
+				</label>
+			{/each}
+		</div>
 	{/if}
 
 	{#if controller.view != null}
@@ -171,8 +173,8 @@
 <style lang="scss">
 	@import '../../scss/styles.variables.scss';
 
-	div {
-		display: block;
+	.options {
+		margin: 10px 0 30px 0;
 
 		& > label {
 			display: block;
