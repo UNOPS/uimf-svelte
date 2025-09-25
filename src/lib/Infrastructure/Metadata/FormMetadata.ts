@@ -13,8 +13,8 @@ export interface FormMetadata {
     Id: string;
     Label: string;
     InputFields: IInputFieldMetadata[];
-    OutputFields: IOutputFieldMetadata[];
     PostOnLoad: boolean;
     PostOnLoadValidation: boolean;
     Documentation?: string | null;
+    Layout: IOutputFieldMetadata;
 }

@@ -1,9 +1,10 @@
-import type { Field } from "../../../Infrastructure/Fields/Field";
-import type { FormInstance } from "../../../Infrastructure/FormInstance";
-import { ITypeaheadMetadata } from "../Typeahead.svelte";
-import type { IOption } from "./IOption";
-import type { ITypeaheadConfig } from "./ITypeaheadConfig";
-import type { IMultiselectValue, ITypeaheadValue } from "./ITypeaheadValue";
+import { IInputFieldMetadata } from "../../../../Infrastructure/Metadata";
+import type { Field } from "../../../../Infrastructure/Fields/Field";
+import type { FormInstance } from "../../../../Infrastructure/FormInstance";
+import { ITypeaheadMetadata } from "../../Typeahead.svelte";
+import { IPickerSourceConfig } from "./IPickerSourceConfig";
+import type { ITypeaheadConfig } from "../ITypeaheadConfig";
+import type { IMultiselectValue, ITypeaheadValue } from "../ITypeaheadValue";
 
 export type TypeaheadSourceManagerConfig = ITypeaheadConfig & {
     ForDropdown: boolean;
@@ -14,15 +15,19 @@ interface IResponse {
     TotalItemCount: number;
 }
 
-export class TypeaheadSourceManager {
+interface IOption {
+    Value: any;
+}
+
+export class PickerManager<T extends IOption> {
     static #requestPromises: Record<string, Promise<any>> = {};
     #config: TypeaheadSourceManagerConfig;
-    #inlineItems: IOption[] | null;
-    #cachedItems: IOption[] = [];
+    #inlineItems: T[] | null;
+    #cachedItems: T[] = [];
     #form: FormInstance;
     #field: Field<ITypeaheadMetadata>;
 
-    constructor(config: TypeaheadSourceManagerConfig, field: Field<ITypeaheadMetadata>) {
+    constructor(config: TypeaheadSourceManagerConfig, field: Field<IInputFieldMetadata<IPickerSourceConfig>>) {
         if (field.form == null) {
             throw "Form is required to retrieve parameters, but was not provided.";
         }
@@ -32,7 +37,7 @@ export class TypeaheadSourceManager {
         this.#config = config;
 
         this.#inlineItems = Array.isArray(config.Items)
-            ? TypeaheadSourceManager.augmentItems(config.Items)
+            ? PickerManager.augmentItems(config.Items)
             : null;
     }
 
@@ -68,7 +73,7 @@ export class TypeaheadSourceManager {
         return `${cachePrefix}-${cacheKey}`;
     }
 
-    async getOptionsAndFilter(query: ITypeaheadValue | IMultiselectValue | string | null): Promise<IOption[]> {
+    async getOptionsAndFilter(query: ITypeaheadValue | IMultiselectValue | string | null): Promise<T[]> {
         return this.#getOptions(query).then(data => {
             const visibleOptions = data.Items.filter((t) =>
                 this.#form.app.hasPermission(t.RequiredPermission)
@@ -129,10 +134,10 @@ export class TypeaheadSourceManager {
             return cachedData;
         }
 
-        if (!TypeaheadSourceManager.#requestPromises[key]) {
-            const cachedItems: IOption[] = [];
+        if (!PickerManager.#requestPromises[key]) {
+            const cachedItems: T[] = [];
 
-            if (TypeaheadSourceManager.#isMultiselectValue(query)) {
+            if (PickerManager.#isMultiselectValue(query)) {
                 effectiveQuery = { Items: [] };
 
                 for (const item of query.Items) {
@@ -152,7 +157,7 @@ export class TypeaheadSourceManager {
                         TotalItemCount: cachedItems.length
                     }
                 }
-            } else if (TypeaheadSourceManager.#isTypeaheadValue(query)) {
+            } else if (PickerManager.#isTypeaheadValue(query)) {
                 const cachedItem = this.#getCachedItem(query.Value);
 
                 if (cachedItem) {
@@ -163,10 +168,10 @@ export class TypeaheadSourceManager {
                 }
             }
 
-            TypeaheadSourceManager.#requestPromises[key] = this.#makeHttpRequest(effectiveQuery)
+            PickerManager.#requestPromises[key] = this.#makeHttpRequest(effectiveQuery)
                 .then(data => {
                     this.#storeInCache(key, data);
-                    delete TypeaheadSourceManager.#requestPromises[key];
+                    delete PickerManager.#requestPromises[key];
 
                     for (const item of data.Items) {
                         this.#cachedItems.push(item);
@@ -181,10 +186,10 @@ export class TypeaheadSourceManager {
                 });
         }
 
-        return TypeaheadSourceManager.#requestPromises[key];
+        return PickerManager.#requestPromises[key];
     }
 
-    #getCachedItem(value: any): IOption | null {
+    #getCachedItem(value: any): T | null {
         const match = this.#cachedItems.find((t) => {
             return t.Value.toString() == value.toString();
         });
@@ -237,7 +242,7 @@ export class TypeaheadSourceManager {
             .postForm(this.#config.Source!, postData, null)
             .then((t: any) => {
                 return {
-                    Items: TypeaheadSourceManager.augmentItems(t.Items),
+                    Items: PickerManager.augmentItems(t.Items),
                     TotalItemCount: t.TotalItemCount
                 };
             }));
@@ -276,7 +281,7 @@ export class TypeaheadSourceManager {
         return postData;
     }
 
-    static augmentItems(items: any[]): IOption[] {
+    static augmentItems<T>(items: any[]): T[] {
         if (items == null) {
             return [];
         }
@@ -289,7 +294,7 @@ export class TypeaheadSourceManager {
             // Always search in lowercase.
             c.SearchText = c.SearchText.toLocaleLowerCase();
 
-            return c as IOption;
+            return c as T;
         });
     }
 }

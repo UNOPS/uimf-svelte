@@ -1,11 +1,11 @@
 <script lang="ts" context="module">
 	import { InputController } from '../../Infrastructure/InputController';
 
-	interface Configuration {
-		Options: Option[];
+	interface Configuration extends IPickerSourceConfig<RadioOption> {
+		Options: string;
 	}
 
-	export interface Option {
+	export interface RadioOption {
 		CssClass: string;
 		Icon: string;
 		Label: string;
@@ -24,22 +24,15 @@
 		declare onChange: (() => any) | null;
 
 		public getValue(): Promise<Radio | null> {
-			var result =
-				this.valueAsString != null && this.valueAsString.length > 0
-					? { Value: parseInt(this.valueAsString) }
-					: null;
-			return Promise.resolve(result);
+			return Promise.resolve(this.value);
 		}
 
 		protected setValueInternal(value: Radio | null): Promise<void> {
-			if (value == null) {
+			if (value == null || value.Value == '' || value.Value == null) {
+				this.value = null;
 				this.valueAsString = null;
 			} else {
-				const asString = value?.Value.toString();
-				this.valueAsString =
-					this.metadata.Component.Configuration.Options.find(
-						(t) => t.Value.toString() === asString || t.Label === asString
-					)?.Value.toString() ?? null;
+				this.valueAsString = this.serialize(this.value);
 			}
 
 			this.onChange?.();
@@ -52,17 +45,11 @@
 				return Promise.resolve(null);
 			}
 
-			var option = this.metadata.Component.Configuration.Options.find(
-				(t) => t.Value.toString() === value
-			);
-
-			var result = option != null ? { Value: parseInt(value) } : null;
-
-			return Promise.resolve(result);
+			return Promise.resolve({ Value: value });
 		}
 
 		public serialize(value: Radio | null): string | null {
-			return value == null ? null : value.Value.toString();
+			return value != null && value.Value !== '' ? value.Value?.toString() : null;
 		}
 	}
 </script>
@@ -70,32 +57,74 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../../Infrastructure/Component';
-	import type { IInputFieldMetadata } from '../../Infrastructure/Metadata';
+	import type { IInputFieldMetadata, IOutputFieldMetadata } from '../../Infrastructure/Metadata';
 	import uuid from '../../Infrastructure/Utilities/uuid';
+	import { PickerManager } from '../Typeahead/Domain';
+	import { IPickerSourceConfig } from '../Typeahead/Domain/Picker/IPickerSourceConfig';
+	import Output from '../../Output.svelte';
+	import { OutputController } from '../../Infrastructure/OutputController';
 
 	export let controller: Controller;
 	export let onChange: null | (() => any) = null;
 
 	let name: string = uuid();
 	let withIcons: boolean;
+	let source: PickerManager<RadioOption> | null;
+	let items: RadioOption[] = [];
+	let itemMetadata: IOutputFieldMetadata | null;
 
 	let component = new InputComponent({
 		init() {
 			controller.onChange = onChange;
 
-			withIcons =
-				controller.metadata.Component.Configuration.Options.find((t) => t.Icon != null) != null;
+			const optionsField = controller.metadata.Component.Configuration.Options;
+
+			if (optionsField == null) {
+				source = new PickerManager(
+					{
+						...controller.metadata.Component.Configuration,
+						ForDropdown: true
+					},
+					controller
+				);
+
+				itemMetadata = null;
+			} else {
+				const outputs: IOutputFieldMetadata[] =
+					controller.form?.metadata.Layout.Component.Configuration.Fields;
+				console.log(outputs, optionsField);
+				itemMetadata = outputs.find((t) => t.Id == optionsField)!;
+			}
 		},
-		refresh() {
+		async refresh() {
+			items =
+				controller.metadata.Component.Configuration.Options == null
+					? await source!.getOptionsAndFilter(null)
+					: (await controller.form?.response[
+							controller.metadata.Component.Configuration.Options
+					  ].getValue()) ?? [];
+
 			controller.value = controller.value;
+
+			withIcons = items?.find((t) => t.Icon != null) != null;
 		}
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
+
+	function buildOutputController(value: any): OutputController<any> {
+		return new OutputController({
+			app: controller.app,
+			data: value,
+			form: controller.form,
+			metadata: itemMetadata!,
+			parent: controller
+		});
+	}
 </script>
 
 <div class:with-icons={withIcons}>
-	{#each controller.metadata.Component.Configuration.Options as option}
+	{#each items as option}
 		{@const selected = controller.valueAsString === option.Value.toString()}
 		<label class={option.CssClass} class:selected class:not-selected={!selected}>
 			<input
@@ -106,16 +135,21 @@
 				on:change={() => controller.setValue(option)}
 				required={controller.metadata.Required}
 			/>
-			{#if option.Icon != null}
-				<button
-					type="button"
-					title={option.Tooltip}
-					on:click={() => controller.setValue(option.Value.toString())}
-					><i class={option.Icon} /></button
-				>
-			{/if}
-			{#if option.Label != null}
-				<span>{option.Label}</span>
+
+			{#if itemMetadata != null}
+				{JSON.stringify(option)}
+				<Output controller={buildOutputController(option)} />
+			{:else}
+				{#if option.Icon != null}
+					<button
+						type="button"
+						title={option.Tooltip}
+						on:click={() => controller.setValue(option.Value)}><i class={option.Icon} /></button
+					>
+				{/if}
+				{#if option.Label != null}
+					<span>{option.Label}</span>
+				{/if}
 			{/if}
 		</label>
 	{/each}

@@ -29,7 +29,7 @@
 		Value: any | null;
 	}
 
-	interface IMyOption extends IOption {
+	interface IMyOption extends ITypeaheadOption {
 		HasChildren: boolean;
 		Selectable: boolean;
 	}
@@ -49,8 +49,7 @@
 	import { InputComponent } from '../../Infrastructure/Component';
 	import type { FormResponse } from '../../Infrastructure/App/FormResponse';
 	import type { IInputFieldMetadata } from '$lib/Infrastructure/Metadata';
-	import { augmentItems } from '../Typeahead/Typeahead.svelte';
-	import type { IOption } from '../Typeahead/Domain/index';
+	import { PickerManager, type ITypeaheadOption } from '../Typeahead/Domain/index';
 	import { MultilevelPickerCache } from './MultilevelPickerCache';
 
 	export let controller: Controller;
@@ -138,7 +137,7 @@
 				return controller.app
 					.postForm<Response>(controller.metadata.Component.Configuration.Form, postData, null)
 					.then((t: any) => {
-						return augmentItems(t.Path || []) as IMyOption[];
+						return PickerManager.augmentItems<IMyOption>(t.Path || []);
 					})
 					.catch(() => {
 						return [];
@@ -173,7 +172,7 @@
 				return controller.app
 					.postForm<Response>(controller.metadata.Component.Configuration.Form, postData, null)
 					.then((t: any) => {
-						return augmentItems(t.Items) as IMyOption[];
+						return PickerManager.augmentItems<IMyOption>(t.Items);
 					})
 					.catch(() => {
 						return [];

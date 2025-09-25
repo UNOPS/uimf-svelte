@@ -1,12 +1,6 @@
-import type { IOption } from './index';
+import type { ITypeaheadOption } from './index';
+import { IPickerSourceConfig } from "./Picker/IPickerSourceConfig";
 
-export interface ITypeaheadConfig {
+export interface ITypeaheadConfig extends IPickerSourceConfig<ITypeaheadOption> {
     DefaultValue?: string | null;
-    Source?: string | null;
-    Parameters?: Array<{
-        SourceType: string;
-        Parameter: string;
-        Source: string;
-    }> | null;
-    Items?: Array<IOption>;
 }

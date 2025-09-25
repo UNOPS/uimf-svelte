@@ -55,17 +55,17 @@
 	import Select from 'svelte-select';
 	import { InputComponent } from '../../Infrastructure/Component';
 	import type { ITypeaheadMetadata } from '../Typeahead/Typeahead.svelte';
-	import { TypeaheadSourceManager } from '../Typeahead/Domain/TypeaheadSourceManager';
-	import type { IOption } from '../Typeahead/Domain/index';
+	import { PickerManager } from '../Typeahead/Domain/Picker/PickerManager';
+	import type { ITypeaheadOption } from '../Typeahead/Domain/index';
 
 	export let controller: Controller;
 
-	let source: TypeaheadSourceManager;
-	let selected: IOption[] = [];
+	let source: PickerManager<ITypeaheadOption>;
+	let selected: ITypeaheadOption[] = [];
 
 	let component = new InputComponent({
 		async init() {
-			source = new TypeaheadSourceManager(
+			source = new PickerManager(
 				{
 					...controller.metadata.Component.Configuration,
 					ForDropdown: false
@@ -99,7 +99,7 @@
 		}
 	});
 
-	async function getAugmentedOption(capturedValue: MultiselectValue): Promise<IOption[]> {
+	async function getAugmentedOption(capturedValue: MultiselectValue): Promise<ITypeaheadOption[]> {
 		let results = await source.getOptionsAndFilter(capturedValue);
 
 		return results?.length > 0

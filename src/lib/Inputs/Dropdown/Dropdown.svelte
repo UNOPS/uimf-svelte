@@ -13,7 +13,7 @@
 
 	export class Controller extends InputController<IValue, IMetadata> {
 		public valueAsString: string | null = null;
-		public items: Array<IOption> = [];
+		public items: Array<ITypeaheadOption> = [];
 
 		public getValue(): Promise<IValue | null> {
 			return Promise.resolve(this.value);
@@ -47,19 +47,19 @@
 	import { beforeUpdate } from 'svelte';
 	import type { IInputFieldMetadata } from '../../Infrastructure/Metadata';
 	import { InputComponent } from '../../Infrastructure/Component';
-	import type { IOption } from '../Typeahead/Domain/index';
+	import type { ITypeaheadOption } from '../Typeahead/Domain/index';
 	import type { ITypeaheadConfig } from '../Typeahead/Domain/index';
 	import type { ITypeaheadValue } from '../Typeahead/Domain/index';
-	import { TypeaheadSourceManager } from '../Typeahead/Domain';
+	import { PickerManager } from '../Typeahead/Domain';
 
 	export let controller: Controller;
 
-	let source: TypeaheadSourceManager;
-	let items: Array<IOption> = [];
+	let source: PickerManager<ITypeaheadOption>;
+	let items: Array<ITypeaheadOption> = [];
 
 	let component = new InputComponent({
 		async init() {
-			source = new TypeaheadSourceManager(
+			source = new PickerManager(
 				{
 					...controller.metadata.Component.Configuration,
 					ForDropdown: true

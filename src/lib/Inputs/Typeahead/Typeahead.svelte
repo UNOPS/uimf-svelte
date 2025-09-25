@@ -29,23 +29,6 @@
 			return Promise.resolve();
 		}
 	}
-
-	export function augmentItems(items: IOption[]): IOption[] {
-		if (items == null) {
-			return [];
-		}
-
-		return items.map((c) => {
-			if (c.SearchText == null || c.SearchText.length == 0) {
-				c.SearchText = c.Label + ' ' + c.Value + ' ' + (c.Description ?? '');
-			}
-
-			// Always search in lowercase.
-			c.SearchText = c.SearchText.toLocaleLowerCase();
-
-			return c as IOption;
-		});
-	}
 </script>
 
 <script lang="ts">
@@ -53,18 +36,18 @@
 	import { InputComponent } from '../../Infrastructure/Component';
 	import { beforeUpdate } from 'svelte';
 	import type { IInputFieldMetadata } from '../../Infrastructure/Metadata';
-	import { TypeaheadSourceManager } from './Domain/TypeaheadSourceManager';
+	import { PickerManager } from './Domain/Picker/PickerManager';
 	import type { ITypeaheadValue } from './Domain/ITypeaheadValue';
-	import type { IOption } from './Domain/index';
+	import type { ITypeaheadOption } from './Domain/index';
 	import type { ITypeaheadConfig } from './Domain/index';
 
 	export let controller: Controller;
 
-	let source: TypeaheadSourceManager;
+	let source: PickerManager<ITypeaheadOption>;
 
 	let component = new InputComponent({
 		async init() {
-			source = new TypeaheadSourceManager(
+			source = new PickerManager(
 				{
 					...controller.metadata.Component.Configuration,
 					ForDropdown: false
@@ -96,7 +79,7 @@
 		await component.setup(controller);
 	});
 
-	async function getAugmentedOption(value: ITypeaheadValue): Promise<IOption> {
+	async function getAugmentedOption(value: ITypeaheadValue): Promise<ITypeaheadOption> {
 		let options = await source.getOptionsAndFilter(value);
 
 		const option =
@@ -111,7 +94,7 @@
 		return option;
 	}
 
-	async function loadOptionsAndFilter(query: string): Promise<IOption[]> {
+	async function loadOptionsAndFilter(query: string): Promise<ITypeaheadOption[]> {
 		if (source == null) {
 			return [];
 		}

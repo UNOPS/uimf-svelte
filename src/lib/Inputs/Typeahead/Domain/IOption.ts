@@ -1,6 +1,6 @@
 import type { ITypeaheadValue } from './ITypeaheadValue';
 
-export interface IOption extends ITypeaheadValue {
+export interface ITypeaheadOption extends ITypeaheadValue {
     CssClass?: string | null | undefined;
     Label: string;
     SearchText?: string | null;
