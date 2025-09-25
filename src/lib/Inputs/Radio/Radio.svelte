@@ -3,6 +3,7 @@
 
 	interface Configuration extends IPickerSourceConfig<RadioOption> {
 		Options: string;
+		OptionType: IComponent;
 	}
 
 	export interface RadioOption {
@@ -57,12 +58,17 @@
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../../Infrastructure/Component';
-	import type { IInputFieldMetadata, IOutputFieldMetadata } from '../../Infrastructure/Metadata';
+	import type {
+		IComponent,
+		IInputFieldMetadata,
+		IOutputFieldMetadata
+	} from '../../Infrastructure/Metadata';
 	import uuid from '../../Infrastructure/Utilities/uuid';
 	import { PickerManager } from '../Typeahead/Domain';
 	import { IPickerSourceConfig } from '../Typeahead/Domain/Picker/IPickerSourceConfig';
 	import Output from '../../Output.svelte';
 	import { OutputController } from '../../Infrastructure/OutputController';
+	import { OutputFieldMetadataFactory } from '../../Infrastructure/Utilities/OutputFieldMetadataFactory';
 
 	export let controller: Controller;
 	export let onChange: null | (() => any) = null;
@@ -90,19 +96,17 @@
 
 				itemMetadata = null;
 			} else {
-				const outputs: IOutputFieldMetadata[] =
-					controller.form?.metadata.Layout.Component.Configuration.Fields;
-				console.log(outputs, optionsField);
-				itemMetadata = outputs.find((t) => t.Id == optionsField)!;
+				itemMetadata = OutputFieldMetadataFactory.fromComponent(
+					controller.metadata.Component.Configuration.OptionType
+				);
 			}
 		},
 		async refresh() {
 			items =
 				controller.metadata.Component.Configuration.Options == null
 					? await source!.getOptionsAndFilter(null)
-					: (await controller.form?.response[
-							controller.metadata.Component.Configuration.Options
-					  ].getValue()) ?? [];
+					: controller.form?.response[controller.metadata.Component.Configuration.Options]?.value ??
+					  [];
 
 			controller.value = controller.value;
 
@@ -123,23 +127,47 @@
 	}
 </script>
 
-<div class:with-icons={withIcons}>
+<div class:with-icons={withIcons} class:radio={true}>
 	{#each items as option}
 		{@const selected = controller.valueAsString === option.Value.toString()}
-		<label class={option.CssClass} class:selected class:not-selected={!selected}>
-			<input
-				type="radio"
-				{name}
-				checked={selected}
-				data-value={option.Value}
-				on:change={() => controller.setValue(option)}
-				required={controller.metadata.Required}
-			/>
+		{#if itemMetadata != null}
+			<div class={option.CssClass} class:selected class:custom-output={true}>
+				<div
+					class="button"
+					role="button"
+					tabindex="0"
+					on:click={() => controller.setValue(option)}
+					on:keydown={(e) => {
+						if (e.key === 'Enter' || e.key === ' ') {
+							controller.setValue(option);
+							e.preventDefault();
+						}
+					}}
+				>
+					<input
+						type="radio"
+						{name}
+						checked={selected}
+						data-value={option.Value}
+						required={controller.metadata.Required}
+					/>
+				</div>
 
-			{#if itemMetadata != null}
-				{JSON.stringify(option)}
-				<Output controller={buildOutputController(option)} />
-			{:else}
+				<div class="details">
+					<Output controller={buildOutputController(option)} />
+				</div>
+			</div>
+		{:else}
+			<label class={option.CssClass} class:selected>
+				<input
+					type="radio"
+					{name}
+					checked={selected}
+					data-value={option.Value}
+					on:change={() => controller.setValue(option)}
+					required={controller.metadata.Required}
+				/>
+
 				{#if option.Icon != null}
 					<button
 						type="button"
@@ -150,15 +178,15 @@
 				{#if option.Label != null}
 					<span>{option.Label}</span>
 				{/if}
-			{/if}
-		</label>
+			</label>
+		{/if}
 	{/each}
 </div>
 
 <style lang="scss">
 	@import '../../scss/styles.variables.scss';
 
-	div {
+	.radio {
 		display: block;
 
 		& > label {
@@ -172,7 +200,7 @@
 		}
 	}
 
-	div.with-icons {
+	.radio.with-icons {
 		white-space: nowrap;
 		display: flex;
 
@@ -185,7 +213,7 @@
 			border: 1px solid #ddd;
 			cursor: pointer;
 
-			&.not-selected {
+			&:not(.selected) {
 				background: white;
 				color: #5f5f5f;
 			}
@@ -207,6 +235,44 @@
 				width: 0;
 				height: 0;
 			}
+		}
+	}
+
+	.custom-output {
+		--border: #d0d0d0;
+		--bg: #ededed;
+
+		&.selected {
+			--border: var(--bs-primary);
+			--bg: aliceblue;
+		}
+
+		border: 2px solid var(--border);
+		border-radius: 5px;
+		display: flex;
+		flex-direction: row;
+
+		& > .button {
+			flex-basis: 60px;
+			flex-grow: 0;
+			flex-shrink: 0;
+			border-right: 2px solid var(--border);
+			cursor: pointer;
+			background-color: var(--bg);
+
+			// Make sure input is in the middle of the div (vertically).
+			display: flex;
+			align-items: center;
+
+			& > input {
+				display: block;
+				width: 100%;
+				height: 20px;
+			}
+		}
+
+		& > .details {
+			padding: 10px 15px;
 		}
 	}
 </style>
