@@ -35,6 +35,10 @@
 		}
 
 		:global(p) {
+			margin-bottom: 5px;
+			font-size: initial;
+			line-height: initial;
+
 			&:last-child {
 				margin-bottom: 0;
 			}
@@ -44,8 +48,11 @@
 			margin-bottom: 0;
 		}
 
-		:global(li:last-child) {
+		:global(li) {
+			font-size: initial;
+			line-height: initial;
 			margin-bottom: 0;
+			list-style-type: circle;
 		}
 	}
 

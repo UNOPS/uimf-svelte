@@ -96,10 +96,17 @@
 		padding: 10px;
 	}
 
-	.bullet-list > div {
-		display: list-item;
-		list-style-type: circle;
-		margin-left: 1.3em;
+	.bullet-list {
+		&.indented > div {
+			margin-left: 40px;
+			margin-bottom: 4px;
+		}
+
+		& > div {
+			display: list-item;
+			list-style-type: circle;
+			margin-left: 1.3em;
+		}
 	}
 
 	.extra-space-separator > div {

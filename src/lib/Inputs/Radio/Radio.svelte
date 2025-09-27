@@ -241,22 +241,28 @@
 	.custom-output {
 		--border: #d0d0d0;
 		--bg: #ededed;
+		--border-width: 2px;
 
 		&.selected {
 			--border: var(--bs-primary);
 			--bg: aliceblue;
 		}
 
-		border: 2px solid var(--border);
-		border-radius: 5px;
+		border: var(--border-width) solid var(--border);
+		border-radius: 2px;
 		display: flex;
 		flex-direction: row;
+		margin-bottom: 8px;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
 
 		& > .button {
 			flex-basis: 60px;
 			flex-grow: 0;
 			flex-shrink: 0;
-			border-right: 2px solid var(--border);
+			border-right: var(--border-width) solid var(--border);
 			cursor: pointer;
 			background-color: var(--bg);
 
@@ -268,10 +274,12 @@
 				display: block;
 				width: 100%;
 				height: 20px;
+				margin: 0;
 			}
 		}
 
 		& > .details {
+			flex-grow: 1;
 			padding: 10px 15px;
 		}
 	}
