@@ -41,7 +41,8 @@ $theme-colors: map-remove($theme-colors, "dark");
 
 $theme-colors: map-merge($theme-colors,
     ("inactive": $gray-600,
-      "soft": $app-soft-bg ));
+      "soft": $app-soft-bg,
+      "gray": rgb(231 231 231)));
 
 
 // ---------------------------------------------------------- //

@@ -438,7 +438,6 @@
 		color: $link-color;
 		text-align: left;
 		background-color: transparent;
-		text-decoration: none;
 		text-decoration: underline;
 
 		&:hover {
