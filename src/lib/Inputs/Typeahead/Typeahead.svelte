@@ -4,6 +4,7 @@
 	interface IConfiguration extends ITypeaheadConfig {
 		DefaultValue?: string | null;
 		SelectAll?: boolean;
+		Placeholder?: string | null;
 	}
 
 	export interface ITypeaheadMetadata extends IInputFieldMetadata<IConfiguration> {}
@@ -137,7 +138,7 @@
 			await controller?.setValue(null);
 		}}
 		hideEmptyState={true}
-		placeholder="type to search..."
+		placeholder={controller.metadata.Component.Configuration.Placeholder ?? "type to search..."}
 		loadOptions={loadOptionsAndFilter}
 	>
 		<div slot="item" let:item class={item.CssClass} class:item-slot={true}>
