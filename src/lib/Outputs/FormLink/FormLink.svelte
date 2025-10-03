@@ -63,7 +63,14 @@
 			}
 
 			allowed = controller.app.hasPermission(controller.value.RequiredPermission);
-			cssClass = currentCssClass ?? controller.metadata?.CssClass ?? null;
+
+			// Combine CSS classes from value, and component configuration.
+			const classes = [
+				currentCssClass,
+				controller.metadata?.Component?.Configuration?.CssClass
+			].filter((c) => c != null && c.length > 0);
+
+			cssClass = classes.length > 0 ? classes.join(' ') : null;
 		},
 		destroy() {
 			if (unsubscribe != null) {
