@@ -6,6 +6,7 @@ import type { FormMetadata } from "../Metadata/FormMetadata";
 import { FormResponse } from "./FormResponse";
 import { IFormContainer } from "./IFormContainer";
 import { FormLink } from "../Metadata";
+import { IFormlinkBase } from "$lib/Outputs/FormLink/IFormlinkBase";
 
 interface IConfirmOptions {
     headerText?: string;
@@ -62,7 +63,7 @@ export default interface IUimfApp {
     openModal(options: IModalOptions): Promise<void>;
     openHtmlModal(options: IHtmlModalOptions): Promise<void>;
     formsById: { [id: string]: FormMetadata };
-    makeUrl(link: FormLink): Promise<string>;
+    makeUrl(link: IFormlinkBase): Promise<string>;
     goto(link: FormLink): Promise<void>;
     postForm<T extends FormResponse>(form: string, data: any, config: IPostFormConfig | null): Promise<T>;
     getApiFile(url: string): Promise<Response>;
