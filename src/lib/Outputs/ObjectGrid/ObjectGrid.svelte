@@ -6,6 +6,7 @@
 		Columns?: string;
 		Rows?: string;
 		ItemCssClass?: string;
+		JustifyContent?: string;
 	}
 
 	interface IMetadata extends IOutputFieldMetadata<Configuration> {}
@@ -75,6 +76,7 @@
 		style:gap={controller.metadata.Component.Configuration.Gap}
 		style:grid-template-columns={controller.metadata.Component.Configuration.Columns}
 		style:grid-template-rows={controller.metadata.Component.Configuration.Rows}
+		style:justify-content={controller.metadata.Component.Configuration.JustifyContent}
 	>
 		{#each nestedItems as item}
 			<div class={controller.metadata.Component.Configuration.ItemCssClass}>
