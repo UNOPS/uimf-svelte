@@ -9,6 +9,7 @@
 		Direction?: string;
 		AlignItems?: string;
 		Separator?: string;
+		SeparatorCssClass?: string;
 		ItemCssClass?: string;
 	}
 
@@ -87,9 +88,11 @@
 			<div class={controller.metadata.Component.Configuration.ItemCssClass}>
 				<svelte:component this={item.component} controller={item.controller} />
 			</div>
-			{#if separator != null}
+			{#if separator != null || controller.metadata.Component.Configuration.SeparatorCssClass != null}
 				{#if index < nestedItems.length - 1}
-					<div>{@html separator}</div>
+					<div class={controller.metadata.Component.Configuration.SeparatorCssClass}>
+						{@html separator ?? ''}
+					</div>
 				{/if}
 			{/if}
 		{/each}
