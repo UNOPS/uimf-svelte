@@ -23,12 +23,13 @@
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import { IFormlinkBase } from '../FormLink/IFormlinkBase';
+	import { beforeUpdate } from 'svelte';
 
 	export let controller: OutputController<SimpleImage, IMetadata>;
 
 	let cssClass: string | null = null;
 
-	new OutputComponent({
+	const component = new OutputComponent({
 		refresh() {
 			controller.value = controller.value;
 
@@ -41,6 +42,8 @@
 			cssClass = classes.length > 0 ? classes.join(' ') : null;
 		}
 	});
+
+	beforeUpdate(async () => await component.setup(controller));
 </script>
 
 {#if controller.value?.Src}
@@ -49,9 +52,11 @@
 			<a href={url}>
 				<img
 					src={controller.value.Src}
-					alt={controller.value?.Alt || ''}
-					width={controller.value?.Width || controller.metadata?.Component?.Configuration?.Width}
-					height={controller.value?.Height || controller.metadata?.Component?.Configuration?.Height}
+					alt={controller.value?.Alt ?? ''}
+					style:width={controller.value?.Width ??
+						controller.metadata?.Component?.Configuration?.Width}
+					style:height={controller.value?.Height ??
+						controller.metadata?.Component?.Configuration?.Height}
 					class={cssClass}
 					style:object-fit={controller.metadata?.Component?.Configuration?.ObjectFit}
 				/>
@@ -60,9 +65,10 @@
 	{:else}
 		<img
 			src={controller.value.Src}
-			alt={controller.value?.Alt || ''}
-			width={controller.value?.Width || controller.metadata?.Component?.Configuration?.Width}
-			height={controller.value?.Height || controller.metadata?.Component?.Configuration?.Height}
+			alt={controller.value?.Alt ?? ''}
+			style:width={controller.value?.Width ?? controller.metadata?.Component?.Configuration?.Width}
+			style:height={controller.value?.Height ??
+				controller.metadata?.Component?.Configuration?.Height}
 			class={cssClass}
 			style:object-fit={controller.metadata?.Component?.Configuration?.ObjectFit}
 		/>
