@@ -22,7 +22,6 @@
 
 	export class Controller extends InputController<Radio, RadioMetadata> {
 		public valueAsString: string | null = null;
-		declare onChange: (() => any) | null;
 
 		public getValue(): Promise<Radio | null> {
 			return Promise.resolve(this.value);
@@ -35,8 +34,6 @@
 			} else {
 				this.valueAsString = this.serialize(this.value);
 			}
-
-			this.onChange?.();
 
 			return Promise.resolve();
 		}
@@ -71,7 +68,6 @@
 	import { OutputFieldMetadataFactory } from '../../Infrastructure/Utilities/OutputFieldMetadataFactory';
 
 	export let controller: Controller;
-	export let onChange: null | (() => any) = null;
 
 	let name: string = uuid();
 	let withIcons: boolean;
@@ -81,8 +77,6 @@
 
 	let component = new InputComponent({
 		init() {
-			controller.onChange = onChange;
-
 			const optionsField = controller.metadata.Component.Configuration.Options;
 
 			if (optionsField == null) {

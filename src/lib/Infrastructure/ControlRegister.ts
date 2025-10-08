@@ -11,6 +11,7 @@ import * as ConditionalValue from '../Inputs/ConditionalValue/ConditionalValue.s
 import * as BooleanInput from '../Inputs/Boolean/Boolean.svelte';
 import * as DateTime from '../Inputs/DateTime/DateTime.svelte';
 import * as Radio from '../Inputs/Radio/Radio.svelte';
+import * as CheckboxList from '../Inputs/CheckboxList/CheckboxList.svelte';
 import * as ComplexInput from '../Inputs/ComplexInput/ComplexInput.svelte';
 import * as ConditionalInput from '../Inputs/ConditionalInput/ConditionalInput.svelte';
 import * as MultilevelPicker from '../Inputs/MultilevelPicker/MultilevelPicker.svelte';
@@ -289,6 +290,7 @@ defaultControlRegister.registerInputComponent('flexbox-input', FlexboxInput);
 defaultControlRegister.registerInputComponent('boolean', BooleanInput);
 defaultControlRegister.registerInputComponent('datetime', DateTime);
 defaultControlRegister.registerInputComponent('radio', Radio);
+defaultControlRegister.registerInputComponent('checkbox-list', CheckboxList);
 defaultControlRegister.registerInputComponent('complex-input', ComplexInput);
 defaultControlRegister.registerInputComponent('conditional-input', ConditionalInput);
 defaultControlRegister.registerInputComponent('conditional-value', ConditionalValue);
