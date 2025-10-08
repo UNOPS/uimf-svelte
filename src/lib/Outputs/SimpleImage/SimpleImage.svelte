@@ -47,7 +47,7 @@
 </script>
 
 {#if controller.value?.Src}
-	{#if controller.value.Link?.Form}
+	{#if controller.value.Link != null}
 		{#await controller.app.makeUrl(controller.value.Link) then url}
 			<a href={url}>
 				<img
