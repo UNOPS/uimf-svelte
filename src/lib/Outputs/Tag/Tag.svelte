@@ -5,10 +5,10 @@
 	import { tooltip } from '../../Components/Tooltip.svelte';
 
 	interface TagData {
-		Color: string;
+		BackgroundColor: string;
 		Tooltip: string;
 		Label: string;
-		FontColor?: string;
+		TextColor?: string;
 	}
 
 	export let controller: OutputController<TagData>;
@@ -25,8 +25,8 @@
 {#if controller.value != null}
 	<span
 		class="badge"
-		style:background-color={controller.value.Color}
-		style:color={controller.value.FontColor}
+		style:background-color={controller.value.BackgroundColor}
+		style:color={controller.value.TextColor}
 		use:tooltip={controller.value.Tooltip != null
 			? controller.value.Tooltip.replace(/'/g, '&apos;')
 			: ''}
