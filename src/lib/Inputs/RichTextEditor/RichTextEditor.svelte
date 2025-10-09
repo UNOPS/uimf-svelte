@@ -6,17 +6,11 @@
 	}
 
 	export class Controller extends InputController<RichTextEditor> {
-		public html: string | null = null;
-		protected callback?: (html: string | null) => void;
-
 		public getValue(): Promise<RichTextEditor | null> {
 			return Promise.resolve(this.value);
 		}
 
 		protected setValueInternal(value: RichTextEditor | null): Promise<void> {
-			this.html = this.serialize(value);
-			this.callback?.(this.html);
-
 			return Promise.resolve();
 		}
 
@@ -31,62 +25,42 @@
 		public serialize(editor: RichTextEditor | null): string | null {
 			return editor?.Value;
 		}
-
-		public setCallback(callback: (html: string | null) => void) {
-			this.callback = callback;
-		}
 	}
 </script>
 
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../../Infrastructure/Component';
-	import Editor from 'cl-editor/src/Editor.svelte';
+	import { richTextEditor } from './RichTextEditorAction';
 
 	export let controller: Controller;
-	export let html: string | null;
 
-	export const getHtml = () => html;
-
-	let editor: Editor;
-	let isInitiated: boolean;
+	let html: string = '';
 
 	let component = new InputComponent({
-		init() {
-			controller.setCallback((content: string | null) => {
-				if (content) {
-					html = content;
-					if (!isInitiated) {
-						editor.setHtml(html!, true);
-						isInitiated = true;
-					}
-				}
-			});
-		},
 		refresh() {
 			controller.value = controller.value;
+			html = controller.value?.Value ?? '';
 		}
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
 
 	let invalid: boolean = false;
-	let onChange = (e: any) => {
-		let safeHtml = editor.getHtml(true);
 
-		html = safeHtml;
-		isInitiated = true;
-		controller.setValue({ Value: safeHtml });
+	function handleChange(newHtml: string) {
+		html = newHtml;
+		controller.setValue({ Value: html });
 
 		// We want to indicate if the "required" validation is failing.
 		// This isn't the most ideal UI (because it's different from the
 		// other input types), but it's better than nothing.
-		invalid = controller.metadata.Required && (safeHtml == null || safeHtml == '');
-	};
+		invalid = controller.metadata.Required && (html == null || html == '');
+	}
 </script>
 
 <div class="wrapper" class:invalid>
-	<Editor bind:this={editor} {html} on:change={onChange} />
+	<div use:richTextEditor={{ html, onChange: handleChange }} />
 </div>
 
 <style lang="scss">
