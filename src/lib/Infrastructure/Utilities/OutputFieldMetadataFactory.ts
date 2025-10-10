@@ -3,7 +3,7 @@ import type { IOutputFieldMetadata } from "../Metadata/IOutputFieldMetadata";
 import uuid from "./uuid";
 
 export class OutputFieldMetadataFactory {
-    public static fromComponent<TConfig = null>(component: IComponent<TConfig>, options?: { Id: string; }): IOutputFieldMetadata<TConfig> {
+    public static fromComponent<TConfig = null>(component: IComponent<TConfig>, options?: { Id?: string; }): IOutputFieldMetadata<TConfig> {
         return {
             Component: component,
             Hidden: false,
