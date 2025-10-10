@@ -30,6 +30,12 @@
 		interactive?: boolean;
 
 		/**
+		 * Maximum width of the popover.
+		 * Can be a number (pixels) or string (CSS value).
+		 */
+		maxWidth?: number | string | null;
+
+		/**
 		 * Additional CSS class to apply to the popover content.
 		 */
 		className?: string;
@@ -54,7 +60,8 @@
 				content: tippyContent as any,
 				placement: options.placement ?? 'top',
 				trigger: options.trigger ?? 'click',
-				interactive: options.interactive ?? true
+				interactive: options.interactive ?? true,
+				maxWidth: options.maxWidth ?? 'none'
 			});
 		} else {
 			instance = tippy(node, {
@@ -63,6 +70,7 @@
 				interactive: options.interactive ?? true,
 				trigger: options.trigger ?? 'click',
 				placement: options.placement ?? 'top',
+				maxWidth: options.maxWidth ?? 'none',
 				arrow: roundArrow,
 				appendTo: () => document.body,
 				theme: 'popover'
@@ -112,7 +120,6 @@
 		border-radius: 4px;
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 		padding: 8px 12px;
-		max-width: 400px;
 		font-size: $font-size-base;
 		line-height: 1.4em;
 		text-align: left;

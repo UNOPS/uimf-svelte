@@ -7,6 +7,8 @@
 		Placement: string;
 		Trigger: string;
 		Interactive: boolean;
+		MaxWidth: string | null;
+		MaxHeight: string | null;
 	}
 
 	export interface PopoverData {
@@ -16,7 +18,7 @@
 </script>
 
 <script lang="ts">
-	import { beforeUpdate } from 'svelte';
+	import { beforeUpdate, onDestroy } from 'svelte';
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import type { IComponent, IOutputFieldMetadata } from '../../Infrastructure/Metadata';
@@ -35,6 +37,7 @@
 	let visible: OutputController<any> | null = null;
 	let popoverOptions: PopoverOptions | null = null;
 	let hiddenContentDiv: HTMLElement | null = null;
+	let hiddenSvelteComponent: any = null;
 
 	let component = new OutputComponent({
 		refresh() {
@@ -42,6 +45,12 @@
 				visible = null;
 				popoverOptions = null;
 				hiddenContentDiv = null;
+
+				// Destroy the old hidden component if it exists
+				if (hiddenSvelteComponent) {
+					hiddenSvelteComponent.$destroy();
+					hiddenSvelteComponent = null;
+				}
 				return;
 			}
 
@@ -51,17 +60,28 @@
 			);
 
 			if (controller.value.Hidden != null) {
-				// Create an in-memory div to render the hidden content
-				hiddenContentDiv = document.createElement('div');
-				hiddenContentDiv.className = controller.metadata.Component.Configuration?.HiddenPartCssClass ?? '';
+				// Destroy the old hidden component before creating a new one
+				if (hiddenSvelteComponent) {
+					hiddenSvelteComponent.$destroy();
+					hiddenSvelteComponent = null;
+				}
 
-				// Render the hidden output into the div
-				controlRegister.createOutput(
+				// Create an in-memory div to render the hidden content
+				const config = controller.metadata.Component.Configuration;
+				hiddenContentDiv = document.createElement('div');
+				hiddenContentDiv.className = config?.HiddenPartCssClass ?? '';
+
+				// Apply max-height and overflow for scrolling
+				if (config?.MaxHeight) {
+					hiddenContentDiv.style.maxHeight = config.MaxHeight;
+					hiddenContentDiv.style.overflowY = 'auto';
+				}
+
+				// Render the hidden output into the div and store the component instance
+				const result = controlRegister.createOutput(
 					{
 						props: {
-							metadata: OutputFieldMetadataFactory.fromComponent(
-								controller.metadata.Component.Configuration.Hidden
-							),
+							metadata: OutputFieldMetadataFactory.fromComponent(config.Hidden),
 							data: controller.value.Hidden,
 							form: controller.form!,
 							app: controller.app,
@@ -72,21 +92,36 @@
 					hiddenContentDiv
 				);
 
-				const config = controller.metadata.Component.Configuration;
+				hiddenSvelteComponent = result.component;
+
 				popoverOptions = {
 					content: hiddenContentDiv,
 					placement: config.Placement as any,
 					trigger: config.Trigger,
-					interactive: config.Interactive
+					interactive: config.Interactive,
+					maxWidth: config.MaxWidth
 				};
 			} else {
 				popoverOptions = null;
 				hiddenContentDiv = null;
+
+				// Destroy the old hidden component if it exists
+				if (hiddenSvelteComponent) {
+					hiddenSvelteComponent.$destroy();
+					hiddenSvelteComponent = null;
+				}
 			}
 		}
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
+
+	onDestroy(() => {
+		if (hiddenSvelteComponent) {
+			hiddenSvelteComponent.$destroy();
+			hiddenSvelteComponent = null;
+		}
+	});
 </script>
 
 {#if visible != null}
@@ -104,7 +139,6 @@
 		</span>
 	{/if}
 {/if}
-
 
 <style lang="scss">
 	.popover-trigger {
