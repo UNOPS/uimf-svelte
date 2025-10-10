@@ -68,6 +68,7 @@ import * as ActionList from '../Outputs/ActionList/ActionList.svelte';
 import * as MultiSelect from '../Inputs/Multiselect/Multiselect.svelte';
 import * as Alert from '../Outputs/Alert/Alert.svelte';
 import * as Expandable from '../Outputs/Expandable/Expandable.svelte';
+import * as Popover from '../Outputs/Popover/Popover.svelte';
 import * as Icon from '../Outputs/Icon/Icon.svelte';
 import * as Tag from '../Outputs/Tag/Tag.svelte';
 import * as Link from '../Outputs/Link/Link.svelte';
@@ -360,6 +361,7 @@ defaultControlRegister.registerOutputComponent('inline-form', InlineForm, { disp
 defaultControlRegister.registerOutputComponent('paginated-table', PaginatedTable, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('output', Output, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('expandable', Expandable, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('popover', Popover, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('object-flexbox', ObjectFlexbox, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('object-grid', ObjectGrid, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('object-list', ObjectList, { displayAsBlock: false });

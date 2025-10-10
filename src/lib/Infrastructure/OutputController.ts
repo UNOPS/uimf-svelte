@@ -1,7 +1,9 @@
 import type { FormInstance } from "./FormInstance";
 import type IUimfApp from "./App/UimfApp";
 import type { IOutputFieldMetadata } from "./Metadata/IOutputFieldMetadata";
+import type { IComponent } from "./Metadata/IComponent";
 import { Field } from "./Fields/Field";
+import { OutputFieldMetadataFactory } from "./Utilities/OutputFieldMetadataFactory";
 
 export interface CreateOutputOptions<TMetadata extends IOutputFieldMetadata = IOutputFieldMetadata> {
     props: OutputComponentProps<TMetadata>;
@@ -59,5 +61,25 @@ export class OutputController<TValue, TMetadata extends IOutputFieldMetadata = I
 
     public getValue(): Promise<any> {
         return Promise.resolve(this.value);
+    }
+
+    /**
+     * Creates a nested output controller with the current controller as parent.
+     * @param component The component configuration for the nested output.
+     * @param data The data for the nested output.
+     * @param options Optional configuration (e.g., Id).
+     */
+    public createNestedOutput<TConfig = null>(
+        component: IComponent<TConfig>,
+        data: any,
+        options?: { Id?: string }
+    ): OutputController<any> {
+        return new OutputController<any>({
+            metadata: OutputFieldMetadataFactory.fromComponent(component, options),
+            data: data,
+            form: this.form,
+            app: this.app,
+            parent: this
+        });
     }
 }
