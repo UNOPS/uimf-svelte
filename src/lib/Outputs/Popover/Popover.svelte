@@ -20,6 +20,8 @@
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import type { IComponent, IOutputFieldMetadata } from '../../Infrastructure/Metadata';
+	import { OutputFieldMetadataFactory } from '../../Infrastructure/Utilities/OutputFieldMetadataFactory';
+	import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
 	import Output from '../../Output.svelte';
 	import { popover, type PopoverOptions } from '../../Components/Popover.svelte';
 
@@ -31,17 +33,15 @@
 	export let controller: PopoverController;
 
 	let visible: OutputController<any> | null = null;
-	let hidden: OutputController<any> | null = null;
-	let hiddenElement: HTMLElement | null = null;
 	let popoverOptions: PopoverOptions | null = null;
-	let hiddenElementId: string | null = null;
+	let hiddenContentDiv: HTMLElement | null = null;
 
 	let component = new OutputComponent({
 		refresh() {
 			if (controller.value == null) {
 				visible = null;
-				hidden = null;
 				popoverOptions = null;
+				hiddenContentDiv = null;
 				return;
 			}
 
@@ -51,33 +51,37 @@
 			);
 
 			if (controller.value.Hidden != null) {
-				hidden = controller.createNestedOutput(
-					controller.metadata.Component.Configuration.Hidden,
-					controller.value.Hidden
-				);
+				// Create an in-memory div to render the hidden content
+				hiddenContentDiv = document.createElement('div');
+				hiddenContentDiv.className = controller.metadata.Component.Configuration?.HiddenPartCssClass ?? '';
 
-				// Generate unique ID for the hidden element
-				hiddenElementId = `popover-hidden-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+				// Render the hidden output into the div
+				controlRegister.createOutput(
+					{
+						props: {
+							metadata: OutputFieldMetadataFactory.fromComponent(
+								controller.metadata.Component.Configuration.Hidden
+							),
+							data: controller.value.Hidden,
+							form: controller.form!,
+							app: controller.app,
+							parent: controller
+						},
+						wrap: { nolayout: true }
+					},
+					hiddenContentDiv
+				);
 
 				const config = controller.metadata.Component.Configuration;
 				popoverOptions = {
-					content: () => {
-						const element = document.getElementById(hiddenElementId!);
-						if (element) {
-							element.style.display = 'block';
-							element.style.position = 'static';
-							element.style.visibility = 'visible';
-						}
-						return element!;
-					},
+					content: hiddenContentDiv,
 					placement: config.Placement as any,
 					trigger: config.Trigger,
 					interactive: config.Interactive
 				};
 			} else {
-				hidden = null;
-				hiddenElementId = null;
 				popoverOptions = null;
+				hiddenContentDiv = null;
 			}
 		}
 	});
@@ -101,26 +105,11 @@
 	{/if}
 {/if}
 
-{#if hidden != null && hiddenElementId != null}
-	<div
-		id={hiddenElementId}
-		bind:this={hiddenElement}
-		class:popover-content={true}
-		class={controller.metadata.Component.Configuration?.HiddenPartCssClass}
-	>
-		<Output controller={hidden} nolayout={true} />
-	</div>
-{/if}
 
 <style lang="scss">
 	.popover-trigger {
 		cursor: pointer;
 		display: inline-flex;
 		align-items: center;
-	}
-
-	.popover-content {
-		/* Hidden by default, tippy will set display: block when showing */
-		display: none;
 	}
 </style>

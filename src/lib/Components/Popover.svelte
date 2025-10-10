@@ -115,6 +115,7 @@
 		max-width: 400px;
 		font-size: $font-size-base;
 		line-height: 1.4em;
+		text-align: left;
 	}
 
 	:global(.tippy-box[data-theme~='popover'] .tippy-svg-arrow) {
