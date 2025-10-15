@@ -1,28 +1,10 @@
-<script lang="ts">
-	import { beforeUpdate } from 'svelte';
-	import type { OutputController } from '../../Infrastructure/OutputController';
-	import { OutputComponent } from '../../Infrastructure/Component';
+import { ActionHandler, type ActionButtonData } from '../ActionHandler';
 
-	interface PrintButtonData {
-		Field: string;
-	}
+export class PrintHandler extends ActionHandler {
+	public action: string = 'print';
 
-	export let controller: OutputController<PrintButtonData>;
-
-	let component = new OutputComponent({
-		refresh() {
-			controller.value = controller.value;
-		}
-	});
-
-	beforeUpdate(async () => await component.setup(controller));
-
-	/**
-	 * Opens browser's native print preview for the DOM element
-	 * `controller.form?.element`.
-	 */
-	function print() {
-		const elementToPrint = controller.form?.element;
+	async execute(data: ActionButtonData): Promise<void> {
+		const elementToPrint = this.controller.form?.element;
 
 		if (elementToPrint == null) {
 			// Nothing to print.
@@ -60,15 +42,4 @@
 			100
 		);
 	}
-</script>
-
-{#if controller.value != null}
-	<button
-		type="button"
-		class="btn btn-sm"
-		on:click={(e) => {
-			e.preventDefault();
-			print();
-		}}>Print</button
-	>
-{/if}
+}

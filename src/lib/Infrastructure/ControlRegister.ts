@@ -47,7 +47,6 @@ import * as Tabs from '../Outputs/Tabs/Tabs.svelte';
 import * as Slider from '../Outputs/Slider/Slider.svelte';
 import * as Number from '../Outputs/Number/Number.svelte';
 import * as PreformattedText from '../Outputs/PreformattedText/PreformattedText.svelte';
-import * as PrintButton from '../Outputs/PrintButton/PrintButton.svelte';
 import * as Html from '../Outputs/Html/Html.svelte';
 import * as DateTimeOutput from '../Outputs/DateTime/DateTime.svelte';
 import * as EventDescription from '../Outputs/EventDescription/EventDescription.svelte';
@@ -354,7 +353,6 @@ defaultControlRegister.registerOutputComponent('text', OutputText, { displayAsBl
 defaultControlRegister.registerOutputComponent('tree-view-selector', TreeViewSelector);
 defaultControlRegister.registerOutputComponent('html', Html, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('preformatted-text', PreformattedText, { displayAsBlock: true });
-defaultControlRegister.registerOutputComponent('print-button', PrintButton, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('link', Link, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('table', Table, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('inline-form', InlineForm, { displayAsBlock: true });

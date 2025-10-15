@@ -5,6 +5,7 @@
 	import { tooltip } from '../../Components/Tooltip.svelte';
 	import type { ActionButtonData, ActionHandler } from './ActionHandler';
 	import { SetFieldValuesHandler } from './Actions/SetFieldValuesHandler';
+	import { PrintHandler } from './Actions/PrintHandler';
 
 	export let controller: OutputController<ActionButtonData>;
 	let handler: ActionHandler | null;
@@ -26,7 +27,8 @@
 
 	// Simple handler registry
 	const handlers: Record<string, any> = {
-		'set-field-values': SetFieldValuesHandler
+		'set-field-values': SetFieldValuesHandler,
+		'print': PrintHandler
 	};
 
 	beforeUpdate(async () => await component.setup(controller));
