@@ -2,8 +2,7 @@ import type { OutputController } from '../../Infrastructure/OutputController';
 
 export interface ActionButtonData {
 	Label: string | null;
-	Action: string;
-	Parameters: any;
+	Parameters: { Action: string, [key: string]: any };
 	Tooltip: string | null;
 	CssClass: string | null;
 	Icon: string | null;

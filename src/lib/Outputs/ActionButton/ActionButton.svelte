@@ -14,11 +14,11 @@
 		refresh() {
 			controller.value = controller.value;
 
-			if (controller.value == null) {
+			if (controller.value?.Parameters == null) {
 				handler = null;
 			} else {
-				if (handler == null || handler.action != controller.value.Action) {
-					const HandlerClass = handlers[controller.value.Action];
+				if (handler == null || handler.action != controller.value.Parameters.Action) {
+					const HandlerClass = handlers[controller.value.Parameters.Action];
 					handler ??= new HandlerClass(controller);
 				}
 			}
@@ -28,7 +28,7 @@
 	// Simple handler registry
 	const handlers: Record<string, any> = {
 		'set-field-values': SetFieldValuesHandler,
-		'print': PrintHandler
+		print: PrintHandler
 	};
 
 	beforeUpdate(async () => await component.setup(controller));
@@ -39,12 +39,12 @@
 
 			component.refresh();
 		} else {
-			console.warn(`No handler found for action: ${value.Action}`);
+			console.warn(`No handler found for action: ${value.Parameters.Action}`);
 		}
 	}
 </script>
 
-{#if controller.value != null}
+{#if controller.value?.Parameters != null}
 	<button
 		type="button"
 		class={controller.value.CssClass || 'btn btn-primary'}
@@ -54,7 +54,7 @@
 		{#if controller.value.Icon}
 			<i class={controller.value.Icon} aria-hidden="true" />
 		{/if}
-		{controller.value.Label || controller.value.Action}
+		{controller.value.Label || controller.value.Parameters.Action}
 	</button>
 {/if}
 
