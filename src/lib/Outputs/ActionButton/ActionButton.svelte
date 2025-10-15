@@ -54,7 +54,9 @@
 		{#if controller.value.Icon}
 			<i class={controller.value.Icon} aria-hidden="true" />
 		{/if}
-		{controller.value.Label || controller.value.Parameters.Action}
+		{#if controller.value.Label}
+			{controller.value.Label}
+		{/if}
 	</button>
 {/if}
 
