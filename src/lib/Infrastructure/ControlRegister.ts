@@ -92,6 +92,7 @@ import * as ParentFieldDocumentation from '../Outputs/ParentFieldDocumentation/P
 import * as ParentFieldLabel from '../Outputs/ParentFieldLabel/ParentFieldLabel.svelte';
 import * as ActionButton from '../Outputs/ActionButton/ActionButton.svelte';
 import * as SimpleImage from '../Outputs/SimpleImage/SimpleImage.svelte';
+import * as ClickableContent from '../Outputs/ClickableContent/ClickableContent.svelte';
 
 import * as OutputWrapper from '../Output.svelte';
 
@@ -374,3 +375,4 @@ defaultControlRegister.registerOutputComponent('parent-field-doc', ParentFieldDo
 defaultControlRegister.registerOutputComponent('parent-field-label', ParentFieldLabel, { alwaysHideLabel: true, displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('action-button', ActionButton, { alwaysHideLabel: true, displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('simple-image', SimpleImage, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('clickable-content', ClickableContent, { alwaysHideLabel: true, displayAsBlock: false });
