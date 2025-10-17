@@ -5,7 +5,8 @@
 	import type { IOutputFieldMetadata } from '../../Infrastructure/Metadata';
 
 	interface IData {
-		Value: string | null;
+		Heading: string | null;
+		Title: string | null;
 	}
 
 	interface IConfiguration {
@@ -14,16 +15,17 @@
 
 	export let controller: OutputController<IData, IOutputFieldMetadata<IConfiguration>>;
 
-	let title: string | null = null;
+	let heading: string | null = null;
 
 	let component = new OutputComponent({
 		refresh() {
-			const titleInResponse = controller.value?.Value;
-
-			title = titleInResponse != null ? titleInResponse : controller.form?.metadata?.Label ?? null;
+			heading =
+				controller.value != null
+					? controller.value.Heading
+					: controller.form?.metadata?.Label ?? null;
 
 			if (controller.form?.useUrl === true) {
-				document.title = getTextFromHtml(title ?? document.title);
+				document.title = getTextFromHtml(controller.value?.Title ?? heading ?? document.title);
 			}
 		}
 	});
@@ -48,9 +50,9 @@
 	}
 </script>
 
-{#if title != null && title.length > 0}
+{#if heading != null && heading.length > 0}
 	<div class={controller.metadata.Component.Configuration?.CssClass}>
-		{@html title}
+		{@html heading}
 	</div>
 {/if}
 
