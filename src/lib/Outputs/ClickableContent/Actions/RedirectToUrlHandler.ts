@@ -1,19 +1,17 @@
-import { ActionHandler, type ClickableContentData } from '../ActionHandler';
+import { ActionHandler } from '../ActionHandler';
+import { ClickableContentData } from '../ClickableContent.svelte';
 
 interface RedirectToUrlArgs {
+	Action: string;
 	Url: string;
 }
 
 export class RedirectToUrlHandler extends ActionHandler {
-	public action: string = 'redirect-to-url';
+	public readonly renderAs = 'link' as const;
+	public readonly action = 'redirect-to-url';
 
-	async execute(data: ClickableContentData): Promise<void> {
+	getHref(data: ClickableContentData): string | null {
 		const params = data.Parameters as RedirectToUrlArgs;
-		if (!params?.Url) {
-			console.warn('RedirectToUrlHandler: URL is missing');
-			return;
-		}
-
-		window.location.href = params.Url;
+		return params?.Url ?? null;
 	}
 }
