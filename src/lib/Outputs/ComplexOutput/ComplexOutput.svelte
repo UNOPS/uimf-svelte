@@ -4,6 +4,7 @@
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import type { IOutputFieldMetadata } from '../../Infrastructure/Metadata';
 	import Output from '../../Output.svelte';
+	import { IComplexLayoutArea } from '../../Infrastructure/Metadata/ComplexLayout';
 
 	interface IComplexOutputFieldMetadata extends IOutputFieldMetadata {
 		CustomProperties?: {
@@ -13,17 +14,10 @@
 		};
 	}
 
-	interface IArea {
-		Name: string | null;
-		AreaCssClass: string | null;
-		FieldCssClass: string | null;
-		OrderIndex: number;
-	}
-
 	interface Configuration {
 		CssClass: string;
 		Fields: IComplexOutputFieldMetadata[];
-		Areas: IArea[] | null;
+		Areas: IComplexLayoutArea[] | null;
 	}
 
 	type NestedField = OutputController<any, IComplexOutputFieldMetadata>;
@@ -32,7 +26,7 @@
 
 	export let controller: Controller;
 
-	let areas: { Area: IArea | null; Items: NestedField[] }[] = [];
+	let areas: { Area: IComplexLayoutArea | null; Items: NestedField[] }[] = [];
 
 	let component = new OutputComponent({
 		refresh() {
@@ -48,7 +42,10 @@
 					});
 				});
 
-			let areaDictionary: Record<string, { Area: IArea | null; Fields: NestedField[] }> = {};
+			let areaDictionary: Record<
+				string,
+				{ Area: IComplexLayoutArea | null; Fields: NestedField[] }
+			> = {};
 
 			for (let i = 0; i < fields.length; i++) {
 				const field = fields[i];

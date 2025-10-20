@@ -2,13 +2,13 @@ import { InputController, type CreateInputOptions } from '../../Infrastructure/I
 import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
 import type { IInputFieldMetadata } from "../../Infrastructure/Metadata/IInputFieldMetadata";
 import type { ViewData } from './ViewData';
-import type { NestedComponentMetadata } from './NestedComponentMetadata';
 import { IOutputFieldMetadata } from '../../Infrastructure/Metadata';
 import { OutputController } from '../../Infrastructure/OutputController';
+import { IComplexLayoutMetadata } from './ComplexInput.svelte';
 
 export class ComplexInputController extends InputController<
 	ViewData,
-	IInputFieldMetadata<NestedComponentMetadata>
+	IInputFieldMetadata<IComplexLayoutMetadata>
 > {
 	declare views: Array<{
 		isInput: boolean;
@@ -16,7 +16,7 @@ export class ComplexInputController extends InputController<
 		controller: InputController<any> | OutputController<any>;
 	}>;
 
-	constructor(options: CreateInputOptions<IInputFieldMetadata<NestedComponentMetadata>>) {
+	constructor(options: CreateInputOptions<IInputFieldMetadata<IComplexLayoutMetadata>>) {
 		super(options);
 
 		this.views = [];
