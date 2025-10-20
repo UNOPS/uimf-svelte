@@ -12,6 +12,7 @@
 		Options: Option[];
 		Views: IInputFieldMetadata[];
 		ConditionIsReadonly?: boolean;
+		DefaultCondition: string | null;
 	}
 
 	interface ConditionalInput {
@@ -78,13 +79,16 @@
 		}
 
 		setValueInternal(value: ConditionalInput | null): Promise<void> {
-			if (value?.Value == null || value.Value.Condition == null) {
+			const effectiveCondition =
+				value?.Value?.Condition ?? this.metadata.Component.Configuration.DefaultCondition;
+
+			if (effectiveCondition == null) {
 				this.condition = null;
 				this.view = null;
 				return Promise.resolve();
 			}
 
-			this.condition = value.Value.Condition;
+			this.condition = effectiveCondition;
 
 			const matchingView = this.views.find((t) => t.showIf === this.condition);
 
@@ -95,7 +99,7 @@
 
 			this.view = matchingView.controller;
 
-			const matchingViewValue = value.Value[matchingView.controller.metadata.Id];
+			const matchingViewValue = value?.Value[matchingView.controller.metadata.Id];
 
 			return matchingView.controller.setValue(matchingViewValue);
 		}
