@@ -118,7 +118,7 @@
 	}
 </script>
 
-{#if controller.form != null && (!controller.form.metadata.PostOnLoad || visibleInputs?.length > 0 || controller.value?.Actions?.length > 0)}
+{#if controller.form != null && (!controller.form.metadata.PostOnLoad || visibleInputs?.length > 0 || effectiveActions?.length > 0)}
 	<form
 		name={controller.form?.metadata.Id}
 		on:submit|preventDefault={submitForm}
@@ -134,31 +134,37 @@
 			{/each}
 		</div>
 
-		<div class="buttons">
-			{#each effectiveActions as action}
-				{#if action.Form === '#submit'}
-					<button class={action.CssClass ?? 'btn btn-primary'} type="submit">
-						{action.Label}
-					</button>
-				{:else if action.Form === '#clear'}
-					<button class={action.CssClass ?? 'btn btn-default'} on:click={clearInputs} type="button">
-						{action.Label}
-					</button>
-				{:else if action.Form === '#cancel'}
-					<button
-						class={action.CssClass ?? 'btn btn-default'}
-						type="button"
-						on:click={controller.form.cancel}
-					>
-						{action.Label}
-					</button>
-				{:else}
-					<FormLinkComponent
-						controller={FormlinkUtilities.createFormlink({ data: action, parent: controller })}
-					/>
-				{/if}
-			{/each}
-		</div>
+		{#if effectiveActions?.length > 0}
+			<div class="buttons">
+				{#each effectiveActions as action}
+					{#if action.Form === '#submit'}
+						<button class={action.CssClass ?? 'btn btn-primary'} type="submit">
+							{action.Label}
+						</button>
+					{:else if action.Form === '#clear'}
+						<button
+							class={action.CssClass ?? 'btn btn-default'}
+							on:click={clearInputs}
+							type="button"
+						>
+							{action.Label}
+						</button>
+					{:else if action.Form === '#cancel'}
+						<button
+							class={action.CssClass ?? 'btn btn-default'}
+							type="button"
+							on:click={controller.form.cancel}
+						>
+							{action.Label}
+						</button>
+					{:else}
+						<FormLinkComponent
+							controller={FormlinkUtilities.createFormlink({ data: action, parent: controller })}
+						/>
+					{/if}
+				{/each}
+			</div>
+		{/if}
 	</form>
 {/if}
 
