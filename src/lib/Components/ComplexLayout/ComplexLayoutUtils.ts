@@ -4,7 +4,10 @@ import type {
 	NestedField,
 	ComplexLayoutAreaInstance,
 	ComplexLayoutInstance,
-	IComplexOutputFieldMetadata
+	IComplexOutputFieldMetadata,
+	ILayoutItem,
+	IComplexLayoutArea,
+	ILayoutContainer
 } from './ComplexLayout.svelte';
 import { OutputController } from '../../Infrastructure/OutputController';
 import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
@@ -50,52 +53,76 @@ export class ComplexLayoutUtils {
 	}
 
 	/**
-	 * Builds a complex layout instance with areas and their associated fields from a field controller, sorted by OrderIndex.
+	 * Recursively extracts all areas from a container tree.
+	 * @param items - Layout items (containers or areas) to traverse
+	 * @returns Flat array of all areas found in the tree
+	 */
+	private static extractAreas(items: ILayoutItem[]): IComplexLayoutArea[] {
+		const areas: IComplexLayoutArea[] = [];
+
+		for (const item of items) {
+			if (item.Type === 'area') {
+				areas.push(item as IComplexLayoutArea);
+			} else if (item.Type === 'container') {
+				const container = item as ILayoutContainer;
+				areas.push(...ComplexLayoutUtils.extractAreas(container.Children));
+			}
+		}
+
+		return areas;
+	}
+
+	/**
+	 * Builds a complex layout instance with nested containers and their associated fields.
 	 * This method handles both input and output controllers and automatically extracts the necessary data.
+	 * Recursively traverses container structure from backend to match fields with areas.
 	 * @param field - The field controller (InputController or OutputController) containing complex layout configuration
 	 * @param prebuiltFields - Optional pre-built nested fields (useful when fields are already computed, e.g., in ComplexInputController.views)
-	 * @returns Complex layout instance with sorted areas and their fields with applied CSS classes
+	 * @returns Complex layout instance with nested containers and area-to-field mappings
 	 */
 	static buildLayout(
 		field: Field<IFieldMetadata<IComplexLayout>>,
 		prebuiltFields?: NestedField[]
 	): ComplexLayoutInstance {
 		let fields = prebuiltFields ?? ComplexLayoutUtils.buildNestedFields(field);
-		let areas = field.metadata.Component.Configuration.Areas;
+		let containers = field.metadata.Component.Configuration.Containers ?? [];
 
-		let areaDictionary: Record<string, ComplexLayoutAreaInstance> = {};
+		// Extract all areas from the container tree
+		const allAreas = ComplexLayoutUtils.extractAreas(containers);
+
+		// Build area instances dictionary
+		let areaInstanceMap = new Map<string, ComplexLayoutAreaInstance>();
 
 		for (let i = 0; i < fields.length; i++) {
-			const field = fields[i];
-			let areaName = field.metadata.CustomProperties?.ComplexLayoutItem?.Area ?? null;
+			const fieldItem = fields[i];
+			let areaName = fieldItem.metadata.CustomProperties?.ComplexLayoutItem?.Area ?? null;
 
 			// Make sure key is not null.
 			const key = areaName ?? '';
 
-			if (!areaDictionary[key]) {
-				let area = areas?.find((t) => t.Name == areaName) ?? null;
+			if (!areaInstanceMap.has(key)) {
+				let area = allAreas.find((t) => t.Name == areaName) ?? null;
 
-				areaDictionary[key] = {
+				areaInstanceMap.set(key, {
 					Area: area,
 					Items: []
-				};
+				});
 			}
 
-			const area = areaDictionary[key];
+			const areaInstance = areaInstanceMap.get(key)!;
 
-			if (area.Area?.FieldCssClass != null) {
-				field.metadata.CssClass ??= '';
-				field.metadata.CssClass += ' ' + area.Area.FieldCssClass;
+			// Apply FieldCssClass from area to field metadata
+			if (areaInstance.Area?.FieldCssClass != null) {
+				fieldItem.metadata.CssClass ??= '';
+				fieldItem.metadata.CssClass += ' ' + areaInstance.Area.FieldCssClass;
 			}
 
-			areaDictionary[key].Items.push(field);
+			areaInstance.Items.push(fieldItem);
 		}
 
-		// Sort `results` entries by `Area.OrderIndex` and put in array.
 		return {
-			Areas: Object.entries(areaDictionary)
-				.map(([_, value]) => value)
-				.sort((a, b) => (a.Area?.OrderIndex ?? 0) - (b.Area?.OrderIndex ?? 0))
+			Containers: containers,
+			AreaInstances: areaInstanceMap
 		};
 	}
 }
