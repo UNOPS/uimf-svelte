@@ -1,53 +1,21 @@
 import { InputController, type CreateInputOptions } from '../../Infrastructure/InputController';
-import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
 import type { IInputFieldMetadata } from "../../Infrastructure/Metadata/IInputFieldMetadata";
-import type { ViewData } from './ViewData';
-import { IOutputFieldMetadata } from '../../Infrastructure/Metadata';
-import { OutputController } from '../../Infrastructure/OutputController';
-import { IComplexLayoutMetadata } from './ComplexInput.svelte';
+import type { ComplexLayoutViewData, IComplexLayout, NestedField } from '../../Components/ComplexLayout/ComplexLayout.svelte';
+import { ComplexLayoutUtils } from '../../Components/ComplexLayout/ComplexLayoutUtils';
 
 export class ComplexInputController extends InputController<
-	ViewData,
-	IInputFieldMetadata<IComplexLayoutMetadata>
+	ComplexLayoutViewData,
+	IInputFieldMetadata<IComplexLayout>
 > {
-	declare views: Array<{
-		isInput: boolean;
-		metadata: IInputFieldMetadata | IOutputFieldMetadata;
-		controller: InputController<any> | OutputController<any>;
-	}>;
+	declare views: Array<NestedField>;
 
-	constructor(options: CreateInputOptions<IInputFieldMetadata<IComplexLayoutMetadata>>) {
+	constructor(options: CreateInputOptions<IInputFieldMetadata<IComplexLayout>>) {
 		super(options);
 
-		this.views = [];
-
-		this.metadata.Component.Configuration.Fields.sort((x, y) => x.Metadata.OrderIndex - y.Metadata.OrderIndex);
-
-		for (const view of this.metadata.Component.Configuration.Fields) {
-			let controllerClass = view.IsInput
-				? controlRegister.inputs[view.Metadata.Component.Type].controller
-				: null;
-
-			this.views.push({
-				isInput: view.IsInput,
-				metadata: view.Metadata,
-				controller: view.IsInput ? new controllerClass!({
-					parent: this,
-					metadata: view.Metadata,
-					form: this.form,
-					app: this.app
-				}) : new OutputController<any>({
-					app: this.app,
-					parent: this,
-					metadata: view.Metadata as unknown as IOutputFieldMetadata,
-					form: this.form,
-					data: null
-				})
-			});
-		}
+		this.views = ComplexLayoutUtils.buildNestedFields(this);
 	}
 
-	public getValue(): Promise<ViewData | null> {
+	public getValue(): Promise<ComplexLayoutViewData | null> {
 		let effectiveValue: { [x: string]: any } = {};
 
 		let allRequiredInputsHaveValues = true;
@@ -71,13 +39,13 @@ export class ComplexInputController extends InputController<
 		});
 	}
 
-	public deserialize(value: string | null): Promise<ViewData | null> {
+	public deserialize(value: string | null): Promise<ComplexLayoutViewData | null> {
 		const parsed = value != null && value.trim().length > 0 ? JSON.parse(value) : null;
 
 		return Promise.resolve(parsed);
 	}
 
-	public serialize(value: ViewData | null): string | null {
+	public serialize(value: ComplexLayoutViewData | null): string | null {
 		if (value == null) {
 			return null;
 		}
@@ -85,7 +53,7 @@ export class ComplexInputController extends InputController<
 		return JSON.stringify(value);
 	}
 
-	protected setValueInternal(value: ViewData | null): Promise<void> {
+	protected setValueInternal(value: ComplexLayoutViewData | null): Promise<void> {
 		let promises = [];
 
 		this.value = value ?? {};

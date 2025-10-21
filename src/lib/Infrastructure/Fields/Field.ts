@@ -39,6 +39,11 @@ export abstract class Field<TMetadata extends IFieldMetadata = IFieldMetadata> e
     public metadata: TMetadata;
 
     /**
+     * Gets field's underlying value.
+     */
+    public abstract value: any;
+
+    /**
      * Indicates the type of field this is.
      */
     abstract readonly type: string;
@@ -112,8 +117,6 @@ export abstract class Field<TMetadata extends IFieldMetadata = IFieldMetadata> e
 
         return field;
     }
-
-
 
     /**
      * Gets the current value of this field.
