@@ -3,26 +3,20 @@
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import type { IOutputFieldMetadata } from '../../Infrastructure/Metadata';
-	import type {
-		IComplexLayout,
-		ComplexLayoutViewData,
-		ComplexLayoutInstance
-	} from '../../Components/ComplexLayout/ComplexLayout.svelte';
-	import { ComplexLayoutUtils } from '../../Components/ComplexLayout/ComplexLayoutUtils';
-	import ComplexLayout from '../../Components/ComplexLayout/ComplexLayout.svelte';
+	import type { ILayout } from '../../Components/Layout/Metadata/ILayout';
+	import type { LayoutViewData, LayoutInstance } from '../../Components/Layout/Layout.svelte';
+	import { LayoutUtils } from '../../Components/Layout/LayoutUtils';
+	import Layout from '../../Components/Layout/Layout.svelte';
 
-	class Controller extends OutputController<
-		ComplexLayoutViewData,
-		IOutputFieldMetadata<IComplexLayout>
-	> {}
+	class Controller extends OutputController<LayoutViewData, IOutputFieldMetadata<ILayout>> {}
 
 	export let controller: Controller;
 
-	let layout: ComplexLayoutInstance;
+	let layout: LayoutInstance;
 
 	let component = new OutputComponent({
 		refresh() {
-			layout = ComplexLayoutUtils.buildLayout(controller);
+			layout = LayoutUtils.buildLayout(controller);
 		}
 	});
 
@@ -30,5 +24,5 @@
 </script>
 
 <div class={controller.metadata.Component.Configuration?.CssClass} class:complex-output={true}>
-	<ComplexLayout {layout} />
+	<Layout {layout} />
 </div>

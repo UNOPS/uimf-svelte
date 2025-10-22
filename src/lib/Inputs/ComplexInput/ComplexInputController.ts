@@ -1,21 +1,22 @@
 import { InputController, type CreateInputOptions } from '../../Infrastructure/InputController';
 import type { IInputFieldMetadata } from "../../Infrastructure/Metadata/IInputFieldMetadata";
-import type { ComplexLayoutViewData, IComplexLayout, NestedField } from '../../Components/ComplexLayout/ComplexLayout.svelte';
-import { ComplexLayoutUtils } from '../../Components/ComplexLayout/ComplexLayoutUtils';
+import type { ILayout } from '../../Components/Layout/Metadata/ILayout';
+import type { LayoutViewData, LayoutFieldInstance } from '../../Components/Layout/Layout.svelte';
+import { LayoutUtils } from '../../Components/Layout/LayoutUtils';
 
 export class ComplexInputController extends InputController<
-	ComplexLayoutViewData,
-	IInputFieldMetadata<IComplexLayout>
+	LayoutViewData,
+	IInputFieldMetadata<ILayout>
 > {
-	declare views: Array<NestedField>;
+	declare views: Array<LayoutFieldInstance>;
 
-	constructor(options: CreateInputOptions<IInputFieldMetadata<IComplexLayout>>) {
+	constructor(options: CreateInputOptions<IInputFieldMetadata<ILayout>>) {
 		super(options);
 
-		this.views = ComplexLayoutUtils.buildNestedFields(this);
+		this.views = LayoutUtils.buildLayoutFields(this);
 	}
 
-	public getValue(): Promise<ComplexLayoutViewData | null> {
+	public getValue(): Promise<LayoutViewData | null> {
 		let effectiveValue: { [x: string]: any } = {};
 
 		let allRequiredInputsHaveValues = true;
@@ -39,13 +40,13 @@ export class ComplexInputController extends InputController<
 		});
 	}
 
-	public deserialize(value: string | null): Promise<ComplexLayoutViewData | null> {
+	public deserialize(value: string | null): Promise<LayoutViewData | null> {
 		const parsed = value != null && value.trim().length > 0 ? JSON.parse(value) : null;
 
 		return Promise.resolve(parsed);
 	}
 
-	public serialize(value: ComplexLayoutViewData | null): string | null {
+	public serialize(value: LayoutViewData | null): string | null {
 		if (value == null) {
 			return null;
 		}
@@ -53,7 +54,7 @@ export class ComplexInputController extends InputController<
 		return JSON.stringify(value);
 	}
 
-	protected setValueInternal(value: ComplexLayoutViewData | null): Promise<void> {
+	protected setValueInternal(value: LayoutViewData | null): Promise<void> {
 		let promises = [];
 
 		this.value = value ?? {};

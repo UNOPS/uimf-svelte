@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-	import type { ComplexLayoutInstance } from '../../Components/ComplexLayout/ComplexLayout.svelte';
+	import type { LayoutInstance } from '../../Components/Layout/Layout.svelte';
 
 	export { ComplexInputController as Controller } from './ComplexInputController';
 </script>
@@ -8,16 +8,16 @@
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../../Infrastructure/Component';
 	import type { ComplexInputController } from './ComplexInputController';
-	import { ComplexLayoutUtils } from '../../Components/ComplexLayout/ComplexLayoutUtils';
-	import ComplexLayout from '../../Components/ComplexLayout/ComplexLayout.svelte';
+	import { LayoutUtils } from '../../Components/Layout/LayoutUtils';
+	import Layout from '../../Components/Layout/Layout.svelte';
 
 	export let controller: ComplexInputController;
 
-	let layout: ComplexLayoutInstance;
+	let layout: LayoutInstance;
 
 	let component = new InputComponent({
 		refresh() {
-			layout = ComplexLayoutUtils.buildLayout(controller, controller.views);
+			layout = LayoutUtils.buildLayout(controller, controller.views);
 		}
 	});
 
@@ -27,7 +27,7 @@
 </script>
 
 <div class={controller.metadata.Component.Configuration?.CssClass} class:complex-input={true}>
-	<ComplexLayout {layout} />
+	<Layout {layout} />
 </div>
 
 <style lang="scss">
