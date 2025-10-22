@@ -16,7 +16,7 @@
 	let layout: LayoutInstance;
 
 	let component = new InputComponent({
-		refresh() {
+		init() {
 			layout = LayoutUtils.buildLayout(controller, controller.views);
 		}
 	});

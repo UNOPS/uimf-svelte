@@ -94,13 +94,19 @@ export class LayoutUtils {
 
 		for (let i = 0; i < fields.length; i++) {
 			const fieldItem = fields[i];
-			let areaName = fieldItem.metadata.CustomProperties?.LayoutField?.Area ?? null;
+			let areaName = fieldItem.metadata.CustomProperties?.LayoutField?.Area ?? 'default';
 
 			// Make sure key is not null.
-			const key = areaName ?? '';
+			const key = areaName;
 
 			if (!areaInstanceMap.has(key)) {
-				let area = allAreas.find((t) => t.Name == areaName) ?? null;
+				let area = allAreas.find((t) => t.Name == areaName) ?? {
+					Type: 'area',
+					AreaCssClass: null,
+					FieldCssClass: null,
+					Name: areaName,
+					OrderIndex: 0
+				} as ILayoutArea;
 
 				areaInstanceMap.set(key, {
 					Area: area,
@@ -110,6 +116,10 @@ export class LayoutUtils {
 
 			const areaInstance = areaInstanceMap.get(key)!;
 
+			if (areaInstance == null) {
+				console.error(`cannot find area`, fieldItem, key);
+			}
+
 			// Apply FieldCssClass from area to field metadata
 			if (areaInstance.Area?.FieldCssClass != null) {
 				fieldItem.metadata.CssClass ??= '';
@@ -118,6 +128,8 @@ export class LayoutUtils {
 
 			areaInstance.Fields.push(fieldItem);
 		}
+
+		console.log(containers, areaInstanceMap);
 
 		return {
 			Containers: containers,

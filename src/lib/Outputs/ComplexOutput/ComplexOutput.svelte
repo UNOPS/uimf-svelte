@@ -15,7 +15,7 @@
 	let layout: LayoutInstance;
 
 	let component = new OutputComponent({
-		refresh() {
+		init() {
 			layout = LayoutUtils.buildLayout(controller);
 		}
 	});

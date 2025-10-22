@@ -45,9 +45,7 @@
 </script>
 
 <script lang="ts">
-	import { areaRadial } from 'd3';
 	import LayoutArea from './LayoutArea.svelte';
-	import { beforeUpdate } from 'svelte';
 
 	export let layout: LayoutInstance;
 
