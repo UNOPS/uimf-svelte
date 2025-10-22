@@ -30,10 +30,8 @@ export class LayoutUtils {
 					? controlRegister.inputs[property.Metadata.Component.Type].controller
 					: null;
 
-				console.log(property.Metadata.Id, property.Metadata.Component.Type, property.IsInput);
-
 				return {
-					isInput: false,
+					isInput: property.IsInput,
 					metadata: property.Metadata,
 					controller: property.IsInput
 						? new controllerClass!({

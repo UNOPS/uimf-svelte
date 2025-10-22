@@ -39,7 +39,7 @@
 	const innerComponentRegistration = controlRegister.outputs[inner.Type];
 
 	if (innerComponentRegistration == null) {
-		throw `Cannot find output for type '${controller.metadata.Component.Type}'.`;
+		throw `Cannot find output component '${controller.metadata.Component.Type}'.`;
 	}
 
 	const cssClass =

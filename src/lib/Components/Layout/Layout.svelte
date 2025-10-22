@@ -45,6 +45,7 @@
 </script>
 
 <script lang="ts">
+	import { areaRadial } from 'd3';
 	import LayoutArea from './LayoutArea.svelte';
 	import { beforeUpdate } from 'svelte';
 
@@ -57,36 +58,36 @@
 	function asArea(item: ILayoutItem): ILayoutArea {
 		return item as ILayoutArea;
 	}
-
-	beforeUpdate(() => {
-		console.log(layout);
-	});
 </script>
 
 {#if layout != null}
-	layout
 	{#each layout.Containers as parent}
-		container
 		{#if parent.Type === 'container'}
 			{@const container = asContainer(parent)}
-			<div class={container.CssClass}>
+			<div class={container.CssClass} class:container={true}>
 				{#each container.Children as child}
 					{#if child.Type === 'container'}
-						subcontainer
 						<svelte:self layout={{ Containers: [child], AreaInstances: layout.AreaInstances }} />
 					{:else if child.Type === 'area'}
-						subarea
 						{@const area = asArea(child)}
 						{@const areaInstance = layout.AreaInstances.get(area.Name)}
-						<LayoutArea area={areaInstance} />
+
+						{#if areaInstance != null}
+							<LayoutArea area={areaInstance} />
+						{/if}
 					{/if}
 				{/each}
 			</div>
 		{:else if parent.Type === 'area'}
-			area
 			{@const area = asArea(parent)}
 			{@const areaInstance = layout.AreaInstances.get(area.Name)}
-			<LayoutArea area={areaInstance} />
+
+			{#if areaInstance != null}
+				<LayoutArea area={areaInstance} />
+			{/if}
 		{/if}
 	{/each}
 {/if}
+
+<style lang="scss">
+</style>

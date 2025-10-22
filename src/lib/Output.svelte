@@ -31,7 +31,7 @@
 			const componentRegistration = controlRegister.outputs[controller.metadata.Component.Type];
 
 			if (componentRegistration == null) {
-				throw `Cannot find output for type '${controller.metadata.Component.Type}'.`;
+				throw `Cannot find output component '${controller.metadata.Component.Type}'.`;
 			}
 
 			component = componentRegistration.component;
