@@ -26,7 +26,7 @@
 	});
 </script>
 
-<div class={controller.metadata.Component.Configuration?.CssClass} class:complex-input={true}>
+<div class={controller.metadata.Component.Configuration?.CssClass} class:ui-complex-input={true}>
 	<Layout {layout} />
 </div>
 

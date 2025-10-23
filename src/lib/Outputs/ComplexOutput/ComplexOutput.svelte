@@ -23,6 +23,6 @@
 	beforeUpdate(async () => await component.setup(controller));
 </script>
 
-<div class={controller.metadata.Component.Configuration?.CssClass} class:complex-output={true}>
+<div class={controller.metadata.Component.Configuration?.CssClass} class:ui-complex-output={true}>
 	<Layout {layout} />
 </div>

@@ -100,13 +100,23 @@ export class LayoutUtils {
 			const key = areaName;
 
 			if (!areaInstanceMap.has(key)) {
-				let area = allAreas.find((t) => t.Name == areaName) ?? {
-					Type: 'area',
-					AreaCssClass: null,
-					FieldCssClass: null,
-					Name: areaName,
-					OrderIndex: 0
-				} as ILayoutArea;
+				let area = allAreas.find((t) => t.Name == areaName);
+
+				if (area == null) {
+					area = {
+						Type: 'area',
+						AreaCssClass: null,
+						FieldCssClass: null,
+						Name: areaName,
+						OrderIndex: 0
+					} as ILayoutArea;
+
+					containers.push({
+						Children: [area],
+						CssClass: null,
+						Type: 'container'
+					});
+				}
 
 				areaInstanceMap.set(key, {
 					Area: area,

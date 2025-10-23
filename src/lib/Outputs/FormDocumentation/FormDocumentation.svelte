@@ -25,15 +25,13 @@
 </script>
 
 {#if documentation != null && documentation.length > 0}
-	<div class={controller.metadata.Component.Configuration?.CssClass}>
-		<div class="form-doc">
-			{@html documentation}
-		</div>
+	<div class:ui-form-doc={true} class={controller.metadata.Component.Configuration?.CssClass}>
+		{@html documentation}
 	</div>
 {/if}
 
 <style lang="scss">
-	.form-doc {
+	.ui-form-doc {
 		background: #e2f6ff;
 		border: 1px solid #cbe1e8;
 		border-radius: 2px;
@@ -41,7 +39,7 @@
 		padding: 15px;
 	}
 
-	:global(.form-doc > p:last-child) {
+	:global(.ui-form-doc > p:last-child) {
 		margin-bottom: 0;
 	}
 </style>

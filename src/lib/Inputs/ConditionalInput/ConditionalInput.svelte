@@ -193,15 +193,11 @@
 	async function changeCondition(newCondition: string) {
 		const matchingView = controller.views.find((t) => t.showIf == newCondition);
 
-		if (matchingView == null) {
-			throw new Error(`Invalid condition "${newCondition}". Cannot find a matching view.`);
-		}
-
 		controller.changeCondition(newCondition);
 
 		current = {
 			condition: newCondition,
-			view: matchingView.controller
+			view: matchingView?.controller ?? null
 		};
 	}
 </script>
