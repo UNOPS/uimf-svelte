@@ -36,8 +36,6 @@
 		public getValue(): Promise<ConditionalInputValue | null> {
 			const condition = this.value?.Value?.Condition;
 
-			console.log('condigtion', condition);
-
 			if (condition == null) {
 				return Promise.resolve(null);
 			}
