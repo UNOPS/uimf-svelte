@@ -149,10 +149,9 @@
 			if (condition == null) {
 				current = { condition: null, view: null };
 			} else {
-				const matchingView = controller.views.find((t) => t.showIf === condition);
 				current = {
 					condition: condition,
-					view: matchingView?.controller ?? null
+					view: controller.views.find((t) => t.showIf === condition)?.controller ?? null
 				};
 			}
 
@@ -168,22 +167,12 @@
 		const matchingView = controller.views.find((t) => t.showIf == newCondition);
 
 		if (matchingView == null) {
-			throw new Error(`Invalid condition ${newCondition}. Cannot find a matching view.`);
+			throw new Error(`Invalid condition "${newCondition}". Cannot find a matching view.`);
 		}
 
-		const newValue: ConditionalInputValue = {
-			Value: {
-				Condition: newCondition,
-				[matchingView.controller.metadata.Id]: await matchingView.controller.getValue()
-			}
-		};
-
-		await controller.setValue(newValue);
-
-		// Update view state.
 		current = {
 			condition: newCondition,
-			view: matchingView?.controller ?? null
+			view: matchingView.controller
 		};
 	}
 </script>
