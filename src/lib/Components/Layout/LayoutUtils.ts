@@ -129,8 +129,6 @@ export class LayoutUtils {
 			areaInstance.Fields.push(fieldItem);
 		}
 
-		console.log(containers, areaInstanceMap);
-
 		return {
 			Containers: containers,
 			AreaInstances: areaInstanceMap

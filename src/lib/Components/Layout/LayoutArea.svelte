@@ -20,7 +20,7 @@
 </script>
 
 {#if area != null}
-	<div class={area.Area?.AreaCssClass} class:layout-area={true}>
+	<div class={area.Area?.AreaCssClass} class:ui-area={true}>
 		{#each area.Fields as field}
 			{#if field.isInput}
 				<Input controller={asInput(field.controller)} />
@@ -34,7 +34,7 @@
 {/if}
 
 <style lang="scss">
-	.layout-area:not(:has(*)) {
+	.ui-area:not(:has(*)) {
 		display: none;
 	}
 </style>

@@ -62,7 +62,7 @@
 	{#each layout.Containers as parent}
 		{#if parent.Type === 'container'}
 			{@const container = asContainer(parent)}
-			<div class={container.CssClass} class:container={true}>
+			<div class={container.CssClass} class:ui-container={true}>
 				{#each container.Children as child}
 					{#if child.Type === 'container'}
 						<svelte:self layout={{ Containers: [child], AreaInstances: layout.AreaInstances }} />
@@ -86,6 +86,3 @@
 		{/if}
 	{/each}
 {/if}
-
-<style lang="scss">
-</style>
