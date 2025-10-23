@@ -15,7 +15,7 @@
 		DefaultCondition: string | null;
 	}
 
-	interface ConditionalInput {
+	interface ConditionalInputValue {
 		Value: {
 			Condition: string | null;
 			[field: string]: any;
@@ -28,31 +28,33 @@
 	}
 
 	export class Controller extends InputController<
-		ConditionalInput,
+		ConditionalInputValue,
 		IInputFieldMetadata<Configuration>
 	> {
-		public condition: string | null = null;
-		public view: InputController<any> | null = null;
 		public readonly views: View[] = [];
 
-		public getValue(): Promise<ConditionalInput | null> {
-			if (this.condition == null) {
+		public getValue(): Promise<ConditionalInputValue | null> {
+			const condition = this.value?.Value?.Condition;
+
+			if (condition == null) {
 				return Promise.resolve(null);
 			}
 
-			if (this.view == null) {
+			const matchingView = this.views.find((t) => t.showIf === condition);
+
+			if (matchingView == null) {
 				return Promise.resolve({
 					Value: {
-						Condition: this.condition
+						Condition: condition
 					}
 				});
 			}
 
-			return this.view.getValue().then((value: { Value: any }) => {
+			return matchingView.controller.getValue().then((value: { Value: any }) => {
 				return Promise.resolve({
 					Value: {
-						Condition: this.condition,
-						[this.view!.metadata.Id]: value
+						Condition: condition,
+						[matchingView.controller.metadata.Id]: value
 					}
 				});
 			});
@@ -78,37 +80,33 @@
 			}
 		}
 
-		setValueInternal(value: ConditionalInput | null): Promise<void> {
-			const effectiveCondition =
-				value?.Value?.Condition ?? this.metadata.Component.Configuration.DefaultCondition;
+		/**
+		 * Updates inner input's value.
+		 * @param value
+		 */
+		setValueInternal(value: ConditionalInputValue | null): Promise<void> {
+			const condition = value?.Value?.Condition;
 
-			if (effectiveCondition == null) {
-				this.condition = null;
-				this.view = null;
+			if (condition == null) {
 				return Promise.resolve();
 			}
 
-			this.condition = effectiveCondition;
+			const view = this.views.find((t) => t.showIf === condition);
 
-			const matchingView = this.views.find((t) => t.showIf === this.condition);
-
-			if (matchingView == null) {
-				this.view = null;
+			if (view == null) {
 				return Promise.resolve();
 			}
 
-			this.view = matchingView.controller;
+			const viewValue = value?.Value[view.controller.metadata.Id];
 
-			const matchingViewValue = value?.Value[matchingView.controller.metadata.Id];
-
-			return matchingView.controller.setValue(matchingViewValue);
+			return view.controller.setValue(viewValue);
 		}
 
-		public deserialize(value: string | null): Promise<ConditionalInput | null> {
-			return Promise.resolve(JSON.parse(value ?? 'null') as ConditionalInput);
+		public deserialize(value: string | null): Promise<ConditionalInputValue | null> {
+			return Promise.resolve(JSON.parse(value ?? 'null') as ConditionalInputValue);
 		}
 
-		public serialize(value: ConditionalInput | null): string | null {
+		public serialize(value: ConditionalInputValue | null): string | null {
 			return JSON.stringify(value);
 		}
 	}
@@ -122,10 +120,42 @@
 	import Input from '../../Input.svelte';
 
 	export let controller: Controller;
+
 	let uniqueId: string = uuid();
 
+	interface CurrentState {
+		condition: string | null;
+		view: InputController<any> | null;
+	}
+
+	let current: CurrentState = {
+		condition: null,
+		view: null
+	};
+
 	let component = new InputComponent({
-		refresh() {
+		async refresh() {
+			// Get current view value.
+			if (current.view != null) {
+				const currentValue = await current.view.getValue();
+				console.log(currentValue);
+			}
+
+			const value = await controller.getValue();
+
+			const condition =
+				value?.Value?.Condition ?? controller.metadata.Component.Configuration.DefaultCondition;
+
+			if (condition == null) {
+				current = { condition: null, view: null };
+			} else {
+				const matchingView = controller.views.find((t) => t.showIf === condition);
+				current = {
+					condition: condition,
+					view: matchingView?.controller ?? null
+				};
+			}
+
 			controller = controller;
 		}
 	});
@@ -134,18 +164,27 @@
 		await component.setup(controller);
 	});
 
-	function changeCondition(newCondition: string) {
-		const newValue = JSON.parse(JSON.stringify(controller.value)) ?? {};
+	async function changeCondition(newCondition: string) {
+		const matchingView = controller.views.find((t) => t.showIf == newCondition);
 
-		if (newValue.Value == null) {
-			newValue.Value = {};
+		if (matchingView == null) {
+			throw new Error(`Invalid condition ${newCondition}. Cannot find a matching view.`);
 		}
 
-		newValue.Value.Condition = newCondition;
+		const newValue: ConditionalInputValue = {
+			Value: {
+				Condition: newCondition,
+				[matchingView.controller.metadata.Id]: await matchingView.controller.getValue()
+			}
+		};
 
-		controller.setValueInternal(newValue);
+		await controller.setValue(newValue);
 
-		controller = controller;
+		// Update view state.
+		current = {
+			condition: newCondition,
+			view: matchingView?.controller ?? null
+		};
 	}
 </script>
 
@@ -153,13 +192,13 @@
 	{#if controller.metadata.Component.Configuration.ConditionIsReadonly !== true}
 		<div class="options">
 			{#each controller.metadata.Component.Configuration.Options as option}
-				{@const selected = controller.condition === option.Value}
+				{@const selected = current.condition === option.Value}
 				<label class:selected class:not-selected={!selected}>
 					<input
 						type="radio"
 						checked={selected}
 						data-value={option.Value}
-						on:change={() => changeCondition(option.Value)}
+						on:change={async () => await changeCondition(option.Value)}
 						required={true}
 						name={uniqueId}
 					/>
@@ -169,8 +208,8 @@
 		</div>
 	{/if}
 
-	{#if controller.view != null}
-		<Input controller={controller.view} />
+	{#if current.view != null}
+		<Input controller={current.view} />
 	{/if}
 </div>
 
