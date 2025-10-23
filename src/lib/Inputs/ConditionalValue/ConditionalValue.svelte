@@ -117,7 +117,7 @@
 
 	onMount(async () => {
 		let nestedComponentCurrentValue = await controller.inputParent.getValue();
-		show = !!nestedComponentCurrentValue.Value;
+		show = !!nestedComponentCurrentValue?.Value;
 	});
 
 	controller.inputParent.on('input:change', async function () {
