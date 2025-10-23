@@ -36,6 +36,8 @@
 		public getValue(): Promise<ConditionalInputValue | null> {
 			const condition = this.value?.Value?.Condition;
 
+			console.log('condigtion', condition);
+
 			if (condition == null) {
 				return Promise.resolve(null);
 			}
@@ -109,6 +111,29 @@
 		public serialize(value: ConditionalInputValue | null): string | null {
 			return JSON.stringify(value);
 		}
+
+		/**
+		 * Changes the current condition without affecting the underlying
+		 * views, which may already have some internal state/values.
+		 * @param condition
+		 */
+		public changeCondition(condition: string): void {
+			if (this.value == null) {
+				this.value = {
+					Value: {
+						Condition: condition
+					}
+				};
+			}
+
+			if (this.value.Value == null) {
+				this.value.Value = {
+					Condition: condition
+				};
+			}
+
+			this.value.Value.Condition = condition;
+		}
 	}
 </script>
 
@@ -134,13 +159,17 @@
 	};
 
 	let component = new InputComponent({
-		async refresh() {
-			// Get current view value.
-			if (current.view != null) {
-				const currentValue = await current.view.getValue();
-				console.log(currentValue);
+		async init() {
+			if (controller?.value?.Value?.Condition == null) {
+				const condition = controller.metadata.Component.Configuration.DefaultCondition;
+				await controller.setValue({
+					Value: {
+						Condition: condition
+					}
+				});
 			}
-
+		},
+		async refresh() {
 			const value = await controller.getValue();
 
 			const condition =
@@ -169,6 +198,8 @@
 		if (matchingView == null) {
 			throw new Error(`Invalid condition "${newCondition}". Cannot find a matching view.`);
 		}
+
+		controller.changeCondition(newCondition);
 
 		current = {
 			condition: newCondition,
