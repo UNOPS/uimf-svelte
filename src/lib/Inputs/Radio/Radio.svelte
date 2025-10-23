@@ -121,7 +121,7 @@
 	}
 </script>
 
-<div class:with-icons={withIcons} class:wrapper={true}>
+<div class:with-icons={withIcons} class:ui-radio={true}>
 	{#each items as option}
 		{@const selected = controller.valueAsString === option.Value.toString()}
 		{#if itemMetadata != null}
@@ -180,7 +180,7 @@
 <style lang="scss">
 	@import '../../scss/styles.variables.scss';
 
-	.wrapper {
+	.ui-radio {
 		display: block;
 
 		& > label {
@@ -194,7 +194,7 @@
 		}
 	}
 
-	.wrapper.with-icons {
+	.ui-radio.with-icons {
 		white-space: nowrap;
 		display: flex;
 

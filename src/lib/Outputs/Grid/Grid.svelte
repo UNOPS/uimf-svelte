@@ -60,7 +60,7 @@
 
 {#if fields?.length > 0}
 	<div
-		class:layout={true}
+		class:ui-grid={true}
 		class={controller.metadata.Component.Configuration.CssClass}
 		style:grid-template-areas={controller.metadata.Component.Configuration.Areas}
 		style:grid-template-rows={controller.metadata.Component.Configuration.Rows}
@@ -76,7 +76,7 @@
 {/if}
 
 <style lang="scss">
-	.layout {
+	.ui-grid {
 		display: grid;
 		grid-gap: 0px;
 
