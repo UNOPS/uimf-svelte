@@ -31,7 +31,7 @@
 		class:label-v={fieldLayout == FieldLayout.Vertical}>{label}:</label
 	>
 	{#if documentation}
-		<div class="alert alert-info field-doc">
+		<div class="alert alert-info ui-field-doc">
 			{@html documentation}
 		</div>
 	{/if}

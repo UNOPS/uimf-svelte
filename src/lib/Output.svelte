@@ -81,7 +81,7 @@
 		<strong>null metadata</strong>
 	{:else if layout === FieldLayout.None}
 		{#if displayField.metadata.CssClass != null}
-			<div class={displayField.metadata.CssClass} class:component={true}>
+			<div class={displayField.metadata.CssClass} class:ui-component={true}>
 				<svelte:component this={component} {controller} />
 			</div>
 		{:else}
@@ -97,15 +97,15 @@
 					fieldLayout={layout}
 				/>
 			{/if}
-			<div class:component={true}>
+			<div class:ui-component={true}>
 				<svelte:component this={component} {controller} />
 			</div>
 		</div>
 	{:else if layout === FieldLayout.Horizontal || layout == FieldLayout.Vertical}
 		<div
-			class:field={true}
-			class:field-h={layout == FieldLayout.Horizontal}
-			class:field-v={layout != FieldLayout.Horizontal}
+			class:ui-field={true}
+			class:ui-field-h={layout == FieldLayout.Horizontal}
+			class:ui-field-v={layout != FieldLayout.Horizontal}
 			class={displayField.metadata.CssClass}
 		>
 			{#if !thisHideLabel}
@@ -116,7 +116,7 @@
 					fieldLayout={layout}
 				/>
 			{/if}
-			<div class:component={true}>
+			<div class:ui-component={true}>
 				<svelte:component this={component} {controller} />
 			</div>
 		</div>

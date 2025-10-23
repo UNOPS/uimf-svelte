@@ -123,10 +123,10 @@
 		name={controller.form?.metadata.Id}
 		on:submit|preventDefault={submitForm}
 		class={controller.metadata.Component.Configuration?.CssClass}
-		class:inline-layout={layout === FormInputLayout.Inline}
+		class:ui-form-inputs={true}
 	>
 		<div
-			class:form-inputs={true}
+			class:ui-form-inputs_fields={true}
 			class={controller.metadata.Component.Configuration?.LayoutCssClass}
 		>
 			{#each visibleInputs as input}
@@ -135,7 +135,7 @@
 		</div>
 
 		{#if effectiveActions?.length > 0}
-			<div class="buttons">
+			<div class="ui-form-inputs_buttons">
 				{#each effectiveActions as action}
 					{#if action.Form === '#submit'}
 						<button class={action.CssClass ?? 'btn btn-primary'} type="submit">
@@ -169,32 +169,16 @@
 {/if}
 
 <style lang="scss">
-	.form-inputs {
+	.ui-form-inputs_fields {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
 		grid-gap: 10px;
 		margin-bottom: 20px;
 	}
 
-	form.vertical > .form-inputs {
-		grid-template-columns: 1fr;
-	}
-
-	.buttons {
+	.ui-form-inputs_buttons {
 		display: flex;
 		justify-content: flex-end;
 		gap: 5px;
-	}
-
-	.inline-layout {
-		display: flex;
-		gap: 5px;
-		align-items: center;
-
-		& > .buttons {
-			height: 37px;
-			position: relative;
-			top: 1px;
-		}
 	}
 </style>
