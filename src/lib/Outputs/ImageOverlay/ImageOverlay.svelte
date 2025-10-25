@@ -152,7 +152,6 @@
 		align-items: center;
 		width: 300px;
 		height: 350px;
-		margin: 12px;
 	}
 
 	.overlay-container {
