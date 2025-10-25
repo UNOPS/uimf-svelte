@@ -7,12 +7,13 @@
 
 	interface IConfiguration extends ITypeaheadConfig {
 		DefaultValue?: string | null;
+		Placeholder?: string | null;
 	}
 
 	interface IMetadata extends IInputFieldMetadata<IConfiguration> {}
 
 	export class Controller extends InputController<IValue, IMetadata> {
-		public valueAsString: string | null = null;
+		public valueAsString: string = '';
 		public items: Array<ITypeaheadOption> = [];
 
 		public getValue(): Promise<IValue | null> {
@@ -22,9 +23,9 @@
 		async setValueInternal(value: IValue | null): Promise<void> {
 			if (value == null || value.Value == '' || value.Value == null) {
 				this.value = null;
-				this.valueAsString = null;
+				this.valueAsString = '';
 			} else {
-				this.valueAsString = this.serialize(this.value);
+				this.valueAsString = this.serialize(this.value) ?? '';
 			}
 			return Promise.resolve();
 		}
@@ -85,7 +86,13 @@
 		controller.setValue(controller.valueAsString);
 	}}
 >
-	<option value="" />
+	{#if controller.metadata.Component.Configuration?.Placeholder}
+		<option value="" class="placeholder-option" selected>
+			{controller.metadata.Component.Configuration.Placeholder}
+		</option>
+	{:else}
+		<option value="" />
+	{/if}
 	{#each items as item}
 		<option value={item.Value.toString()} class={item.CssClass}>{item.Label}</option>
 	{/each}
@@ -96,5 +103,10 @@
 
 	select.form-select {
 		min-height: $app-input-min-height;
+	}
+
+	option.placeholder-option {
+		font-style: italic;
+		color: #6c757d;
 	}
 </style>
