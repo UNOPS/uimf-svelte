@@ -21,6 +21,17 @@
 
 :root {
     --uimf-btn-bg: #fafafa;
+    --uimf-placeholder-color: #ababab;
+    --uimf-placeholder-font-style: italic;
+}
+
+// Consistent placeholder styling across all input types
+input::placeholder,
+textarea::placeholder,
+.placeholder-style {
+    color: var(--uimf-placeholder-color);
+    font-style: var(--uimf-placeholder-font-style);
+    font-weight: 300;
 }
 
 .height-100 {
