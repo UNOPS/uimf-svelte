@@ -5,7 +5,6 @@
 		Width: string | null;
 		Height: string | null;
 		CssClass: string | null;
-		Link: IFormlinkBase | null;
 	}
 
 	interface Configuration {
@@ -22,7 +21,6 @@
 	import type { IOutputFieldMetadata } from '../../Infrastructure/Metadata';
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import { OutputController } from '../../Infrastructure/OutputController';
-	import { IFormlinkBase } from '../FormLink/IFormlinkBase';
 	import { beforeUpdate } from 'svelte';
 
 	export let controller: OutputController<SimpleImage, IMetadata>;
@@ -47,30 +45,12 @@
 </script>
 
 {#if controller.value?.Src}
-	{#if controller.value.Link != null}
-		{#await controller.app.makeUrl(controller.value.Link) then url}
-			<a href={url}>
-				<img
-					src={controller.value.Src}
-					alt={controller.value?.Alt ?? ''}
-					style:width={controller.value?.Width ??
-						controller.metadata?.Component?.Configuration?.Width}
-					style:height={controller.value?.Height ??
-						controller.metadata?.Component?.Configuration?.Height}
-					class={cssClass}
-					style:object-fit={controller.metadata?.Component?.Configuration?.ObjectFit}
-				/>
-			</a>
-		{/await}
-	{:else}
-		<img
-			src={controller.value.Src}
-			alt={controller.value?.Alt ?? ''}
-			style:width={controller.value?.Width ?? controller.metadata?.Component?.Configuration?.Width}
-			style:height={controller.value?.Height ??
-				controller.metadata?.Component?.Configuration?.Height}
-			class={cssClass}
-			style:object-fit={controller.metadata?.Component?.Configuration?.ObjectFit}
-		/>
-	{/if}
+	<img
+		src={controller.value.Src}
+		alt={controller.value?.Alt ?? ''}
+		style:width={controller.value?.Width ?? controller.metadata?.Component?.Configuration?.Width}
+		style:height={controller.value?.Height ?? controller.metadata?.Component?.Configuration?.Height}
+		class={cssClass}
+		style:object-fit={controller.metadata?.Component?.Configuration?.ObjectFit}
+	/>
 {/if}
