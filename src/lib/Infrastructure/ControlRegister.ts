@@ -372,6 +372,5 @@ defaultControlRegister.registerOutputComponent('shipment-size', ShipmentSize, { 
 defaultControlRegister.registerOutputComponent('bar-chart', BarChart, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('parent-field-doc', ParentFieldDocumentation, { alwaysHideLabel: true, displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('parent-field-label', ParentFieldLabel, { alwaysHideLabel: true, displayAsBlock: false });
-defaultControlRegister.registerOutputComponent('action-button', ActionButton, { alwaysHideLabel: true, displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('simple-image', SimpleImage, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('clickable-content', ClickableContent, { alwaysHideLabel: true, displayAsBlock: false });
