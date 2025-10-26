@@ -1,8 +1,6 @@
-import { ActionHandler } from '../ActionHandler';
-import { ClickableContentData } from '../ClickableContent.svelte';
+import { ActionButtonParameters, ActionHandler, KeyActionButtonData } from '../ActionHandler';
 
-interface RedirectToUrlArgs {
-	Action: string;
+interface RedirectToUrlArgs extends ActionButtonParameters {
 	Url: string;
 }
 
@@ -10,7 +8,7 @@ export class RedirectToUrlHandler extends ActionHandler {
 	public readonly renderAs = 'link' as const;
 	public readonly action = 'redirect-to-url';
 
-	getHref(data: ClickableContentData): string | null {
+	getHref(data: KeyActionButtonData): string | null {
 		const params = data.Parameters as RedirectToUrlArgs;
 		return params?.Url ?? null;
 	}

@@ -1,7 +1,8 @@
 import { ActionHandler, type ActionButtonData } from '../ActionHandler';
 
 export class PrintHandler extends ActionHandler {
-	public action: string = 'print';
+	public readonly renderAs = 'button' as const;
+	public readonly action: string = 'print';
 
 	async execute(data: ActionButtonData): Promise<void> {
 		const elementToPrint = this.controller.form?.element;

@@ -1,57 +1,54 @@
 <script context="module" lang="ts">
 	import { IComponent } from '../../Infrastructure/Metadata';
-	import { RedirectToUrlHandler } from './Actions/RedirectToUrlHandler';
 
 	export interface IClickableContentConfiguration {
 		Content: IComponent;
 	}
 
-	export interface ClickableContentData {
+	export interface ClickableContentData extends KeyActionButtonData {
 		Content: any;
-		Parameters: { Action: string; [key: string]: any };
 	}
 
 	export type ClickableContentController = OutputController<
 		ClickableContentData,
 		IOutputFieldMetadata<IClickableContentConfiguration>
 	>;
-
-	const handlers: Record<string, any> = {
-		'redirect-to-url': RedirectToUrlHandler
-	};
 </script>
 
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
-	import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
+	import {
+		defaultControlRegister as controlRegister,
+		CreateOutputResult
+	} from '../../Infrastructure/ControlRegister';
 	import type { IOutputFieldMetadata } from '../../Infrastructure/Metadata';
 	import Output from '../../Output.svelte';
-	import type { ActionHandler } from './ActionHandler';
-
 	import { OutputFieldMetadataFactory } from '../../Infrastructure/Utilities/OutputFieldMetadataFactory';
+	import { ActionHandler, KeyActionButtonData } from '../ActionButton/ActionHandler';
+	import { ActionRegistry } from '../ActionButton/ActionRegistry';
 
 	export let controller: ClickableContentController;
 
-	let innerContent: OutputController<any> | null = null;
+	let inner: CreateOutputResult | null = null;
 	let handler: ActionHandler | null = null;
 	let href: string | null = null;
 
 	let component = new OutputComponent({
 		async refresh() {
-			innerContent = await getContentController();
+			inner = await getContentController();
 
 			if (controller.value?.Parameters == null) {
 				handler = null;
 				href = null;
 			} else {
 				if (handler == null || handler.action != controller.value.Parameters.Action) {
-					const HandlerClass = handlers[controller.value.Parameters.Action];
+					const HandlerClass = ActionRegistry[controller.value.Parameters.Action];
 					handler = HandlerClass != null ? new HandlerClass(controller) : null;
 				}
 
-				href = handler?.getHref?.(controller.value) ?? null;
+				href = (await handler?.getHref?.(controller.value)) ?? null;
 			}
 
 			controller.value = controller.value;
@@ -60,7 +57,7 @@
 
 	beforeUpdate(async () => await component.setup(controller));
 
-	async function getContentController(): Promise<OutputController<any> | null> {
+	async function getContentController(): Promise<CreateOutputResult | null> {
 		const contentMetadata = controller.metadata?.Component?.Configuration?.Content;
 
 		if (contentMetadata == null) {
@@ -81,15 +78,15 @@
 			await field.controller.setValue(controller.value.Content);
 		}
 
-		return field.controller;
+		return field;
 	}
 
-	async function handle(value: ClickableContentData) {
+	async function handleClick(value: ClickableContentData) {
 		if (handler != null && handler.execute != null) {
 			await handler.execute(value);
 			component.refresh();
 		} else if (handler == null) {
-			console.warn(`No handler found for action: ${value.Parameters?.Action}`);
+			console.error(`No handler found for action: ${value.Parameters?.Action}`);
 		}
 	}
 
@@ -97,31 +94,32 @@
 		if (event.key === 'Enter' || event.key === ' ') {
 			event.preventDefault();
 			if (controller.value != null) {
-				handle(controller.value);
+				handleClick(controller.value);
 			}
 		}
 	}
 </script>
 
-{#if innerContent != null && controller.value?.Parameters != null}
+{#if inner != null && controller.value?.Parameters != null}
 	{#if handler?.renderAs === 'link' && href != null}
-		<a class="clickable-content" {href}>
-			<Output controller={innerContent} nolayout={true} />
+		<a class="ui-clickable-content" {href}>
+			<Output controller={inner.controller} nolayout={true} />
 		</a>
 	{:else}
 		<button
 			type="button"
-			class="clickable-content"
-			on:click={async () => await handle(controller.value)}
+			class="ui-clickable-content"
+			on:click={async () => await handleClick(controller.value)}
 			on:keypress={handleKeyPress}
 		>
-			<Output controller={innerContent} nolayout={true} />
+			<Output controller={inner.controller} nolayout={true} />
+			<svelte:component this={inner.component} controller={inner} />
 		</button>
 	{/if}
 {/if}
 
 <style lang="scss">
-	.clickable-content {
+	.ui-clickable-content {
 		cursor: pointer;
 		user-select: none;
 
@@ -131,7 +129,7 @@
 		}
 	}
 
-	button.clickable-content {
+	button.ui-clickable-content {
 		background: none;
 		border: none;
 		padding: 0;
@@ -140,7 +138,7 @@
 		text-align: inherit;
 	}
 
-	a.clickable-content {
+	a.ui-clickable-content {
 		text-decoration: none;
 		color: inherit;
 

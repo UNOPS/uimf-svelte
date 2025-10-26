@@ -1,35 +1,19 @@
-import { ActionHandler, type ActionButtonData } from '../ActionHandler';
+import { ActionButtonParameters, ActionHandler, type ActionButtonData } from '../ActionHandler';
 
-interface SetFieldValuesArgs {
+interface SetFieldValuesArgs extends ActionButtonParameters {
 	FieldMappings: Record<string, string>;
 	AlternativeLabel: string | null;
 	AlternativeIcon: string | null;
 }
 
 export class SetFieldValuesHandler extends ActionHandler {
+	public readonly renderAs = 'button' as const;
 	public action: string = 'set-field-values';
 
 	private before: Record<string, any> = {};
 	private copied: boolean = false;
 	private originalLabel: string | null = null;
 	private originalIcon: string | null = null;
-
-	#getPropertyValueByPath(obj: any, path: string): any {
-		if (!obj || !path) return null;
-
-		const parts = path.split('/').filter(part => part.length > 0);
-		let current = obj;
-
-		for (const part of parts) {
-			if (current == null) {
-				return null;
-			}
-
-			current = current[part];
-		}
-
-		return current;
-	}
 
 	async execute(data: ActionButtonData): Promise<void> {
 		const copyParams = data.Parameters as SetFieldValuesArgs;
@@ -66,12 +50,12 @@ export class SetFieldValuesHandler extends ActionHandler {
 		// Toggle label and icon if alternatives are provided
 		if (this.controller.value) {
 			if (copyParams.AlternativeLabel) {
-				this.controller.value.Label = this.copied
+				(this.controller.value as any).Label = this.copied
 					? copyParams.AlternativeLabel
 					: this.originalLabel;
 			}
 			if (copyParams.AlternativeIcon) {
-				this.controller.value.Icon = this.copied
+				(this.controller.value as any).Icon = this.copied
 					? copyParams.AlternativeIcon
 					: this.originalIcon;
 			}
