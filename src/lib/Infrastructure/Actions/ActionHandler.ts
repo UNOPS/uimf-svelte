@@ -1,4 +1,4 @@
-import type { OutputController } from '../../Infrastructure/OutputController';
+import type { OutputController } from '../OutputController';
 
 export interface ActionButtonParameters {
 	Action: string;

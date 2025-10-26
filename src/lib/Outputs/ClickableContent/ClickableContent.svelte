@@ -6,6 +6,7 @@
 	}
 
 	export interface ClickableContentData extends KeyActionButtonData {
+		CssClass?: string | null;
 		Content: any;
 	}
 
@@ -26,8 +27,8 @@
 	import type { IOutputFieldMetadata } from '../../Infrastructure/Metadata';
 	import Output from '../../Output.svelte';
 	import { OutputFieldMetadataFactory } from '../../Infrastructure/Utilities/OutputFieldMetadataFactory';
-	import { ActionHandler, KeyActionButtonData } from '../ActionButton/ActionHandler';
-	import { ActionRegistry } from '../ActionButton/ActionRegistry';
+	import { ActionHandler, KeyActionButtonData } from '../../Infrastructure/Actions/ActionHandler';
+	import { ActionRegistry } from '../../Infrastructure/Actions/ActionRegistry';
 
 	export let controller: ClickableContentController;
 
@@ -102,13 +103,14 @@
 
 {#if inner != null && controller.value?.Parameters != null}
 	{#if handler?.renderAs === 'link' && href != null}
-		<a class="ui-clickable-content" {href}>
+		<a class:ui-clickable-content={true} class={controller.value.CssClass} {href}>
 			<Output controller={inner.controller} nolayout={true} />
 		</a>
 	{:else}
 		<button
 			type="button"
-			class="ui-clickable-content"
+			class:ui-clickable-content={true}
+			class={controller.value.CssClass}
 			on:click={async () => await handleClick(controller.value)}
 			on:keypress={handleKeyPress}
 		>
