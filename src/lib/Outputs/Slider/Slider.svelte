@@ -2,6 +2,84 @@
 	export interface SliderConfiguration {
 		Item: IComponent;
 	}
+
+	interface SliderData {
+		Items: {
+			Main: any;
+			Thumbnail: any | null;
+		}[];
+	}
+
+	interface SliderItemInstance {
+		component: any;
+		controller: OutputController<any>;
+	}
+
+	interface Item {
+		Index: number;
+		Main: SliderItemInstance;
+		Thumbnail: SliderItemInstance | null;
+	}
+
+	type SliderController = OutputController<SliderData, IOutputFieldMetadata<SliderConfiguration>>;
+
+	async function buildItemControllers(controller: SliderController): Promise<Item[]> {
+		const itemCount = controller.value?.Items?.length ?? 0;
+
+		if (itemCount == 0) {
+			return Promise.resolve([]);
+		}
+
+		let items: Item[] = [];
+
+		let componentType = controller.metadata.Component.Configuration.Item.Type;
+		let component = controlRegister.outputs[componentType].component;
+
+		let promises: Promise<void>[] = [];
+
+		controller.value.Items.forEach(async (item, i) => {
+			let toAdd: Item = {
+				Index: i,
+				Main: {
+					component: component,
+					controller: new OutputController<any>({
+						metadata: OutputFieldMetadataFactory.fromComponent(
+							controller.metadata.Component.Configuration.Item
+						),
+						data: null,
+						form: controller.form!,
+						app: controller.app,
+						parent: controller
+					})
+				},
+				Thumbnail:
+					item.Thumbnail != null
+						? {
+								component: component,
+								controller: new OutputController<any>({
+									metadata: controller.metadata,
+									data: null,
+									form: controller.form!,
+									app: controller.app,
+									parent: controller
+								})
+						  }
+						: null
+			};
+
+			promises.push(toAdd.Main.controller.setValue(item.Main));
+
+			if (toAdd.Thumbnail != null) {
+				promises.push(toAdd.Thumbnail?.controller.setValue(item.Thumbnail));
+			}
+
+			items.push(toAdd);
+		});
+
+		await Promise.all(promises);
+
+		return items;
+	}
 </script>
 
 <script lang="ts">
@@ -12,67 +90,15 @@
 	import type { IComponent, IOutputFieldMetadata } from '../../Infrastructure/Metadata';
 	import { OutputFieldMetadataFactory } from '../../Infrastructure/Utilities/OutputFieldMetadataFactory';
 
-	export let controller: OutputController<any, IOutputFieldMetadata<SliderConfiguration>>;
+	export let controller: SliderController;
 
-	class ComponentController {
-		index: number = 1;
-		component: any;
-		controller: any;
-	}
-
-	let componentItemControllers: ComponentController[] = [];
-	let componentThumbnailControllers: ComponentController[] = [];
-
-	function loadComponentControllers(items: any[]) {
-		componentItemControllers = [];
-		componentThumbnailControllers = [];
-
-		let nestedComponentType = controller.metadata.Component.Configuration.Item.Type;
-		let nestedComponent = controlRegister.outputs[nestedComponentType].component;
-
-		items.forEach((item, i) => {
-			let index = i + 1;
-			let itemController: ComponentController = {
-				index,
-				component: nestedComponent,
-				controller: new OutputController<any>({
-					metadata: OutputFieldMetadataFactory.fromComponent(
-						controller.metadata.Component.Configuration.Item
-					),
-					data: null,
-					form: controller.form!,
-					app: controller.app,
-					parent: controller
-				})
-			};
-
-			itemController.controller.setValue(item.m_Item1);
-			componentItemControllers.push(itemController);
-
-			if (item.m_Item2 != null) {
-				let thumbnailController: ComponentController = {
-					index,
-					component: nestedComponent,
-					controller: new OutputController<any>({
-						metadata: controller.metadata,
-						data: null,
-						form: controller.form!,
-						app: controller.app,
-						parent: controller
-					})
-				};
-
-				thumbnailController.controller.setValue(item.m_Item2);
-				componentThumbnailControllers.push(thumbnailController);
-			}
-		});
-	}
+	let items: Item[] = [];
+	let currentIndex = 0;
 
 	let component = new OutputComponent({
-		refresh() {
-			if (controller.value?.Items?.length) {
-				loadComponentControllers(controller.value.Items);
-			}
+		async refresh() {
+			items = await buildItemControllers(controller);
+
 			controller.value = controller.value;
 		}
 	});
@@ -81,91 +107,57 @@
 		await component.setup(controller);
 	});
 
-	$: if (controller.value?.Items?.length && componentItemControllers.length === 0) {
-		loadComponentControllers(controller.value.Items);
-	}
-
-	let currentIndex = 1;
-
-	function nextSlide() {
-		if (currentIndex < componentItemControllers.length) {
+	function gotoNext() {
+		if (currentIndex < items.length - 1) {
 			currentIndex += 1;
 		}
 	}
 
-	function prevSlide() {
-		if (currentIndex > 1) {
+	function gotoPrevious() {
+		if (currentIndex > 0) {
 			currentIndex -= 1;
 		}
 	}
 
-	function goToSlide(number: number) {
+	function gotoIndex(number: number) {
 		currentIndex = number;
 	}
-
-	// Adjust height dynamically based on number of items
-	$: dynamicHeight =
-		componentItemControllers.length > 0 ? Math.min(80, 400 / componentItemControllers.length) : 80;
 </script>
 
-<div class="slider-container">
-	{#if controller.value != null}
-		{#if componentItemControllers != null}
-			{#if Array.isArray(componentItemControllers)}
-				{#if componentItemControllers.length === 0}
-					<div class="m-5 p-5">No picture</div>
-				{/if}
-			{/if}
-		{/if}
-
-		{#if componentItemControllers.length > 0}
-			<div class="caption-container">
-				<button
-					class="prev"
-					on:click={prevSlide}
-					style="visibility: {currentIndex > 1 ? 'visible' : 'hidden'}"
-				>
-					&#10094;
-				</button>
-				<div class="caption">
-					<svelte:component
-						this={componentItemControllers[currentIndex - 1].component}
-						controller={componentItemControllers[currentIndex - 1].controller}
-					/>
-				</div>
-				<button
-					class="next"
-					on:click={nextSlide}
-					style="visibility: {currentIndex < componentItemControllers.length
-						? 'visible'
-						: 'hidden'}"
-				>
-					&#10095;
-				</button>
+{#if items?.length > 0}
+	<div class="ui-slider">
+		<div class="ui-slider_main">
+			<button on:click={gotoPrevious} style:visibility={currentIndex > 0 ? 'visible' : 'hidden'}>
+				&#10094;
+			</button>
+			<div class="ui-slider_main-view">
+				<svelte:component
+					this={items[currentIndex].Main.component}
+					controller={items[currentIndex].Main.controller}
+				/>
 			</div>
+			<button
+				on:click={gotoNext}
+				style:visibility={currentIndex < items.length - 1 ? 'visible' : 'hidden'}
+			>
+				&#10095;
+			</button>
+		</div>
 
-			<div class="thumbnails-row">
-				{#each componentThumbnailControllers as componentThumbnailController}
-					<button on:click={() => goToSlide(componentThumbnailController.index)}>
-						<div class="thumbnail">
-							<svelte:component
-								this={componentThumbnailController.component}
-								controller={componentThumbnailController.controller}
-								height="{dynamicHeight}px"
-							/>
-						</div>
+		<div class="ui-slider_thumbnails">
+			{#each items as item}
+				{#if item.Thumbnail != null}
+					<button on:click={() => gotoIndex(item.Index)}>
+						<svelte:component
+							this={item.Thumbnail.component}
+							controller={item.Thumbnail.controller}
+						/>
 					</button>
-				{/each}
-			</div>
-
-			{#if componentItemControllers[currentIndex - 1].controller.value.Description}
-				<div class="description">
-					{componentItemControllers[currentIndex - 1].controller.value.Description}
-				</div>
-			{/if}
-		{/if}
-	{/if}
-</div>
+				{/if}
+			{/each}
+		</div>
+	</div>
+{/if}
 
 <style>
 	button {
@@ -175,67 +167,36 @@
 		border: none;
 	}
 
-	.slider-container {
-		width: 100%;
+	.ui-slider_main {
 		display: flex;
-		flex-direction: column;
-		margin: 10px auto;
-	}
-
-	.caption-container {
-		display: flex;
-		align-items: center;
-		justify-content: center;
+		align-items: stretch;
+		justify-content: space-between;
 		padding: 5px 15px;
 		color: #ccc;
-		height: 400px;
 		overflow: hidden;
+
+		& > button {
+			cursor: pointer;
+			width: auto;
+			font-size: 3rem;
+			margin: 30px;
+
+			&:active {
+				color: rgb(83, 172, 255);
+				text-decoration: none;
+			}
+
+			&:hover {
+				color: rgb(83, 172, 255);
+				text-decoration: none;
+			}
+		}
 	}
 
-	.caption {
+	.ui-slider_thumbnails {
 		display: flex;
-		align-items: center;
 		justify-content: center;
-		padding: 5px 15px;
-		width: 500px;
-		overflow: hidden;
-	}
-
-	.prev,
-	.next {
-		cursor: pointer;
-		width: auto;
-		font-size: 3rem;
-		margin: 30px;
-	}
-
-	.prev:hover,
-	.next:hover {
-		color: rgb(83, 172, 255);
-		text-decoration: none;
-	}
-
-	.prev:active,
-	.next:active {
-		color: rgb(83, 172, 255);
-		text-decoration: none;
-	}
-
-	.thumbnails-row {
-		width: auto;
-		display: flex;
-		align-self: center;
-		max-height: 80px;
-	}
-
-	.thumbnail {
-		display: flex;
-		height: inherit;
-	}
-
-	.description {
-		margin-top: 20px;
-		font-size: small;
-		align-self: center;
+		gap: 2px;
+		flex-wrap: wrap;
 	}
 </style>
