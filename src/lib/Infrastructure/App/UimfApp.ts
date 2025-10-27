@@ -151,7 +151,7 @@ export class UimfApp implements IUimfApp {
     getDefaultValue(valueName: string) {
         switch (valueName) {
             case 'currentUser':
-                return localStorage.internaluser.Id;
+                return localStorage["ngStorage-internaluser"].Id;
             default:
                 return valueName;
         }
