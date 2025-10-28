@@ -255,7 +255,7 @@ interface AppObject {
         visibleOnlyTo?: string[]
     ): void;
     renderForm(options: { data: any; metadata: IFieldMetadata; form: FormInstance | null }): Element;
-    runResponseHandler(response: FormResponse): Promise<void>;
+   
     runClientFunctions(response: FormResponse, parentForm?: FormInstance | null): Promise<void>;
     handleCustomFormLinkAction(value: IFormLinkData, inputFieldValues: any): void;
     confirm(options: IConfirmOptions): Promise<void>;
