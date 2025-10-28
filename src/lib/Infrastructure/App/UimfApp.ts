@@ -332,6 +332,42 @@ export class UimfApp {
         // AngularJS input components just use basic serialization.
         return value == null ? null : value.toString();
     }
+    getFormMetadata(formId: string): Promise<FormMetadata> {
+        if (this.formPromises[formId] != null) {
+            return this.formPromises[formId];
+        }
+
+        const promise = fetch('/api/form/metadata/' + formId, {
+            headers: {
+                uimf: 'true'
+            }
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    return response.json().then((errorData) => {
+                        this.handleErrorHttpResponse(errorData);
+                        throw errorData;
+                    });
+                }
+                return response.json();
+            })
+            .then((metadata: FormMetadata) => {
+                if (metadata == null) {
+                    console.error('Cannot find form metadata for "' + formId + '".');
+                    throw metadata;
+                }
+
+                this.formsById[formId] = metadata;
+                return metadata;
+            })
+            .catch((error) => {
+                throw error;
+            });
+
+        this.formPromises[formId] = promise;
+
+        return promise;
+    }
     getForm(formId: string): Promise<FormInstance> {
         return this.#app.getForm(formId);
     }
