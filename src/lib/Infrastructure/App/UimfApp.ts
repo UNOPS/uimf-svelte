@@ -314,6 +314,9 @@ export class UimfApp {
     getClientFunction(id: string) {
         return this.#app.getClientFunction(id);
     }
+    getFormLinkActionHandler(action: string) {
+        return this.#app.getFormLinkActionHandler(action);
+    }
     getForm(formId: string): Promise<FormInstance> {
         return this.#app.getForm(formId);
     }
