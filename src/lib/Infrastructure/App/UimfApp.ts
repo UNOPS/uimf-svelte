@@ -52,8 +52,8 @@ interface IPostFormConfig {
     skipClientFunctions?: boolean;
 }
 
-export class UimfApp implements IUimfApp {
-    constructor(app: IUimfApp) {
+export class UimfApp {
+    constructor(app: AppObject) {
         this.appStorage = app.appStorage;
         this.#app = app;
         this.formsById = app.formsById;
@@ -246,7 +246,7 @@ export class UimfApp implements IUimfApp {
     }
 }
 
-export default interface IUimfApp {
+interface AppObject {
     appStorage: AppStorage;
     showFormInSection(
         formId: string,
