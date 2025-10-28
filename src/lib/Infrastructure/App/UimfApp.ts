@@ -152,10 +152,63 @@ export class UimfApp {
         return this.#app.openHtmlModal(options);
     }
     makeUrl(link: IFormlinkBase): Promise<string> {
-        return this.#app.makeUrl(link);
+        if (link.Action === 'redirect-to-url') {
+            return Promise.resolve((link.InputFieldValues || {})['url']);
+        } else if (link.Action === 'generate-pdf') {
+            return Promise.resolve(link.Form || '');
+        }
+
+        return this.getFormMetadata(link.Form || '').then((metadata) => {
+            const params = link.InputFieldValues || {};
+
+            let query = '';
+            const sortedKeys = Object.keys(params).sort();
+
+            for (let i = 0; i < sortedKeys.length; i++) {
+                const key = sortedKeys[i];
+                const inputValue = params[key];
+
+                if (inputValue == null) {
+                    continue;
+                }
+
+                const inputMetadata = metadata.InputFields.find((t) => t.Id === key);
+
+                const serializedValue = this.serializeInputValue(inputMetadata, inputValue);
+
+                if (serializedValue != null && serializedValue !== '') {
+                    if (query !== '') {
+                        query += '&';
+                    }
+                    query += encodeURIComponent(key) + '=' + encodeURIComponent(serializedValue);
+                }
+            }
+
+            let url = '#/form/' + link.Form;
+
+            if (query) {
+                // We add the _ query parameter to make sure the URL is reloaded
+                // in case the non-query part of the URL is identical to the current one.
+                // For example if we try to navigate from `/form/user?id=1` to `/form/user?id=2`
+                // the route won't reload (even though state's `reloadOnSearch` is set to `true`).
+                // To force the route reload we need to add a `_` query parameter with a value that's
+                // different from the current route, i.e. - the target url should be something like
+                // `/form/user?id=2&_=1`.
+                // To make sure `_` doesn't get too long we limit it to values between 0 and 99.
+                // This is a purely aesthetic concern.
+                const urlParams = new URLSearchParams(window.location.search);
+                let counter = parseInt(urlParams.get('_') || '0');
+                counter = isNaN(counter) ? 0 : counter + 1;
+                url += '?' + query + '&_=' + counter;
+            }
+
+            return url;
+        });
     }
     goto(link: FormLink): Promise<void> {
-        return this.#app.goto(link);
+        return this.makeUrl(link as any).then((url) => {
+            window.location.href = url;
+        });
     }
     postForm<T extends FormResponse>(
         form: string,
