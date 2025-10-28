@@ -59,7 +59,7 @@ export class UimfApp {
         this.formsById = app.formsById;
     }
 
-    #app: IUimfApp;
+    #app: AppObject;
     appStorage: AppStorage;
     formsById: { [id: string]: FormMetadata };
 
