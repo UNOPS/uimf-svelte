@@ -130,9 +130,14 @@ export class UimfApp {
 
         return runNext(0);
     }
-    
+
     handleCustomFormLinkAction(value: IFormLinkData, inputFieldValues: any): void {
-        return this.#app.handleCustomFormLinkAction(value, inputFieldValues);
+        const handler = this.getFormLinkActionHandler(value.Action);
+        if (handler == null) {
+            throw 'Unsupported action: ' + value.Action;
+        }
+
+        handler(value, inputFieldValues);
     }
     confirm(options: IConfirmOptions): Promise<void> {
         return this.#app.confirm(options);
