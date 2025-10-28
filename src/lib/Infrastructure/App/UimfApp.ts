@@ -81,7 +81,14 @@ export class UimfApp {
         return this.#app.renderForm(options);
     }
     runResponseHandler(response: FormResponse): Promise<void> {
-        return this.#app.runResponseHandler(response);
+        if (response.Metadata != null) {
+            const customHandler = this.getResponseHandler(response.Metadata.Handler);
+            if (customHandler != null) {
+                customHandler(response);
+            }
+        }
+
+        return Promise.resolve();
     }
 
     /**
