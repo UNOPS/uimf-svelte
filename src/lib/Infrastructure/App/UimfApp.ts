@@ -77,6 +77,8 @@ export class UimfApp {
     private preamble =
         'An error occured. If you need assistance please contact us at unwebbuyplus@unops.org.<br><br>';
 
+    private formPromises: { [formId: string]: Promise<FormMetadata> } = {};
+
     renderForm(options: { data: any; metadata: IFieldMetadata; form: FormInstance | null }): Element {
         return this.#app.renderForm(options);
     }
@@ -380,7 +382,7 @@ export class UimfApp {
     getDefaultValue(valueName: string) {
         switch (valueName) {
             case 'currentUser':
-                return localStorage["ngStorage-internaluser"].Id;
+                return localStorage['ngStorage-internaluser'].Id;
             default:
                 return valueName;
         }
@@ -484,7 +486,6 @@ interface AppObject {
         visibleOnlyTo?: string[]
     ): void;
     renderForm(options: { data: any; metadata: IFieldMetadata; form: FormInstance | null }): Element;
-   
     runClientFunctions(response: FormResponse, parentForm?: FormInstance | null): Promise<void>;
     handleCustomFormLinkAction(value: IFormLinkData, inputFieldValues: any): void;
     confirm(options: IConfirmOptions): Promise<void>;
@@ -499,10 +500,14 @@ interface AppObject {
         data: any,
         config: IPostFormConfig | null
     ): Promise<T>;
-    getApiFile(url: string): Promise<Response>;
+    getApiFile(url: string): Promise<void> | void;
     getApi(url: string): Promise<Response>;
     getResponseHandler(handler: string): any;
+    getClientFunction(id: string): any;
+    getFormLinkActionHandler(action: string): any;
+    getFormMetadata(formId: string): Promise<FormMetadata>;
     getForm(formId: string): Promise<FormInstance>;
     hasPermission(permission?: string | null): boolean;
     colorFromString(str: string, options?: ColorOptions | null): string;
+    buildFormUrl(form: string, data: any): string;
 }
