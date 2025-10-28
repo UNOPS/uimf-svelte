@@ -317,6 +317,21 @@ export class UimfApp {
     getFormLinkActionHandler(action: string) {
         return this.#app.getFormLinkActionHandler(action);
     }
+    serializeInputValue(metadata: any, value: any) {
+        if ((window as any).SvelteComponents.controlRegister.inputs[metadata.Component.Type] != null) {
+            const controller = new (window as any).SvelteComponents.controlRegister.inputs[
+                metadata.Component.Type
+            ].controller({
+                metadata: metadata,
+                app: this
+            });
+
+            return controller.serialize(value);
+        }
+
+        // AngularJS input components just use basic serialization.
+        return value == null ? null : value.toString();
+    }
     getForm(formId: string): Promise<FormInstance> {
         return this.#app.getForm(formId);
     }
