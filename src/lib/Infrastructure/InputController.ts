@@ -1,5 +1,5 @@
 import type { IInputFieldMetadata } from "./Metadata/IInputFieldMetadata";
-import type IUimfApp from "./App/UimfApp";
+import type UimfApp from "./App/UimfApp";
 import type { FormInstance } from "./FormInstance";
 import { Field } from "./Fields/Field";
 
@@ -12,7 +12,7 @@ export interface CreateInputOptions<TMetadata extends IInputFieldMetadata = IInp
     parent: Field | null;
     metadata: TMetadata;
     form: FormInstance | null;
-    app: IUimfApp;
+    app: UimfApp;
 }
 
 export abstract class InputController<TValue, TMetadata extends IInputFieldMetadata = IInputFieldMetadata> extends Field<TMetadata> {

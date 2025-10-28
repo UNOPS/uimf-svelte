@@ -2,7 +2,7 @@ import type { FormMetadata } from "./Metadata/FormMetadata";
 import type { InputController } from "./InputController";
 import type { OutputController } from "./OutputController";
 import type { FormLink } from "./Metadata/FormLink";
-import type IUimfApp from "./App/UimfApp";
+import type UimfApp from "./App/UimfApp";
 import type { IFormContainer } from "./App/IFormContainer";
 
 export interface FormInstance extends IFormContainer {
@@ -17,7 +17,7 @@ export interface FormInstance extends IFormContainer {
     response: { [key: string]: OutputController<any>; };
     inputs: { [key: string]: InputController<any>; };
     originalInputValues: { [key: string]: any; };
-    app: IUimfApp;
+    app: UimfApp;
     currentUrl: string;
     useUrl: boolean;
     setInputFieldValues(formlink: FormLink): Promise<any>;

@@ -1,7 +1,6 @@
 import EventSource from "../EventSource";
 import type { FormInstance } from "../FormInstance";
 import type { IFieldMetadata } from "../Metadata";
-import type IUimfApp from "../App/UimfApp";
 import type UimfApp from "../App/UimfApp";
 import uuid from "../Utilities/uuid";
 import { FormFieldNavigator } from "./FormFieldNavigator";
@@ -21,7 +20,7 @@ export abstract class Field<TMetadata extends IFieldMetadata = IFieldMetadata> e
     /**
      * Gets the app to which the field belongs.
      */
-    public readonly app: IUimfApp;
+    public readonly app: UimfApp;
 
     /**
      * Gets nested fields owned by this field.
