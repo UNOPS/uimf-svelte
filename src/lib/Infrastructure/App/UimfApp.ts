@@ -217,47 +217,7 @@ export class UimfApp {
         data: any,
         config: IPostFormConfig | null
     ): Promise<T> {
-        config = config || {};
-
-        return fetch('/api/form/run', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                uimf: 'true'
-            },
-            body: JSON.stringify([
-                {
-                    Form: form,
-                    InputFieldValues: data
-                }
-            ])
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    return response.json().then((errorData) => {
-                        this.handleErrorHttpResponse(errorData, config!);
-                        throw errorData;
-                    });
-                }
-                return response.json();
-            })
-            .then((responseArray: any[]) => {
-                const responseData = responseArray[0].Data;
-                const clientFunctionsPromise = !config!.skipClientFunctions
-                    ? this.runClientFunctions(responseData, (config as any).parentForm)
-                    : Promise.resolve();
-
-                return clientFunctionsPromise
-                    .then(() => {
-                        return responseData as T;
-                    })
-                    .catch(() => {
-                        throw responseData;
-                    });
-            })
-            .catch((error) => {
-                throw error;
-            });
+        return this.#app.postForm(form, data, config);
     }
     getApiFile(url: string): Promise<void> | void {
         const token = localStorage['Token'];
