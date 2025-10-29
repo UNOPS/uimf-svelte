@@ -7,6 +7,7 @@ import { FormResponse } from './FormResponse';
 import { IFormContainer } from './IFormContainer';
 import { FormLink } from '../Metadata';
 import { IFormlinkBase } from '../../Outputs/FormLink/IFormlinkBase';
+import { ResponseHandlerRegistry } from '../ResponseHandlers/ResponseHandlerRegistry';
 
 interface IConfirmOptions {
     headerText?: string;
@@ -323,7 +324,7 @@ export class UimfApp {
             });
     }
     getResponseHandler(handler: string) {
-        return this.#app.getResponseHandler(handler);
+        return ResponseHandlerRegistry[handler];
     }
     getClientFunction(id: string) {
         return this.#app.getClientFunction(id);
@@ -522,7 +523,6 @@ interface AppObject {
     ): Promise<T>;
     getApiFile(url: string): Promise<void> | void;
     getApi(url: string): Promise<Response>;
-    getResponseHandler(handler: string): any;
     getClientFunction(id: string): any;
     getFormLinkActionHandler(action: string): any;
     getFormMetadata(formId: string): Promise<FormMetadata>;
