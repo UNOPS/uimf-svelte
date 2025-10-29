@@ -217,7 +217,50 @@ export class UimfApp {
         data: any,
         config: IPostFormConfig | null
     ): Promise<T> {
-        return this.#app.postForm(form, data, config);
+
+        config = config || {};
+
+        const headers: any = {
+            'Content-Type': 'application/json',
+            uimf: 'true'
+        };
+
+        const token = localStorage['Token'];
+        if (token) {
+            headers.Authorization = 'Bearer ' + token;
+        }
+
+        return fetch('/api/form/run', {
+            method: 'POST',
+            headers: headers,
+            credentials: 'include',
+            body: JSON.stringify([
+                {
+                    Form: form,
+                    InputFieldValues: data
+                }
+            ])
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    return response.json().then((errorData) => {
+                        this.handleErrorHttpResponse(errorData, config!);
+                        return Promise.reject(errorData);
+                    });
+                }
+                return response.json();
+            })
+            .then((responseArray: any[]) => {
+                const clientFunctionsPromise = !config!.skipClientFunctions
+                    ? this.runClientFunctions(responseArray[0].Data, (config as any).parentForm)
+                    : Promise.resolve();
+
+                return clientFunctionsPromise.then(() => {
+                    return responseArray[0].Data as T;
+                }).catch(() => {
+                    return Promise.reject(responseArray);
+                });
+            });
     }
     getApiFile(url: string): Promise<void> | void {
         const token = localStorage['Token'];
@@ -252,10 +295,19 @@ export class UimfApp {
         });
     }
     getApi(url: string): Promise<Response> {
+        const headers: any = {
+            uimf: 'true'
+        };
+
+        // Add Authorization token if it exists (for External site)
+        const token = localStorage['Token'];
+        if (token) {
+            headers.Authorization = 'Bearer ' + token;
+        }
+
         return fetch(url, {
-            headers: {
-                uimf: 'true'
-            }
+            headers: headers,
+            credentials: 'include'
         })
             .then((response) => {
                 if (!response.ok) {
@@ -299,10 +351,18 @@ export class UimfApp {
             return this.formPromises[formId];
         }
 
+        const headers: any = {
+            uimf: 'true'
+        };
+
+        const token = localStorage['Token'];
+        if (token) {
+            headers.Authorization = 'Bearer ' + token;
+        }
+
         const promise = fetch('/api/form/metadata/' + formId, {
-            headers: {
-                uimf: 'true'
-            }
+            headers: headers,
+            credentials: 'include'
         })
             .then((response) => {
                 if (!response.ok) {
