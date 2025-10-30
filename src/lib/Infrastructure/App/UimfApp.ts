@@ -86,8 +86,8 @@ export class UimfApp {
     runResponseHandler(response: FormResponse): Promise<void> {
         if (response.Metadata != null) {
             const customHandler = this.getResponseHandler(response.Metadata.Handler);
-            if (customHandler != null) {
-                customHandler(response);
+            if (customHandler != null && typeof customHandler.handle === 'function') {
+                customHandler.handle(response);
             }
         }
 
