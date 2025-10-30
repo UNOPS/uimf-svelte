@@ -58,7 +58,7 @@
 
 <ul>
 	{#each tabs as tab}
-		<li class={activeTabValue === tab.controller.metadata.Id ? 'active' : ''}>
+		<li class={activeTabValue === tab.controller.metadata.Id ? 'ui-active' : ''}>
 			<span
 				on:click={handleClick(tab.controller.metadata.Id)}
 				on:keydown={(event) => {
@@ -76,20 +76,17 @@
 </ul>
 {#each tabs as tab}
 	{#if activeTabValue == tab.controller.metadata.Id}
-		<div class="box active-tab">
+		<div class="ui-box pt-4 ui-active-tab">
 			<svelte:component this={tab.component} controller={tab.controller} />
 		</div>
 	{:else}
-		<div class="box hidden-tab">
+		<div class="ui-box pt-4 ui-hidden-tab">
 			<svelte:component this={tab.component} controller={tab.controller} />
 		</div>
 	{/if}
 {/each}
 
 <style>
-	.box {
-		padding: 10px 20px;
-	}
 	ul {
 		display: flex;
 		flex-wrap: wrap;
@@ -117,13 +114,13 @@
 		color: white;
 	}
 
-	li.active > span {
+	li.ui-active > span {
 		color: #495057;
 		background-color: #fff;
 		border-color: #68b3ff #68b3ff #fff;
 	}
 
-	.hidden-tab {
+	.ui-hidden-tab {
 		display: none;
 	}
 
@@ -132,11 +129,11 @@
 			display: none !important;
 		}
 
-		.box {
+		.ui-box {
 			display: block !important;
 		}
 
-		.hidden-tab {
+		.ui-hidden-tab {
 			display: block !important;
 		}
 	}
