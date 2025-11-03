@@ -16,27 +16,18 @@
 
 	interface IConfiguration {
 		CssClass: string | null;
-		Layout: FormInputLayout | null;
+		Group: string | null;
 		LayoutCssClass: string | null;
-	}
-
-	enum FormInputLayout {
-		Default = 0,
-		Centered = 10,
-		Inline = 20
 	}
 
 	export let controller: OutputController<IData, IOutputFieldMetadata<IConfiguration | null>>;
 
 	let visibleInputs: InputController<any>[] = [];
 	let effectiveActions: IFormLinkData[] = [];
-	let layout: FormInputLayout = FormInputLayout.Default;
 
 	let component = new OutputComponent({
 		async refresh() {
 			controller.value = controller.value;
-
-			layout = controller.metadata.Component.Configuration?.Layout ?? FormInputLayout.Default;
 
 			const promises = controller.form?.metadata.InputFields.map(async (inputMetadata) => {
 				const input = controller.form!.inputs[inputMetadata.Id];
@@ -62,8 +53,11 @@
 
 			// Force re-rendering of inputs. This is needed in case any of the input
 			// field values have been changed (e.g. - as a result `bind-to-output`).
+			const formInputsGroup = controller.metadata.Component.Configuration?.Group ?? null;
+
 			visibleInputs =
 				controller.form?.metadata.InputFields.filter((t) => t.Hidden === false)
+					.filter((t) => t.InputGroup === formInputsGroup)
 					.sort((a, b) => a.OrderIndex - b.OrderIndex)
 					.map((t) => controller.form!.inputs[t.Id]) ?? [];
 
@@ -106,7 +100,7 @@
 	function clearInputs() {
 		controller.form?.metadata.InputFields.forEach((input) => {
 			if (!input.Hidden) {
-				controller.form?.inputs[input.Id].setValue(null);
+				controller.form?.inputs[input.Id].clear();
 			}
 		});
 
@@ -118,13 +112,16 @@
 	}
 </script>
 
-{#if controller.form != null && (!controller.form.metadata.PostOnLoad || visibleInputs?.length > 0 || effectiveActions?.length > 0)}
+{#if controller.form != null && controller.metadata.Component.Configuration?.Group == null}
 	<form
-		name={controller.form?.metadata.Id}
+		id={controller.form.getFormId()}
+		name={controller.form.metadata.Id}
 		on:submit|preventDefault={submitForm}
-		class={controller.metadata.Component.Configuration?.CssClass}
-		class:ui-form-inputs={true}
-	>
+	/>
+{/if}
+
+{#if controller.form != null && (!controller.form.metadata.PostOnLoad || visibleInputs?.length > 0 || effectiveActions?.length > 0)}
+	<div class={controller.metadata.Component.Configuration?.CssClass} class:ui-form-inputs={true}>
 		<div
 			class:ui-form-inputs_fields={true}
 			class={controller.metadata.Component.Configuration?.LayoutCssClass}
@@ -138,7 +135,11 @@
 			<div class="ui-form-inputs_buttons">
 				{#each effectiveActions as action}
 					{#if action.Form === '#submit'}
-						<button class={action.CssClass ?? 'btn btn-primary'} type="submit">
+						<button
+							class={action.CssClass ?? 'btn btn-primary'}
+							type="submit"
+							form={controller.form.getFormId()}
+						>
 							{action.Label}
 						</button>
 					{:else if action.Form === '#clear'}
@@ -165,20 +166,5 @@
 				{/each}
 			</div>
 		{/if}
-	</form>
+	</div>
 {/if}
-
-<style lang="scss">
-	.ui-form-inputs_fields {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
-		grid-gap: 10px;
-		margin-bottom: 20px;
-	}
-
-	.ui-form-inputs_buttons {
-		display: flex;
-		justify-content: flex-end;
-		gap: 5px;
-	}
-</style>

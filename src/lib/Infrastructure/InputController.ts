@@ -1,5 +1,5 @@
 import type { IInputFieldMetadata } from "./Metadata/IInputFieldMetadata";
-import type UimfApp from "./App/UimfApp";
+import type { UimfApp } from "./App/UimfApp";
 import type { FormInstance } from "./FormInstance";
 import { Field } from "./Fields/Field";
 
@@ -70,7 +70,15 @@ export abstract class InputController<TValue, TMetadata extends IInputFieldMetad
             .catch((e) => console.error('Something went wrong.', e));
     }
 
-    /** 
+    /**
+     * Clears the input's value. By default this calls setValue(null).
+     * Override this method if you need custom clear behavior (e.g., to preserve child inputs).
+     */
+    public clear(): Promise<void> {
+        return this.setValue(null);
+    }
+
+    /**
      * This method is called internally by `setValue` and is useful in case additional logic needs to be
      * applied when input's value is set.
      * @param value Input's new value.

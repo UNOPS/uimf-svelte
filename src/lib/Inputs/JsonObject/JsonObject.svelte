@@ -2,6 +2,7 @@
 	import { InputController } from '../../Infrastructure/InputController';
 	import { beforeUpdate } from 'svelte';
 	import { InputComponent } from '../../Infrastructure/Component';
+	import { UrlSerializer } from '../../Infrastructure/Utilities/UrlSerializer';
 
 	interface IJsonObject {
 		Value: any;
@@ -13,14 +14,12 @@
 		}
 
 		public deserialize(value: string | null): Promise<IJsonObject | null> {
-			// Deserialize the inner value and then wrap it.
-			const innerValue = value == null ? null : JSON.parse(value);
+			const innerValue = UrlSerializer.deserialize(value);
 			return Promise.resolve({ Value: innerValue });
 		}
 
 		public serialize(value: IJsonObject | null): string | null {
-			// Serialize the inner value.
-			return value?.Value != null ? JSON.stringify(value.Value) : null;
+			return UrlSerializer.serialize(value?.Value);
 		}
 	}
 </script>

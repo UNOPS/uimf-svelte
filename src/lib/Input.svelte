@@ -7,7 +7,6 @@
 	import FieldLabel from './Components/FieldLabel.svelte';
 
 	import { FieldLayout } from './Infrastructure/Metadata/FieldLayout';
-	import { DocumentationLayout } from './Infrastructure/Metadata/DocumentationLayout';
 
 	export let controller: InputController<any>;
 	export let nolayout: boolean = false;
@@ -15,7 +14,6 @@
 	// Field constants.
 	let component: ConstructorOfATypedSvelteComponent;
 	let thisHideLabel: boolean;
-	let required: boolean;
 	let layout: FieldLayout;
 
 	const componentController = new InputComponent({
@@ -40,8 +38,6 @@
 					? FieldLayout.Vertical
 					: FieldLayout.Horizontal;
 			}
-
-			required = controller.metadata.Required;
 		},
 		refresh() {
 			controller.value = controller.value;
@@ -58,10 +54,10 @@
 {:else if layout === FieldLayout.None}
 	{#if controller.metadata.CssClass != null}
 		<div class={controller.metadata.CssClass} class:ui-component={true}>
-			<svelte:component this={component} {controller} {required} />
+			<svelte:component this={component} {controller} />
 		</div>
 	{:else}
-		<svelte:component this={component} {controller} {required} />
+		<svelte:component this={component} {controller} />
 	{/if}
 {:else if layout === FieldLayout.Unstyled}
 	<div class={controller.metadata.CssClass}>
@@ -93,7 +89,7 @@
 			/>
 		{/if}
 		<div class:ui-component={true}>
-			<svelte:component this={component} {controller} {required} />
+			<svelte:component this={component} {controller} />
 		</div>
 	</div>
 {/if}

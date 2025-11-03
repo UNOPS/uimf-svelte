@@ -2,6 +2,7 @@
 	import { InputController, type CreateInputOptions } from '../../Infrastructure/InputController';
 	import type { OutputController } from '../../Infrastructure/OutputController';
 	import type { IFieldMetadata, IInputFieldMetadata } from '../../Infrastructure/Metadata';
+	import { UrlSerializer } from '../../Infrastructure/Utilities/UrlSerializer';
 
 	export class Controller extends InputController<
 		ITableInputData,
@@ -16,12 +17,17 @@
 		}
 
 		public deserialize(value: string): Promise<ITableInputData> {
-			var result = JSON.parse(value);
-			return Promise.resolve(result);
+			const result = UrlSerializer.deserialize<ITableInputData>(value);
+
+			return Promise.resolve(result ?? { Items: [] });
 		}
 
 		public serialize(value: ITableInputData): string | null {
-			return value != null && value.Items?.length > 0 ? JSON.stringify(value) : null;
+			if (value == null || value.Items?.length === 0) {
+				return null;
+			}
+
+			return UrlSerializer.serialize(value);
 		}
 
 		public async getValue(): Promise<ITableInputData> {
@@ -330,7 +336,7 @@
 							</td>
 						{/each}
 
-						<td class="col-action">
+						<td class="ui-table-inputs_col-action">
 							{#if rowGroup.data.CanRemove}
 								<button
 									class="btn btn-link"
@@ -365,7 +371,7 @@
 				<tfoot>
 					<tr>
 						<td colspan={table.head.main.cells.length} />
-						<td class="col-action">
+						<td class="ui-table-inputs_col-action">
 							<button
 								class="btn btn-link"
 								type="button"
@@ -460,12 +466,7 @@
 		}
 	}
 
-	.col-action {
-		width: 1px;
-		text-align: center;
-		vertical-align: middle;
-		white-space: nowrap;
-
+	.ui-table-inputs_col-action {
 		& > button {
 			padding: 10px 10px 5px;
 			background: transparent;
