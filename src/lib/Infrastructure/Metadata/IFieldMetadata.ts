@@ -12,6 +12,7 @@ export interface IFieldMetadata<TConfiguration = any> {
     DefaultValue?: string | null;
     Documentation?: string | null;
     CssClass?: string | null;
+    InputGroup?: string | null;
     Layout?: FieldLayout | null;
     DocumentationLayout?: DocumentationLayout | null;
 }

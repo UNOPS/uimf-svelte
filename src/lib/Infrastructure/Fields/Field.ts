@@ -1,7 +1,7 @@
 import EventSource from "../EventSource";
 import type { FormInstance } from "../FormInstance";
 import type { IFieldMetadata } from "../Metadata";
-import type UimfApp from "../App/UimfApp";
+import type { UimfApp } from "../App/UimfApp";
 import uuid from "../Utilities/uuid";
 import { FormFieldNavigator } from "./FormFieldNavigator";
 

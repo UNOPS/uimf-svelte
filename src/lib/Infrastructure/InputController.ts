@@ -1,5 +1,5 @@
 import type { IInputFieldMetadata } from "./Metadata/IInputFieldMetadata";
-import type UimfApp from "./App/UimfApp";
+import type { UimfApp } from "./App/UimfApp";
 import type { FormInstance } from "./FormInstance";
 import { Field } from "./Fields/Field";
 

@@ -16,6 +16,7 @@
 
 	interface IConfiguration {
 		CssClass: string | null;
+		Group: string | null;
 		Layout: FormInputLayout | null;
 		LayoutCssClass: string | null;
 	}
@@ -62,8 +63,11 @@
 
 			// Force re-rendering of inputs. This is needed in case any of the input
 			// field values have been changed (e.g. - as a result `bind-to-output`).
+			const formInputsGroup = controller.metadata.Component.Configuration?.Group ?? null;
+
 			visibleInputs =
 				controller.form?.metadata.InputFields.filter((t) => t.Hidden === false)
+					.filter((t) => t.InputGroup === formInputsGroup)
 					.sort((a, b) => a.OrderIndex - b.OrderIndex)
 					.map((t) => controller.form!.inputs[t.Id]) ?? [];
 
@@ -118,10 +122,16 @@
 	}
 </script>
 
-{#if controller.form != null && (!controller.form.metadata.PostOnLoad || visibleInputs?.length > 0 || effectiveActions?.length > 0)}
+{#if controller.form != null && controller.metadata.Component.Configuration?.Group == null}
 	<form
-		name={controller.form?.metadata.Id}
+		id={controller.form.getFormId()}
+		name={controller.form.metadata.Id}
 		on:submit|preventDefault={submitForm}
+	></form>
+{/if}
+
+{#if controller.form != null && (!controller.form.metadata.PostOnLoad || visibleInputs?.length > 0 || effectiveActions?.length > 0)}
+	<div
 		class={controller.metadata.Component.Configuration?.CssClass}
 		class:ui-form-inputs={true}
 	>
@@ -138,7 +148,11 @@
 			<div class="ui-form-inputs_buttons">
 				{#each effectiveActions as action}
 					{#if action.Form === '#submit'}
-						<button class={action.CssClass ?? 'btn btn-primary'} type="submit">
+						<button
+							class={action.CssClass ?? 'btn btn-primary'}
+							type="submit"
+							form={controller.form.getFormId()}
+						>
 							{action.Label}
 						</button>
 					{:else if action.Form === '#clear'}
@@ -165,7 +179,7 @@
 				{/each}
 			</div>
 		{/if}
-	</form>
+	</div>
 {/if}
 
 <style lang="scss">
