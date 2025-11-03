@@ -130,6 +130,12 @@
 		 */
 		DefaultRowValue?: string;
 
+		/**
+		 * Message to display when the table has no items.
+		 * If null, no message will be displayed.
+		 */
+		NoItemsMessage?: string;
+
 		Row: { GroupBy?: string };
 	}
 </script>
@@ -374,8 +380,8 @@
 			{/if}
 		</table>
 	</div>
-{:else}
-	<div>No items found.</div>
+{:else if metadata?.Component.Configuration.NoItemsMessage != null}
+	<div>{metadata.Component.Configuration.NoItemsMessage}</div>
 {/if}
 
 <style lang="scss">
