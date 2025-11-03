@@ -1,6 +1,7 @@
 <script lang="ts" context="module">
 	import { InputController, type CreateInputOptions } from '../../Infrastructure/InputController';
 	import type { IInputFieldMetadata } from '$lib/Infrastructure/Metadata';
+	import { UrlSerializer } from '../../Infrastructure/Utilities/UrlSerializer';
 
 	export type ViewData = { [key: string]: any };
 
@@ -83,17 +84,11 @@
 		}
 
 		public deserialize(value: string | null): Promise<ViewData | null> {
-			const parsed = value != null && value.trim().length > 0 ? JSON.parse(value) : null;
-
-			return Promise.resolve(parsed);
+			return Promise.resolve(UrlSerializer.deserialize<ViewData>(value));
 		}
 
 		public serialize(value: ViewData | null): string | null {
-			if (value == null) {
-				return null;
-			}
-
-			return JSON.stringify(value);
+			return UrlSerializer.serialize(value);
 		}
 
 		protected setValueInternal(value: ViewData | null): Promise<void> {

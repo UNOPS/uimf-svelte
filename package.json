@@ -85,5 +85,8 @@
 	},
 	"type": "module",
 	"svelte": "./dist/index.js",
-	"types": "./dist/index.d.ts"
+	"types": "./dist/index.d.ts",
+	"dependencies": {
+		"lz-string": "^1.5.0"
+	}
 }

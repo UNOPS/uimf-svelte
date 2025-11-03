@@ -1,6 +1,7 @@
 <script lang="ts" context="module">
 	import { InputController, type CreateInputOptions } from '../../Infrastructure/InputController';
 	import type { IComponent, IInputFieldMetadata } from '$lib/Infrastructure/Metadata';
+	import { UrlSerializer } from '../../Infrastructure/Utilities/UrlSerializer';
 
 	export interface ViewData {
 		Metadata: IComponent;
@@ -21,7 +22,13 @@
 			if (this.view != null) {
 				var self = this;
 
-				return this.view.controller.getValue().then(function (value: any) {
+				return this.view.controller.getValue().then((value: any) => {
+					if (value == null) {
+						if (!this.metadata.Required) {
+							return null;
+						}
+					}
+
 					return {
 						Metadata: self.view!.metadata,
 						Value: value
@@ -33,11 +40,18 @@
 		}
 
 		public deserialize(value: string | null): Promise<ViewData | null> {
-			return Promise.resolve(JSON.parse(value ?? 'null') as ViewData);
+			return Promise.resolve(UrlSerializer.deserialize<ViewData>(value));
 		}
 
 		public serialize(value: ViewData | null): string | null {
-			return JSON.stringify(value);
+			return UrlSerializer.serialize(value);
+		}
+
+		public override clear(): Promise<void> {
+			if (this.view != null) {
+				return this.view.controller.clear();
+			}
+			return Promise.resolve();
 		}
 
 		protected setValueInternal(value: ViewData | null): Promise<void> {

@@ -3,6 +3,7 @@ import type { IInputFieldMetadata } from "../../Infrastructure/Metadata/IInputFi
 import type { ILayout } from '../../Components/Layout/Metadata/ILayout';
 import type { LayoutViewData, LayoutFieldInstance } from '../../Components/Layout/Layout.svelte';
 import { LayoutUtils } from '../../Components/Layout/LayoutUtils';
+import { UrlSerializer } from '../../Infrastructure/Utilities/UrlSerializer';
 
 export class ComplexInputController extends InputController<
 	LayoutViewData,
@@ -41,17 +42,11 @@ export class ComplexInputController extends InputController<
 	}
 
 	public deserialize(value: string | null): Promise<LayoutViewData | null> {
-		const parsed = value != null && value.trim().length > 0 ? JSON.parse(value) : null;
-
-		return Promise.resolve(parsed);
+		return Promise.resolve(UrlSerializer.deserialize<LayoutViewData>(value));
 	}
 
 	public serialize(value: LayoutViewData | null): string | null {
-		if (value == null) {
-			return null;
-		}
-
-		return JSON.stringify(value);
+		return UrlSerializer.serialize(value);
 	}
 
 	protected setValueInternal(value: LayoutViewData | null): Promise<void> {

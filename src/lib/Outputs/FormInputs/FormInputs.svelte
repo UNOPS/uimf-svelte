@@ -17,27 +17,17 @@
 	interface IConfiguration {
 		CssClass: string | null;
 		Group: string | null;
-		Layout: FormInputLayout | null;
 		LayoutCssClass: string | null;
-	}
-
-	enum FormInputLayout {
-		Default = 0,
-		Centered = 10,
-		Inline = 20
 	}
 
 	export let controller: OutputController<IData, IOutputFieldMetadata<IConfiguration | null>>;
 
 	let visibleInputs: InputController<any>[] = [];
 	let effectiveActions: IFormLinkData[] = [];
-	let layout: FormInputLayout = FormInputLayout.Default;
 
 	let component = new OutputComponent({
 		async refresh() {
 			controller.value = controller.value;
-
-			layout = controller.metadata.Component.Configuration?.Layout ?? FormInputLayout.Default;
 
 			const promises = controller.form?.metadata.InputFields.map(async (inputMetadata) => {
 				const input = controller.form!.inputs[inputMetadata.Id];
@@ -110,7 +100,7 @@
 	function clearInputs() {
 		controller.form?.metadata.InputFields.forEach((input) => {
 			if (!input.Hidden) {
-				controller.form?.inputs[input.Id].setValue(null);
+				controller.form?.inputs[input.Id].clear();
 			}
 		});
 
@@ -127,14 +117,11 @@
 		id={controller.form.getFormId()}
 		name={controller.form.metadata.Id}
 		on:submit|preventDefault={submitForm}
-	></form>
+	/>
 {/if}
 
 {#if controller.form != null && (!controller.form.metadata.PostOnLoad || visibleInputs?.length > 0 || effectiveActions?.length > 0)}
-	<div
-		class={controller.metadata.Component.Configuration?.CssClass}
-		class:ui-form-inputs={true}
-	>
+	<div class={controller.metadata.Component.Configuration?.CssClass} class:ui-form-inputs={true}>
 		<div
 			class:ui-form-inputs_fields={true}
 			class={controller.metadata.Component.Configuration?.LayoutCssClass}
@@ -181,18 +168,3 @@
 		{/if}
 	</div>
 {/if}
-
-<style lang="scss">
-	.ui-form-inputs_fields {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
-		grid-gap: 10px;
-		margin-bottom: 20px;
-	}
-
-	.ui-form-inputs_buttons {
-		display: flex;
-		justify-content: flex-end;
-		gap: 5px;
-	}
-</style>
