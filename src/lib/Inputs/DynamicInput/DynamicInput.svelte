@@ -4,7 +4,7 @@
 	import { UrlSerializer } from '../../Infrastructure/Utilities/UrlSerializer';
 
 	export interface ViewData {
-		Metadata: IComponent;
+		Metadata: IComponent | null;
 		Value: any;
 	}
 
@@ -20,8 +20,6 @@
 
 		public getValue(): Promise<ViewData | null> {
 			if (this.view != null) {
-				var self = this;
-
 				return this.view.controller.getValue().then((value: any) => {
 					if (value == null) {
 						if (!this.metadata.Required) {
@@ -30,7 +28,9 @@
 					}
 
 					return {
-						Metadata: self.view!.metadata,
+						// We don't want to be sending metadata to the backend.
+						Metadata: null,
+						// But we do want to send the value.
 						Value: value
 					};
 				});
@@ -55,7 +55,7 @@
 		}
 
 		protected setValueInternal(value: ViewData | null): Promise<void> {
-			if (value != null) {
+			if (value?.Metadata != null) {
 				this.value = value ?? { Value: {} };
 
 				let type = value.Metadata.Type;
