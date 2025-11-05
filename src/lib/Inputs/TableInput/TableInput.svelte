@@ -18,6 +18,7 @@
 
 		public deserialize(value: string): Promise<ITableInputData> {
 			const result = UrlSerializer.deserialize<ITableInputData>(value);
+
 			return Promise.resolve(result ?? { Items: [] });
 		}
 
@@ -335,7 +336,7 @@
 							</td>
 						{/each}
 
-						<td class="col-action">
+						<td class="ui-table-inputs_col-action">
 							{#if rowGroup.data.CanRemove}
 								<button
 									class="btn btn-link"
@@ -370,7 +371,7 @@
 				<tfoot>
 					<tr>
 						<td colspan={table.head.main.cells.length} />
-						<td class="col-action">
+						<td class="ui-table-inputs_col-action">
 							<button
 								class="btn btn-link"
 								type="button"
@@ -465,12 +466,7 @@
 		}
 	}
 
-	.col-action {
-		width: 1px;
-		text-align: center;
-		vertical-align: middle;
-		white-space: nowrap;
-
+	.ui-table-inputs_col-action {
 		& > button {
 			padding: 10px 10px 5px;
 			background: transparent;

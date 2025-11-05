@@ -4,7 +4,7 @@
 	import { UrlSerializer } from '../../Infrastructure/Utilities/UrlSerializer';
 
 	export interface ViewData {
-		Metadata: IComponent | null;
+		Metadata?: IComponent | null;
 		Value: any;
 	}
 
@@ -29,18 +29,25 @@
 
 					return {
 						// We don't want to be sending metadata to the backend.
-						Metadata: null,
+						Metadata: undefined,
 						// But we do want to send the value.
 						Value: value
 					};
 				});
 			}
 
-			return Promise.resolve(null);
+			// Return whatever is stored in the value field. This enables the
+			// use case where DynamicInput was initialized based on a serialized
+			// value (eg - from URL). Because serialized values don't have metadata,
+			// `this.view` will initially be null, but `this.value` will still have
+			// the underlying input's value stored.
+			const result = this.value?.Value != null ? { Value: this.value.Value } : null;
+			return Promise.resolve(result);
 		}
 
 		public deserialize(value: string | null): Promise<ViewData | null> {
-			return Promise.resolve(UrlSerializer.deserialize<ViewData>(value));
+			const result = UrlSerializer.deserialize<ViewData>(value);
+			return Promise.resolve(result);
 		}
 
 		public serialize(value: ViewData | null): string | null {
@@ -55,19 +62,25 @@
 		}
 
 		protected setValueInternal(value: ViewData | null): Promise<void> {
-			if (value?.Metadata != null) {
-				this.value = value ?? { Value: {} };
+			// If metadata is null then use current metadata. This essentially
+			// means that calls to `setValue()` can pass the value without the metadata,
+			// thereby reusing the current metadata.
+			const metadata = value?.Metadata ?? this.view?.metadata;
 
-				let type = value.Metadata.Type;
+			if (metadata != null) {
+				this.value = {
+					Metadata: metadata,
+					Value: value?.Value
+				};
 
-				let controllerClass = controlRegister.inputs[type].controller;
+				let controllerClass = controlRegister.inputs[metadata.Type].controller;
 
 				this.view = {
-					metadata: value.Metadata,
+					metadata: metadata,
 					controller: new controllerClass({
 						parent: this,
 						metadata: {
-							Component: value.Metadata,
+							Component: metadata,
 							Hidden: false,
 							Id: Date.now().toString(),
 							Label: '',
@@ -89,16 +102,21 @@
 
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
-
 	import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
 	import { InputComponent } from '../../Infrastructure/Component';
-	import Input from '../../Input.svelte';
 
 	export let controller: Controller;
+	let innerComponent: any;
 
 	let component = new InputComponent({
 		refresh() {
 			controller.view = controller.view;
+
+			if (controller.value?.Metadata != null) {
+				innerComponent = controlRegister.inputs[controller.value.Metadata.Type].component;
+			} else {
+				innerComponent = null;
+			}
 		}
 	});
 
@@ -107,14 +125,6 @@
 	});
 </script>
 
-{#if controller.view?.controller != null}
-	<div>
-		<Input controller={controller.view.controller} nolayout={true} />
-	</div>
+{#if controller.view?.controller != null && innerComponent != null}
+	<svelte:component this={innerComponent} controller={controller.view.controller} />
 {/if}
-
-<style>
-	div {
-		margin-bottom: 20px;
-	}
-</style>

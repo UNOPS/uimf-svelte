@@ -10,11 +10,20 @@ import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from
  *
  * Trade-off: Values are not human-readable but URLs are significantly shorter and
  * cleaner-looking (no percent-encoded characters like %7B, %22, etc.).
+ *
+ * For debugging, set USE_PLAIN_JSON to true to use readable JSON encoding instead of compression.
  */
 export class UrlSerializer {
 	/**
-	 * Serializes a complex object to a URL-friendly compressed string.
-	 * The output is not human-readable but is compact and URL-safe.
+	 * Set to true to use plain JSON encoding for debugging (human-readable URLs).
+	 * Set to false to use compression for production (compact URLs).
+	 */
+	private static readonly USE_PLAIN_JSON = false;
+
+	/**
+	 * Serializes a complex object to a URL-friendly string.
+	 * When USE_PLAIN_JSON is true: Uses plain JSON encoding for readability.
+	 * When USE_PLAIN_JSON is false: Uses compression for compact URLs.
 	 * Returns null for null values.
 	 */
 	public static serialize(value: any): string | null {
@@ -23,6 +32,11 @@ export class UrlSerializer {
 		}
 
 		const json = JSON.stringify(value);
+
+		if (this.USE_PLAIN_JSON) {
+			return json;
+		}
+
 		return compressToEncodedURIComponent(json);
 	}
 
@@ -36,12 +50,16 @@ export class UrlSerializer {
 		}
 
 		try {
-			const decompressed = decompressFromEncodedURIComponent(value);
-			if (decompressed != null) {
-				return JSON.parse(decompressed) as T;
+			if (this.USE_PLAIN_JSON) {
+				return JSON.parse(value) as T;
+			} else {
+				const decompressed = decompressFromEncodedURIComponent(value);
+				if (decompressed != null) {
+					return JSON.parse(decompressed) as T;
+				}
 			}
 		} catch (e) {
-			// Decompression failed
+			// Deserialization failed
 		}
 
 		return null;
