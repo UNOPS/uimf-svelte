@@ -23,6 +23,7 @@ interface IAlertOptions {
     afterExceptionAction?: () => void;
     closeButtonText?: string;
     size?: string;
+    cssClass?: string;
 }
 
 interface IModalOptions {
@@ -627,7 +628,8 @@ export class UimfApp {
                 actions: actions,
                 afterExceptionAction: (options || {}).afterExceptionAction,
                 closeButtonText: actions != null ? 'Cancel' : 'OK',
-                size: 'lg'
+                size: 'lg',
+                cssClass: 'px-3 py-1'
             })
             .finally(() => {
                 // Indicate that the alert showing this exception message has been closed.
