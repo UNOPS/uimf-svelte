@@ -2,9 +2,10 @@
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
+	import { IFormlinkBase } from '../FormLink/IFormlinkBase';
 
 	interface Item {
-		Url: string;
+		Url: IFormlinkBase;
 		Id: number;
 		Name: string;
 		Children: Item[];
@@ -13,7 +14,7 @@
 	}
 
 	export let controller: OutputController<Item>;
-	
+
 	let expanded = controller.value.IsExpanded;
 
 	let component = new OutputComponent({
@@ -39,6 +40,10 @@
 	<ul>
 		<li class={controller.value.CssClass}>
 			{#if controller.value.Name?.length > 0}
+				{@const url = controller.app.buildFormUrl(
+					controller.value.Url.Form ?? '',
+					controller.value.Url.InputFieldValues
+				)}
 				{#if controller.value.Children.length > 0}
 					<span
 						on:click={() => (expanded = !expanded)}
@@ -60,7 +65,7 @@
 					<i class="fa-solid fa-minus minus" />
 				{/if}
 
-				<a href={controller.value.Url}>{@html controller.value.Name}</a>
+				<a href={url}>{@html controller.value.Name}</a>
 			{/if}
 
 			{#if expanded && controller.value.Children?.length > 0}
