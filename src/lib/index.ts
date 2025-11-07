@@ -5,6 +5,7 @@ import SmartNavigator from './Components/SmartNavigator.svelte';
 import './scss/styles.scss';
 import { UimfApp } from "./Infrastructure/App/UimfApp";
 import { ResponseHandlerRegistry } from "./Infrastructure/ResponseHandlers/ResponseHandlerRegistry";
+import { ClientFunctionRegistry } from "./Infrastructure/ClientFunctions/ClientFunctionRegistry";
 
 declare global {
     interface Window {
@@ -17,5 +18,6 @@ window.SvelteComponents = {
     AppStorage,
     controlRegister: defaultControlRegister,
     UimfApp,
-    ResponseHandlerRegistry
+    ResponseHandlerRegistry,
+    ClientFunctionRegistry
 };

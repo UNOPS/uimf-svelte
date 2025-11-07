@@ -86,8 +86,8 @@ export class UimfApp {
     runResponseHandler(response: FormResponse): Promise<void> {
         if (response.Metadata != null) {
             const customHandler = this.getResponseHandler(response.Metadata.Handler);
-            if (customHandler != null && typeof customHandler.handle === 'function') {
-                customHandler.handle(response);
+            if (customHandler != null && typeof customHandler === 'function') {
+                customHandler(response);
             }
         }
 
@@ -110,16 +110,47 @@ export class UimfApp {
             }
 
             const toRun = functionsToRun[i];
-            const fn = this.getClientFunction(toRun.Id);
+
+            let fn: any = null;
+            let entry: any = null;
+
+            const excludedFromSvelte = ['growl-message', 'alert', 'send-pdf-by-email'];
+
+            if (excludedFromSvelte.indexOf(toRun.Id) === -1) {
+                entry = (window as any).SvelteComponents?.ClientFunctionRegistry?.[toRun.Id];
+                if (entry != null) {
+
+                    if (typeof entry === 'function') {
+                        fn = entry;
+                    }
+
+                    else if (typeof entry.handle === 'function') {
+                        fn = (params?: any) => entry.handle(params);
+                    }
+                }
+            }
+
+            // Fallback to host app implementation if not found in Svelte
+            if (fn == null) {
+                fn = this.#app.getClientFunction(toRun.Id);
+            }
 
             if (fn == null) {
                 return Promise.reject('Cannot find client function "' + toRun.Id + '".');
             }
 
+            // Log which implementation is being used (for debugging)
+            if (entry != null) {
+                console.log("Using Svelte Client Function:", toRun.Id);
+            } else {
+                console.log("Using Angular Client Function:", toRun.Id);
+            }
+
             const result = fn({
                 functionToRun: toRun,
                 response: response,
-                parentForm: parentForm
+                parentForm: parentForm,
+                uimfApp: this
             });
 
             return Promise.resolve(result).then((data) => {
@@ -128,6 +159,9 @@ export class UimfApp {
                 } else {
                     return runNext(i + 1);
                 }
+            }).catch((err) => {
+                console.error('[UimfApp.ts runClientFunctions] Error in function:', toRun.Id, err);
+                return Promise.reject(err);
             });
         };
 
@@ -226,9 +260,13 @@ export class UimfApp {
             uimf: 'true'
         };
 
-        const token = localStorage['Token'];
-        if (token) {
-            headers.Authorization = 'Bearer ' + token;
+        // Only add token if we're on the external site (internal site has ngStorage-internaluser)
+        const isInternalSite = localStorage.getItem('ngStorage-internaluser') != null;
+        if (!isInternalSite) {
+            const token = localStorage.getItem('Token');
+            if (token) {
+                headers.Authorization = 'Bearer ' + token;
+            }
         }
 
         return fetch('/api/form/run', {
@@ -252,23 +290,32 @@ export class UimfApp {
                 return response.json();
             })
             .then((responseArray: any[]) => {
+
                 const clientFunctionsPromise = !config!.skipClientFunctions
                     ? this.runClientFunctions(responseArray[0].Data, (config as any).parentForm)
                     : Promise.resolve();
 
                 return clientFunctionsPromise.then(() => {
                     return responseArray[0].Data as T;
-                }).catch(() => {
+                }).catch((error) => {
                     return Promise.reject(responseArray);
                 });
             });
     }
     getApiFile(url: string): Promise<void> | void {
-        const token = localStorage['Token'];
+        // Check if we're on the internal site
+        const isInternalSite = localStorage.getItem('ngStorage-internaluser') != null;
 
+        if (isInternalSite) {
+            // On internal site, just open the file in a new window
+            window.open(url);
+            return;
+        }
+
+        // On external site, fetch with token
+        const token = localStorage.getItem('Token');
         if (token == null) {
-            // If there is no token (i.e. - we are on the internal site), then just
-            // open the file in a new window.
+            // No token available, open in new window as fallback
             window.open(url);
             return;
         }
@@ -295,15 +342,18 @@ export class UimfApp {
             });
         });
     }
-    getApi(url: string): Promise<Response> {
+    getApi(url: string): Promise<any> {
         const headers: any = {
             uimf: 'true'
         };
 
-        // Add Authorization token if it exists (for External site)
-        const token = localStorage['Token'];
-        if (token) {
-            headers.Authorization = 'Bearer ' + token;
+        // Only add token if we're on the external site (internal site has ngStorage-internaluser)
+        const isInternalSite = localStorage.getItem('ngStorage-internaluser') != null;
+        if (!isInternalSite) {
+            const token = localStorage.getItem('Token');
+            if (token) {
+                headers.Authorization = 'Bearer ' + token;
+            }
         }
 
         return fetch(url, {
@@ -317,7 +367,44 @@ export class UimfApp {
                         throw errorData;
                     });
                 }
-                return response;
+                return response.json();
+            })
+            .catch((error) => {
+                throw error;
+            });
+    }
+    postApi(url: string, data: any, options?: any): Promise<any> {
+        const headers: any = {
+            'Content-Type': 'application/json',
+            uimf: 'true'
+        };
+
+        // Only add token if we're on the external site (internal site has ngStorage-internaluser)
+        const isInternalSite = localStorage.getItem('ngStorage-internaluser') != null;
+        if (!isInternalSite) {
+            const token = localStorage.getItem('Token');
+            if (token) {
+                headers.Authorization = 'Bearer ' + token;
+            }
+        }
+
+        return fetch(url, {
+            method: 'POST',
+            headers: headers,
+            credentials: 'include',
+            body: JSON.stringify(data)
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    return response.json().then((errorData) => {
+                        this.handleErrorHttpResponse(errorData, options);
+                        throw errorData;
+                    });
+                }
+                // Check if response has content before parsing JSON
+                return response.text().then((text) => {
+                    return text ? JSON.parse(text) : null;
+                });
             })
             .catch((error) => {
                 throw error;
@@ -327,7 +414,20 @@ export class UimfApp {
         return ResponseHandlerRegistry[handler];
     }
     getClientFunction(id: string) {
+        const entry = (window as any).SvelteComponents?.ClientFunctionRegistry?.[id];
+        if (entry != null) {
+            if (typeof entry === 'function') {
+                return entry;
+            }
+
+            if (typeof entry?.handle === 'function') {
+                return (params?: any) => entry.handle(params);
+            }
+        }
+        // Fallback to host app implementation if provided
         return this.#app.getClientFunction(id);
+
+
     }
     getFormLinkActionHandler(action: string) {
         return this.#app.getFormLinkActionHandler(action);
@@ -356,9 +456,13 @@ export class UimfApp {
             uimf: 'true'
         };
 
-        const token = localStorage['Token'];
-        if (token) {
-            headers.Authorization = 'Bearer ' + token;
+        // Only add token if we're on the external site (internal site has ngStorage-internaluser)
+        const isInternalSite = localStorage.getItem('ngStorage-internaluser') != null;
+        if (!isInternalSite) {
+            const token = localStorage.getItem('Token');
+            if (token) {
+                headers.Authorization = 'Bearer ' + token;
+            }
         }
 
         const promise = fetch('/api/form/metadata/' + formId, {
@@ -403,7 +507,17 @@ export class UimfApp {
     getDefaultValue(valueName: string) {
         switch (valueName) {
             case 'currentUser':
-                return localStorage['ngStorage-internaluser'].Id;
+                const internalUser = localStorage.getItem('ngStorage-internaluser');
+                if (internalUser) {
+                    try {
+                        const parsed = JSON.parse(internalUser);
+                        return parsed?.Id;
+                    } catch (e) {
+                        // JSON parsing failed, return null
+                        return null;
+                    }
+                }
+                return null;
             default:
                 return valueName;
         }
@@ -417,9 +531,33 @@ export class UimfApp {
         return this.#app.showFormInSection(formId, inputFieldValues, sectionId, visibleOnlyTo);
     }
 
+    getPriceData(product: any): any {
+        return this.#app.getPriceData(product);
+    }
+
+    populateCart(shoppingCart: any): void {
+        return this.#app.populateCart(shoppingCart);
+    }
+
+    buildFormUrl(form: string, data: any): string {
+        const baseUrl = '#/form/' + form;
+        const params: string[] = [];
+
+        for (const key in data) {
+            if (data.hasOwnProperty(key) && data[key] !== null) {
+                if (typeof data[key] === 'object') {
+                    params.push(key + '=' + encodeURIComponent(JSON.stringify(data[key])));
+                } else {
+                    params.push(key + '=' + encodeURIComponent(data[key]));
+                }
+            }
+        }
+
+        return baseUrl + '?' + params.join('&');
+    }
+
     private handleErrorHttpResponse(response: any, options?: { afterExceptionAction?: () => void }): void {
         if (response.ExceptionType == null && response.InnerException == null) {
-            // If not an exception, then just return.
             return;
         }
 
@@ -522,7 +660,8 @@ interface AppObject {
         config: IPostFormConfig | null
     ): Promise<T>;
     getApiFile(url: string): Promise<void> | void;
-    getApi(url: string): Promise<Response>;
+    getApi(url: string): Promise<any>;
+    postApi(url: string, data: any, options?: any): Promise<any>;
     getClientFunction(id: string): any;
     getFormLinkActionHandler(action: string): any;
     getFormMetadata(formId: string): Promise<FormMetadata>;
@@ -530,4 +669,6 @@ interface AppObject {
     hasPermission(permission?: string | null): boolean;
     colorFromString(str: string, options?: ColorOptions | null): string;
     buildFormUrl(form: string, data: any): string;
+    getPriceData(product: any): any;
+    populateCart(shoppingCart: any): void;
 }
