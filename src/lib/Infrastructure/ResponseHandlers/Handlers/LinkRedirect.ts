@@ -1,4 +1,4 @@
-import { IFormResponseHandler } from "./IFormResponseHandler";
+import { IFormResponseHandler } from "../IFormResponseHandler";
 
 export class LinkRedirect implements IFormResponseHandler {
     name: string = "link-redirect";
