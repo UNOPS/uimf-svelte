@@ -267,7 +267,7 @@
 			}
 
 			& > li.active > .page-link {
-				border-color: var(--app-border-color);
+				border-color: var(--bs-border-color);
 				background: #54abd9;
 				color: white;
 			}
