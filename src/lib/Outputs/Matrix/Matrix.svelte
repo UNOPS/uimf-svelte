@@ -1,30 +1,48 @@
 <script context="module" lang="ts">
-	interface IExtendedOutputFieldMetadata<TConfig, TExtras = undefined>
-		extends IOutputFieldMetadata<TConfig> {
-		Extras?: TExtras;
+	import type { IComponent, IOutputFieldMetadata } from '../../Infrastructure/Metadata';
+
+	export interface IMatrixConfiguration {
+		RowGroups: IRowGroup[];
+		CssClass: string | null;
 	}
 
-	class RowMetadata {
-		public Metadata!: IExtendedOutputFieldMetadata<
-			IMatrixConfiguration,
-			{
-				MatrixData?: { IsSummary: boolean };
-				Documentation?: string;
-			} | null
-		>;
-
-		public Path!: string | null;
-		public OrderIndex!: number;
-		public Level!: number;
+	export interface IRowGroup {
+		Label?: string | null;
+		OrderIndex: number;
+		Rows?: IRowGroup[] | null;
+		Path?: string | null;
+		Metadata?: IOutputFieldMetadata | null;
+		IsDynamic: boolean;
+		ItemMetadata?: IComponent | null;
 	}
 
-	export interface IMatrixConfiguration extends IOutputFieldMetadata {
-		Properties: IOutputFieldMetadata[];
-	}
-
-	export interface IMatrix {
+	export interface IMatrixData {
 		Items: any[];
 	}
+
+	interface FlatRowBase {
+		level: number;
+		orderIndex: number;
+	}
+
+	interface HeaderRow extends FlatRowBase {
+		type: 'header';
+		label: string;
+	}
+
+	interface DataRow extends FlatRowBase {
+		type: 'data';
+		path: string;
+		metadata: IOutputFieldMetadata;
+	}
+
+	interface DynamicRow extends FlatRowBase {
+		type: 'dynamic';
+		path: string;
+		metadata: IComponent;
+	}
+
+	type FlatRow = HeaderRow | DataRow | DynamicRow;
 </script>
 
 <script lang="ts">
@@ -32,88 +50,62 @@
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import { tooltip } from '../../Components/Tooltip.svelte';
-	import type { IOutputFieldMetadata } from '../../Infrastructure/Metadata';
 	import { OutputComponent } from '../../Infrastructure/Component';
+	import { OutputFieldMetadataFactory } from '../../Infrastructure/Utilities/OutputFieldMetadataFactory';
 
-	export let controller: OutputController<IMatrix, IMatrixConfiguration>;
+	export let controller: OutputController<IMatrixData, IOutputFieldMetadata<IMatrixConfiguration>>;
 
 	let columns: { [key: string]: OutputController<any, IOutputFieldMetadata<any>> }[] = [];
-	let rows: RowMetadata[] = [];
-	let colgroups: { span: number; style?: string }[] = [];
-	let isColored = false;
+	let flatRows: FlatRow[] = [];
+	let dynamicKeysByPath: Map<string, Set<string>> = new Map(); // Track unique keys organized by row path
 
-	function getColor(index: number): string {
-		const colors = ['#fff9e6', '#eaf7ee', '#e8f7fa', '#fcebec'];
-		return colors[index % colors.length];
-	}
+	/**
+	 * Flattens the hierarchical RowGroup structure into a linear array for rendering.
+	 */
+	function flattenRowGroups(groups: IRowGroup[], level: number = 0): FlatRow[] {
+		const result: FlatRow[] = [];
 
-	function getRows(
-		properties: IOutputFieldMetadata<IMatrixConfiguration>[],
-		level: number | null = null
-	): RowMetadata[] {
-		var result: RowMetadata[] = [];
-		level = level || 1;
-
-		let orderIndex: number = 0;
-		let propertiesSorted = properties.sort((a, b) => a.OrderIndex - b.OrderIndex);
-
-		for (let property of propertiesSorted) {
-			// flatten list
-			if (
-				controller.metadata.Component.Configuration.FlattenLists &&
-				property.Component.Type == 'table'
-			) {
-				const sampleItem = controller?.value?.Items?.[0];
-				var propertyId = property.Id;
-
-				if (sampleItem !== undefined && sampleItem[propertyId]?.length) {
-					for (let i = 0; i < sampleItem[propertyId].length; i++) {
-						const field = sampleItem[propertyId][i];
-						let value = Object.keys(sampleItem[propertyId][i])[1];
-
-						result.push({
-							OrderIndex: orderIndex++,
-							Path: `${[propertyId]}[${i}].${value}`,
-							Metadata: {
-								...property.Component.Configuration.Columns[1],
-								Id: `${[propertyId]}[${i}].${value}`,
-								Label: field.Label
-							},
-							Level: level
-						});
-					}
-				}
-			} else if (property.Component.Type === 'matrix-data') {
+		for (const group of groups.sort((a, b) => a.OrderIndex - b.OrderIndex)) {
+			if (group.Label) {
+				// This is a group header row
 				result.push({
-					Metadata: property,
-					Path: null,
-					OrderIndex: orderIndex++,
-					Level: level
-				});
+					type: 'header',
+					label: group.Label,
+					level: level,
+					orderIndex: group.OrderIndex
+				} as HeaderRow);
+			}
 
-				var subrows = getRows(property.Component.Configuration.Properties, level + 1);
-				for (var subrow of subrows) {
-					result.push({
-						OrderIndex: orderIndex++,
-						Path:
-							subrow.Path != null ? property.Id + '.Value.' + subrow.Path : property.Id + '.Value',
-						Metadata: subrow.Metadata,
-						Level: subrow.Level
-					});
-				}
-			} else {
+			if (group.Rows && group.Rows.length > 0) {
+				// Recursively flatten nested rows
+				result.push(...flattenRowGroups(group.Rows, level + 1));
+			} else if (group.IsDynamic && group.ItemMetadata) {
+				// This is a MatrixDataList - will be expanded dynamically
 				result.push({
-					OrderIndex: orderIndex++,
-					Path: property.Id,
-					Metadata: property,
-					Level: level
-				});
+					type: 'dynamic',
+					path: group.Path!,
+					metadata: group.ItemMetadata,
+					level: level,
+					orderIndex: group.OrderIndex
+				} as DynamicRow);
+			} else if (group.Path && group.Metadata) {
+				// Regular data row
+				result.push({
+					type: 'data',
+					path: group.Path,
+					metadata: group.Metadata,
+					level: level,
+					orderIndex: group.OrderIndex
+				} as DataRow);
 			}
 		}
 
-		return result.sort((a, b) => a.OrderIndex - b.OrderIndex);
+		return result;
 	}
 
+	/**
+	 * Extracts a property value from an object using a dot-notation path.
+	 */
 	function getPropertyValue(object: any, propertyPath: string) {
 		try {
 			return propertyPath
@@ -125,56 +117,68 @@
 		}
 	}
 
+	/**
+	 * Builds column data with OutputController instances for each cell.
+	 * Collects dynamic keys while building controllers in a single pass.
+	 */
+	function buildColumns(items: any[]) {
+		dynamicKeysByPath.clear();
+
+		return items.map((item) => {
+			const column: any = {};
+
+			for (const row of flatRows) {
+				if (row.type === 'data' && row.path) {
+					// Regular data row
+					const value = getPropertyValue(item, row.path);
+					column[row.path] = new OutputController({
+						metadata: row.metadata,
+						data: value,
+						form: controller.form,
+						app: controller.app,
+						parent: controller
+					});
+				} else if (row.type === 'dynamic' && row.path && row.metadata) {
+					// MatrixDataList - create controller for each key-value pair
+					const dataList = getPropertyValue(item, row.path);
+					if (dataList?.Values) {
+						// Initialize Set for this path if needed
+						if (!dynamicKeysByPath.has(row.path)) {
+							dynamicKeysByPath.set(row.path, new Set<string>());
+						}
+
+						const keysForThisPath = dynamicKeysByPath.get(row.path)!;
+
+						for (const [key, value] of Object.entries(dataList.Values)) {
+							// Collect the key AND create the controller
+							keysForThisPath.add(key);
+
+							column[`${row.path}|${key}`] = new OutputController({
+								metadata: OutputFieldMetadataFactory.fromComponent(row.metadata),
+								data: value,
+								form: controller.form,
+								app: controller.app,
+								parent: controller
+							});
+						}
+					}
+				}
+			}
+
+			return column;
+		});
+	}
+
 	const componentController = new OutputComponent({
 		refresh() {
 			controller.value = controller.value;
 
-			rows = getRows(controller.metadata.Component.Configuration.Properties);
-			isColored = controller.metadata.Component.Configuration.IsColored;
-
-			if (controller?.value?.Items != null) {
-				columns = [];
-				colgroups = [];
-
-				for (let item of controller.value.Items) {
-					var column: any = {};
-
-					for (let row of rows) {
-						if (row.Path == null) {
-							continue;
-						}
-
-						if (row.Path.includes('.')) {
-							column[row.Path] = new OutputController({
-								metadata: row.Metadata,
-								data: getPropertyValue(item, row.Path),
-								form: controller.form,
-								app: controller.app,
-								parent: controller
-							});
-						} else {
-							column[row.Path] = new OutputController({
-								metadata: row.Metadata,
-								data: item[row.Metadata.Id],
-								form: controller.form,
-								app: controller.app,
-								parent: controller
-							});
-						}
-					}
-
-					columns.push(column);
-
-					if (isColored) {
-						colgroups.push({
-							span: 1,
-							style: `background-color: ${getColor(columns.length - 1)}`
-						});
-					}
-				}
+			if (controller?.value?.Items != null && controller.value.Items.length > 0) {
+				flatRows = flattenRowGroups(controller.metadata.Component.Configuration.RowGroups);
+				columns = buildColumns(controller.value.Items);
 			} else {
+				flatRows = [];
 				columns = [];
-				rows = [];
 			}
 
 			return Promise.resolve();
@@ -186,45 +190,60 @@
 	});
 </script>
 
-{#if columns?.length > 0 && rows?.length > 0}
+{#if columns?.length > 0 && flatRows?.length > 0}
 	<div class="table-responsive">
-		<table class="table table-bordered" class:table-striped={!isColored}>
-			<colgroup />
-			{#each colgroups as col}
-				<colgroup span={col.span} style={col.style} />
-			{/each}
-
+		<table class="table table-bordered matrix-table">
 			<tbody>
-				{#each rows as row, index}
-					<tr class:summary={row.Metadata.CustomProperties?.MatrixData?.IsSummary}>
-						{#if row.Metadata.Component.Type !== 'matrix-data'}
+				{#each flatRows as row, rowIndex}
+					{#if row.type === 'header'}
+						<!-- Group header row -->
+						<tr>
 							<td
-								use:tooltip={row.Metadata.Documentation}
-								class="first-column"
-								style:padding-left={Math.max(
-									20,
-									(row.Level - 1) * 20 +
-										(row.Metadata.CustomProperties?.MatrixData?.IsSummary ? -20 : 0)
-								) + 'px'}>{row.Metadata.Label}</td
+								class="group-row"
+								class:second-level={row.level > 0}
+								class:deep-level={row.level > 1}
+								colspan={columns.length + 1}
+								style:padding-left={Math.max(20, row.level * 20) + 'px'}
 							>
+								{row.label}
+							</td>
+						</tr>
+					{:else if row.type === 'dynamic'}
+						<!-- MatrixDataList rows - expand dynamically based on keys -->
+						{#each Array.from(dynamicKeysByPath.get(row.path) ?? []) as key}
+							{@const keyPath = `${row.path}|${key}`}
+							<tr>
+								<td class="first-column" style:padding-left={Math.max(20, row.level * 20) + 'px'}>
+									{key}
+								</td>
+								{#each columns as column}
+									<td class:first-row={rowIndex === 0}>
+										{#if column[keyPath]}
+											<Output controller={column[keyPath]} nolayout={true} />
+										{/if}
+									</td>
+								{/each}
+							</tr>
+						{/each}
+					{:else}
+						<!-- Regular data row -->
+						<tr>
+							<td
+								use:tooltip={row.metadata?.Documentation}
+								class="first-column"
+								style:padding-left={Math.max(20, row.level * 20) + 'px'}
+							>
+								{row.metadata?.Label}
+							</td>
 							{#each columns as column}
-								<td class:first-row={index === 0}>
-									{#if row.Path !== null}
-										<Output controller={column[row.Path]} nolayout={true} />
+								<td class:first-row={rowIndex === 0}>
+									{#if row.path && column[row.path]}
+										<Output controller={column[row.path]} nolayout={true} />
 									{/if}
 								</td>
 							{/each}
-						{:else}
-							<td
-								class="group-row"
-								class:second-level={row.Level > 1}
-								class:deep-level={row.Level > 2}
-								colspan={columns.length + 1}
-								style:padding-left={Math.max(20, (row.Level - 1) * 20) + 'px'}
-								>{row.Metadata.Label}</td
-							>
-						{/if}
-					</tr>
+						</tr>
+					{/if}
 				{/each}
 			</tbody>
 		</table>
@@ -234,46 +253,38 @@
 <style lang="scss">
 	.first-column {
 		white-space: wrap;
-		background-color: var(--app-primary-bg-subtle);
-		color: var(--app-primary-text-emphasis);
+		background-color: var(--bs-primary-bg-subtle);
+		color: var(--bs-primary-text-emphasis);
 		padding-left: 40px;
+		border-right: 2px solid var(--bs-body-color);
 	}
 
 	.first-row {
-		background-color: var(--app-primary-bg-subtle);
-		color: var(--app-primary-text-emphasis);
+		background-color: var(--bs-primary-bg-subtle);
+		color: var(--bs-primary-text-emphasis);
+		border-bottom: 2px solid var(--bs-body-color);
 	}
 
 	.table > tbody > tr:hover {
-		background-color: var(--app-tertiary-bg);
+		background-color: var(--bs-tertiary-bg);
 	}
 
 	.group-row {
-		color: var(--app-info-bg-subtle);
-		background: var(--app-info-text-emphasis);
-
+		color: var(--bs-info-bg-subtle);
+		background: var(--bs-info-text-emphasis);
 		padding: 10px 20px;
-		font-size: 1.2em;
 	}
 
 	.second-level {
 		font-size: 1em;
 		padding: 6px 20px;
-		color: var(--app-info-text-emphasis);
-		background: var(--app-info-bg-subtle);
+		color: var(--bs-info-text-emphasis);
+		background: var(--bs-info-bg-subtle);
 
 		&.deep-level {
-			color: var(--app-dark-text-emphasis);
-			background: var(--app-dark-bg-subtle);
+			color: var(--bs-dark-text-emphasis);
+			background: var(--bs-dark-bg-subtle);
 			font-style: italic;
-		}
-	}
-
-	tr.summary {
-		font-weight: bold;
-
-		& > td:first-child {
-			padding-left: 20px;
 		}
 	}
 </style>
