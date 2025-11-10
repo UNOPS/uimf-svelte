@@ -20,8 +20,9 @@ export class GrowlMessage implements IClientFunction {
             console[type === "error" ? "error" : type === "warning" ? "warn" : "log"](message);
         }
 
-        // Use alert for immediate user feedback
-        alert(message);
+        const fn = window.legacy.growl[type];
+
+        fn(params.functionToRun.CustomProperties.Message, { ttl: 5000 });
     }
 }
 
