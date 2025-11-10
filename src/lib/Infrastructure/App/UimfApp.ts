@@ -115,7 +115,7 @@ export class UimfApp {
             let fn: any = null;
             let entry: any = null;
 
-            const excludedFromSvelte = ['growl-message', 'alert', 'send-pdf-by-email'];
+            const excludedFromSvelte = ['alert'];
 
             if (excludedFromSvelte.indexOf(toRun.Id) === -1) {
                 entry = (window as any).SvelteComponents?.ClientFunctionRegistry?.[toRun.Id];
