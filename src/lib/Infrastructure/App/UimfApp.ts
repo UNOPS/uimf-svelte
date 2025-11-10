@@ -115,19 +115,15 @@ export class UimfApp {
             let fn: any = null;
             let entry: any = null;
 
-            const excludedFromSvelte = ['alert'];
+            entry = (window as any).SvelteComponents?.ClientFunctionRegistry?.[toRun.Id];
+            if (entry != null) {
 
-            if (excludedFromSvelte.indexOf(toRun.Id) === -1) {
-                entry = (window as any).SvelteComponents?.ClientFunctionRegistry?.[toRun.Id];
-                if (entry != null) {
+                if (typeof entry === 'function') {
+                    fn = entry;
+                }
 
-                    if (typeof entry === 'function') {
-                        fn = entry;
-                    }
-
-                    else if (typeof entry.handle === 'function') {
-                        fn = (params?: any) => entry.handle(params);
-                    }
+                else if (typeof entry.handle === 'function') {
+                    fn = (params?: any) => entry.handle(params);
                 }
             }
 
