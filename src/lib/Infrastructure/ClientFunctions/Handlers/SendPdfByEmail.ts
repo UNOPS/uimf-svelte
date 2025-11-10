@@ -45,10 +45,9 @@ export class SendPdfByEmail implements IClientFunction {
                 const name = data.EmailAttachmentEntityType === 'FinalInvoice' ? 'FINAL INVOICE' : null;
 
                 const response = await uimfApp.getApi(i.Url);
-                const responseData = await response.json();
 
                 await new Promise<void>((resolve) => {
-                    pdfMake.createPdf(pdfFactory.pfi(responseData, name))
+                    pdfMake.createPdf(pdfFactory.pfi(response, name))
                         .getBase64((encodedString: string) => {
                             data.EmailAttachmentFiles.push({
                                 FileContent: encodedString,
