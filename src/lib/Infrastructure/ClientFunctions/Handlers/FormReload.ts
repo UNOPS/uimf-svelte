@@ -7,6 +7,9 @@ export class FormReload implements IClientFunction {
         const forms = document.querySelectorAll('uimf-form');
         for (let i = 0; i < forms.length; i++) {
             if (params?.parentForm != null && params.parentForm.element === forms[i]) {
+                // Do not reload the form that triggered this client function.
+                // If we don't do this then the form that was just posted will be re-posted
+                // once again.
                 continue;
             }
             const customEvent = new CustomEvent('client-function:form-reload', {
