@@ -5,22 +5,19 @@ export class RedirectToForm implements IClientFunction {
 
     handle(params?: any): void {
         const formlink = params?.functionToRun?.CustomProperties?.formlink;
-
-        try {
-            const ev = new CustomEvent('uimf-redirect-to-form', { detail: { formlink, params } });
-            window.dispatchEvent(ev);
+        if (formlink == null) {
             return;
-        } catch { }
-
-        // Fallback: if a prebuilt URL is present, use it.
-        if (typeof formlink === "string" && formlink.length > 0) {
-            (window as any).location = formlink;
         }
+
+        const uimfApp = params?.uimfApp;
+        if (uimfApp == null || typeof uimfApp.makeUrl !== "function") {
+            return;
+        }
+
+        Promise.resolve(uimfApp.makeUrl(formlink)).then((url) => {
+            if (url != null) {
+                window.location.href = url;
+            }
+        });
     }
 }
-
-
-
-
-
-
