@@ -55,10 +55,8 @@ export class UpdateCulture implements IClientFunction {
 
         // Show info message if currency changed
         if (currencyChanged) {
-            const growl = angularElement(document.body).injector()?.get('growl');
-            if (growl) {
-                growl.info("Any value or price shown in other currency than the base price and currency are for illustrative purposes only.", {});
-            }
+            const fn = (window as any).legacy.growl["info"];
+            fn("Any value or price shown in other currency than the base price and currency are for illustrative purposes only.", { ttl: 5000 });
         }
 
         // Clear storage if country or client node changed
