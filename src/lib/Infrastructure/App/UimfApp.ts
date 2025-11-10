@@ -131,11 +131,6 @@ export class UimfApp {
                 }
             }
 
-            // Fallback to host app implementation if not found in Svelte
-            if (fn == null) {
-                fn = this.#app.getClientFunction(toRun.Id);
-            }
-
             if (fn == null) {
                 return Promise.reject('Cannot find client function "' + toRun.Id + '".');
             }
