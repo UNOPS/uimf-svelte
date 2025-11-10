@@ -75,11 +75,6 @@ export class SendPdfByEmail implements IClientFunction {
                 credentials: 'include',
                 body: JSON.stringify(data)
             });
-
-            await uimfApp.alert({
-                bodyText: params.SuccessMessage || "Email sent successfully",
-                closeButtonText: "OK"
-            });
         }
     }
 }
