@@ -4,27 +4,54 @@ export class Alert implements IClientFunction {
     name: string = "alert";
 
     handle(params?: any): Promise<any> {
-        const props = params?.functionToRun?.CustomProperties;
-        const message = props?.Message || "";
-        const header = props?.Header || "";
-        const isError = props?.IsError || false;
+        const props = params?.functionToRun?.CustomProperties ?? {};
+        const actions = props.Actions ?? null;
+        const isActionMandatory = props.IsActionMandatory === true;
 
-        // Emit event for app-level modal handling
-        try {
-            const event = new CustomEvent("uimf-alert", { detail: { props, params } });
-            window.dispatchEvent(event);
-        } catch { }
+        const dialogClosedPromise = Promise.resolve({
+            Stop: props.IsError === true
+        });
 
-        // Fallback to browser alert
-        if (message) {
-            alert((header ? header + "\n\n" : "") + message);
+        const alertDialog = (window as any).legacy?.alertDialog;
+        if (alertDialog != null && typeof alertDialog.showModal === "function") {
+            return Promise.resolve(
+                alertDialog.showModal(
+                    null,
+                    {
+                        headerText: props.Header,
+                        bodyText: props.Message,
+                        closeButtonText:
+                            actions != null
+                                ? isActionMandatory
+                                    ? null
+                                    : "Cancel"
+                                : "OK",
+                        isConfirmDialog: false,
+                        actions
+                    }
+                )
+            )
+                .then(() => dialogClosedPromise)
+                .catch(() => dialogClosedPromise);
         }
 
-        return Promise.resolve({ Stop: isError });
+        const alertInvoker = params?.uimfApp?.alert;
+        if (typeof alertInvoker === "function") {
+            return Promise.resolve(
+                alertInvoker({
+                    headerText: props.Header,
+                    bodyText: props.Message,
+                    actions,
+                    closeButtonText:
+                        actions != null
+                            ? isActionMandatory ? null : "Cancel"
+                            : "OK"
+                })
+            )
+                .then(() => dialogClosedPromise)
+                .catch(() => dialogClosedPromise);
+        }
+
+        return dialogClosedPromise;
     }
 }
-
-
-
-
-
