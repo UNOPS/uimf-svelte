@@ -218,9 +218,17 @@ export class UimfApp {
                 // `/form/user?id=2&_=1`.
                 // To make sure `_` doesn't get too long we limit it to values between 0 and 99.
                 // This is a purely aesthetic concern.
-                const urlParams = new URLSearchParams(window.location.search);
-                let counter = parseInt(urlParams.get('_') || '0');
-                counter = isNaN(counter) ? 0 : counter + 1;
+                let counter = 0;
+                if (typeof window !== 'undefined') {
+                    const hash = window.location.hash || '';
+                    const queryStart = hash.indexOf('?');
+                    if (queryStart !== -1) {
+                        const hashQuery = hash.substring(queryStart + 1);
+                        const hashParams = new URLSearchParams(hashQuery);
+                        const current = parseInt(hashParams.get('_') || '0', 10);
+                        counter = isNaN(current) ? 0 : current + 1;
+                    }
+                }
                 url += '?' + query + '&_=' + counter;
             }
 
