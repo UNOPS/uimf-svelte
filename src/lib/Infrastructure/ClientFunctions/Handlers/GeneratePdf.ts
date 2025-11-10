@@ -11,21 +11,18 @@ export class GeneratePdf implements IClientFunction {
             return;
         }
 
-        // Access pdfMake globally
         const pdfMake = (window as any).pdfMake;
         if (!pdfMake) {
             console.error("[GeneratePdf] pdfMake library not available");
             return;
         }
 
-        // Get generatePDFFactory from window (exposed by Angular app)
-        const pdfFactory = (window as any).generatePDFFactory;
+        const pdfFactory = (window as any).legacy.generatePDFFactory;
         if (!pdfFactory) {
             console.error("[GeneratePdf] generatePDFFactory not available");
             return;
         }
 
-        // Generate PDF based on type
         switch (props.Type) {
             case 'sales-order':
                 pdfMake

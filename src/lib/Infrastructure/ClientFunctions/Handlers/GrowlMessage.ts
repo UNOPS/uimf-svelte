@@ -11,14 +11,12 @@ export class GrowlMessage implements IClientFunction {
             return;
         }
 
-        // Emit a custom event for Svelte-based toast systems
         try {
             const event = new CustomEvent("uimf-growl", {
                 detail: { type, message, ttl: 5000 }
             });
             window.dispatchEvent(event);
         } catch {
-            // Fallback: console log only
             console[type === "error" ? "error" : type === "warning" ? "warn" : "log"](message);
         }
 

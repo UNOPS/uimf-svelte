@@ -3,13 +3,8 @@ import { IClientFunction } from "../IClientFunction";
 export class SendPdfByEmail implements IClientFunction {
     name: string = "send-pdf-by-email";
 
-    async handle(params?: any): Promise<void> {
-        const props = params?.functionToRun?.CustomProperties;
-
-        if (!props) {
-            console.error("[SendPdfByEmail] Cannot send email - missing configuration");
-            return;
-        }
+    async handle(params: any): Promise<void> {
+        const props = params.functionToRun.CustomProperties;
 
         const pdfMake = (window as any).pdfMake;
         if (!pdfMake) {
@@ -17,7 +12,7 @@ export class SendPdfByEmail implements IClientFunction {
             return;
         }
 
-        const pdfFactory = (window as any).generatePDFFactory;
+        const pdfFactory = (window as any).legacy.generatePDFFactory;
         if (!pdfFactory) {
             console.error("[SendPdfByEmail] Make sure: window.generatePDFFactory = $injector.get('generatePDFFactory'); is running");
             return;

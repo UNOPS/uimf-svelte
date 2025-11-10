@@ -135,13 +135,6 @@ export class UimfApp {
                 return Promise.reject('Cannot find client function "' + toRun.Id + '".');
             }
 
-            // Log which implementation is being used (for debugging)
-            if (entry != null) {
-                console.log("Using Svelte Client Function:", toRun.Id);
-            } else {
-                console.log("Using Angular Client Function:", toRun.Id);
-            }
-
             const result = fn({
                 functionToRun: toRun,
                 response: response,
