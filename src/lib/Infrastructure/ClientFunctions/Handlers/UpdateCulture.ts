@@ -4,7 +4,6 @@ export class UpdateCulture implements IClientFunction {
     name: string = "update-culture";
 
     handle(params?: any): void {
-        console.log('[UpdateCulture] Called with params:', params);
 
         // Access Angular's $localStorage and $rootScope through the window object
         const angularElement = (window as any).angular?.element;
@@ -45,8 +44,8 @@ export class UpdateCulture implements IClientFunction {
         $rootScope.CurrencyCode = props.CurrencyCode;
         $rootScope.CountryCode = props.CountryCode;
         $rootScope.CountryName = props.CountryName;
-        $rootScope.ClientNodeProxyName = $localStorage.ExternalUser.ClientNodeProxyId === $localStorage.ExternalUser.ClientNodeId 
-            ? null 
+        $rootScope.ClientNodeProxyName = $localStorage.ExternalUser.ClientNodeProxyId === $localStorage.ExternalUser.ClientNodeId
+            ? null
             : props.ClientNodeProxyName;
 
         // Detect what changed
@@ -65,7 +64,7 @@ export class UpdateCulture implements IClientFunction {
         // Clear storage if country or client node changed
         if (countryChanged || clientNodeProxyChanged || props.ShoppingCartId) {
             delete $localStorage.CompareProducts;
-            
+
             const uimfApp = params?.uimfApp;
             if (uimfApp?.appStorage) {
                 uimfApp.appStorage.clear();

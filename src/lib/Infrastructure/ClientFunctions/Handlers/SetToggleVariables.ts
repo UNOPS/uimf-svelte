@@ -16,17 +16,6 @@ export class SetToggleVariables implements IClientFunction {
             return;
         }
 
-        // Fallback: try to access uimfApp from Angular
-        const angularElement = (window as any).angular?.element;
-        if (angularElement) {
-            const injector = angularElement(document.body).injector();
-            const angularUimfApp = injector?.get('uimfApp');
-            if (angularUimfApp?.appStorage) {
-                angularUimfApp.appStorage.toggleVariable(frontEndVariable);
-                return;
-            }
-        }
-
         console.error("set-toggle-variables: Cannot access appStorage");
     }
 }

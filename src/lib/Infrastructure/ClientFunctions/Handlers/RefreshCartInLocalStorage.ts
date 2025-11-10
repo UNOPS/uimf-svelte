@@ -28,7 +28,6 @@ export class RefreshCartInLocalStorage implements IClientFunction {
                 }
             });
 
-            // Save cart and update UI
             uimfApp.populateCart(updatedCart);
 
             return Promise.resolve();
