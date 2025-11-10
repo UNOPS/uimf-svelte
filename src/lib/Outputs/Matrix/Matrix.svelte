@@ -13,6 +13,7 @@
 		Path?: string | null;
 		Metadata?: IOutputFieldMetadata | null;
 		IsDynamic: boolean;
+		IsRowGroupCollection: boolean;
 		ItemMetadata?: IComponent | null;
 	}
 
@@ -42,7 +43,13 @@
 		metadata: IComponent;
 	}
 
-	type FlatRow = HeaderRow | DataRow | DynamicRow;
+	interface RowGroupCollectionRow extends FlatRowBase {
+		type: 'row-group-collection';
+		path: string;
+		metadata: IComponent;
+	}
+
+	type FlatRow = HeaderRow | DataRow | DynamicRow | RowGroupCollectionRow;
 </script>
 
 <script lang="ts">
@@ -58,6 +65,7 @@
 	let columns: { [key: string]: OutputController<any, IOutputFieldMetadata<any>> }[] = [];
 	let flatRows: FlatRow[] = [];
 	let dynamicKeysByPath: Map<string, Set<string>> = new Map(); // Track unique keys organized by row path
+	let rowGroupCollectionsByPath: Map<string, Map<string, Set<string>>> = new Map(); // Track groups and keys organized by row path
 
 	/**
 	 * Flattens the hierarchical RowGroup structure into a linear array for rendering.
@@ -79,6 +87,15 @@
 			if (group.Rows && group.Rows.length > 0) {
 				// Recursively flatten nested rows
 				result.push(...flattenRowGroups(group.Rows, level + 1));
+			} else if (group.IsRowGroupCollection && group.ItemMetadata) {
+				// This is a MatrixRowGroupCollection - will be expanded dynamically with groups
+				result.push({
+					type: 'row-group-collection',
+					path: group.Path!,
+					metadata: group.ItemMetadata,
+					level: level,
+					orderIndex: group.OrderIndex
+				} as RowGroupCollectionRow);
 			} else if (group.IsDynamic && group.ItemMetadata) {
 				// This is a MatrixDataList - will be expanded dynamically
 				result.push({
@@ -123,6 +140,7 @@
 	 */
 	function buildColumns(items: any[]) {
 		dynamicKeysByPath.clear();
+		rowGroupCollectionsByPath.clear();
 
 		return items.map((item) => {
 			const column: any = {};
@@ -138,6 +156,43 @@
 						app: controller.app,
 						parent: controller
 					});
+				} else if (row.type === 'row-group-collection' && row.path && row.metadata) {
+					// MatrixRowGroupCollection - create controller for each group's key-value pairs
+					const rowGroupCollection = getPropertyValue(item, row.path);
+					if (rowGroupCollection?.Items) {
+						// Initialize Map for this path if needed
+						if (!rowGroupCollectionsByPath.has(row.path)) {
+							rowGroupCollectionsByPath.set(row.path, new Map<string, Set<string>>());
+						}
+
+						const groupsByPath = rowGroupCollectionsByPath.get(row.path)!;
+
+						for (const groupItem of rowGroupCollection.Items) {
+							const groupLabel = groupItem.Label;
+
+							// Initialize Set for this group label if needed
+							if (!groupsByPath.has(groupLabel)) {
+								groupsByPath.set(groupLabel, new Set<string>());
+							}
+
+							const keysForThisGroup = groupsByPath.get(groupLabel)!;
+
+							if (groupItem.Rows) {
+								for (const [key, value] of Object.entries(groupItem.Rows)) {
+									// Collect the key AND create the controller
+									keysForThisGroup.add(key);
+
+									column[`${row.path}|${groupLabel}|${key}`] = new OutputController({
+										metadata: OutputFieldMetadataFactory.fromComponent(row.metadata),
+										data: value,
+										form: controller.form,
+										app: controller.app,
+										parent: controller
+									});
+								}
+							}
+						}
+					}
 				} else if (row.type === 'dynamic' && row.path && row.metadata) {
 					// MatrixDataList - create controller for each key-value pair
 					const dataList = getPropertyValue(item, row.path);
@@ -208,6 +263,43 @@
 								{row.label}
 							</td>
 						</tr>
+					{:else if row.type === 'row-group-collection'}
+						<!-- MatrixRowGroupCollection rows - expand dynamically based on groups and keys -->
+						{#each Array.from(rowGroupCollectionsByPath.get(row.path)?.keys() ?? []) as groupLabel}
+							<!-- Group header for this collection group -->
+							<tr>
+								<td
+									class="group-row"
+									class:second-level={row.level > 0}
+									class:deep-level={row.level > 1}
+									colspan={columns.length + 1}
+									style:padding-left={Math.max(20, row.level * 20) + 'px'}
+								>
+									{groupLabel}
+								</td>
+							</tr>
+							<!-- Rows within this group -->
+							{#each Array.from(rowGroupCollectionsByPath
+									.get(row.path)
+									?.get(groupLabel) ?? []) as key}
+								{@const keyPath = `${row.path}|${groupLabel}|${key}`}
+								<tr>
+									<td
+										class="first-column"
+										style:padding-left={Math.max(20, (row.level + 1) * 20) + 'px'}
+									>
+										{key}
+									</td>
+									{#each columns as column}
+										<td class:first-row={rowIndex === 0}>
+											{#if column[keyPath]}
+												<Output controller={column[keyPath]} nolayout={true} />
+											{/if}
+										</td>
+									{/each}
+								</tr>
+							{/each}
+						{/each}
 					{:else if row.type === 'dynamic'}
 						<!-- MatrixDataList rows - expand dynamically based on keys -->
 						{#each Array.from(dynamicKeysByPath.get(row.path) ?? []) as key}
