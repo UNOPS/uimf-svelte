@@ -5,17 +5,11 @@ export class UpdateCulture implements IClientFunction {
 
     handle(params?: any): void {
 
-        // Access Angular's $localStorage and $rootScope through the window object
-        const angularElement = (window as any).angular?.element;
-        if (!angularElement) {
-            console.error("[UpdateCulture] Angular is not available");
-            return;
-        }
-
-        const $rootScope = angularElement(document.body).scope()?.$root;
-        const $localStorage = angularElement(document.body).injector()?.get('$localStorage');
+        const $rootScope = (window as any).legacy?.$rootScope;
+        const $localStorage = (window as any).legacy?.$localStorage;
 
         if (!$rootScope || !$localStorage) {
+            console.error("[UpdateCulture] Angular services are not available");
             return;
         }
 
