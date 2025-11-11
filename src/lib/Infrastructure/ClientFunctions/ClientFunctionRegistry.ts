@@ -1,4 +1,3 @@
-import { AppLogout } from "./Handlers/AppLogout";
 import { AppReload } from "./Handlers/AppReload";
 import { GrowlMessage } from "./Handlers/GrowlMessage";
 import { FormReload } from "./Handlers/FormReload";
@@ -16,7 +15,6 @@ import { SetToggleVariables } from "./Handlers/SetToggleVariables";
 import { CloseContainer } from "./Handlers/CloseContainer";
 
 export const ClientFunctionRegistry: Record<string, any> = {
-    'app-logout': new AppLogout(),
     'app-reload': new AppReload(),
     'growl-message': new GrowlMessage(),
     'form-reload': new FormReload(),
