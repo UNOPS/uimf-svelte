@@ -136,6 +136,9 @@
 <div class="input-container">
 	<Select
 		value={selected}
+		inputAttributes={{
+			form: controller.form?.getFormId()
+		}}
 		label="SearchText"
 		itemId="Value"
 		required={controller.metadata.Required}

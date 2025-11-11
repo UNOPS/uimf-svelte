@@ -74,6 +74,7 @@
 	class="form-control"
 	on:change={() => controller.setValue(limitPrecision(controller.value))}
 	bind:value={controller.value}
+	form={controller.form?.getFormId()}
 	required={controller.metadata.Required}
 	step={1 / multiplier}
 	type="number"

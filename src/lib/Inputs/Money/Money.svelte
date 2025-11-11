@@ -106,6 +106,7 @@
 		class="form-control"
 		bind:value={controller.model.Amount}
 		required={controller.metadata.Required}
+		form={controller.form?.getFormId()}
 		{step}
 		{min}
 		{max}
@@ -116,6 +117,7 @@
 		class="form-select"
 		bind:value={controller.model.Currency}
 		required={controller.metadata.Required}
+		form={controller.form?.getFormId()}
 	>
 		<option value="" />
 		{#each currencies as currency}

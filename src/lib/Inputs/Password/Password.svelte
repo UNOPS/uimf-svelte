@@ -71,6 +71,7 @@
 	class="form-control"
 	on:change={() => controller.setValue(controller.valueAsString)}
 	bind:value={controller.valueAsString}
+	form={controller.form?.getFormId()}
 	required={controller.metadata.Required}
 	type="password"
 />

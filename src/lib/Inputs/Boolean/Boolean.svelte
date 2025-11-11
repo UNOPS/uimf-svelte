@@ -24,12 +24,14 @@
 			class="form-check-input border border-dark-subtle"
 			type="checkbox"
 			bind:checked={controller.value}
+			form={controller.form?.getFormId()}
 			on:change={() => controller.setValue(controller.value)}
 		/>
 	{:else}
 		<select
 			class="form-select"
 			bind:value={controller.value}
+			form={controller.form?.getFormId()}
 			on:change={() => controller.setValue(controller.value)}
 		>
 			<option />

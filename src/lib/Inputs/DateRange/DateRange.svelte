@@ -119,6 +119,7 @@
 	<input
 		class="form-control"
 		bind:value={controller.minValueAsString}
+		form={controller.form?.getFormId()}
 		on:blur={() => {
 			controller.combineDates();
 			controller.setValue(controller.valuesAsString);
@@ -137,6 +138,7 @@
 	<input
 		class="form-control"
 		bind:value={controller.maxValueAsString}
+		form={controller.form?.getFormId()}
 		on:blur={() => {
 			controller.combineDates();
 			controller.setValue(controller.valuesAsString);

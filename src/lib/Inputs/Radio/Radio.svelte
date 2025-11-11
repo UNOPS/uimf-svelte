@@ -144,6 +144,7 @@
 						checked={selected}
 						data-value={option.Value}
 						required={controller.metadata.Required}
+						form={controller.form?.getFormId()}
 					/>
 				</div>
 
@@ -160,6 +161,7 @@
 					data-value={option.Value}
 					on:change={() => controller.setValue(option)}
 					required={controller.metadata.Required}
+					form={controller.form?.getFormId()}
 				/>
 
 				{#if option.Icon != null}

@@ -93,6 +93,7 @@
 		accept={controller.metadata.Component.Configuration.AcceptedFileTypes}
 		class="form-control file-input"
 		required={controller.metadata.Required && !controller.metadata.Hidden}
+		form={controller.form?.getFormId()}
 		type="file"
 		on:change={async (e) => await setFile((e.currentTarget.files ?? [])[0])}
 	/>

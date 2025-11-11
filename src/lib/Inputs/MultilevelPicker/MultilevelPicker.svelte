@@ -238,6 +238,9 @@
 		itemId="Value"
 		{loading}
 		required={controller.metadata.Required}
+		inputAttributes={{
+			form: controller.form?.getFormId()
+		}}
 		floatingConfig={{
 			// Use fixed strategy to avoid the dropdown being clipped by the parent container.
 			strategy: 'fixed'

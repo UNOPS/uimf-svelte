@@ -212,6 +212,7 @@
 					type="checkbox"
 					checked={selected}
 					{disabled}
+					form={controller.form?.getFormId()}
 					on:change={(e) => toggleSelection(option, e.currentTarget.checked)}
 				/>
 			</div>

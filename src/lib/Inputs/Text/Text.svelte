@@ -40,6 +40,7 @@
 {#if controller.metadata.Component.Configuration?.Multiline === true}
 	<textarea
 		class="form-control"
+		form={controller.form?.getFormId()}
 		rows="4"
 		bind:value={controller.value}
 		required={controller.metadata.Required}
@@ -51,6 +52,7 @@
 	<input
 		autocomplete="off"
 		class="form-control"
+		form={controller.form?.getFormId()}
 		on:change={() => controller.setValue(controller.value)}
 		bind:value={controller.value}
 		required={controller.metadata.Required}

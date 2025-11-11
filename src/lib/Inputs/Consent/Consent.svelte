@@ -71,6 +71,7 @@
 			on:change={() => controller.setValue({ Consented: !controller.value?.Consented })}
 			required={controller.metadata.Required}
 			type="checkbox"
+			form={controller.form?.getFormId()}
 		/>
 		{#if controller.metadata.Component?.Configuration?.Label != null}
 			{@html controller.metadata.Component.Configuration.Label}

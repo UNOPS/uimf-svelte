@@ -147,6 +147,7 @@
 		bind:value={controller.minValue}
 		required={controller.metadata.Required}
 		tabindex="0"
+		form={controller.form?.getFormId()}
 		{step}
 		{min}
 		{max}
@@ -158,6 +159,7 @@
 		bind:value={controller.maxValue}
 		required={controller.metadata.Required}
 		tabindex="0"
+		form={controller.form?.getFormId()}
 		{step}
 		{min}
 		{max}

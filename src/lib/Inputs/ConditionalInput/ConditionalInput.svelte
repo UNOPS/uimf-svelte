@@ -214,6 +214,7 @@
 						data-value={option.Value}
 						on:change={async () => await changeCondition(option.Value)}
 						required={true}
+						form={controller.form?.getFormId()}
 						name={uniqueId}
 					/>
 					<span>{option.Label}</span>

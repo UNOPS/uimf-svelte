@@ -189,6 +189,7 @@
 	<input
 		class="form-control"
 		bind:value={controller.valueAsString}
+		form={controller.form?.getFormId()}
 		required={controller.metadata.Required}
 		type="date"
 		min={minDateString}
