@@ -9,16 +9,14 @@ export class FormPopup implements IClientFunction {
             return;
         }
 
-        const options = {
-            form: customProperties.Form,
-            inputFieldValues: customProperties.InputFieldValues,
-            parentForm: params?.parentForm,
-            parentScope: params?.parentScope
-        };
-
         const utils = (window as any).legacy?.uimfUtils;
         if (utils != null) {
-            utils.openModal(options);
+            utils.openModal({
+                form: customProperties.Form,
+                inputFieldValues: customProperties.InputFieldValues,
+                parentForm: params?.parentForm,
+                parentScope: params?.parentScope
+            });
         }
     }
 }
