@@ -417,10 +417,7 @@ export class UimfApp {
                 return (params?: any) => entry.handle(params);
             }
         }
-        // Fallback to host app implementation if provided
-        return this.#app.getClientFunction(id);
-
-
+        return null;
     }
     getFormLinkActionHandler(action: string) {
         return this.#app.getFormLinkActionHandler(action);
