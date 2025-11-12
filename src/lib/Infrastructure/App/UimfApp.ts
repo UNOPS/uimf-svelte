@@ -7,7 +7,6 @@ import { FormResponse } from './FormResponse';
 import { IFormContainer } from './IFormContainer';
 import { FormLink } from '../Metadata';
 import { IFormlinkBase } from '../../Outputs/FormLink/IFormlinkBase';
-import { ResponseHandlerRegistry } from '../ResponseHandlers/ResponseHandlerRegistry';
 
 interface IConfirmOptions {
     headerText?: string;
