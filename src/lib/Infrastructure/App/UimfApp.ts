@@ -83,16 +83,6 @@ export class UimfApp {
     renderForm(options: { data: any; metadata: IFieldMetadata; form: FormInstance | null }): Element {
         return this.#app.renderForm(options);
     }
-    runResponseHandler(response: FormResponse): Promise<void> {
-        if (response.Metadata != null) {
-            const customHandler = this.getResponseHandler(response.Metadata.Handler);
-            if (customHandler != null && typeof customHandler === 'function') {
-                customHandler(response);
-            }
-        }
-
-        return Promise.resolve();
-    }
 
     /**
      * Runs client functions defined in the response metadata. Client functions
