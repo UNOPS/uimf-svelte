@@ -5,8 +5,15 @@ export class RedirectToUrl implements IClientFunction {
 
     handle(params?: any): void {
         const url = params?.functionToRun?.CustomProperties?.url;
+
         if (typeof url === "string" && url.length > 0) {
-            (window as any).location = url;
+            const openNewWindow = params?.functionToRun?.CustomProperties?.openNewWindow;
+
+            if (openNewWindow) {
+                window.open(url, "_blank");
+            } else {
+                (window as any).location = url;
+            }
         }
     }
 }
