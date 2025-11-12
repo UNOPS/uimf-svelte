@@ -5,7 +5,7 @@ import SmartNavigator from './Components/SmartNavigator.svelte';
 import './scss/styles.scss';
 import { UimfApp } from "./Infrastructure/App/UimfApp";
 import { ClientFunctionRegistry } from "./Infrastructure/ClientFunctions/ClientFunctionRegistry";
-import { registerLoader } from "./Infrastructure/Loader/LoaderRegister";
+import { Loader } from "./Components/Loader/Loader";
 
 declare global {
     interface Window {
@@ -13,11 +13,13 @@ declare global {
     }
 }
 
+const loader = new Loader();
+
 window.SvelteComponents = {
     SmartNavigator,
     AppStorage,
     controlRegister: defaultControlRegister,
     UimfApp,
-    ClientFunctionRegistry
-    registerLoader
+    ClientFunctionRegistry,
+    loader
 };
