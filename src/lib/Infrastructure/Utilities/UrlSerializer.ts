@@ -21,6 +21,25 @@ export class UrlSerializer {
 	private static readonly USE_PLAIN_JSON = true;
 
 	/**
+	 * Filters out top-level properties with null or undefined values from an object.
+	 * Returns the original value if it's not a plain object.
+	 */
+	private static filterNullProperties(value: any): any {
+		// Only filter plain objects (not arrays, null, or primitives)
+		if (value == null || typeof value !== 'object' || Array.isArray(value)) {
+			return value;
+		}
+
+		const filtered: any = {};
+		for (const key in value) {
+			if (value.hasOwnProperty(key) && value[key] != null) {
+				filtered[key] = value[key];
+			}
+		}
+		return filtered;
+	}
+
+	/**
 	 * Serializes a complex object to a URL-friendly string.
 	 * When USE_PLAIN_JSON is true: Uses plain JSON encoding for readability.
 	 * When USE_PLAIN_JSON is false: Uses compression for compact URLs.
@@ -31,7 +50,9 @@ export class UrlSerializer {
 			return null;
 		}
 
-		const json = JSON.stringify(value);
+		// Filter out null/undefined properties at the top level
+		const filtered = this.filterNullProperties(value);
+		const json = JSON.stringify(filtered);
 
 		if (this.USE_PLAIN_JSON) {
 			return json;
