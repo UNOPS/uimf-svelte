@@ -40,32 +40,30 @@
 	<ul>
 		<li class={controller.value.CssClass}>
 			{#if controller.value.Name?.length > 0}
-				{@const url = controller.app.buildFormUrl(
-					controller.value.Url.Form ?? '',
-					controller.value.Url.InputFieldValues
-				)}
-				{#if controller.value.Children.length > 0}
-					<span
-						on:click={() => (expanded = !expanded)}
-						on:keydown={(event) => {
-							if (event.key === 'Enter' || event.key === ' ') {
-								event.preventDefault();
-								expanded = !expanded;
-							}
-						}}
-						tabindex="0"
-						role="button"
-						aria-label={`Toggle ${controller.value.Name} expansion`}
-						class="arrow"
-						class:down={expanded}
-					>
-						&#x25b6;
-					</span>
-				{:else}
-					<i class="fa-solid fa-minus minus" />
-				{/if}
+				{#await controller.app.makeUrl(controller.value.Url) then url}
+					{#if controller.value.Children.length > 0}
+						<span
+							on:click={() => (expanded = !expanded)}
+							on:keydown={(event) => {
+								if (event.key === 'Enter' || event.key === ' ') {
+									event.preventDefault();
+									expanded = !expanded;
+								}
+							}}
+							tabindex="0"
+							role="button"
+							aria-label={`Toggle ${controller.value.Name} expansion`}
+							class="arrow"
+							class:down={expanded}
+						>
+							&#x25b6;
+						</span>
+					{:else}
+						<i class="fa-solid fa-minus minus" />
+					{/if}
 
-				<a href={url}>{@html controller.value.Name}</a>
+					<a href={url}>{@html controller.value.Name}</a>
+				{/await}
 			{/if}
 
 			{#if expanded && controller.value.Children?.length > 0}

@@ -518,23 +518,6 @@ export class UimfApp {
         return this.#app.populateCart(shoppingCart);
     }
 
-    buildFormUrl(form: string, data: any): string {
-        const baseUrl = '#/form/' + form;
-        const params: string[] = [];
-
-        for (const key in data) {
-            if (data.hasOwnProperty(key) && data[key] !== null) {
-                if (typeof data[key] === 'object') {
-                    params.push(key + '=' + encodeURIComponent(JSON.stringify(data[key])));
-                } else {
-                    params.push(key + '=' + encodeURIComponent(data[key]));
-                }
-            }
-        }
-
-        return baseUrl + '?' + params.join('&');
-    }
-
     private handleErrorHttpResponse(response: any, options?: { afterExceptionAction?: () => void }): void {
         if (response.ExceptionType == null && response.InnerException == null) {
             return;
