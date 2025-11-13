@@ -1,4 +1,4 @@
-import LoaderComponent from "../../Components/Loader/Loader.svelte";
+import LoaderComponent from "./Loader.svelte";
 
 export class Loader {
     #loaderComponent: LoaderComponent | null = null;

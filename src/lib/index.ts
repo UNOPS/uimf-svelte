@@ -13,13 +13,11 @@ declare global {
     }
 }
 
-const loader = new Loader();
-
 window.SvelteComponents = {
     SmartNavigator,
     AppStorage,
     controlRegister: defaultControlRegister,
     UimfApp,
     ClientFunctionRegistry,
-    loader
+    loader: new Loader()
 };
