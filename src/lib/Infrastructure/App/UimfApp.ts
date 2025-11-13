@@ -608,26 +608,14 @@ interface AppObject {
         visibleOnlyTo?: string[]
     ): void;
     renderForm(options: { data: any; metadata: IFieldMetadata; form: FormInstance | null }): Element;
-    runClientFunctions(response: FormResponse, parentForm?: FormInstance | null): Promise<void>;
-    handleCustomFormLinkAction(value: IFormLinkData, inputFieldValues: any): void;
     confirm(options: IConfirmOptions): Promise<void>;
     alert(options: IAlertOptions): Promise<void>;
     openModal(options: IModalOptions): Promise<void>;
     openHtmlModal(options: IHtmlModalOptions): Promise<void>;
     formsById: { [id: string]: FormMetadata };
-    makeUrl(link: IFormlinkBase): Promise<string>;
     goto(link: FormLink): Promise<void>;
-    postForm<T extends FormResponse>(
-        form: string,
-        data: any,
-        config: IPostFormConfig | null
-    ): Promise<T>;
-    getApiFile(url: string): Promise<void> | void;
     getApi(url: string): Promise<any>;
-    postApi(url: string, data: any, options?: any): Promise<any>;
-    getClientFunction(id: string): any;
     getFormLinkActionHandler(action: string): any;
-    getFormMetadata(formId: string): Promise<FormMetadata>;
     getForm(formId: string): Promise<FormInstance>;
     hasPermission(permission?: string | null): boolean;
     colorFromString(str: string, options?: ColorOptions | null): string;
