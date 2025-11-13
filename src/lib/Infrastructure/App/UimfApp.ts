@@ -7,6 +7,10 @@ import { FormResponse } from './FormResponse';
 import { IFormContainer } from './IFormContainer';
 import { FormLink } from '../Metadata';
 import { IFormlinkBase } from '../../Outputs/FormLink/IFormlinkBase';
+import { FormLinkActionRegistry } from '../FormLinkActions/FormLinkActionRegistry';
+import type { IFormLinkAction } from '../FormLinkActions/IFormLinkAction';
+
+declare const ResponseHandlerRegistry: Record<string, any>;
 
 interface IConfirmOptions {
     headerText?: string;
@@ -83,6 +87,16 @@ export class UimfApp {
     renderForm(options: { data: any; metadata: IFieldMetadata; form: FormInstance | null }): Element {
         return this.#app.renderForm(options);
     }
+    runResponseHandler(response: FormResponse): Promise<void> {
+        if (response.Metadata != null) {
+            const customHandler = this.getResponseHandler(response.Metadata.Handler);
+            if (customHandler != null && typeof customHandler === 'function') {
+                customHandler(response);
+            }
+        }
+
+        return Promise.resolve();
+    }
 
     /**
      * Runs client functions defined in the response metadata. Client functions
@@ -143,12 +157,30 @@ export class UimfApp {
     }
 
     handleCustomFormLinkAction(value: IFormLinkData, inputFieldValues: any): void {
-        const handler = this.getFormLinkActionHandler(value.Action);
-        if (handler == null) {
+        const handler = FormLinkActionRegistry[value.Action];
+        if (handler != null) {
+            Promise.resolve(handler.handle(value, inputFieldValues, this)).catch((error) => {
+                console.error(`[UimfApp] Error executing form link action "${value.Action}"`, error);
+            });
+            return;
+        }
+
+        const legacyHandler = this.getFormLinkActionHandler(value.Action);
+        if (legacyHandler == null) {
             throw 'Unsupported action: ' + value.Action;
         }
 
-        handler(value, inputFieldValues);
+        if (typeof legacyHandler === 'function') {
+            legacyHandler(value, inputFieldValues);
+            return;
+        }
+
+        if (typeof legacyHandler?.handle === 'function') {
+            legacyHandler.handle(value, inputFieldValues, this);
+            return;
+        }
+
+        throw 'Unsupported action handler type for: ' + value.Action;
     }
     confirm(options: IConfirmOptions): Promise<void> {
         return this.#app.confirm(options);
@@ -409,6 +441,12 @@ export class UimfApp {
         return null;
     }
     getFormLinkActionHandler(action: string) {
+        const handler: IFormLinkAction | undefined = FormLinkActionRegistry[action];
+        if (handler != null) {
+            return (formLink: IFormLinkData, inputFieldValues: any) =>
+                handler.handle(formLink, inputFieldValues, this);
+        }
+
         return this.#app.getFormLinkActionHandler(action);
     }
     serializeInputValue(metadata: any, value: any) {
