@@ -7,7 +7,11 @@ import { FormResponse } from './FormResponse';
 import { IFormContainer } from './IFormContainer';
 import { FormLink } from '../Metadata';
 import { IFormlinkBase } from '../../Outputs/FormLink/IFormlinkBase';
+import { FormLinkActionRegistry } from '../FormLinkActions/FormLinkActionRegistry';
+import type { IFormLinkAction } from '../FormLinkActions/IFormLinkAction';
 import { Loader } from '../../Components/Loader/Loader';
+
+declare const ResponseHandlerRegistry: Record<string, any>;
 
 interface IConfirmOptions {
     headerText?: string;
@@ -165,14 +169,6 @@ export class UimfApp {
         return runNext(0);
     }
 
-    handleCustomFormLinkAction(value: IFormLinkData, inputFieldValues: any): void {
-        const handler = this.getFormLinkActionHandler(value.Action);
-        if (handler == null) {
-            throw 'Unsupported action: ' + value.Action;
-        }
-
-        handler(value, inputFieldValues);
-    }
     confirm(options: IConfirmOptions): Promise<void> {
         return this.#app.confirm(options);
     }
@@ -425,9 +421,7 @@ export class UimfApp {
         }
         return null;
     }
-    getFormLinkActionHandler(action: string) {
-        return this.#app.getFormLinkActionHandler(action);
-    }
+
     serializeInputValue(metadata: any, value: any) {
         if ((window as any).SvelteComponents.controlRegister.inputs[metadata.Component.Type] != null) {
             const controller = new (window as any).SvelteComponents.controlRegister.inputs[
@@ -630,7 +624,6 @@ interface AppObject {
     formsById: { [id: string]: FormMetadata };
     goto(link: FormLink): Promise<void>;
     getApi(url: string): Promise<any>;
-    getFormLinkActionHandler(action: string): any;
     getForm(formId: string): Promise<FormInstance>;
     hasPermission(permission?: string | null): boolean;
     colorFromString(str: string, options?: ColorOptions | null): string;

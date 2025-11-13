@@ -12,6 +12,7 @@
 	import { tooltip } from '../../Components/Tooltip.svelte';
 	import type { FormlinkController } from './FormLinkController';
 	import { DynamicValueSource } from './IDynamicInputValue';
+	import { ActionRegistry } from '../../Infrastructure/Actions/ActionRegistry';
 
 	export let controller: FormlinkController;
 	export let disabled: boolean = false;
@@ -146,6 +147,44 @@
 					target.setValue(newValue);
 				}
 			}
+		}
+	}
+
+	async function handleActionRegistryAction(action: string, formLinkValue: any, inputs: any) {
+		const HandlerClass = ActionRegistry[action];
+
+		if (HandlerClass == null) {
+			console.error(`Unknown action "${action}".`);
+			return false;
+		}
+
+		const handler = new HandlerClass({
+			app: controller.app,
+			form: controller.form,
+			metadata: controller.metadata,
+			value: {
+				Parameters: {
+					Action: action,
+					...formLinkValue,
+					InputFieldValues: inputs
+				}
+			}
+		});
+
+		if (handler.execute != null) {
+			await handler.execute({
+				Parameters: {
+					Action: action,
+					...formLinkValue,
+					InputFieldValues: inputs
+				},
+				Label: formLinkValue.Label ?? null,
+				Tooltip: formLinkValue.Tooltip ?? null,
+				CssClass: formLinkValue.CssClass ?? null,
+				Icon: formLinkValue.Icon ?? null
+			});
+		} else {
+			console.error(`[FormLink] Handler for action "${action}" does not have an "execute" method.`);
 		}
 	}
 </script>
@@ -356,9 +395,10 @@
 								});
 						});
 						break;
-					default:
-						controller.app.handleCustomFormLinkAction(controller.value, inputs);
+					default: {
+						await handleActionRegistryAction(controller.value.Action, controller.value, inputs);
 						break;
+					}
 				}
 			}}
 		>
