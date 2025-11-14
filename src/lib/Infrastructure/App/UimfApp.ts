@@ -67,6 +67,18 @@ export class UimfApp {
     appStorage: AppStorage;
     formsById: { [id: string]: FormMetadata };
 
+    #myFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+        this.#loader.start();
+
+        // Merge uimf header with existing headers
+        const headers = new Headers(init?.headers);
+        headers.set('uimf', 'true');
+
+        return fetch(input, { ...init, headers }).finally(() => {
+            this.#loader.stop();
+        });
+    }
+
     // Exception types that are at the beginning of the list have higher priority.
     private exceptionConfigs = [
         { type: 'UNWB.Business.Exceptions.BusinessException', showPreamble: false },
@@ -241,8 +253,7 @@ export class UimfApp {
         config = config || {};
 
         const headers: any = {
-            'Content-Type': 'application/json',
-            uimf: 'true'
+            'Content-Type': 'application/json'
         };
 
         // Only add token if we're on the external site (internal site has ngStorage-internaluser)
@@ -254,9 +265,7 @@ export class UimfApp {
             }
         }
 
-        this.#loader.start();
-
-        return fetch('/api/form/run', {
+        return this.#myFetch('/api/form/run', {
             method: 'POST',
             headers: headers,
             credentials: 'include',
@@ -286,8 +295,6 @@ export class UimfApp {
                 }).catch(() => {
                     return Promise.reject(responseArray);
                 });
-            }).finally(() => {
-                this.#loader.stop();
             });
     }
 
@@ -309,12 +316,9 @@ export class UimfApp {
             return;
         }
 
-        this.#loader.start();
-
-        return fetch(url, {
+        return this.#myFetch(url, {
             method: 'GET',
             headers: {
-                uimf: 'true',
                 Authorization: 'Bearer ' + token
             }
         }).then((response) => {
@@ -331,14 +335,10 @@ export class UimfApp {
                     URL.revokeObjectURL(fileUrl);
                 }, 30000);
             });
-        }).finally(() => {
-            this.#loader.stop();
         });
     }
     getApi(url: string): Promise<any> {
-        const headers: any = {
-            uimf: 'true'
-        };
+        const headers: any = {};
 
         // Only add token if we're on the external site (internal site has ngStorage-internaluser)
         const isInternalSite = localStorage.getItem('ngStorage-internaluser') != null;
@@ -349,9 +349,7 @@ export class UimfApp {
             }
         }
 
-        this.#loader.start();
-
-        return fetch(url, {
+        return this.#myFetch(url, {
             headers: headers,
             credentials: 'include'
         })
@@ -366,16 +364,12 @@ export class UimfApp {
             })
             .catch((error) => {
                 throw error;
-            })
-            .finally(() => {
-                this.#loader.stop();
             });
     }
 
     postApi(url: string, data: any, options?: any): Promise<any> {
         const headers: any = {
-            'Content-Type': 'application/json',
-            uimf: 'true'
+            'Content-Type': 'application/json'
         };
 
         // Only add token if we're on the external site (internal site has ngStorage-internaluser)
@@ -387,9 +381,7 @@ export class UimfApp {
             }
         }
 
-        this.#loader.start();
-
-        return fetch(url, {
+        return this.#myFetch(url, {
             method: 'POST',
             headers: headers,
             credentials: 'include',
@@ -409,9 +401,6 @@ export class UimfApp {
             })
             .catch((error) => {
                 throw error;
-            })
-            .finally(() => {
-                this.#loader.stop();
             });
     }
 
@@ -451,9 +440,7 @@ export class UimfApp {
             return this.formPromises[formId];
         }
 
-        const headers: any = {
-            uimf: 'true'
-        };
+        const headers: any = {};
 
         // Only add token if we're on the external site (internal site has ngStorage-internaluser)
         const isInternalSite = localStorage.getItem('ngStorage-internaluser') != null;
@@ -464,9 +451,7 @@ export class UimfApp {
             }
         }
 
-        this.#loader.start();
-
-        const promise = fetch('/api/form/metadata/' + formId, {
+        const promise = this.#myFetch('/api/form/metadata/' + formId, {
             headers: headers,
             credentials: 'include'
         })
@@ -490,9 +475,6 @@ export class UimfApp {
             })
             .catch((error) => {
                 throw error;
-            })
-            .finally(() => {
-                this.#loader.stop();
             });
 
         this.formPromises[formId] = promise;
