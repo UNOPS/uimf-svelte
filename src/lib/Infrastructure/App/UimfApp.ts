@@ -74,9 +74,17 @@ export class UimfApp {
         const headers = new Headers(init?.headers);
         headers.set('uimf', 'true');
 
-        return fetch(input, { ...init, headers }).finally(() => {
-            this.#loader.stop();
-        });
+        let response: Response | undefined;
+
+        return fetch(input, { ...init, headers })
+            .then((r) => {
+                response = r;
+                return r;
+            })
+            .finally(() => {
+                this.#loader.stop();
+                this.#app.onRequestCompleted?.(response);
+            });
     }
 
     // Exception types that are at the beginning of the list have higher priority.
@@ -629,4 +637,5 @@ interface AppObject {
     buildFormUrl(form: string, data: any): string;
     getPriceData(product: any): any;
     populateCart(shoppingCart: any): void;
+    onRequestCompleted?: (response?: Response) => void;
 }
