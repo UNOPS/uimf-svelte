@@ -7,6 +7,7 @@ import { FormResponse } from './FormResponse';
 import { IFormContainer } from './IFormContainer';
 import { FormLink } from '../Metadata';
 import { IFormlinkBase } from '../../Outputs/FormLink/IFormlinkBase';
+import { Loader } from '../../Components/Loader/Loader';
 
 interface IConfirmOptions {
     headerText?: string;
@@ -58,9 +59,11 @@ export class UimfApp {
         this.appStorage = app.appStorage;
         this.#app = app;
         this.formsById = app.formsById;
+        this.#loader = window.SvelteComponents.loader;
     }
 
     #app: AppObject;
+    #loader: Loader;
     appStorage: AppStorage;
     formsById: { [id: string]: FormMetadata };
 
@@ -251,6 +254,8 @@ export class UimfApp {
             }
         }
 
+        this.#loader.start();
+
         return fetch('/api/form/run', {
             method: 'POST',
             headers: headers,
@@ -272,18 +277,20 @@ export class UimfApp {
                 return response.json();
             })
             .then((responseArray: any[]) => {
-
                 const clientFunctionsPromise = !config!.skipClientFunctions
                     ? this.runClientFunctions(responseArray[0].Data, (config as any).parentForm)
                     : Promise.resolve();
 
                 return clientFunctionsPromise.then(() => {
                     return responseArray[0].Data as T;
-                }).catch((error) => {
+                }).catch(() => {
                     return Promise.reject(responseArray);
                 });
+            }).finally(() => {
+                this.#loader.stop();
             });
     }
+
     getApiFile(url: string): Promise<void> | void {
         // Check if we're on the internal site
         const isInternalSite = localStorage.getItem('ngStorage-internaluser') != null;
@@ -301,6 +308,8 @@ export class UimfApp {
             window.open(url);
             return;
         }
+
+        this.#loader.start();
 
         return fetch(url, {
             method: 'GET',
@@ -322,6 +331,8 @@ export class UimfApp {
                     URL.revokeObjectURL(fileUrl);
                 }, 30000);
             });
+        }).finally(() => {
+            this.#loader.stop();
         });
     }
     getApi(url: string): Promise<any> {
@@ -338,6 +349,8 @@ export class UimfApp {
             }
         }
 
+        this.#loader.start();
+
         return fetch(url, {
             headers: headers,
             credentials: 'include'
@@ -353,8 +366,12 @@ export class UimfApp {
             })
             .catch((error) => {
                 throw error;
+            })
+            .finally(() => {
+                this.#loader.stop();
             });
     }
+
     postApi(url: string, data: any, options?: any): Promise<any> {
         const headers: any = {
             'Content-Type': 'application/json',
@@ -369,6 +386,8 @@ export class UimfApp {
                 headers.Authorization = 'Bearer ' + token;
             }
         }
+
+        this.#loader.start();
 
         return fetch(url, {
             method: 'POST',
@@ -390,6 +409,9 @@ export class UimfApp {
             })
             .catch((error) => {
                 throw error;
+            })
+            .finally(() => {
+                this.#loader.stop();
             });
     }
 
@@ -442,6 +464,8 @@ export class UimfApp {
             }
         }
 
+        this.#loader.start();
+
         const promise = fetch('/api/form/metadata/' + formId, {
             headers: headers,
             credentials: 'include'
@@ -466,6 +490,9 @@ export class UimfApp {
             })
             .catch((error) => {
                 throw error;
+            })
+            .finally(() => {
+                this.#loader.stop();
             });
 
         this.formPromises[formId] = promise;
