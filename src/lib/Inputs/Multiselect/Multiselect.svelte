@@ -215,7 +215,7 @@
 		--border: 1px solid var(--bs-border-color);
 		--border-hover: 1px solid var(--bs-border-color);
 		--border-focused: 1px solid #{$input-focus-border-color};
-		--border-radius: 0;
+		--border-radius: var(--bs-border-radius-sm);
 
 		--multi-item-bg: var(--bs-body-bg);
 		--multi-select-padding: var(--padding);

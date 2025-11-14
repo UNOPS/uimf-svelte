@@ -141,7 +141,7 @@
 			await controller?.setValue(null);
 		}}
 		hideEmptyState={true}
-		placeholder={controller.metadata.Component.Configuration.Placeholder ?? "type to search..."}
+		placeholder={controller.metadata.Component.Configuration.Placeholder ?? 'type to search...'}
 		loadOptions={loadOptionsAndFilter}
 	>
 		<div slot="item" let:item class={item.CssClass} class:item-slot={true}>
@@ -196,7 +196,7 @@
 		--border: 1px solid var(--bs-border-color);
 		--border-hover: 1px solid var(--bs-border-color);
 		--border-focused: 1px solid #{$input-focus-border-color};
-		--border-radius: 0;
+		--border-radius: var(--bs-border-radius-sm);
 
 		--multi-item-bg: var(--bs-body-bg);
 		--multi-select-padding: var(--padding);
