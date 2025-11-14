@@ -392,9 +392,7 @@ export class UimfApp {
                 throw error;
             });
     }
-    getResponseHandler(handler: string) {
-        return ResponseHandlerRegistry[handler];
-    }
+
     getClientFunction(id: string) {
         const entry = (window as any).SvelteComponents?.ClientFunctionRegistry?.[id];
         if (entry != null) {
