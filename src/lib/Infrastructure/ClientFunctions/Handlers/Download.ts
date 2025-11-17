@@ -1,4 +1,4 @@
-import { IClientFunction } from "../IClientFunction";
+import type { IClientFunction } from "../IClientFunction";
 
 export class Download implements IClientFunction {
     name: string = "download";

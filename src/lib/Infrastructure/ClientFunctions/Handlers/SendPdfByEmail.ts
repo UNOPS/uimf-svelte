@@ -1,4 +1,4 @@
-import { IClientFunction } from "../IClientFunction";
+import type { IClientFunction } from "../IClientFunction";
 
 export class SendPdfByEmail implements IClientFunction {
     name: string = "send-pdf-by-email";

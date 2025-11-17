@@ -1,4 +1,4 @@
-import { IClientFunction } from "../IClientFunction";
+import type { IClientFunction } from "../IClientFunction";
 
 export class RefreshCartInLocalStorage implements IClientFunction {
     name: string = "refresh-cart-in-local-storage";

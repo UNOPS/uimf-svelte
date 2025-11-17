@@ -1,4 +1,4 @@
-import { IClientFunction } from "../IClientFunction";
+import type { IClientFunction } from "../IClientFunction";
 
 export class FormPopup implements IClientFunction {
     name: string = "form-popup";

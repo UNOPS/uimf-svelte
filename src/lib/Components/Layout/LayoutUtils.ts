@@ -10,7 +10,7 @@ import type { ILayoutArea } from './Metadata/ILayoutArea';
 import type { ILayoutContainer } from './Metadata/ILayoutContainer';
 import { OutputController } from '../../Infrastructure/OutputController';
 import { defaultControlRegister as controlRegister } from '../../Infrastructure/ControlRegister';
-import { Field } from '../../Infrastructure/Fields/Field';
+import type { Field } from '../../Infrastructure/Fields/Field';
 
 export class LayoutUtils {
 	/**

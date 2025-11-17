@@ -1,4 +1,4 @@
-import { IClientFunction } from "../IClientFunction";
+import type { IClientFunction } from "../IClientFunction";
 
 export class RedirectToForm implements IClientFunction {
     name: string = "redirect-to-form";

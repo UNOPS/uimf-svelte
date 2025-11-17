@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
-	import { InputController } from '../../Infrastructure/InputController';
-	import { OutputController } from '../../Infrastructure/OutputController';
+	import type { InputController } from '../../Infrastructure/InputController';
+	import type { OutputController } from '../../Infrastructure/OutputController';
 
 	function asInput(controller: any): InputController<any> {
 		return controller as InputController<any>;

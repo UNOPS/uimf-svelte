@@ -1,4 +1,4 @@
-import { IClientFunction } from "../IClientFunction";
+import type { IClientFunction } from "../IClientFunction";
 
 export class GeneratePdf implements IClientFunction {
     name: string = "generate-pdf";

@@ -1,7 +1,7 @@
 <script lang="ts" context="module">
 	import type { IInputFieldMetadata, IOutputFieldMetadata } from '../../Infrastructure/Metadata';
-	import { InputController } from '../../Infrastructure/InputController';
-	import { OutputController } from '../../Infrastructure/OutputController';
+	import type { InputController } from '../../Infrastructure/InputController';
+	import type { OutputController } from '../../Infrastructure/OutputController';
 
 	import type { ILayoutArea } from './Metadata/ILayoutArea';
 	import type { ILayoutContainer } from './Metadata/ILayoutContainer';

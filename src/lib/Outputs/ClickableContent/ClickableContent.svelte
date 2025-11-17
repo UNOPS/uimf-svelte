@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-	import { IComponent } from '../../Infrastructure/Metadata';
+	import type { IComponent } from '../../Infrastructure/Metadata';
 
 	export interface IClickableContentConfiguration {
 		Content: IComponent;
@@ -18,16 +18,19 @@
 
 <script lang="ts">
 	import { beforeUpdate } from 'svelte';
-	import { OutputController } from '../../Infrastructure/OutputController';
+	import type { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import {
 		defaultControlRegister as controlRegister,
-		CreateOutputResult
+		type CreateOutputResult
 	} from '../../Infrastructure/ControlRegister';
 	import type { IOutputFieldMetadata } from '../../Infrastructure/Metadata';
 	import Output from '../../Output.svelte';
 	import { OutputFieldMetadataFactory } from '../../Infrastructure/Utilities/OutputFieldMetadataFactory';
-	import { ActionHandler, KeyActionButtonData } from '../../Infrastructure/Actions/ActionHandler';
+	import type {
+		ActionHandler,
+		KeyActionButtonData
+	} from '../../Infrastructure/Actions/ActionHandler';
 	import { ActionRegistry } from '../../Infrastructure/Actions/ActionRegistry';
 
 	export let controller: ClickableContentController;

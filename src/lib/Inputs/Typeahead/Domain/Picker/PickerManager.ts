@@ -1,8 +1,8 @@
-import { IInputFieldMetadata } from "../../../../Infrastructure/Metadata";
+import type { IInputFieldMetadata } from "../../../../Infrastructure/Metadata";
 import type { Field } from "../../../../Infrastructure/Fields/Field";
 import type { FormInstance } from "../../../../Infrastructure/FormInstance";
-import { ITypeaheadMetadata } from "../../Typeahead.svelte";
-import { IPickerSourceConfig } from "./IPickerSourceConfig";
+import type { ITypeaheadMetadata } from "../../Typeahead.svelte";
+import type { IPickerSourceConfig } from "./IPickerSourceConfig";
 import type { ITypeaheadConfig } from "../ITypeaheadConfig";
 import type { IMultiselectValue, ITypeaheadValue } from "../ITypeaheadValue";
 

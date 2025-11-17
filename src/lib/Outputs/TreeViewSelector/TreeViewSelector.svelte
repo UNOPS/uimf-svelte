@@ -2,7 +2,7 @@
 	import { beforeUpdate } from 'svelte';
 	import { OutputController } from '../../Infrastructure/OutputController';
 	import { OutputComponent } from '../../Infrastructure/Component';
-	import { IFormlinkBase } from '../FormLink/IFormlinkBase';
+	import type { IFormlinkBase } from '../FormLink/IFormlinkBase';
 
 	interface Item {
 		Url: IFormlinkBase;

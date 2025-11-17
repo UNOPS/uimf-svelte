@@ -1,4 +1,3 @@
-import type { IFormLinkData } from '../../Outputs/FormLink/FormLink.svelte';
 import type AppStorage from '../Storage/App/AppStorage';
 import type { FormInstance } from '../FormInstance';
 import type { IFieldMetadata } from '../Metadata/IFieldMetadata';
@@ -7,8 +6,6 @@ import { FormResponse } from './FormResponse';
 import { IFormContainer } from './IFormContainer';
 import { FormLink } from '../Metadata';
 import { IFormlinkBase } from '../../Outputs/FormLink/IFormlinkBase';
-import { FormLinkActionRegistry } from '../FormLinkActions/FormLinkActionRegistry';
-import type { IFormLinkAction } from '../FormLinkActions/IFormLinkAction';
 import { Loader } from '../../Components/Loader/Loader';
 
 declare const ResponseHandlerRegistry: Record<string, any>;

@@ -148,7 +148,7 @@
 
 	async function fetchPathItems(query?: string | null): Promise<IMyOption[]> {
 		let lastItemInPath = path?.length > 0 ? path[path.length - 1] : null;
-		let parentId = null;
+		let parentId: any = null;
 
 		if (lastItemInPath != null) {
 			if (lastItemInPath.HasChildren) {

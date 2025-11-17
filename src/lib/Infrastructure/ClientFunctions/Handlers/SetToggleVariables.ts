@@ -1,4 +1,4 @@
-import { IClientFunction } from "../IClientFunction";
+import type { IClientFunction } from "../IClientFunction";
 
 export class SetToggleVariables implements IClientFunction {
     name: string = "set-toggle-variables";

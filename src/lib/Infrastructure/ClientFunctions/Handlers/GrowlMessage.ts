@@ -1,4 +1,4 @@
-import { IClientFunction } from "../IClientFunction";
+import type { IClientFunction } from "../IClientFunction";
 
 export class GrowlMessage implements IClientFunction {
     name: string = "growl-message";
@@ -20,7 +20,7 @@ export class GrowlMessage implements IClientFunction {
             console[type === "error" ? "error" : type === "warning" ? "warn" : "log"](message);
         }
 
-        const fn = window.legacy.growl[type];
+        const fn = (window as any).legacy.growl[type];
 
         fn(params.functionToRun.CustomProperties.Message, { ttl: 5000 });
     }

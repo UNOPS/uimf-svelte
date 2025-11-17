@@ -1,4 +1,4 @@
-import { IClientFunction } from "../IClientFunction";
+import type { IClientFunction } from "../IClientFunction";
 
 export class UpdateCulture implements IClientFunction {
     name: string = "update-culture";

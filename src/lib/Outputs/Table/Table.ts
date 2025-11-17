@@ -14,7 +14,7 @@ import type { IInputFieldMetadata } from "../../Infrastructure/Metadata/IInputFi
 import type { IFieldMetadata } from "../../Infrastructure/Metadata/IFieldMetadata";
 import type { IListInputConfiguration } from '../../Inputs/ListInput/ListInput.svelte';
 import type { Field } from "../../Infrastructure/Fields/Field";
-import { IOutputFieldMetadata } from "../../Infrastructure/Metadata";
+import type { IOutputFieldMetadata } from "../../Infrastructure/Metadata";
 
 export interface ITableOption {
     parent: Field<TableMetadata | IFieldMetadata<ITableInputConfiguration | IListInputConfiguration>>;

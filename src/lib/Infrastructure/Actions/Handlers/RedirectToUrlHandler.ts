@@ -1,4 +1,4 @@
-import { ActionButtonParameters, ActionHandler, KeyActionButtonData } from '../ActionHandler';
+import { type ActionButtonParameters, ActionHandler, type KeyActionButtonData } from '../ActionHandler';
 
 interface RedirectToUrlArgs extends ActionButtonParameters {
 	Url: string;
