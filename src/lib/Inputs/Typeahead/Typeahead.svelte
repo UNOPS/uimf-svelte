@@ -11,9 +11,17 @@
 
 	export class Controller extends InputController<ITypeaheadValue, ITypeaheadMetadata> {
 		public getValue(): Promise<ITypeaheadValue | null> {
-			var result = this.value?.Value != null ? this.value : null;
+			if (this.value?.Value == null) {
+				return Promise.resolve(null);
+			}
 
-			return Promise.resolve(result);
+			const subtype = this.metadata.Component.Configuration.Subtype;
+
+			if (['Int32', 'Int16', 'Int64'].includes(subtype)) {
+				this.value.Value = parseInt(this.value.Value.toString());
+			}
+
+			return Promise.resolve(this.value);
 		}
 
 		public deserialize(value: string | null): Promise<ITypeaheadValue | null> {

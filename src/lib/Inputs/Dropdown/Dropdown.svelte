@@ -2,7 +2,7 @@
 	import { InputController } from '../../Infrastructure/InputController';
 
 	interface IValue extends ITypeaheadValue {
-		Value: string;
+		Value: string | number;
 	}
 
 	interface IConfiguration extends ITypeaheadConfig {
@@ -17,6 +17,16 @@
 		public items: Array<ITypeaheadOption> = [];
 
 		public getValue(): Promise<IValue | null> {
+			if (this.value?.Value == null) {
+				return Promise.resolve(null);
+			}
+
+			const subtype = this.metadata.Component.Configuration.Subtype;
+
+			if (['Int32', 'Int16', 'Int64'].includes(subtype)) {
+				this.value.Value = parseInt(this.value.Value.toString());
+			}
+
 			return Promise.resolve(this.value);
 		}
 
