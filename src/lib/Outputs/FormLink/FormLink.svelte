@@ -13,6 +13,7 @@
 	import type { FormlinkController } from './FormLinkController';
 	import { DynamicValueSource } from './IDynamicInputValue';
 	import { ActionRegistry } from '../../Infrastructure/Actions/ActionRegistry';
+	import Loader from '../../Components/Loader/Loader.svelte';
 
 	export let controller: FormlinkController;
 	export let disabled: boolean = false;
@@ -22,6 +23,11 @@
 
 	let useAlternativeView = false;
 	let unsubscribe: (() => void) | null = null;
+
+	// Button loading state
+	let isLoading = false;
+	let loadingProgress = 0;
+	let progressInterval: number | null = null;
 
 	// Create reactive variables for both normal and alternative views
 	$: currentLabel = useAlternativeView
@@ -81,6 +87,39 @@
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
+
+
+	// Button loading animation functions - replicates Loader.ts behavior for individual buttons
+	async function withLoading<T>(callback: () => Promise<T>): Promise<T> {
+
+		isLoading = true;
+		loadingProgress = 0;
+		
+		progressInterval = window.setInterval(() => {
+			const remaining = 90 - loadingProgress;
+			const increment = Math.max(1, remaining * 0.1);
+			loadingProgress = Math.min(90, loadingProgress + increment);
+		}, 200);
+
+		try {
+			return await callback();
+		} catch (error) {
+			// Re-throw error after cleanup
+			throw error;
+		} finally {
+			// Always cleanup, even on error
+			if (progressInterval) {
+				clearInterval(progressInterval);
+				progressInterval = null;
+			}
+			loadingProgress = 100;
+			setTimeout(() => {
+				isLoading = false;
+				loadingProgress = 0;
+			}, 200);
+
+		}
+	}
 
 	function confirmAndRun(callback: () => void) {
 		if (controller.value.ConfirmationMessage != null) {
@@ -295,10 +334,10 @@
 						}
 						break;
 					case 'open-modal':
-						confirmAndRun(() => {
+						confirmAndRun(() => withLoading(async () => {
 							const originalUrl = window.location.href;
 
-							return controller.app
+							return await controller.app
 								.openModal({
 									form: controller.value.Form,
 									inputFieldValues: controller.value.InputFieldValues,
@@ -345,17 +384,17 @@
 										}
 									}
 								});
-						});
+						}));
 						break;
 					case 'run':
-						confirmAndRun(async () => {
-							return controller.app
+						confirmAndRun(() => withLoading(() =>
+							controller.app
 								.postForm(controller.value.Form, inputs, {
 									skipClientFunctions: true
 								})
 								.then(function (response) {
 									if (response != null) {
-										controller.app.runClientFunctions(response, controller.form).then(() => {
+										return controller.app.runClientFunctions(response, controller.form).then(() => {
 											const targetOutputs = controller.value.RenderOutputTargets ?? null;
 											const targetInputs = controller.value.RenderInputTargets ?? null;
 
@@ -365,12 +404,12 @@
 											}
 
 											if (targetInputs == null && targetOutputs == null) {
-												controller.form?.submit(false);
+												return controller.form?.submit(false);
 											}
 										});
 									}
-								});
-						});
+								})
+						));
 
 						break;
 					case 'open-html-modal':
@@ -402,6 +441,9 @@
 				}
 			}}
 		>
+			{#if isLoading}
+				<Loader visible={true} progress={loadingProgress} />
+			{/if}
 			{#if currentIcon}
 				<i
 					class={currentIcon}
@@ -428,8 +470,34 @@
 		text-decoration: none;
 		border-width: 1px;
 		border-style: solid;
+		position: relative;
+		overflow: hidden;
 
-		&[disabled] {
+		// Ensure button content stays above the loader progress bar
+		> :not(:global(.uimf-progress)) {
+			position: relative;
+			z-index: 1;
+		}
+
+		// Position loader to fill button background
+		:global(.uimf-progress) {
+			position: absolute !important;
+			height: 100% !important;
+			width: 100% !important;
+			z-index: 0;
+			top: 0 !important;
+			left: 0 !important;
+			background: transparent !important;
+		}
+
+		// Red progress bar fills from left to right, rest stays original button color
+		:global(.uimf-progress__bar) {
+			background: rgba(250, 72, 72, 0.4) !important;
+			box-shadow: none !important;
+		}
+
+		// Only apply disabled styling when NOT loading (to preserve button colors during loading)
+		&[disabled]:not(:has(:global(.uimf-progress))) {
 			background-color: #fff;
 			border-color: #ccc;
 			color: #959595;
