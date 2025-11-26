@@ -18,7 +18,7 @@ export class UrlSerializer {
 	 * Set to true to use plain JSON encoding for debugging (human-readable URLs).
 	 * Set to false to use compression for production (compact URLs).
 	 */
-	private static readonly USE_PLAIN_JSON = false;
+	private static readonly USE_PLAIN_JSON = true;
 
 	/**
 	 * Filters out top-level properties with null or undefined values from an object.
