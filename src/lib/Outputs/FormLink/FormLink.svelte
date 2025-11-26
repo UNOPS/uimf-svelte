@@ -355,7 +355,7 @@
 								})
 								.then(function (response) {
 									if (response != null) {
-										controller.app.runClientFunctions(response, controller.form).then(() => {
+										return controller.app.runClientFunctions(response, controller.form).then(() => {
 											const targetOutputs = controller.value.RenderOutputTargets ?? null;
 											const targetInputs = controller.value.RenderInputTargets ?? null;
 
@@ -365,7 +365,7 @@
 											}
 
 											if (targetInputs == null && targetOutputs == null) {
-												controller.form?.submit(false);
+												return controller.form?.submit(false);
 											}
 										});
 									}
