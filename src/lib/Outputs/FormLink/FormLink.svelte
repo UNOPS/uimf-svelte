@@ -445,12 +445,6 @@
 		border-width: 1px;
 		border-style: solid;
 
-		&[disabled] {
-			background-color: #fff;
-			border-color: #ccc;
-			color: #959595;
-		}
-
 		&:hover {
 			border-color: $app-btn-border-color;
 		}
