@@ -10,6 +10,7 @@
 	import { beforeUpdate } from 'svelte';
 	import { OutputComponent } from '../../Infrastructure/Component';
 	import { tooltip } from '../../Components/Tooltip.svelte';
+	import { onAsyncClick } from '../../Components/OnAsyncClick.svelte';
 	import type { FormlinkController } from './FormLinkController';
 	import { DynamicValueSource } from './IDynamicInputValue';
 	import { ActionRegistry } from '../../Infrastructure/Actions/ActionRegistry';
@@ -82,15 +83,15 @@
 
 	beforeUpdate(async () => await component.setup(controller));
 
-	function confirmAndRun(callback: () => void) {
+	function confirmAndRun(callback: () => void | Promise<void>): Promise<void> {
 		if (controller.value.ConfirmationMessage != null) {
-			controller.app
+			return controller.app
 				.confirm({
 					bodyText: controller.value.ConfirmationMessage
 				})
 				.then(callback);
 		} else {
-			callback();
+			return Promise.resolve(callback());
 		}
 	}
 
@@ -241,7 +242,7 @@
 			class:opens-modal={['open-modal', 'open-html-modal'].includes(controller.value.Action)}
 			{disabled}
 			use:tooltip={(controller.value.Tooltip || '') + deadlineTooltip}
-			on:click={async () => {
+			use:onAsyncClick={async () => {
 				if (controller.value.ToggledVariable != null) {
 					controller.app.appStorage.toggleVariable(controller.value.ToggledVariable);
 				}
@@ -295,7 +296,7 @@
 						}
 						break;
 					case 'open-modal':
-						confirmAndRun(() => {
+						return confirmAndRun(() => {
 							const originalUrl = window.location.href;
 
 							return controller.app
@@ -346,9 +347,8 @@
 									}
 								});
 						});
-						break;
 					case 'run':
-						confirmAndRun(async () => {
+						return confirmAndRun(async () => {
 							return controller.app
 								.postForm(controller.value.Form, inputs, {
 									skipClientFunctions: true
@@ -371,10 +371,8 @@
 									}
 								});
 						});
-
-						break;
 					case 'open-html-modal':
-						confirmAndRun(() => {
+						return confirmAndRun(() => {
 							let resolve = JSON.parse(controller.value.Resolve) || {};
 							resolve.$stateParams = JSON.parse(controller.value.StateParams) || {};
 
@@ -394,7 +392,6 @@
 									controller.form?.submit(true);
 								});
 						});
-						break;
 					default: {
 						await handleActionRegistryAction(controller.value.Action, controller.value, inputs);
 						break;
