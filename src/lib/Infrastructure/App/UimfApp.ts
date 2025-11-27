@@ -91,6 +91,11 @@ export class UimfApp {
             headers.set('Authorization', 'Bearer ' + authToken);
         }
 
+        // Send refresh token if there is any.
+        const refreshToken = localStorage.getItem('ngStorage-RefreshToken');
+        if (refreshToken != null) {
+            headers.set('RefreshToken', refreshToken);
+        }
 
         let response: Response | undefined;
 
