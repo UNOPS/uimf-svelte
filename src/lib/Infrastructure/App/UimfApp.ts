@@ -85,6 +85,12 @@ export class UimfApp {
             }
         }
 
+        // Send auth token if there is any.
+        const authToken = localStorage.getItem('Token');
+        if (authToken != null) {
+            headers.set('Authorization', 'Bearer ' + authToken);
+        }
+
 
         let response: Response | undefined;
 
@@ -267,15 +273,6 @@ export class UimfApp {
         const headers: any = {
             'Content-Type': 'application/json'
         };
-
-        // Only add token if we're on the external site (internal site has ngStorage-internaluser)
-        const isInternalSite = localStorage.getItem('ngStorage-internaluser') != null;
-        if (!isInternalSite) {
-            const token = localStorage.getItem('Token');
-            if (token) {
-                headers.Authorization = 'Bearer ' + token;
-            }
-        }
 
         return this.#myFetch('/api/form/run', {
             method: 'POST',
