@@ -27,7 +27,6 @@
 		node.style.backgroundRepeat = hasExistingBg ? 'no-repeat, repeat' : 'no-repeat';
 
 		const startTime = performance.now();
-		const rate = 0.1; // Controls approach speed (smaller = slower)
 		let animationId: number;
 		let stopped = false;
 
