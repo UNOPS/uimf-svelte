@@ -12,8 +12,8 @@
 		const computed = getComputedStyle(node);
 		const computedBgImage = computed.backgroundImage;
 
-		// Progress bar: solid semi-transparent white via gradient
-		const progressBar = 'linear-gradient(to right, rgba(255,255,255,0.4), rgba(255,255,255,0.4))';
+		// Progress bar: solid semi-transparent red via gradient
+		const progressBar = 'linear-gradient(to right, rgba(255,0,0,0.4), rgba(255,0,0,0.4))';
 
 		// Layer progress bar on top of existing background
 		const hasExistingBg = computedBgImage && computedBgImage !== 'none';
