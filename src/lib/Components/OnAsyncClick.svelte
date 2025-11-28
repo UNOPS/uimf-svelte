@@ -1,31 +1,54 @@
 <script context="module" lang="ts">
 	export type AsyncClickHandler = (event: MouseEvent) => Promise<void>;
 
-	function startLoadingAnimation(node: HTMLButtonElement, originalBgColor: string): () => void {
-		// Save original inline styles so we can restore them later
-		const originalBgImage = node.style.backgroundImage;
-		const originalBgSize = node.style.backgroundSize;
-		const originalBgPosition = node.style.backgroundPosition;
-		const originalBgRepeat = node.style.backgroundRepeat;
-		const originalBgColorInline = node.style.backgroundColor;
+	interface OriginalStyles {
+		backgroundImage: string;
+		backgroundSize: string;
+		backgroundPosition: string;
+		backgroundRepeat: string;
+		backgroundColor: string;
+	}
 
-		// Get computed background to layer on top of
+	function saveOriginalStyles(node: HTMLButtonElement): OriginalStyles {
+		return {
+			backgroundImage: node.style.backgroundImage,
+			backgroundSize: node.style.backgroundSize,
+			backgroundPosition: node.style.backgroundPosition,
+			backgroundRepeat: node.style.backgroundRepeat,
+			backgroundColor: node.style.backgroundColor
+		};
+	}
+
+	function restoreOriginalStyles(node: HTMLButtonElement, styles: OriginalStyles): void {
+		node.style.backgroundImage = styles.backgroundImage;
+		node.style.backgroundSize = styles.backgroundSize;
+		node.style.backgroundPosition = styles.backgroundPosition;
+		node.style.backgroundRepeat = styles.backgroundRepeat;
+		node.style.backgroundColor = styles.backgroundColor;
+	}
+
+	function applyLoadingStyles(node: HTMLButtonElement, originalBgColor: string): boolean {
 		const computed = getComputedStyle(node);
 		const computedBgImage = computed.backgroundImage;
 
-		// Preserve the original background color as inline style (overrides disabled CSS)
 		node.style.backgroundColor = originalBgColor;
 
-		// Derive progress bar color from button's original background color (before disabled state)
 		const progressBarColor = deriveProgressBarColor(originalBgColor);
 		const progressBar = `linear-gradient(to right, ${progressBarColor}, ${progressBarColor})`;
 
-		// Layer progress bar on top of existing background
-		const hasExistingBg = computedBgImage && computedBgImage !== 'none';
+		const hasExistingBg = !!(computedBgImage && computedBgImage !== 'none');
 		node.style.backgroundImage = hasExistingBg ? `${progressBar}, ${computedBgImage}` : progressBar;
 		node.style.backgroundPosition = hasExistingBg ? 'left center, center' : 'left center';
 		node.style.backgroundRepeat = hasExistingBg ? 'no-repeat, repeat' : 'no-repeat';
 
+		return hasExistingBg;
+	}
+
+	function startProgressAnimation(
+		node: HTMLButtonElement,
+		hasExistingBg: boolean,
+		onComplete: () => void
+	): () => void {
 		const startTime = performance.now();
 		let animationId: number;
 		let stopped = false;
@@ -53,19 +76,20 @@
 		return () => {
 			stopped = true;
 			cancelAnimationFrame(animationId);
-
-			// Animate to 100%
 			updateProgress(1);
-
-			// Restore original styles after transition
-			setTimeout(() => {
-				node.style.backgroundImage = originalBgImage;
-				node.style.backgroundSize = originalBgSize;
-				node.style.backgroundPosition = originalBgPosition;
-				node.style.backgroundRepeat = originalBgRepeat;
-				node.style.backgroundColor = originalBgColorInline;
-			}, 150);
+			setTimeout(onComplete, 150);
 		};
+	}
+
+	function startLoadingAnimation(node: HTMLButtonElement, originalBgColor: string): () => void {
+		const originalStyles = saveOriginalStyles(node);
+		const hasExistingBg = applyLoadingStyles(node, originalBgColor);
+
+		const stopAnimation = startProgressAnimation(node, hasExistingBg, () => {
+			restoreOriginalStyles(node, originalStyles);
+		});
+
+		return stopAnimation;
 	}
 
 	/**
@@ -83,8 +107,9 @@
 			black: 'rgb(0, 0, 0)',
 			gray: 'rgb(128, 128, 128)'
 		};
-		if (namedColors[color.toLowerCase()]) {
-			return namedColors[color.toLowerCase()];
+		const lowerColor = color.toLowerCase();
+		if (namedColors[lowerColor]) {
+			return namedColors[lowerColor];
 		}
 
 		// 2. Hex Colors (#RGB or #RRGGBB)
@@ -116,6 +141,14 @@
 		return null;
 	}
 
+	// Brightness thresholds for adaptive progress bar color calculation
+	const BRIGHTNESS_THRESHOLD_LIGHT = 200; // Above this is considered a light background
+	const BRIGHTNESS_THRESHOLD_DARK = 55; // Below this is considered a dark background
+	const DARKEN_FACTOR_LIGHT = 0.4; // Light backgrounds need strong darkening for visibility
+	const LIGHTEN_FACTOR_DARK = 0.6; // Dark backgrounds need moderate lightening
+	const DARKEN_FACTOR_COLORED = 0.7; // Colored backgrounds need subtle darkening
+	const PROGRESS_BAR_OPACITY = 0.4; // Opacity for the progress bar overlay
+
 	/**
 	 * Derives an appropriate progress bar color from the button's background color.
 	 * Now supports hex codes and basic named colors (red, blue, green, etc.).
@@ -127,7 +160,7 @@
 
 		if (!rgbColor) {
 			// Fallback if the color format is not supported or parsing fails
-			return 'rgba(128, 128, 128, 0.4)';
+			return `rgba(128, 128, 128, ${PROGRESS_BAR_OPACITY})`;
 		}
 
 		// 2. Parse RGB values from the normalized color string
@@ -135,7 +168,7 @@
 
 		if (!rgbMatch) {
 			// Should not happen after toRgb conversion, but kept as a safeguard
-			return 'rgba(128, 128, 128, 0.4)';
+			return `rgba(128, 128, 128, ${PROGRESS_BAR_OPACITY})`;
 		}
 
 		const r = parseInt(rgbMatch[1], 10);
@@ -148,30 +181,35 @@
 
 		let newR: number, newG: number, newB: number;
 
-		// 4. Adaptive Brightness Logic (same as original)
-		if (brightness > 200) {
-			// Light background: darken to ~40% brightness
-			const factor = 0.4;
-			newR = Math.round(r * factor);
-			newG = Math.round(g * factor);
-			newB = Math.round(b * factor);
-		} else if (brightness < 55) {
-			// Dark background: lighten to ~60% brightness
-			const factor = 0.6;
-			// Interpolate towards white
-			newR = Math.round(255 - (255 - r) * factor);
-			newG = Math.round(255 - (255 - g) * factor);
-			newB = Math.round(255 - (255 - b) * factor);
+		// 4. Adaptive Brightness Logic
+		if (brightness > BRIGHTNESS_THRESHOLD_LIGHT) {
+			// Light background: darken significantly for visibility
+			newR = Math.round(r * DARKEN_FACTOR_LIGHT);
+			newG = Math.round(g * DARKEN_FACTOR_LIGHT);
+			newB = Math.round(b * DARKEN_FACTOR_LIGHT);
+		} else if (brightness < BRIGHTNESS_THRESHOLD_DARK) {
+			// Dark background: lighten by interpolating towards white
+			newR = Math.round(255 - (255 - r) * LIGHTEN_FACTOR_DARK);
+			newG = Math.round(255 - (255 - g) * LIGHTEN_FACTOR_DARK);
+			newB = Math.round(255 - (255 - b) * LIGHTEN_FACTOR_DARK);
 		} else {
-			// Colored background: darken by ~30%
-			const factor = 0.7;
-			newR = Math.round(r * factor);
-			newG = Math.round(g * factor);
-			newB = Math.round(b * factor);
+			// Colored background: darken subtly
+			newR = Math.round(r * DARKEN_FACTOR_COLORED);
+			newG = Math.round(g * DARKEN_FACTOR_COLORED);
+			newB = Math.round(b * DARKEN_FACTOR_COLORED);
 		}
 
-		// 5. Return the new color with 40% opacity
-		return `rgba(${newR}, ${newG}, ${newB}, 0.4)`;
+		// 5. Return the new color with configured opacity
+		return `rgba(${newR}, ${newG}, ${newB}, ${PROGRESS_BAR_OPACITY})`;
+	}
+
+	function setProgressCursor(node: HTMLButtonElement): () => void {
+		const originalCursor = node.style.cursor;
+		node.style.cursor = 'progress';
+
+		return () => {
+			node.style.cursor = originalCursor;
+		};
 	}
 
 	export function onAsyncClick(node: HTMLButtonElement, handler: AsyncClickHandler) {
@@ -182,17 +220,16 @@
 			if (node.disabled || isLoading) return;
 
 			const originalBgColor = getComputedStyle(node).backgroundColor;
-			const originalCursor = node.style.cursor;
 
 			isLoading = true;
-			node.style.cursor = 'progress';
+			const restoreCursor = setProgressCursor(node);
 			const stopLoading = startLoadingAnimation(node, originalBgColor);
 
 			try {
 				await currentHandler(event);
 			} finally {
 				stopLoading();
-				node.style.cursor = originalCursor;
+				restoreCursor();
 				isLoading = false;
 			}
 		}
