@@ -75,13 +75,13 @@
 	function toRgb(color: string): string | null {
 		// 1. Basic Named Colors (Simplified Map)
 		const namedColors: { [key: string]: string } = {
-			'red': 'rgb(255, 0, 0)',
-			'blue': 'rgb(0, 0, 255)',
-			'green': 'rgb(0, 128, 0)',
-			'yellow': 'rgb(255, 255, 0)',
-			'white': 'rgb(255, 255, 255)',
-			'black': 'rgb(0, 0, 0)',
-			'gray': 'rgb(128, 128, 128)',
+			red: 'rgb(255, 0, 0)',
+			blue: 'rgb(0, 0, 255)',
+			green: 'rgb(0, 128, 0)',
+			yellow: 'rgb(255, 255, 0)',
+			white: 'rgb(255, 255, 255)',
+			black: 'rgb(0, 0, 0)',
+			gray: 'rgb(128, 128, 128)'
 		};
 		if (namedColors[color.toLowerCase()]) {
 			return namedColors[color.toLowerCase()];
@@ -111,7 +111,7 @@
 		if (color.startsWith('rgb')) {
 			return color;
 		}
-		
+
 		// Unrecognized format
 		return null;
 	}
@@ -132,7 +132,7 @@
 
 		// 2. Parse RGB values from the normalized color string
 		const rgbMatch = rgbColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)/);
-		
+
 		if (!rgbMatch) {
 			// Should not happen after toRgb conversion, but kept as a safeguard
 			return 'rgba(128, 128, 128, 0.4)';
@@ -143,7 +143,7 @@
 		const b = parseInt(rgbMatch[3], 10);
 
 		// 3. Calculate perceived brightness using luminance formula
-		// Luminance formula: L = 0.299*R + 0.587*G + 0.114*B 
+		// Luminance formula: L = 0.299*R + 0.587*G + 0.114*B
 		const brightness = 0.299 * r + 0.587 * g + 0.114 * b;
 
 		let newR: number, newG: number, newB: number;
