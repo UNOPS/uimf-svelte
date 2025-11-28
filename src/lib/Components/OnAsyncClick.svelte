@@ -182,14 +182,17 @@
 			if (node.disabled || isLoading) return;
 
 			const originalBgColor = getComputedStyle(node).backgroundColor;
+			const originalCursor = node.style.cursor;
 
 			isLoading = true;
+			node.style.cursor = 'progress';
 			const stopLoading = startLoadingAnimation(node, originalBgColor);
 
 			try {
 				await currentHandler(event);
 			} finally {
 				stopLoading();
+				node.style.cursor = originalCursor;
 				isLoading = false;
 			}
 		}
