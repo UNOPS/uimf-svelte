@@ -9,6 +9,7 @@
 	import type { IFormLinkData } from '../FormLink/FormLink.svelte';
 	import FormLinkComponent from '../FormLink/FormLink.svelte';
 	import { FormlinkUtilities } from '../FormLink/FormlinkUtilities';
+	import { onAsyncClick } from '../../Components/OnAsyncClick.svelte';
 
 	interface IData {
 		Actions: IFormLinkData[];
@@ -107,8 +108,14 @@
 		visibleInputs = visibleInputs;
 	}
 
-	function submitForm() {
-		controller.form?.submit();
+	async function submitForm() {
+		return controller.form?.submit();
+	}
+
+	async function cancelForm() {
+		if (controller.form?.cancel != null) {
+			return controller.form.cancel();
+		}
 	}
 </script>
 
@@ -137,8 +144,8 @@
 					{#if action.Form === '#submit'}
 						<button
 							class={action.CssClass ?? 'btn btn-primary'}
-							type="submit"
-							form={controller.form.getFormId()}
+							type="button"
+							use:onAsyncClick={submitForm}
 						>
 							{action.Label}
 						</button>
@@ -154,7 +161,7 @@
 						<button
 							class={action.CssClass ?? 'btn btn-default'}
 							type="button"
-							on:click={controller.form.cancel}
+							use:onAsyncClick={cancelForm}
 						>
 							{action.Label}
 						</button>
