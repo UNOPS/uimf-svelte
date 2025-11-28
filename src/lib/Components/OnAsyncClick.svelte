@@ -22,7 +22,7 @@
 		node.style.backgroundRepeat = hasExistingBg ? 'no-repeat, repeat' : 'no-repeat';
 
 		const startTime = performance.now();
-		const rate = 0.001; // Controls approach speed (smaller = slower)
+		const rate = 0.1; // Controls approach speed (smaller = slower)
 		let animationId: number;
 		let stopped = false;
 
@@ -35,9 +35,9 @@
 			if (stopped) return;
 
 			const elapsed = performance.now() - startTime;
-			// Asymptotic: approaches 1 but never reaches it
-			// ~63% at 1s, ~86% at 2s, ~95% at 3s
-			const progress = (1 - Math.exp(-elapsed * rate)) * 0.95; // Cap at 95%
+			// Logarithmic progression: 85% at 1s, 90% at 2s, 95% at 3s, then continues slowly without reaching 100%
+			const seconds = elapsed / 1000;
+			const progress = Math.log(1 + seconds * 6) / Math.log(1 + seconds * 6 + 6);
 			updateProgress(progress);
 
 			animationId = requestAnimationFrame(animate);
