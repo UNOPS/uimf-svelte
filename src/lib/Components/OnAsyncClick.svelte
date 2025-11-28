@@ -176,21 +176,21 @@
 
 	export function onAsyncClick(node: HTMLButtonElement, handler: AsyncClickHandler) {
 		let currentHandler = handler;
+		let isLoading = false;
 
 		async function handleClick(event: MouseEvent) {
-			if (node.disabled) return;
+			if (node.disabled || isLoading) return;
 
-			// Capture background color before disabling (disabled state changes color to white)
 			const originalBgColor = getComputedStyle(node).backgroundColor;
 
-			node.disabled = true;
+			isLoading = true;
 			const stopLoading = startLoadingAnimation(node, originalBgColor);
 
 			try {
 				await currentHandler(event);
 			} finally {
 				stopLoading();
-				node.disabled = false;
+				isLoading = false;
 			}
 		}
 
