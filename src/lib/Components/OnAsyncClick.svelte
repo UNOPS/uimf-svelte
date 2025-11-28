@@ -1,5 +1,12 @@
 <script context="module" lang="ts">
+	import { writable, get } from 'svelte/store';
+
 	export type AsyncClickHandler = (event: MouseEvent) => Promise<void>;
+
+	export interface OnAsyncClickParams {
+		handler: AsyncClickHandler;
+		group?: string;
+	}
 
 	interface OriginalStyles {
 		backgroundImage: string;
@@ -7,6 +14,40 @@
 		backgroundPosition: string;
 		backgroundRepeat: string;
 		backgroundColor: string;
+	}
+
+	// Global store to track which groups are currently loading
+	const loadingGroups = writable(new Set<string>());
+
+	/**
+	 * Export the store so components can subscribe to it reactively.
+	 */
+	export { loadingGroups };
+
+	/**
+	 * Checks if a specific group is currently in loading state.
+	 * @param group - The group identifier to check
+	 * @returns true if the group is loading, false otherwise
+	 */
+	export function isGroupLoading(group: string): boolean {
+		return get(loadingGroups).has(group);
+	}
+
+	/**
+	 * Sets or clears the loading state for a group.
+	 * When a group is loading, all buttons in that group are disabled.
+	 * Note: Only one button per group can be loading at a time due to the disabled state.
+	 */
+	function setGroupLoading(group: string, loading: boolean): void {
+		loadingGroups.update((groups) => {
+			const newGroups = new Set(groups);
+			if (loading) {
+				newGroups.add(group);
+			} else {
+				newGroups.delete(group);
+			}
+			return newGroups;
+		});
 	}
 
 	function saveOriginalStyles(node: HTMLButtonElement): OriginalStyles {
@@ -212,9 +253,34 @@
 		};
 	}
 
-	export function onAsyncClick(node: HTMLButtonElement, handler: AsyncClickHandler) {
-		let currentHandler = handler;
+	export function onAsyncClick(node: HTMLButtonElement, params: OnAsyncClickParams) {
+		let currentHandler = params.handler;
+		let currentGroup = params.group;
 		let isLoading = false;
+		let activeLoadingGroup: string | undefined = undefined; // Track which group is actually loading
+
+		// Subscribe to loadingGroups to auto-disable this button if its group is loading
+		const unsubscribe = loadingGroups.subscribe((groups) => {
+			if (currentGroup != null) {
+				// If our group is loading, disable the button
+				// Note: We don't disable if WE are the ones loading (isLoading=true)
+				// because that state is handled by the click handler logic and we don't want to fight it.
+				// But actually, disabling while loading is fine/good.
+				// Key check: Is our group in the set?
+				const groupIsLoading = groups.has(currentGroup);
+
+				// Only modify disabled state if it's driven by the group logic
+				// We use a custom property or dataset to avoid overriding other disable reasons?
+				// For simplicity: if group is loading, we disable.
+				if (groupIsLoading && !node.disabled) {
+					node.disabled = true;
+					node.dataset.groupDisabled = 'true';
+				} else if (!groupIsLoading && node.dataset.groupDisabled === 'true') {
+					node.disabled = false;
+					delete node.dataset.groupDisabled;
+				}
+			}
+		});
 
 		async function handleClick(event: MouseEvent) {
 			if (node.disabled || isLoading) return;
@@ -222,6 +288,15 @@
 			const originalBgColor = getComputedStyle(node).backgroundColor;
 
 			isLoading = true;
+
+			// Capture the group at click time to prevent issues if update() is called during loading
+			activeLoadingGroup = currentGroup;
+
+			// Set group loading state if group is specified
+			if (activeLoadingGroup != null) {
+				setGroupLoading(activeLoadingGroup, true);
+			}
+
 			const restoreCursor = setProgressCursor(node);
 			const stopLoading = startLoadingAnimation(node, originalBgColor);
 
@@ -231,6 +306,12 @@
 				stopLoading();
 				restoreCursor();
 				isLoading = false;
+
+				// Clear group loading state using the captured group
+				if (activeLoadingGroup != null) {
+					setGroupLoading(activeLoadingGroup, false);
+					activeLoadingGroup = undefined;
+				}
 			}
 		}
 
@@ -239,9 +320,39 @@
 		return {
 			destroy() {
 				node.removeEventListener('click', handleClick);
+				unsubscribe(); // Clean up store subscription
+
+				// Defensive: Clean up any orphaned group loading state
+				if (isLoading && activeLoadingGroup != null) {
+					setGroupLoading(activeLoadingGroup, false);
+				}
 			},
-			update(newHandler: AsyncClickHandler) {
-				currentHandler = newHandler;
+			update(newParams: OnAsyncClickParams) {
+				// Update handler and group when params change
+				// Note: We don't update activeLoadingGroup to prevent race conditions
+				currentHandler = newParams.handler;
+
+				// If group changed, we might need to update disabled state immediately
+				if (currentGroup !== newParams.group) {
+					// Clean up old group state if needed
+					if (currentGroup && node.dataset.groupDisabled === 'true') {
+						node.disabled = false;
+						delete node.dataset.groupDisabled;
+					}
+
+					currentGroup = newParams.group;
+
+					// New group state will be applied by the subscription callback
+					// but we can force a check if needed. The store subscription stays active.
+					// Since currentGroup is a closure variable used in the subscription,
+					// the next store update will use the new value.
+					// To force immediate update:
+					const groups = get(loadingGroups);
+					if (currentGroup && groups.has(currentGroup) && !node.disabled) {
+						node.disabled = true;
+						node.dataset.groupDisabled = 'true';
+					}
+				}
 			}
 		};
 	}

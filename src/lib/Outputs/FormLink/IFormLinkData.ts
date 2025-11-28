@@ -24,6 +24,7 @@ export interface IFormLinkData {
 	RenderInputTargets?: { [key: string]: string };
 	RenderOutputTargets?: { [key: string]: string };
 	DynamicInputValues?: { [key: string]: IDynamicInputValue };
+	Group?: string;
 
 	// Html modal options.
 	StateParams?: any;

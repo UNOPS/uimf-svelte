@@ -108,13 +108,13 @@
 		visibleInputs = visibleInputs;
 	}
 
-	async function submitForm() {
-		return controller.form?.submit();
+	async function submitForm(): Promise<void> {
+		await controller.form?.submit();
 	}
 
-	async function cancelForm() {
+	async function cancelForm(): Promise<void> {
 		if (controller.form?.cancel != null) {
-			return controller.form.cancel();
+			await controller.form.cancel();
 		}
 	}
 </script>
@@ -145,7 +145,7 @@
 						<button
 							class={action.CssClass ?? 'btn btn-primary'}
 							type="button"
-							use:onAsyncClick={submitForm}
+							use:onAsyncClick={{ handler: submitForm, group }}
 						>
 							{action.Label}
 						</button>
@@ -161,7 +161,7 @@
 						<button
 							class={action.CssClass ?? 'btn btn-default'}
 							type="button"
-							use:onAsyncClick={cancelForm}
+							use:onAsyncClick={{ handler: cancelForm, group }}
 						>
 							{action.Label}
 						</button>
