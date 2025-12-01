@@ -188,6 +188,19 @@
 			console.error(`[FormLink] Handler for action "${action}" does not have an "execute" method.`);
 		}
 	}
+
+	function getDeferedPromise() {
+		let resolver = () => {};
+
+		let promise = new Promise<void>((resolve) => {
+			resolver = resolve;
+		});
+
+		return {
+			promise: promise,
+			resolve: resolver
+		};
+	}
 </script>
 
 {#if controller.value != null}
@@ -299,7 +312,9 @@
 						return confirmAndRun(() => {
 							const originalUrl = window.location.href;
 
-							return controller.app
+							var deferred = getDeferedPromise();
+
+							controller.app
 								.openModal({
 									form: controller.value.Form,
 									inputFieldValues: controller.value.InputFieldValues,
@@ -327,6 +342,8 @@
 										form.on('form:close', function () {
 											modal.$close();
 										});
+
+										deferred.resolve();
 									}
 								})
 								.then(async function () {
@@ -346,6 +363,8 @@
 										}
 									}
 								});
+
+							return deferred.promise;
 						});
 					case 'run':
 						return confirmAndRun(async () => {
