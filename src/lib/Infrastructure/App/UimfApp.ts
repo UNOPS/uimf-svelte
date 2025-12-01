@@ -7,6 +7,7 @@ import { IFormContainer } from './IFormContainer';
 import { FormLink } from '../Metadata';
 import { IFormlinkBase } from '../../Outputs/FormLink/IFormlinkBase';
 import { Loader } from '../../Components/Loader/Loader';
+import { ColorUtils, IColorOptions } from '../Utilities/ColorUtils';
 
 declare const ResponseHandlerRegistry: Record<string, any>;
 
@@ -499,8 +500,8 @@ export class UimfApp {
     hasPermission(permission?: string | null): boolean {
         return this.#app.hasPermission(permission);
     }
-    colorFromString(str: string, options?: ColorOptions | null): string {
-        return this.#app.colorFromString(str, options);
+    colorFromString(str: string, options?: IColorOptions | null): string {
+        return ColorUtils.colorFromString(str, options);
     }
     getDefaultValue(valueName: string) {
         switch (valueName) {
@@ -636,7 +637,6 @@ interface AppObject {
     getApi(url: string): Promise<any>;
     getForm(formId: string): Promise<FormInstance>;
     hasPermission(permission?: string | null): boolean;
-    colorFromString(str: string, options?: ColorOptions | null): string;
     buildFormUrl(form: string, data: any): string;
     getPriceData(product: any): any;
     populateCart(shoppingCart: any): void;
