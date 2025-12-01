@@ -126,27 +126,34 @@
 		};
 	}
 
+	export async function withButtonLoading<T>(
+		button: HTMLButtonElement,
+		asyncFn: () => Promise<T>
+	): Promise<T> {
+		const originalBgColor = getComputedStyle(button).backgroundColor;
+
+		button.disabled = true;
+
+		const restoreCursor = setProgressCursor(button);
+		const stopLoading = startLoadingAnimation(button, originalBgColor);
+
+		try {
+			return await asyncFn();
+		} finally {
+			button.disabled = false;
+
+			stopLoading();
+			restoreCursor();
+		}
+	}
+
 	export function onAsyncClick(node: HTMLButtonElement, handler: AsyncClickHandler) {
 		let currentHandler = handler;
 
 		async function handleClick(event: MouseEvent) {
 			if (node.disabled) return;
 
-			const originalBgColor = getComputedStyle(node).backgroundColor;
-
-			node.disabled = true;
-
-			const restoreCursor = setProgressCursor(node);
-			const stopLoading = startLoadingAnimation(node, originalBgColor);
-
-			try {
-				await currentHandler(event);
-			} finally {
-				node.disabled = false;
-
-				stopLoading();
-				restoreCursor();
-			}
+			await withButtonLoading(node, () => currentHandler(event));
 		}
 
 		node.addEventListener('click', handleClick);

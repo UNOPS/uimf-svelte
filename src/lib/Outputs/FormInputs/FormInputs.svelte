@@ -9,6 +9,7 @@
 	import type { IFormLinkData } from '../FormLink/FormLink.svelte';
 	import FormLinkComponent from '../FormLink/FormLink.svelte';
 	import { FormlinkUtilities } from '../FormLink/FormlinkUtilities';
+	import { withButtonLoading } from '../../Components/OnAsyncClick.svelte';
 
 	interface IData {
 		Actions: IFormLinkData[];
@@ -24,6 +25,7 @@
 
 	let visibleInputs: InputController<any>[] = [];
 	let effectiveActions: IFormLinkData[] = [];
+	let submitButton: HTMLButtonElement;
 
 	let component = new OutputComponent({
 		async refresh() {
@@ -107,8 +109,12 @@
 		visibleInputs = visibleInputs;
 	}
 
-	function submitForm() {
-		controller.form?.submit();
+	async function submitForm() {
+		if (submitButton != null) {
+			await withButtonLoading(submitButton, () => controller.form!.submit());
+		} else {
+			await controller.form?.submit();
+		}
 	}
 </script>
 
@@ -136,6 +142,7 @@
 				{#each effectiveActions as action}
 					{#if action.Form === '#submit'}
 						<button
+							bind:this={submitButton}
 							class={action.CssClass ?? 'btn btn-primary'}
 							type="submit"
 							form={controller.form.getFormId()}
