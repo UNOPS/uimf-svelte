@@ -256,7 +256,6 @@
 	export function onAsyncClick(node: HTMLButtonElement, params: OnAsyncClickParams) {
 		let currentHandler = params.handler;
 		let currentGroup = params.group;
-		let isLoading = false;
 		let activeLoadingGroup: string | undefined = undefined; // Track which group is actually loading
 
 		// Subscribe to loadingGroups to auto-disable this button if its group is loading
@@ -283,11 +282,14 @@
 		});
 
 		async function handleClick(event: MouseEvent) {
-			if (node.disabled || isLoading) return;
+			if (node.disabled) return;
 
 			const originalBgColor = getComputedStyle(node).backgroundColor;
-
-			isLoading = true;
+			node.disabled = true;
+			// preserve the original background color when disabled
+			node.style.setProperty('background-color', originalBgColor, 'important');
+			node.style.setProperty('border-color', originalBgColor, 'important');
+			node.style.setProperty('opacity', '1', 'important');
 
 			// Capture the group at click time to prevent issues if update() is called during loading
 			activeLoadingGroup = currentGroup;
@@ -305,13 +307,18 @@
 			} finally {
 				stopLoading();
 				restoreCursor();
-				isLoading = false;
+
+				node.style.removeProperty('background-color');
+				node.style.removeProperty('border-color');
+				node.style.removeProperty('opacity');
 
 				// Clear group loading state using the captured group
 				if (activeLoadingGroup != null) {
 					setGroupLoading(activeLoadingGroup, false);
 					activeLoadingGroup = undefined;
 				}
+
+				node.disabled = false;
 			}
 		}
 
@@ -323,7 +330,7 @@
 				unsubscribe(); // Clean up store subscription
 
 				// Defensive: Clean up any orphaned group loading state
-				if (isLoading && activeLoadingGroup != null) {
+				if (activeLoadingGroup != null) {
 					setGroupLoading(activeLoadingGroup, false);
 				}
 			},
