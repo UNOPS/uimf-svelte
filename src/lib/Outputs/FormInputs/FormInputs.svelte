@@ -25,6 +25,7 @@
 
 	let visibleInputs: InputController<any>[] = [];
 	let effectiveActions: IFormLinkData[] = [];
+	let loadingGroup: string | null = null;
 
 	let component = new OutputComponent({
 		async refresh() {
@@ -55,6 +56,12 @@
 			// Force re-rendering of inputs. This is needed in case any of the input
 			// field values have been changed (e.g. - as a result `bind-to-output`).
 			const formInputsGroup = controller.metadata.Component.Configuration?.Group ?? null;
+
+			// Generate a unique loading group ID if not already set.
+			// This ensures that buttons in this specific FormInputs instance are grouped together for loading state,
+			if (loadingGroup == null) {
+				loadingGroup = crypto.randomUUID();
+			}
 
 			visibleInputs =
 				controller.form?.metadata.InputFields.filter((t) => t.Hidden === false)
@@ -145,7 +152,7 @@
 						<button
 							class={action.CssClass ?? 'btn btn-primary'}
 							type="button"
-							use:onAsyncClick={{ handler: submitForm, group }}
+							use:onAsyncClick={{ handler: submitForm, group: loadingGroup ?? undefined }}
 						>
 							{action.Label}
 						</button>
@@ -161,7 +168,7 @@
 						<button
 							class={action.CssClass ?? 'btn btn-default'}
 							type="button"
-							use:onAsyncClick={{ handler: cancelForm, group }}
+							use:onAsyncClick={{ handler: cancelForm, group: loadingGroup ?? undefined }}
 						>
 							{action.Label}
 						</button>
