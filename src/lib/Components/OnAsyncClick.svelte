@@ -1,4 +1,6 @@
 <script context="module" lang="ts">
+	import { colord } from 'colord';
+
 	export type AsyncClickHandler = (event: MouseEvent) => Promise<void>;
 
 	interface BackgroundStyle {
@@ -85,115 +87,34 @@
 		};
 	}
 
-	/**
-	 * Helper function to convert hex, short hex, and basic named colors to an RGBA string.
-	 * This is a simplified approach supporting only the most common inputs.
-	 */
-	function toRgb(color: string): string | null {
-		// 1. Basic Named Colors (Simplified Map)
-		const namedColors: { [key: string]: string } = {
-			red: 'rgb(255, 0, 0)',
-			blue: 'rgb(0, 0, 255)',
-			green: 'rgb(0, 128, 0)',
-			yellow: 'rgb(255, 255, 0)',
-			white: 'rgb(255, 255, 255)',
-			black: 'rgb(0, 0, 0)',
-			gray: 'rgb(128, 128, 128)'
-		};
-		const lowerColor = color.toLowerCase();
-		if (namedColors[lowerColor]) {
-			return namedColors[lowerColor];
-		}
-
-		// 2. Hex Colors (#RGB or #RRGGBB)
-		const hexMatch = color.match(/^#?([a-f\d]{3})$/i);
-		const fullHexMatch = color.match(/^#?([a-f\d]{6})$/i);
-
-		if (hexMatch) {
-			// Handle #RGB (short hex)
-			const hex = hexMatch[1];
-			const r = parseInt(hex[0] + hex[0], 16);
-			const g = parseInt(hex[1] + hex[1], 16);
-			const b = parseInt(hex[2] + hex[2], 16);
-			return `rgb(${r}, ${g}, ${b})`;
-		} else if (fullHexMatch) {
-			// Handle #RRGGBB (full hex)
-			const hex = fullHexMatch[1];
-			const r = parseInt(hex.substring(0, 2), 16);
-			const g = parseInt(hex.substring(2, 4), 16);
-			const b = parseInt(hex.substring(4, 6), 16);
-			return `rgb(${r}, ${g}, ${b})`;
-		}
-
-		// 3. Already RGBA/RGB
-		if (color.startsWith('rgb')) {
-			return color;
-		}
-
-		// Unrecognized format
-		return null;
-	}
-
-	// Brightness thresholds for adaptive progress bar color calculation
-	const BRIGHTNESS_THRESHOLD_LIGHT = 200; // Above this is considered a light background
-	const BRIGHTNESS_THRESHOLD_DARK = 55; // Below this is considered a dark background
-	const DARKEN_FACTOR_LIGHT = 0.4; // Light backgrounds need strong darkening for visibility
-	const LIGHTEN_FACTOR_DARK = 0.6; // Dark backgrounds need moderate lightening
-	const DARKEN_FACTOR_COLORED = 0.7; // Colored backgrounds need subtle darkening
-	const PROGRESS_BAR_OPACITY = 0.4; // Opacity for the progress bar overlay
+	const PROGRESS_BAR_OPACITY = 0.4;
 
 	/**
 	 * Derives an appropriate progress bar color from the button's background color.
-	 * Now supports hex codes and basic named colors (red, blue, green, etc.).
-	 * Uses adaptive brightness handling to ensure visibility.
+	 * Uses adaptive brightness handling to ensure visibility on any background.
 	 */
 	function deriveProgressBarColor(bgColor: string): string {
-		// 1. Convert input color to RGB/RGBA format
-		const rgbColor = toRgb(bgColor);
+		const color = colord(bgColor);
 
-		if (!rgbColor) {
-			// Fallback if the color format is not supported or parsing fails
+		if (!color.isValid()) {
 			return `rgba(128, 128, 128, ${PROGRESS_BAR_OPACITY})`;
 		}
 
-		// 2. Parse RGB values from the normalized color string
-		const rgbMatch = rgbColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)/);
+		const brightness = color.brightness();
 
-		if (!rgbMatch) {
-			// Should not happen after toRgb conversion, but kept as a safeguard
-			return `rgba(128, 128, 128, ${PROGRESS_BAR_OPACITY})`;
-		}
-
-		const r = parseInt(rgbMatch[1], 10);
-		const g = parseInt(rgbMatch[2], 10);
-		const b = parseInt(rgbMatch[3], 10);
-
-		// 3. Calculate perceived brightness using luminance formula
-		// Luminance formula: L = 0.299*R + 0.587*G + 0.114*B
-		const brightness = 0.299 * r + 0.587 * g + 0.114 * b;
-
-		let newR: number, newG: number, newB: number;
-
-		// 4. Adaptive Brightness Logic
-		if (brightness > BRIGHTNESS_THRESHOLD_LIGHT) {
-			// Light background: darken significantly for visibility
-			newR = Math.round(r * DARKEN_FACTOR_LIGHT);
-			newG = Math.round(g * DARKEN_FACTOR_LIGHT);
-			newB = Math.round(b * DARKEN_FACTOR_LIGHT);
-		} else if (brightness < BRIGHTNESS_THRESHOLD_DARK) {
-			// Dark background: lighten by interpolating towards white
-			newR = Math.round(255 - (255 - r) * LIGHTEN_FACTOR_DARK);
-			newG = Math.round(255 - (255 - g) * LIGHTEN_FACTOR_DARK);
-			newB = Math.round(255 - (255 - b) * LIGHTEN_FACTOR_DARK);
+		let adjusted;
+		if (brightness > 0.78) {
+			// Light background: darken significantly
+			adjusted = color.darken(0.3);
+		} else if (brightness < 0.22) {
+			// Dark background: lighten
+			adjusted = color.lighten(0.3);
 		} else {
-			// Colored background: darken subtly
-			newR = Math.round(r * DARKEN_FACTOR_COLORED);
-			newG = Math.round(g * DARKEN_FACTOR_COLORED);
-			newB = Math.round(b * DARKEN_FACTOR_COLORED);
+			// Mid-tone background: darken subtly
+			adjusted = color.darken(0.15);
 		}
 
-		// 5. Return the new color with configured opacity
-		return `rgba(${newR}, ${newG}, ${newB}, ${PROGRESS_BAR_OPACITY})`;
+		return adjusted.alpha(PROGRESS_BAR_OPACITY).toRgbString();
 	}
 
 	function setProgressCursor(node: HTMLButtonElement): () => void {
