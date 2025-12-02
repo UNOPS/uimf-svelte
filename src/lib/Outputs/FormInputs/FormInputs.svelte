@@ -25,7 +25,6 @@
 
 	let visibleInputs: InputController<any>[] = [];
 	let effectiveActions: IFormLinkData[] = [];
-	let submitButton: HTMLButtonElement;
 
 	let component = new OutputComponent({
 		async refresh() {
@@ -110,8 +109,18 @@
 	}
 
 	async function submitForm() {
-		if (submitButton != null) {
-			await withButtonLoading(submitButton, () => controller.form!.submit());
+		if (controller.form == null) {
+			throw new Error('Cannot submit form, because no corresponding form object is found.');
+		}
+
+		let formId = controller.form.getFormId();
+
+		let submitButtons: NodeListOf<HTMLButtonElement> = document.querySelectorAll(
+			`button[type="submit"][form="${formId}"]`
+		);
+
+		if (submitButtons.length > 0) {
+			await withButtonLoading(submitButtons, () => controller.form!.submit());
 		} else {
 			await controller.form?.submit();
 		}
@@ -142,7 +151,6 @@
 				{#each effectiveActions as action}
 					{#if action.Form === '#submit'}
 						<button
-							bind:this={submitButton}
 							class={action.CssClass ?? 'btn btn-primary'}
 							type="submit"
 							form={controller.form.getFormId()}

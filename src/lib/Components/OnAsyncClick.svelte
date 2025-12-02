@@ -127,23 +127,33 @@
 	}
 
 	export async function withButtonLoading<T>(
-		button: HTMLButtonElement,
+		buttons: HTMLButtonElement[] | NodeListOf<HTMLButtonElement>,
 		asyncFn: () => Promise<T>
 	): Promise<T> {
-		const originalBgColor = getComputedStyle(button).backgroundColor;
+		const buttonArray = Array.from(buttons);
+		const cleanupFunctions: (() => void)[] = [];
 
-		button.disabled = true;
+		for (const button of buttonArray) {
+			const originalBgColor = getComputedStyle(button).backgroundColor;
 
-		const restoreCursor = setProgressCursor(button);
-		const stopLoading = startLoadingAnimation(button, originalBgColor);
+			button.disabled = true;
+
+			const restoreCursor = setProgressCursor(button);
+			const stopLoading = startLoadingAnimation(button, originalBgColor);
+
+			cleanupFunctions.push(() => {
+				button.disabled = false;
+				stopLoading();
+				restoreCursor();
+			});
+		}
 
 		try {
 			return await asyncFn();
 		} finally {
-			button.disabled = false;
-
-			stopLoading();
-			restoreCursor();
+			for (const cleanup of cleanupFunctions) {
+				cleanup();
+			}
 		}
 	}
 
@@ -153,7 +163,7 @@
 		async function handleClick(event: MouseEvent) {
 			if (node.disabled) return;
 
-			await withButtonLoading(node, () => currentHandler(event));
+			await withButtonLoading([node], () => currentHandler(event));
 		}
 
 		node.addEventListener('click', handleClick);
