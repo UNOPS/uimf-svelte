@@ -19,6 +19,7 @@
 		CssClass: string | null;
 		Group: string | null;
 		LayoutCssClass: string | null;
+		FallbackToDefaultActions: boolean | null;
 	}
 
 	export let controller: OutputController<IData, IOutputFieldMetadata<IConfiguration | null>>;
@@ -64,7 +65,10 @@
 
 			effectiveActions = controller.value?.Actions;
 
-			if (effectiveActions == null) {
+			const fallbackToDefaultActions =
+				controller.metadata.Component.Configuration?.FallbackToDefaultActions ?? true;
+
+			if (effectiveActions == null && fallbackToDefaultActions) {
 				effectiveActions = [];
 
 				if (controller.form != null) {
