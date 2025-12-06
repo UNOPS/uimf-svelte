@@ -23,10 +23,11 @@ export class SetFieldValuesHandler extends ActionHandler {
 
 		// Store original label and icon on first execution
 		if (this.originalLabel === null) {
-			this.originalLabel = data.Label;
+			this.originalLabel = (data as any).Content?.Label?.Value ?? null;
 		}
+
 		if (this.originalIcon === null) {
-			this.originalIcon = data.Icon;
+			this.originalIcon = (data as any).Content?.Icon?.Name ?? null;
 		}
 
 		for (const [targetPath, sourcePath] of Object.entries(copyParams.FieldMappings)) {
@@ -48,14 +49,16 @@ export class SetFieldValuesHandler extends ActionHandler {
 		this.copied = !this.copied;
 
 		// Toggle label and icon if alternatives are provided
-		if (this.controller.value) {
-			if (copyParams.AlternativeLabel) {
-				(this.controller.value as any).Label = this.copied
+		const content = (this.controller.value as any)?.Content;
+		if (content != null) {
+			if (copyParams.AlternativeLabel && content.Label != null) {
+				content.Label.Value = this.copied
 					? copyParams.AlternativeLabel
 					: this.originalLabel;
 			}
-			if (copyParams.AlternativeIcon) {
-				(this.controller.value as any).Icon = this.copied
+
+			if (copyParams.AlternativeIcon && content.Icon != null) {
+				content.Icon.Name = this.copied
 					? copyParams.AlternativeIcon
 					: this.originalIcon;
 			}
