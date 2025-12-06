@@ -1,13 +1,11 @@
 // ---------------------------------------------------------- //
-// 1. Include the basics.
+// 1. Bootstrap Imports
 // ---------------------------------------------------------- //
 @import "styles.variables.scss";
 
-// ---------------------------------------------------------- //
-// 2. Include any needed components here
-// ---------------------------------------------------------- //
 @import "bootstrap/scss/_root";
-//@import "bootstrap/scss/_tables";
+@import "bootstrap/scss/_reboot";
+@import "bootstrap/scss/_tables";
 @import "bootstrap/scss/_buttons";
 @import "bootstrap/scss/_forms";
 @import "bootstrap/scss/_list-group";
@@ -19,11 +17,18 @@
 @import "bootstrap/scss/_helpers";
 @import "bootstrap/scss/utilities/_api";
 
+// ---------------------------------------------------------- //
+// 2. Core Setup
+// ---------------------------------------------------------- //
 :root {
     --uimf-btn-bg: #fafafa;
     --uimf-placeholder-color: #ababab;
     --uimf-placeholder-font-style: italic;
 }
+
+// ---------------------------------------------------------- //
+// 4. Components
+// ---------------------------------------------------------- //
 
 // Consistent placeholder styling across all input types
 input::placeholder,

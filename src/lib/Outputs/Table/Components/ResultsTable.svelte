@@ -182,10 +182,7 @@
 			</div>
 		{/if}
 
-		<table
-			class={controller.metadata.Component.Configuration.CssClass ??
-				'table table-bordered table-group-divider'}
-		>
+		<table class={controller.metadata.Component.Configuration.CssClass ?? 'table table-bordered'}>
 			{#if table.colgroups?.length > 0}
 				{#if bulkActionExtension.actions.length > 0}
 					<colgroup />
@@ -416,7 +413,9 @@
 		}
 
 		thead {
-			background: var(--uimf-btn-bg);
+			& > tr > * {
+				background: var(--uimf-btn-bg);
+			}
 
 			& > tr:last-child {
 				border-bottom-width: 3px;
@@ -437,7 +436,7 @@
 
 		.table {
 			margin-bottom: 0;
-			border: none;
+			border-width: 0; // Use border-width instead of border:none to preserve border-color inheritance
 
 			& > :not(:first-child) {
 				/* Override Bootstrap weirdness, which renders thick border for a colgroup. */
