@@ -127,7 +127,7 @@
 		AddRowLabel?: string;
 		RemoveRowLabel?: string;
 		Fields: IField[];
-		CanAdd?: boolean;
+		CanAdd: boolean;
 
 		/**
 		 * The name of the field inside response that contains the default row value.
