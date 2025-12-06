@@ -142,6 +142,11 @@
 		 */
 		NoItemsMessage?: string;
 
+		/**
+		 * If true then no header will be rendered for the table input.
+		 */
+		NoHeader: boolean;
+
 		Row: { GroupBy?: string };
 	}
 </script>
@@ -234,6 +239,7 @@
 					<colgroup span={colgroup.span} class={colgroup.cssClass} style={colgroup.style} />
 				{/each}
 			{/if}
+			{#if metadata.Component.Configuration.NoHeader !== true}
 			<thead>
 				{#each table.head.above as header}
 					<tr class={header.cssClass}>
@@ -308,6 +314,7 @@
 					</tr>
 				{/each}
 			</thead>
+			{/if}
 			<tbody>
 				{#each table.body.filter((t) => !t.deleted) as rowGroup}
 					{#each rowGroup.above as header}
