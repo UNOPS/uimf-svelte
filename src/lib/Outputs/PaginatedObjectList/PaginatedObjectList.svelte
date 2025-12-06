@@ -55,7 +55,7 @@
 	}
 </script>
 
-<div class="list-container">
+<div class:list-container={true} class={controller.metadata.Component.Configuration.CssClass}>
 	{#if nestedControllers != null}
 		{#each nestedControllers as controller}
 			{#if controller.value}
