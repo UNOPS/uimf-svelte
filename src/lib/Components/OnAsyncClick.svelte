@@ -1,7 +1,27 @@
 <script context="module" lang="ts">
 	import { colord } from 'colord';
+	import { writable, get } from 'svelte/store';
 
 	export type AsyncClickHandler = (event: MouseEvent) => Promise<void>;
+
+	export interface OnAsyncClickParams {
+		handler: AsyncClickHandler;
+		group?: string;
+	}
+
+	const loadingGroups = writable(new Set<string>());
+
+	function setGroupLoading(group: string, loading: boolean): void {
+		loadingGroups.update((groups) => {
+			const newGroups = new Set(groups);
+			if (loading) {
+				newGroups.add(group);
+			} else {
+				newGroups.delete(group);
+			}
+			return newGroups;
+		});
+	}
 
 	interface BackgroundStyle {
 		Image: string;
@@ -128,10 +148,15 @@
 
 	export async function withButtonLoading<T>(
 		buttons: HTMLButtonElement[] | NodeListOf<HTMLButtonElement>,
-		asyncFn: () => Promise<T>
+		asyncFn: () => Promise<T>,
+		group?: string
 	): Promise<T> {
 		const buttonArray = Array.from(buttons);
 		const cleanupFunctions: (() => void)[] = [];
+
+		if (group) {
+			setGroupLoading(group, true);
+		}
 
 		for (const button of buttonArray) {
 			const originalBgColor = getComputedStyle(button).backgroundColor;
@@ -154,16 +179,35 @@
 			for (const cleanup of cleanupFunctions) {
 				cleanup();
 			}
+			if (group) {
+				setGroupLoading(group, false);
+			}
 		}
 	}
 
-	export function onAsyncClick(node: HTMLButtonElement, handler: AsyncClickHandler) {
-		let currentHandler = handler;
+	export function onAsyncClick(node: HTMLButtonElement, params: OnAsyncClickParams) {
+		let currentParams = params;
+
+		// Subscribe to the loading groups store to reactively disable/enable this button
+		// based on whether its group is currently loading
+		const unsubscribe = loadingGroups.subscribe((groups) => {
+			if (currentParams.group && groups.has(currentParams.group)) {
+				if (!node.disabled) {
+					node.disabled = true;
+					// Track that WE disabled this button, so we only re-enable it if WE disabled it
+					// (prevents re-enabling buttons that were already disabled for other reasons like validation)
+					node.dataset.groupDisabled = 'true';
+				}
+			} else if (node.dataset.groupDisabled === 'true') {
+				node.disabled = false;
+				delete node.dataset.groupDisabled;
+			}
+		});
 
 		async function handleClick(event: MouseEvent) {
 			if (node.disabled) return;
 
-			await withButtonLoading([node], () => currentHandler(event));
+			await withButtonLoading([node], () => currentParams.handler(event), currentParams.group);
 		}
 
 		node.addEventListener('click', handleClick);
@@ -171,9 +215,10 @@
 		return {
 			destroy() {
 				node.removeEventListener('click', handleClick);
+				unsubscribe();
 			},
-			update(newHandler: AsyncClickHandler) {
-				currentHandler = newHandler;
+			update(newParams: OnAsyncClickParams) {
+				currentParams = newParams;
 			}
 		};
 	}

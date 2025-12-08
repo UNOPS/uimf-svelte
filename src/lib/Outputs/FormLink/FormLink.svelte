@@ -255,7 +255,7 @@
 			class:opens-modal={['open-modal', 'open-html-modal'].includes(controller.value.Action)}
 			{disabled}
 			use:tooltip={(controller.value.Tooltip || '') + deadlineTooltip}
-			use:onAsyncClick={async () => {
+			use:onAsyncClick={{	handler: async () => {
 				if (controller.value.ToggledVariable != null) {
 					controller.app.appStorage.toggleVariable(controller.value.ToggledVariable);
 				}
@@ -416,6 +416,8 @@
 						break;
 					}
 				}
+				},
+				group: controller.value.Group
 			}}
 		>
 			{#if currentIcon}
