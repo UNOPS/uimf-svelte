@@ -9,7 +9,7 @@
 	import type { IFormLinkData } from '../FormLink/FormLink.svelte';
 	import FormLinkComponent from '../FormLink/FormLink.svelte';
 	import { FormlinkUtilities } from '../FormLink/FormlinkUtilities';
-	import { withButtonLoading } from '../../Components/OnAsyncClick.svelte';
+	import { withButtonLoading, onAsyncClick } from '../../Components/OnAsyncClick.svelte';
 
 	interface IData {
 		Actions: IFormLinkData[];
@@ -23,6 +23,10 @@
 	}
 
 	export let controller: OutputController<IData, IOutputFieldMetadata<IConfiguration | null>>;
+
+	// Generate a unique loading group ID for this FormInputs instance
+	// so all buttons (submit, cancel, FormLinks) are disabled together
+	const loadingGroupId = crypto.randomUUID();
 
 	let visibleInputs: InputController<any>[] = [];
 	let effectiveActions: IFormLinkData[] = [];
@@ -65,6 +69,14 @@
 
 			effectiveActions = controller.value?.Actions;
 
+			// Inject the loading group into all actions so FormLinks use the same group
+			if (effectiveActions != null) {
+				effectiveActions = effectiveActions.map((action) => ({
+					...action,
+					Group: action.Group ?? loadingGroupId
+				}));
+			}
+
 			const fallbackToDefaultActions =
 				controller.metadata.Component.Configuration?.FallbackToDefaultActions ?? true;
 
@@ -76,14 +88,16 @@
 						effectiveActions.push({
 							Form: '#submit',
 							InputFieldValues: null,
-							Label: controller.form.metadata.CustomProperties?.SubmitButtonLabel || 'Submit'
+							Label: controller.form.metadata.CustomProperties?.SubmitButtonLabel || 'Submit',
+							Group: loadingGroupId
 						});
 
 						if (controller.form?.metadata.CustomProperties?.ShowClearButton == true) {
 							effectiveActions.push({
 								Form: '#clear',
 								InputFieldValues: null,
-								Label: 'Clear'
+								Label: 'Clear',
+								Group: loadingGroupId
 							});
 						}
 
@@ -91,7 +105,8 @@
 							effectiveActions.push({
 								Form: '#cancel',
 								InputFieldValues: null,
-								Label: 'Cancel'
+								Label: 'Cancel',
+								Group: loadingGroupId
 							});
 						}
 					}
@@ -124,7 +139,7 @@
 		);
 
 		if (submitButtons.length > 0) {
-			await withButtonLoading(submitButtons, () => controller.form!.submit());
+			await withButtonLoading(submitButtons, () => controller.form!.submit(), loadingGroupId);
 		} else {
 			await controller.form?.submit();
 		}
@@ -164,8 +179,11 @@
 					{:else if action.Form === '#clear'}
 						<button
 							class={action.CssClass ?? 'btn btn-default'}
-							on:click={clearInputs}
 							type="button"
+							use:onAsyncClick={{
+								handler: async () => clearInputs(),
+								group: loadingGroupId
+							}}
 						>
 							{action.Label}
 						</button>
@@ -173,7 +191,14 @@
 						<button
 							class={action.CssClass ?? 'btn btn-default'}
 							type="button"
-							on:click={controller.form.cancel}
+							use:onAsyncClick={{
+								handler: async () => {
+									if (controller.form?.cancel) {
+										await controller.form.cancel();
+									}
+								},
+								group: loadingGroupId
+							}}
 						>
 							{action.Label}
 						</button>
