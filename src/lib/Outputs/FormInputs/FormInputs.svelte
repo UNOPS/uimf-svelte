@@ -24,10 +24,6 @@
 
 	export let controller: OutputController<IData, IOutputFieldMetadata<IConfiguration | null>>;
 
-	// Generate a unique loading group ID for this FormInputs instance
-	// so all buttons (submit, cancel, FormLinks) are disabled together
-	const loadingGroupId = crypto.randomUUID();
-
 	let visibleInputs: InputController<any>[] = [];
 	let effectiveActions: IFormLinkData[] = [];
 
@@ -57,6 +53,8 @@
 
 			await Promise.all(promises ?? []);
 
+			let formId = controller.form?.getFormId() ?? null;
+
 			// Force re-rendering of inputs. This is needed in case any of the input
 			// field values have been changed (e.g. - as a result `bind-to-output`).
 			const formInputsGroup = controller.metadata.Component.Configuration?.Group ?? null;
@@ -73,7 +71,7 @@
 			if (effectiveActions != null) {
 				effectiveActions = effectiveActions.map((action) => ({
 					...action,
-					Group: action.Group ?? loadingGroupId
+					Group: action.Group ?? formId ?? null
 				}));
 			}
 
@@ -89,7 +87,7 @@
 							Form: '#submit',
 							InputFieldValues: null,
 							Label: controller.form.metadata.CustomProperties?.SubmitButtonLabel || 'Submit',
-							Group: loadingGroupId
+							Group: formId
 						});
 
 						if (controller.form?.metadata.CustomProperties?.ShowClearButton == true) {
@@ -97,7 +95,7 @@
 								Form: '#clear',
 								InputFieldValues: null,
 								Label: 'Clear',
-								Group: loadingGroupId
+								Group: formId
 							});
 						}
 
@@ -106,7 +104,7 @@
 								Form: '#cancel',
 								InputFieldValues: null,
 								Label: 'Cancel',
-								Group: loadingGroupId
+								Group: formId
 							});
 						}
 					}
@@ -139,7 +137,7 @@
 		);
 
 		if (submitButtons.length > 0) {
-			await withButtonLoading(submitButtons, () => controller.form!.submit(), loadingGroupId);
+			await withButtonLoading(submitButtons, () => controller.form!.submit(), formId);
 		} else {
 			await controller.form?.submit();
 		}
@@ -182,7 +180,7 @@
 							type="button"
 							use:onAsyncClick={{
 								handler: async () => clearInputs(),
-								group: loadingGroupId
+								group: controller.form.getFormId()
 							}}
 						>
 							{action.Label}
@@ -197,7 +195,7 @@
 										await controller.form.cancel();
 									}
 								},
-								group: loadingGroupId
+								group: controller.form.getFormId()
 							}}
 						>
 							{action.Label}

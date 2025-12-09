@@ -31,5 +31,5 @@ export interface IFormLinkData {
 	Resolve?: any;
 	Size?: string;
 	WindowClass?: string;
-	Group?: string;
+	Group?: string | null;
 }

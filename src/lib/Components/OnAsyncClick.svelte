@@ -1,6 +1,6 @@
 <script context="module" lang="ts">
 	import { colord } from 'colord';
-	import { writable, get } from 'svelte/store';
+	import { writable } from 'svelte/store';
 
 	export type AsyncClickHandler = (event: MouseEvent) => Promise<void>;
 
