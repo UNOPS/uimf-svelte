@@ -76,10 +76,11 @@ export class UimfApp {
         const headers = new Headers(init?.headers);
         headers.set('uimf', 'true');
 
-        // Send current external user's info. This is expected by the current backend.
-        const externalUserJson = localStorage.getItem('ngStorage-ExternalUser');
-        if (externalUserJson != null) {
-            const externalUser = JSON.parse(externalUserJson);
+        const impersonator = localStorage.getItem('ngStorage-Impersonator');
+
+        if (impersonator != null) {
+            const externalUserJson = localStorage.getItem('ngStorage-ExternalUser');
+            const externalUser = externalUserJson != null ? JSON.parse(externalUserJson) : null;
 
             if (externalUser != null) {
                 headers.set('ExternalImpersonateeId', externalUser.Id);
