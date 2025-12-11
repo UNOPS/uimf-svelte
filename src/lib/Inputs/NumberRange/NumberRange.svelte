@@ -150,39 +150,31 @@
 </script>
 
 <div class="wrapper">
-	<div class="input-group">
-		{#if controller.unit}
-			<span class="input-group-text">{controller.unit}</span>
-		{/if}
-		<input
-			bind:value={controller.minValue}
-			required={controller.metadata.Required}
-			tabindex="0"
-			form={controller.form?.getFormId()}
-			type="number"
-			{step}
-			{min}
-			{max}
-			class="form-control min"
-		/>
-	</div>
+	<input
+		bind:value={controller.minValue}
+		required={controller.metadata.Required}
+		tabindex="0"
+		form={controller.form?.getFormId()}
+		type="number"
+		{step}
+		{min}
+		{max}
+		placeholder={controller.unit ? `Min value in ${controller.unit}` : 'Min value'}
+		class="form-control min"
+	/>
 
-	<div class="input-group">
-		{#if controller.unit}
-			<span class="input-group-text">{controller.unit}</span>
-		{/if}
-		<input
-			bind:value={controller.maxValue}
-			required={controller.metadata.Required}
-			tabindex="0"
-			form={controller.form?.getFormId()}
-			type="number"
-			{step}
-			{min}
-			{max}
-			class="form-control max"
-		/>
-	</div>
+	<input
+		bind:value={controller.maxValue}
+		required={controller.metadata.Required}
+		tabindex="0"
+		form={controller.form?.getFormId()}
+		type="number"
+		{step}
+		{min}
+		{max}
+		placeholder={controller.unit ? `Max value in ${controller.unit}` : 'Max value'}
+		class="form-control max"
+	/>
 </div>
 
 <style lang="scss">
@@ -193,20 +185,10 @@
 		width: 100%;
 		gap: 5px;
 
-		.input-group {
-			display: flex;
+		input.form-control {
 			flex: 1;
-			flex-wrap: nowrap;
+			min-height: $app-input-min-height;
+			font-size: inherit;
 		}
-	}
-
-	input.form-control {
-		min-height: $app-input-min-height;
-		font-size: inherit;
-	}
-
-	.input-group-text {
-		min-height: $app-input-min-height;
-		font-size: inherit;
 	}
 </style>
