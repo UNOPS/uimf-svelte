@@ -2,6 +2,8 @@
 	import { InputController } from '../../Infrastructure/InputController';
 
 	interface NumberRangeCustomProperty {
+		Unit?: string;
+		DefaultUnit?: string;
 		MaxValue?: number;
 		MinValue?: number;
 		Step?: number;
@@ -10,6 +12,7 @@
 	export class Controller extends InputController<NumberRange> {
 		public minValue: number | null = null;
 		public maxValue: number | null = null;
+		public unit: string | null = null;
 
 		public getValue(): Promise<NumberRange | null> {
 			var result = new NumberRange(this.minValue ?? null, this.maxValue ?? null);
@@ -126,11 +129,16 @@
 
 	const component = new InputComponent({
 		init() {
-			const config: NumberRangeCustomProperty = controller.metadata.CustomProperties?.number;
+			const config: NumberRangeCustomProperty = controller.metadata.Component.Configuration;
 
 			step = config?.Step ?? 1;
 			min = config?.MinValue ?? -Number.MAX_VALUE;
 			max = config?.MaxValue ?? Number.MAX_VALUE;
+
+			// Resolve unit: prioritize response field (Unit property), then fall back to DefaultUnit
+			const unitProperty = config?.Unit;
+			const responseField = unitProperty ? controller.form?.response[unitProperty] : null;
+			controller.unit = responseField?.value || config?.DefaultUnit || null;
 		},
 		refresh() {
 			controller.minValue = controller.minValue;
@@ -142,29 +150,39 @@
 </script>
 
 <div class="wrapper">
-	<input
-		type="number"
-		bind:value={controller.minValue}
-		required={controller.metadata.Required}
-		tabindex="0"
-		form={controller.form?.getFormId()}
-		{step}
-		{min}
-		{max}
-		class="form-control min"
-	/>
+	<div class="input-group">
+		{#if controller.unit}
+			<span class="input-group-text">{controller.unit}</span>
+		{/if}
+		<input
+			bind:value={controller.minValue}
+			required={controller.metadata.Required}
+			tabindex="0"
+			form={controller.form?.getFormId()}
+			type="number"
+			{step}
+			{min}
+			{max}
+			class="form-control min"
+		/>
+	</div>
 
-	<input
-		type="number"
-		bind:value={controller.maxValue}
-		required={controller.metadata.Required}
-		tabindex="0"
-		form={controller.form?.getFormId()}
-		{step}
-		{min}
-		{max}
-		class="form-control max"
-	/>
+	<div class="input-group">
+		{#if controller.unit}
+			<span class="input-group-text">{controller.unit}</span>
+		{/if}
+		<input
+			bind:value={controller.maxValue}
+			required={controller.metadata.Required}
+			tabindex="0"
+			form={controller.form?.getFormId()}
+			type="number"
+			{step}
+			{min}
+			{max}
+			class="form-control max"
+		/>
+	</div>
 </div>
 
 <style lang="scss">
@@ -173,13 +191,21 @@
 	.wrapper {
 		display: flex;
 		width: 100%;
+		gap: 5px;
 
-		& > input:first-child {
-			margin-right: 5px;
+		.input-group {
+			display: flex;
+			flex: 1;
+			flex-wrap: nowrap;
 		}
 	}
 
 	input.form-control {
+		min-height: $app-input-min-height;
+		font-size: inherit;
+	}
+
+	.input-group-text {
 		min-height: $app-input-min-height;
 		font-size: inherit;
 	}
