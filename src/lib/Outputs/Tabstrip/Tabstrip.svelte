@@ -60,7 +60,8 @@
 					{#if controller.app.hasPermission(tab.RequiredPermission)}
 						<li
 							class:nav-item={true}
-							class:active={tab.Form === controller.value.CurrentTab}
+							class:active={tab.Form === controller.value.CurrentTab &&
+								controller.value.CurrentTab != null}
 							class={tab.CssClass}
 						>
 							{#await controller.app.makeUrl(tab) then url}
