@@ -14,6 +14,7 @@ import { Alert } from "./Handlers/Alert";
 import { SetToggleVariables } from "./Handlers/SetToggleVariables";
 import { CloseContainer } from "./Handlers/CloseContainer";
 import { TrackEvent } from "./Handlers/TrackEvent";
+import { HandleImpersonationSuccess } from "./Handlers/HandleImpersonationSuccess";
 
 export const ClientFunctionRegistry: Record<string, any> = {
     'app-reload': new AppReload(),
@@ -32,4 +33,5 @@ export const ClientFunctionRegistry: Record<string, any> = {
     'set-toggle-variables': new SetToggleVariables(),
     'close-container': new CloseContainer(),
     'track-event': new TrackEvent(),
+    'handle-impersonation-success' : new HandleImpersonationSuccess()
 };
