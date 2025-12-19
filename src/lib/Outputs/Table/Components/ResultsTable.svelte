@@ -137,19 +137,28 @@
 
 {#if table != null}
 	{@const bulkActions = bulkActionExtension.actions ?? []}
+	{@const bulkActionGroups = bulkActionExtension.actionGroups ?? []}
 	{@const regularActions = controller.value?.Actions ?? []}
 	{@const canExport = controller.metadata.Component.Configuration?.CanExport ?? false}
 
 	<div class="table-responsive">
 		{#if bulkActions.length > 0 || regularActions.length > 0 || canExport}
 			<div class="btn-bar">
-				{#if bulkActions.length > 0}
+				{#if bulkActionGroups.length > 0}
 					<div class="bulk-actions">
-						{#each bulkActions as action}
-							<FormLink
-								controller={FormlinkUtilities.createFormlink({ data: action, parent: controller })}
-								disabled={action.disabled}
-							/>
+						{#each bulkActionGroups as group, groupIndex}
+							{#if groupIndex > 0}
+								<span class="action-group-separator" />
+							{/if}
+							{#each group.actions as action}
+								<FormLink
+									controller={FormlinkUtilities.createFormlink({
+										data: action,
+										parent: controller
+									})}
+									disabled={action.disabled}
+								/>
+							{/each}
 						{/each}
 					</div>
 				{/if}
@@ -397,6 +406,13 @@
 				flex-grow: 1;
 				text-align: left;
 				background-color: $app-soft-bg;
+
+				& > .action-group-separator {
+					display: inline-block;
+					width: 15px;
+					text-align: center;
+					color: #ccc;
+				}
 			}
 
 			& > div > :global(button) {

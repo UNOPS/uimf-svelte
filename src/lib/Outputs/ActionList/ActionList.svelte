@@ -7,8 +7,14 @@
 	import type { IOutputFieldMetadata } from '$lib/Infrastructure/Metadata';
 	import { FormlinkUtilities } from '../FormLink/FormlinkUtilities';
 
+	export interface ActionGroup {
+		OrderIndex: number;
+		Actions: IFormLinkData[];
+	}
+
 	export interface ActionListData {
 		Actions: IFormLinkData[] | null;
+		ActionGroups: ActionGroup[] | null;
 	}
 
 	interface IConfiguration {
@@ -24,33 +30,48 @@
 <script lang="ts">
 	export let controller: ActionListController;
 
+	let actionGroups: ActionGroup[] = [];
+
 	let component = new OutputComponent({
 		refresh() {
 			const value = controller.value;
 
-			if (value != null && value.Actions != null) {
-				for (let i = 0; i < value.Actions.length; i++) {
-					// By default we want all buttons (even if they're just links) to have
-					// the same styling.
-					value.Actions[i].CssClass = value.Actions[i].CssClass ?? 'btn btn-default';
-				}
+			// Get action groups (new structure) or create single group from Actions (backwards compatibility)
+			if (value?.ActionGroups && value.ActionGroups.length > 0) {
+				actionGroups = [...value.ActionGroups]
+					.sort((a, b) => a.OrderIndex - b.OrderIndex)
+					.filter((g) => g.Actions?.length > 0);
+			} else if (value?.Actions && value.Actions.length > 0) {
+				actionGroups = [{ OrderIndex: 0, Actions: value.Actions }];
+			} else {
+				actionGroups = [];
 			}
 
-			controller.value = value;
+			// Apply default CSS class to all actions
+			for (const group of actionGroups) {
+				for (const action of group.Actions) {
+					action.CssClass = action.CssClass ?? 'btn btn-default';
+				}
+			}
 		}
 	});
 
 	beforeUpdate(async () => await component.setup(controller));
 </script>
 
-{#if controller.value?.Actions != null && controller.value?.Actions.length > 0}
+{#if actionGroups.length > 0}
 	<div class:action-list={true} class={controller.metadata.Component?.Configuration?.CssClass}>
-		{#each controller.value.Actions as action}
-			<div>
-				<FormLink
-					controller={FormlinkUtilities.createFormlink({ data: action, parent: controller })}
-				/>
-			</div>
+		{#each actionGroups as group, groupIndex}
+			{#if groupIndex > 0}
+				<span class="action-group-separator" />
+			{/if}
+			{#each group.Actions as action}
+				<div>
+					<FormLink
+						controller={FormlinkUtilities.createFormlink({ data: action, parent: controller })}
+					/>
+				</div>
+			{/each}
 		{/each}
 	</div>
 {/if}
@@ -98,5 +119,12 @@
 			display: inline-block;
 			margin-right: 5px;
 		}
+	}
+
+	.action-group-separator {
+		display: inline-block;
+		width: 15px;
+		text-align: center;
+		color: #ccc;
 	}
 </style>

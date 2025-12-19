@@ -27,12 +27,13 @@ export class BulkAction extends FormLinkMetadata {
         this.InputFieldValues.ItemIds.Items.push(itemId);
     }
 
-    public static createFrom(action: BulkAction): BulkAction {
+    public static createFrom(action: BulkAction, groupOrderIndex: number): BulkAction {
         var bulkAction: BulkAction = new BulkAction();
         Object.assign(bulkAction, JSON.parse(JSON.stringify(action)));
 
         bulkAction._originalLabel = bulkAction.Label;
         bulkAction.InputFieldValues.ItemIds.Items = [];
+        bulkAction.groupOrderIndex = groupOrderIndex;
 
         return bulkAction;
     }
@@ -40,11 +41,18 @@ export class BulkAction extends FormLinkMetadata {
     private _originalLabel?: string;
     public disabled: boolean = false;
     public ItemId: any;
+    public groupOrderIndex: number = 0;
+}
+
+export interface BulkActionGroup {
+    orderIndex: number;
+    actions: BulkAction[];
 }
 
 export class BulkActionsColumnExtension extends TableExtension {
     private bulkActionProperty: string | null | undefined;
     public actions: BulkAction[] = [];
+    public actionGroups: BulkActionGroup[] = [];
     private table!: Table;
 
     init(table: Table) {
@@ -52,6 +60,7 @@ export class BulkActionsColumnExtension extends TableExtension {
 
         this.bulkActionProperty = metadata.Component.Configuration.BulkActions;
         this.actions = [];
+        this.actionGroups = [];
         this.table = table;
     }
 
@@ -64,21 +73,38 @@ export class BulkActionsColumnExtension extends TableExtension {
             return;
         }
 
-        let rowActions: BulkAction[] = (row.data[this.bulkActionProperty] || {}).Actions || [];
+        const actionListData = row.data[this.bulkActionProperty] || {};
+        const groups = (actionListData.ActionGroups || []).sort((a: any, b: any) => a.OrderIndex - b.OrderIndex);
 
-        // Bulk actions will have `ItemId` property.
-        rowActions = rowActions.filter((t) => t.InputFieldValues.ItemIds != null);
+        for (const group of groups) {
+            const groupOrderIndex = group.OrderIndex ?? 0;
+            const groupActions: BulkAction[] = group.Actions || [];
 
-        for (let action of rowActions) {
-            let bulkAction = this.actions.find((t) => t.Form === action.Form && t.Label === action.Label);
+            for (const action of groupActions) {
+                // Skip non-bulk actions
+                if (action.InputFieldValues?.ItemIds == null) {
+                    continue;
+                }
 
-            if (bulkAction == null) {
-                bulkAction = BulkAction.createFrom(action);
-                this.actions.push(bulkAction);
-            }
+                // Find existing bulk action by Form and Label
+                let bulkAction = this.actions.find((t) => t.Form === action.Form && t.Label === action.Label);
 
-            if (row.selected) {
-                bulkAction.addItem(action.InputFieldValues.ItemIds.Items[0]);
+                if (bulkAction == null) {
+                    bulkAction = BulkAction.createFrom(action, groupOrderIndex);
+                    this.actions.push(bulkAction);
+
+                    // Add to appropriate group
+                    let actionGroup = this.actionGroups.find(g => g.orderIndex === groupOrderIndex);
+                    if (actionGroup == null) {
+                        actionGroup = { orderIndex: groupOrderIndex, actions: [] };
+                        this.actionGroups.push(actionGroup);
+                    }
+                    actionGroup.actions.push(bulkAction);
+                }
+
+                if (row.selected) {
+                    bulkAction.addItem(action.InputFieldValues.ItemIds.Items[0]);
+                }
             }
         }
     }
@@ -87,6 +113,9 @@ export class BulkActionsColumnExtension extends TableExtension {
         for (let action of this.actions) {
             action.refreshLabel();
         }
+
+        // Sort groups by orderIndex
+        this.actionGroups.sort((a, b) => a.orderIndex - b.orderIndex);
     }
 
     selectAllRows(selected: boolean) {
