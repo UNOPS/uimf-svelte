@@ -1,3 +1,4 @@
+import { ActionListData } from "../../../Outputs/ActionList/ActionList.svelte";
 import type { Table, TableHeadCell } from "..";
 import { TableExtension } from "../TableExtension";
 
@@ -7,7 +8,11 @@ import { TableExtension } from "../TableExtension";
 export class ActionListColumnExtension extends TableExtension {
     processHeadCell(table: Table, cell: TableHeadCell, rows: any[]): Promise<void> {
         if (cell.metadata.Component.Type === 'action-list') {
-            let hasActions = rows.some(t => t[cell.metadata.Id]?.Actions?.length > 0);
+            let hasActions = rows.some(t => {
+                const item: ActionListData = t[cell.metadata.Id];
+                return item?.ActionGroups?.some(g => g.Actions?.length > 0) ?? false;
+            });
+
             cell.hidden = cell.metadata.Hidden || !hasActions;
         }
 

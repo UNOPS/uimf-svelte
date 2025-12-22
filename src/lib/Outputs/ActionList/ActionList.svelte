@@ -13,7 +13,6 @@
 	}
 
 	export interface ActionListData {
-		Actions: IFormLinkData[] | null;
 		ActionGroups: ActionGroup[] | null;
 	}
 
@@ -36,13 +35,10 @@
 		refresh() {
 			const value = controller.value;
 
-			// Get action groups (new structure) or create single group from Actions (backwards compatibility)
 			if (value?.ActionGroups && value.ActionGroups.length > 0) {
 				actionGroups = [...value.ActionGroups]
 					.sort((a, b) => a.OrderIndex - b.OrderIndex)
 					.filter((g) => g.Actions?.length > 0);
-			} else if (value?.Actions && value.Actions.length > 0) {
-				actionGroups = [{ OrderIndex: 0, Actions: value.Actions }];
 			} else {
 				actionGroups = [];
 			}
