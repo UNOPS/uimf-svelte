@@ -69,6 +69,7 @@ import * as Alert from '../Outputs/Alert/Alert.svelte';
 import * as Expandable from '../Outputs/Expandable/Expandable.svelte';
 import * as Popover from '../Outputs/Popover/Popover.svelte';
 import * as Icon from '../Outputs/Icon/Icon.svelte';
+import * as EcoTransit from '../Outputs/EcoTransit/EcoTransit.svelte';
 import * as Tag from '../Outputs/Tag/Tag.svelte';
 import * as Link from '../Outputs/Link/Link.svelte';
 import * as Tabstrip from '../Outputs/Tabstrip/Tabstrip.svelte';
@@ -321,6 +322,7 @@ defaultControlRegister.registerOutputComponent('alert', Alert, { alwaysHideLabel
 defaultControlRegister.registerOutputComponent('boolean', BooleanOutput, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('breadcrumbs', Breadcrumbs, { displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('datetime', DateTimeOutput, { displayAsBlock: false });
+defaultControlRegister.registerOutputComponent('ecotransit', EcoTransit, { displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('flexbox', Flexbox, { alwaysHideLabel: false, displayAsBlock: false });
 defaultControlRegister.registerOutputComponent('form-documentation', FormDocumentation, { alwaysHideLabel: true, displayAsBlock: true });
 defaultControlRegister.registerOutputComponent('form-inputs', FormInputs, { displayAsBlock: true });
