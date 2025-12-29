@@ -1,6 +1,7 @@
 <script lang="ts" context="module">
 	export interface SliderConfiguration {
 		Item: IComponent;
+		Height?: string;
 	}
 
 	interface SliderData {
@@ -130,7 +131,10 @@
 			<button on:click={gotoPrevious} style:visibility={currentIndex > 0 ? 'visible' : 'hidden'}>
 				&#10094;
 			</button>
-			<div class="ui-slider_main-view">
+			<div
+				class="ui-slider_main-view"
+				style:height={controller.metadata.Component.Configuration.Height}
+			>
 				<svelte:component
 					this={items[currentIndex].Main.component}
 					controller={items[currentIndex].Main.controller}
