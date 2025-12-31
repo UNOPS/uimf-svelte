@@ -3,7 +3,7 @@ import type { IClientFunction } from "../IClientFunction";
 export class UpdateCulture implements IClientFunction {
     name: string = "update-culture";
 
-    handle(params?: any): void {
+    handle(params?: any): Promise<void> | void {
 
         const $rootScope = (window as any).legacy?.$rootScope;
         const $localStorage = (window as any).legacy?.$localStorage;
@@ -71,20 +71,21 @@ export class UpdateCulture implements IClientFunction {
             $localStorage.catalogues = catalogueList;
         }
 
-        // Reload shopping cart and catalogues
+        // Reload shopping cart and catalogues and wait for completion
         const shoppingCartId = props.Id || props.ShoppingCartId;
-        $rootScope.reloadCataloguesShoppingcart(shoppingCartId);
 
-        // Listen for shopping cart reload completion
-        const unsubscribe = $rootScope.$on('shoppingCartReloaded', function () {
-            $rootScope.$broadcast("currentCartSet");
-            unsubscribe();
+        return new Promise<void>((resolve) => {
+            // Wait for cart reload to complete
+            $rootScope.reloadCataloguesShoppingcart(shoppingCartId);
+            
+            const unsubscribe = $rootScope.$on('shoppingCartReloaded', function () {
+                $rootScope.$broadcast("currentCartSet");
+                unsubscribe();
+                
+                window.location.href = '/#/form/client-dashboard-2';
+
+                resolve();
+            });
         });
-
-        // Redirect to dashboard
-        window.location.href = '/#/form/client-dashboard-2';
     }
 }
-
-
-
