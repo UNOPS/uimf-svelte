@@ -154,6 +154,8 @@
 		class="form-control min"
 	/>
 
+	<span class="separator">to</span>
+
 	<input
 		type="number"
 		bind:value={controller.maxValue}
@@ -172,11 +174,14 @@
 
 	.wrapper {
 		display: flex;
+		align-items: center;
 		width: 100%;
+		gap: 8px;
+	}
 
-		& > input:first-child {
-			margin-right: 5px;
-		}
+	.separator {
+		color: var(--bs-body-text-align);
+		white-space: nowrap;
 	}
 
 	input.form-control {
