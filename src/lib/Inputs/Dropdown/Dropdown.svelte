@@ -89,7 +89,7 @@
 
 <select
 	class="form-select"
-	class:placeholder-style={controller.valueAsString === ''}
+	class:has-placeholder={controller.valueAsString === ''}
 	aria-label="Dropdown"
 	bind:value={controller.valueAsString}
 	form={controller.form?.getFormId()}
@@ -98,13 +98,9 @@
 		controller.setValue(controller.valueAsString);
 	}}
 >
-	{#if controller.metadata.Component.Configuration?.Placeholder}
-		<option value="" class="placeholder-style">
-			{controller.metadata.Component.Configuration.Placeholder}
-		</option>
-	{:else}
-		<option value="" />
-	{/if}
+	<option value="">
+		{controller.metadata.Component.Configuration?.Placeholder || 'Select value'}
+	</option>
 	{#each items as item}
 		<option value={item.Value.toString()} class={item.CssClass}>{item.Label}</option>
 	{/each}
@@ -115,11 +111,20 @@
 
 	select.form-select {
 		min-height: $app-input-min-height;
-	}
 
-	// Prevent select's placeholder style from affecting non-placeholder options
-	select.placeholder-style > option:not(.placeholder-style) {
-		color: var(--bs-body-color);
-		font-style: normal;
+		&.has-placeholder {
+			color: #adb5bd;
+			font-style: italic;
+
+			option:not(:first-child) {
+				color: var(--bs-body-color);
+				font-style: normal;
+			}
+		}
+
+		option:first-child {
+			color: #adb5bd;
+			font-style: italic;
+		}
 	}
 </style>
