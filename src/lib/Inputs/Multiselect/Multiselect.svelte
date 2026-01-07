@@ -103,7 +103,7 @@
 		let results = await source.getOptionsAndFilter(capturedValue);
 
 		return results?.length > 0
-			? capturedValue.Items.map((t) => results.find((c) => c.Value == t)!)
+			? capturedValue.Items.map((t) => results.find((c) => c.Value == t)).filter(t => t != null)
 			: [];
 	}
 
