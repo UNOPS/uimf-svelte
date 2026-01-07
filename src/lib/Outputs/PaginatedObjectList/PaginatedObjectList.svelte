@@ -57,11 +57,15 @@
 
 <div class:list-container={true} class={controller.metadata.Component.Configuration.CssClass}>
 	{#if nestedControllers != null}
-		{#each nestedControllers as controller}
-			{#if controller.value}
-				<svelte:component this={nestedComponent} {controller} />
-			{/if}
-		{/each}
+		{#if controller.value?.Results?.length === 0}
+			<em>{controller.metadata.Component.Configuration?.NoDataLabel ?? 'No data found.'}</em>
+		{:else}
+			{#each nestedControllers as controller}
+				{#if controller.value}
+					<svelte:component this={nestedComponent} {controller} />
+				{/if}
+			{/each}
+		{/if}
 	{/if}
 </div>
 {#if controller.value?.Results?.length > 0 && controller.metadata.Component.Configuration.Paginator != null}
