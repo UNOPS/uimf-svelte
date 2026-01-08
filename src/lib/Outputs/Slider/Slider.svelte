@@ -160,10 +160,18 @@
 				{/if}
 			{/each}
 		</div>
+
+		{#if items[currentIndex]?.Main?.controller?.value?.Description}
+			<div class="ui-slider_description">
+				{items[currentIndex].Main.controller.value.Description}
+			</div>
+		{/if}
 	</div>
 {/if}
 
-<style>
+<style lang="scss">
+	@import '../../scss/styles.variables.scss';
+
 	button {
 		padding: 0px;
 		background-color: transparent;
@@ -202,5 +210,11 @@
 		justify-content: center;
 		gap: 2px;
 		flex-wrap: wrap;
+	}
+
+	.ui-slider_description {
+		text-align: center;
+		color: $app-font-color-secondary;
+		font-size: 1rem;
 	}
 </style>
