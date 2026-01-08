@@ -29,7 +29,7 @@
 	beforeUpdate(async () => await component.setup(controller));
 
 	let tabs: any[] = getComponentControllers(controller.metadata.Component.Configuration.Properties);
-	export let activeTabValue = tabs[0].controller.metadata.Id;
+	export let activeTabValue = tabs[0]?.controller.metadata.Id;
 
 	function getComponentControllers(properties: IFieldMetadata[]): any[] {
 		let componentControllerArray: ComponentController[] = [];
@@ -37,6 +37,12 @@
 		let sortedProperties = [...properties].sort((a, b) => a.OrderIndex - b.OrderIndex);
 
 		sortedProperties.forEach((property) => {
+			const value = controller.value?.Value[property.Id];
+
+			if (value === null && property.HideIfNull === true) {
+				return;
+			}
+
 			let componentController = {
 				component: controlRegister.outputs[property.Component.Type].component,
 				controller: new OutputController<any>({
@@ -48,7 +54,7 @@
 				})
 			};
 
-			componentController.controller.setValue(controller.value?.Value[property.Id] || {});
+			componentController.controller.setValue(value || {});
 			componentControllerArray.push(componentController);
 		});
 
