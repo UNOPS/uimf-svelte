@@ -77,6 +77,13 @@
 				},
 				controller
 			);
+
+			// Auto-select if there's only one option, no value is set, and the field is required
+			items = await source.getOptionsAndFilter(null);
+			if (items.length === 1 && !controller.valueAsString && controller.metadata.Required) {
+				controller.valueAsString = items[0].Value.toString();
+				await controller.setValue(controller.valueAsString);
+			}
 		},
 		async refresh() {
 			items = await source.getOptionsAndFilter(null);
