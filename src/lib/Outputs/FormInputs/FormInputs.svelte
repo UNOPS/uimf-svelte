@@ -116,14 +116,9 @@
 	beforeUpdate(async () => await component.setup(controller));
 
 	function clearInputs() {
-		const formInputsGroup = controller.metadata.Component.Configuration?.Group ?? null;
-
 		controller.form?.metadata.InputFields.forEach((input) => {
 			if (!input.Hidden) {
-				// Clear main inputs
-				if (input.InputGroup === formInputsGroup) {
-					controller.form?.inputs[input.Id].clear();
-				} else if (input.Component.Type == 'table-input') {
+				if (input.Component.Type == 'table-input') {
 					// Clear inputs inside table-input rows
 					const tableInputController = controller.form?.inputs[input.Id];
 					if (tableInputController != null && tableInputController.table != null) {
@@ -133,12 +128,17 @@
 						tableInputController.table.body.forEach((row: any) => {
 							if (!row.deleted) {
 								inputFields.forEach((field: any) => {
-									const cellController = tableInputController.table.controller(row, field.Metadata.Id);
+									const cellController = tableInputController.table.controller(
+										row,
+										field.Metadata.Id
+									);
 									cellController?.clear();
 								});
 							}
 						});
 					}
+				} else {
+					controller.form?.inputs[input.Id].clear();
 				}
 			}
 		});
