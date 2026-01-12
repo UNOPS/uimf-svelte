@@ -349,6 +349,8 @@
 		color: var(--bs-primary-text-emphasis);
 		padding-left: 40px;
 		border-right: 2px solid var(--bs-body-color);
+		width: 100%;
+		max-width: 25%;
 	}
 
 	.first-row {
