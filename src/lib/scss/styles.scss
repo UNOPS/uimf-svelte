@@ -79,3 +79,24 @@ textarea::placeholder,
         background-color: white;
     }
 }
+
+// ---------------------------------------------------------- //
+// Grid Column Utilities
+// ---------------------------------------------------------- //
+// Arranges items in a table-like layout with equal-width columns.
+// The number in the class name specifies how many columns to use.
+//
+// Available classes: grid-cols-1 through grid-cols-6, plus
+// responsive variants like grid-cols-sm-2, grid-cols-lg-5, etc.
+// Use together with d-grid and gap-* classes.
+@each $breakpoint in map-keys($grid-breakpoints) {
+    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+
+    @include media-breakpoint-up($breakpoint) {
+        @for $i from 1 through 6 {
+            .grid-cols#{$infix}-#{$i} {
+                grid-template-columns: repeat(#{$i}, 1fr);
+            }
+        }
+    }
+}
