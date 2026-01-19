@@ -5,6 +5,7 @@
 		DefaultValue?: string | null;
 		SelectAll?: boolean;
 		Placeholder?: string | null;
+		AllowNewItems?: boolean;
 	}
 
 	export interface ITypeaheadMetadata extends IInputFieldMetadata<IConfiguration> {}
@@ -97,6 +98,15 @@
 				: null;
 
 		if (option == null) {
+			// If AllowNewItems is enabled, create a new option with the entered value
+			if (controller.metadata.Component.Configuration.AllowNewItems) {
+				return {
+					Value: value?.Value,
+					Label: value?.Value?.toString() ?? '',
+					SearchText: value?.Value?.toString() ?? ''
+				};
+			}
+			
 			throw `Cannot find option for "${controller.metadata.Id}" with value "${value?.Value}".`;
 		}
 
@@ -108,7 +118,25 @@
 			return [];
 		}
 
-		return source.getOptionsAndFilter(query);
+		const options = await source.getOptionsAndFilter(query);
+		
+		// If AllowNewItems is enabled and user typed something that's not in the list, add a "Create new" option
+		if (controller.metadata.Component.Configuration.AllowNewItems && 
+			query && 
+			query.trim().length > 0 &&
+			!options.some(o => o.Value?.toString().toLowerCase() === query.toLowerCase())) {
+			return [
+				{
+					Value: query,
+					Label: `<strong>Create:</strong> ${query}`,
+					SearchText: query,
+					CssClass: 'create-new-item'
+				},
+				...options
+			];
+		}
+		
+		return options;
 	}
 
 	const groupBy = (item: any) => item.Group;
@@ -218,6 +246,10 @@
 
 			&:global(.inactive) {
 				opacity: 0.5;
+			}
+
+			&:global(.create-new-item) {
+				cursor: pointer;
 			}
 
 			& > span {
