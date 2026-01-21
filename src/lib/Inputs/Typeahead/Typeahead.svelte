@@ -1,11 +1,10 @@
 <script context="module" lang="ts">
-	import { InputController } from '../../Infrastructure/InputController';
+	import { InputController } from '@Infrastructure/InputController';
 
 	interface IConfiguration extends ITypeaheadConfig {
 		DefaultValue?: string | null;
 		SelectAll?: boolean;
 		Placeholder?: string | null;
-		AllowNewItems?: boolean;
 	}
 
 	export interface ITypeaheadMetadata extends IInputFieldMetadata<IConfiguration> {}
@@ -43,9 +42,9 @@
 
 <script lang="ts">
 	import Select from 'svelte-select';
-	import { InputComponent } from '../../Infrastructure/Component';
+	import { InputComponent } from '@Infrastructure/Component';
 	import { beforeUpdate } from 'svelte';
-	import type { IInputFieldMetadata } from '../../Infrastructure/Metadata';
+	import type { IInputFieldMetadata } from '@Infrastructure/Metadata';
 	import { PickerManager } from './Domain/Picker/PickerManager';
 	import type { ITypeaheadValue } from './Domain/ITypeaheadValue';
 	import type { ITypeaheadOption } from './Domain/index';
@@ -98,15 +97,6 @@
 				: null;
 
 		if (option == null) {
-			// If AllowNewItems is enabled, create a new option with the entered value
-			if (controller.metadata.Component.Configuration.AllowNewItems) {
-				return {
-					Value: value?.Value,
-					Label: value?.Value?.toString() ?? '',
-					SearchText: value?.Value?.toString() ?? ''
-				};
-			}
-			
 			throw `Cannot find option for "${controller.metadata.Id}" with value "${value?.Value}".`;
 		}
 
@@ -119,22 +109,6 @@
 		}
 
 		const options = await source.getOptionsAndFilter(query);
-		
-		// If AllowNewItems is enabled and user typed something that's not in the list, add a "Create new" option
-		if (controller.metadata.Component.Configuration.AllowNewItems && 
-			query && 
-			query.trim().length > 0 &&
-			!options.some(o => o.Value?.toString().toLowerCase() === query.toLowerCase())) {
-			return [
-				{
-					Value: query,
-					Label: `<strong>Create:</strong> ${query}`,
-					SearchText: query,
-					CssClass: 'create-new-item'
-				},
-				...options
-			];
-		}
 		
 		return options;
 	}

@@ -118,23 +118,6 @@
 
 		const options = await source.getOptionsAndFilter(query);
 		
-		// If AllowNewItems is enabled and user typed a string that's not in the list, add a "Create new" option
-		if (controller.metadata.Component.Configuration.AllowNewItems && 
-			typeof query === 'string' &&
-			query.trim().length > 0 &&
-			!options.some(o => o.Value?.toString().toLowerCase() === query.toLowerCase()) &&
-			!selected.some(s => s.Value?.toString().toLowerCase() === query.toLowerCase())) {
-			return [
-				{
-					Value: query,
-					Label: `<strong>Create:</strong> ${query}`,
-					SearchText: query,
-					CssClass: 'create-new-item'
-				},
-				...options
-			];
-		}
-		
 		return options;
 	}
 

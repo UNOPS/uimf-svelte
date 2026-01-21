@@ -1,0 +1,107 @@
+.tag-input-container {
+	:global(.svelte-select) {
+		min-height: 34px;
+		border: 1px solid #aaa;
+		border-radius: 4px;
+	}
+
+	:global(.svelte-select input) {
+		cursor: text;
+	}
+
+	:global(.svelte-select .value-container) {
+		padding-left: 6px;
+	}
+
+	:global(.svelte-select .svelte-select-list) {
+		padding: 4px 8px;
+		min-height: 34px;
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 4px;
+	}
+
+	:global(.svelte-select .clear-select) {
+		display: none !important;
+	}
+
+	:global(.svelte-select .list-item) {
+		display: block;
+		width: 100%;
+	}
+
+	:global(.svelte-select .multi-item) {
+		display: none !important;
+	}
+
+	:global(.svelte-select .multi-item-text) {
+		padding: 0 !important;
+		margin: 0 !important;
+		display: none !important;
+	}
+
+	:global(.svelte-select .multi-item-clear) {
+		display: none !important;
+	}
+
+	.svelte-select div[slot='prepend'] {
+		display: flex;
+		gap: 4px;
+	}
+
+	.tag-selection {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 4px;
+		padding: 0;
+		width: 100%;
+		min-height: 26px;
+	}
+
+	.tag-pill {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		padding: 4px 8px;
+		font-size: 14px;
+		font-weight: normal;
+		border-radius: 10px;
+		white-space: nowrap;
+		line-height: 1.4;
+	}
+
+	.tag-remove {
+		background: none;
+		border: none;
+		padding: 0;
+		margin: 0 0 0 2px;
+		cursor: pointer;
+		font-size: 16px;
+		line-height: 1;
+		color: inherit;
+		opacity: 0.7;
+
+		&:hover {
+			opacity: 1;
+			font-weight: 600;
+		}
+	}
+
+	.tag-dropdown-item {
+		display: flex;
+		flex-direction: column;
+		padding: 8px 12px;
+		cursor: pointer;
+
+		span {
+			line-height: 1.4;
+		}
+	}
+
+	.tag-create-item {
+		strong {
+			color: #006fe8;
+		}
+	}
+}

@@ -11,6 +11,13 @@ function getPath(relativePath) {
 }
 
 export default defineConfig({
+	resolve: {
+		alias: {
+			'@Infrastructure': getPath('./src/lib/Infrastructure'),
+			'@Inputs': getPath('./src/lib/Inputs'),
+			'$lib': getPath('./src/lib')
+		}
+	},
 	plugins: [
 		svelte({
 			configFile: './svelte.config.js'
