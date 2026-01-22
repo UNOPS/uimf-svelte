@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-	import { InputController } from '../../Infrastructure/InputController';
+	import { InputController } from '@Infrastructure/InputController';
 
 	interface IConfiguration extends ITypeaheadConfig {
 		DefaultValue?: string | null;
@@ -42,9 +42,9 @@
 
 <script lang="ts">
 	import Select from 'svelte-select';
-	import { InputComponent } from '../../Infrastructure/Component';
+	import { InputComponent } from '@Infrastructure/Component';
 	import { beforeUpdate } from 'svelte';
-	import type { IInputFieldMetadata } from '../../Infrastructure/Metadata';
+	import type { IInputFieldMetadata } from '@Infrastructure/Metadata';
 	import { PickerManager } from './Domain/Picker/PickerManager';
 	import type { ITypeaheadValue } from './Domain/ITypeaheadValue';
 	import type { ITypeaheadOption } from './Domain/index';
@@ -108,7 +108,9 @@
 			return [];
 		}
 
-		return source.getOptionsAndFilter(query);
+		const options = await source.getOptionsAndFilter(query);
+		
+		return options;
 	}
 
 	const groupBy = (item: any) => item.Group;
@@ -218,6 +220,10 @@
 
 			&:global(.inactive) {
 				opacity: 0.5;
+			}
+
+			&:global(.create-new-item) {
+				cursor: pointer;
 			}
 
 			& > span {

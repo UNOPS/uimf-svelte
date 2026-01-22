@@ -116,7 +116,9 @@
 			return [];
 		}
 
-		return source.getOptionsAndFilter(query);
+		const options = await source.getOptionsAndFilter(query);
+		
+		return options;
 	}
 
 	async function handleSelect(event: Event & { detail: any[] }) {
@@ -229,6 +231,10 @@
 
 			&:global(.inactive) {
 				opacity: 0.5;
+			}
+
+			&:global(.create-new-item) {
+				cursor: pointer;
 			}
 
 			& > span {
