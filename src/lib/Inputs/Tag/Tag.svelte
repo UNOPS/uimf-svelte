@@ -48,7 +48,8 @@
 
 	export let controller: Controller;
 	let source: PickerManager<ITypeaheadOption>;
-	let selected: ITagOption[] = [];
+	let selected: ITagOption[] | ITagOption | null = [];
+	let multiple: boolean = true;
 
 	let component = new InputComponent({
 		async init() {
@@ -60,7 +61,8 @@
 				},
 				controller
 			);
-			selected = [];
+			multiple = controller.metadata.Component.Configuration.Multiple ?? true;
+			selected = multiple ? [] : null;
 		},
 		async refresh() {
 			const capturedValue = controller?.value;
@@ -74,9 +76,13 @@
 					return;
 				}
 
-				selected = results;
+				if (multiple) {
+					selected = results;
+				} else {
+					selected = results.length > 0 ? results[0] : null;
+				}
 			} else {
-				selected = [];
+				selected = multiple ? [] : null;
 				controller.value = null;
 			}
 		}
@@ -86,7 +92,7 @@
 		let results = await source.getOptionsAndFilter(capturedValue);
 
 		return capturedValue.Items.map((item) => {
-			const found = results?.find((c: any) => c.Value === item);
+			const found = results?.find((c: ITypeaheadOption) => c.Value === item);
 			if (found) {
 				return {
 					Value: found.Value?.toString() ?? '',
@@ -113,18 +119,23 @@
 
 		const options = await source.getOptionsAndFilter(query);
 
-		let tagOptions: ITagOption[] = options.map((o: any) => ({
+		let tagOptions: ITagOption[] = options.map((o: ITypeaheadOption) => ({
 			Value: o.Value?.toString() ?? '',
 			Label: o.Label,
 			SearchText: o.SearchText ?? o.Label
 		}));
 
-		if (
-			query &&
-			query.trim().length > 0 &&
-			!tagOptions.some((o) => o.Value.toLowerCase() === query.toLowerCase()) &&
-			!selected.some((s) => s.Value.toLowerCase() === query.toLowerCase())
-		) {
+		const queryLower = query?.toLowerCase() ?? '';
+		const alreadyInOptions = tagOptions.some((o) => o.Value.toLowerCase() === queryLower);
+
+		let alreadySelected = false;
+		if (multiple && Array.isArray(selected)) {
+			alreadySelected = selected.some((s: ITagOption) => s.Value.toLowerCase() === queryLower);
+		} else if (!multiple && selected != null && typeof selected === 'object') {
+			alreadySelected = (selected as ITagOption).Value.toLowerCase() === queryLower;
+		}
+
+		if (query && query.trim().length > 0 && !alreadyInOptions && !alreadySelected) {
 			tagOptions = [
 				{
 					Value: query,
@@ -139,25 +150,34 @@
 		return tagOptions;
 	};
 
-	const handleSelect = (event: Event & { detail: ITagOption[] }) => {
-		if (event.detail != null && event.detail.length > 0) {
-			selected = event.detail;
-			const items = selected.length > 0 ? [...new Set(selected.map((t) => t.Value))] : [];
-			controller.setValue({ Items: items });
+	const handleSelect = (event: Event & { detail: ITagOption[] | ITagOption }) => {
+		if (!multiple) {
+			// Single selection mode
+			const singleValue = event.detail as ITagOption;
+			if (singleValue != null && singleValue.Value) {
+				selected = singleValue;
+				controller.setValue({ Items: [singleValue.Value] });
+			} else {
+				selected = null;
+				controller.setValue(null);
+			}
 		} else {
-			selected = [];
-			controller.setValue(null);
+			// Multiple selection mode
+			const multipleValues = event.detail as ITagOption[];
+			if (multipleValues != null && multipleValues.length > 0) {
+				selected = multipleValues;
+				const items = selected.length > 0 ? [...new Set(selected.map((t) => t.Value))] : [];
+				controller.setValue({ Items: items });
+			} else {
+				selected = [];
+				controller.setValue(null);
+			}
 		}
 	};
 
 	const handleClear = () => {
 		controller?.setValue(null);
-		selected = [];
-	};
-
-	const removeTag = (index: number) => {
-		selected = selected.filter((_, i) => i !== index);
-		controller.setValue({ Items: selected.map((t) => t.Value) });
+		selected = multiple ? [] : null;
 	};
 </script>
 
@@ -165,35 +185,21 @@
 	<Select
 		value={selected}
 		inputAttributes={{ form: controller.form?.getFormId() }}
-		label="SearchText"
+		label="Label"
 		itemId="Value"
 		required={controller.metadata.Required}
 		floatingConfig={{ strategy: 'fixed' }}
 		on:input={handleSelect}
 		on:clear={handleClear}
-		multiple={true}
+		{multiple}
 		hideEmptyState={true}
-		placeholder={controller.metadata.Component.Configuration.Placeholder ?? 'type to search or add new...'}
+		placeholder={controller.metadata.Component.Configuration.Placeholder ??
+			'type to search or add new...'}
 		loadOptions={loadOptionsAndFilter}
 		showChevron={false}
 		clearable={false}
 	>
-		<div slot="prepend">
-			{#each selected as item, index}
-				<span class="label label-default tag-pill">
-					{item.Label}
-					<button
-						type="button"
-						class="tag-remove"
-						on:click|stopPropagation={() => removeTag(index)}
-						aria-label="Remove {item.Label}"
-					>
-						&times;
-					</button>
-				</span>
-			{/each}
-		</div>
-		<div slot="item" let:item class="tag-dropdown-item" class:tag-create-item={item.created}>
+		<div slot="item" let:item class="item-slot" class:tag-create-item={item.created}>
 			{#if item.created}
 				<span><strong>Create:</strong> {item.Label}</span>
 			{:else}
@@ -206,5 +212,3 @@
 <style lang="scss">
 	@import './tag-styles.scss';
 </style>
-
-

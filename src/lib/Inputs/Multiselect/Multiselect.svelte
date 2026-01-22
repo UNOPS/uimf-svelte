@@ -233,10 +233,6 @@
 				opacity: 0.5;
 			}
 
-			&:global(.create-new-item) {
-				cursor: pointer;
-			}
-
 			& > span {
 				line-height: 1.8em;
 				padding: 0;
