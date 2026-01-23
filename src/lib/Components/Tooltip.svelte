@@ -70,13 +70,14 @@
 		background: var(--bg-color);
 		color: #f6f6f6;
 		padding: 2px 5px;
+	}
 
-		ul {
-			text-align: left;
-			padding: 0 0 0 20px;
-			margin: 8px 0;
-			list-style-position: outside;
-		}
+	:global(.tippy-box ul),
+	:global(.tippy-box ol) {
+		text-align: left;
+		padding: 0;
+		margin: 8px 0 8px 25px;
+		list-style-position: outside;
 	}
 
 	:global(.tippy-box > .tippy-svg-arrow) {
