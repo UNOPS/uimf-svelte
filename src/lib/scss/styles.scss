@@ -1,3 +1,5 @@
+@use "sass:math";
+
 // ---------------------------------------------------------- //
 // 1. Bootstrap Imports
 // ---------------------------------------------------------- //
@@ -77,6 +79,41 @@ textarea::placeholder,
 
     &>div {
         background-color: white;
+    }
+}
+
+// ---------------------------------------------------------- //
+// Width Utilities (Tailwind-inspired)
+// ---------------------------------------------------------- //
+// Rem-based scale where 1 unit = 0.25rem (4px).
+// Example: w-32 = 8rem = 128px
+//
+// Available classes: w-16, w-20, w-24, w-32, w-40, w-48, w-64, w-80, w-96
+$width-scale: (
+    16: 4rem,
+    20: 5rem,
+    24: 6rem,
+    32: 8rem,
+    40: 10rem,
+    48: 12rem,
+    64: 16rem,
+    80: 20rem,
+    96: 24rem
+);
+
+@each $key, $value in $width-scale {
+    .w-#{$key} {
+        width: $value !important;
+        min-width: $value !important;
+        max-width: $value !important;
+    }
+}
+
+// Percentage-based widths in 10% increments
+// Available classes: w-10p, w-20p, w-30p, ... w-100p
+@for $i from 1 through 10 {
+    .w-#{$i * 10}p {
+        width: percentage(math.div($i, 10)) !important;
     }
 }
 
